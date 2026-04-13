@@ -9,14 +9,19 @@ const SERVER_ENTRYPOINT = resolve(__dirname, '../../../../../dist/apps/web/serve
 const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?: string };
 
 module.exports = async function () {
-  const host = process.env.HOST ?? 'localhost';
+  const host = process.env.HOST ?? '127.0.0.1';
   const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
   const serverProcess = spawn(process.execPath, [SERVER_ENTRYPOINT], {
     env: {
       ...process.env,
+      DATABASE_AUTO_MIGRATE: 'true',
+      DATABASE_DRIVER: 'memory',
+      ENABLE_TEST_API: 'true',
       HOST: host,
+      MAIL_TRANSPORT: 'memory',
       PORT: String(port),
+      SESSION_SECRET: 'themis-server-e2e-secret',
     },
     stdio: 'inherit',
   });

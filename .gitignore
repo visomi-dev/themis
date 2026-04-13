@@ -46,3 +46,8 @@ vitest.config.*.timestamp*
 
 debug/
 !debug/.gitkeep
+
+# local tooling and test runtime files
+.tools/
+apps/web/api-e2e/.api-e2e-server.pid
+apps/web/server-e2e/.server-e2e-server.pid

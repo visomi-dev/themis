@@ -1,6 +1,122 @@
+@import '@fontsource/inter';
+@import '@fontsource/manrope';
+@import 'primeicons/primeicons.css';
+
+:root {
+  --font-body: 'Inter', sans-serif;
+  --font-headline: 'Manrope', sans-serif;
+  --color-background: #f7f9fb;
+  --color-surface: #ffffff;
+  --color-surface-low: #f0f4f7;
+  --color-surface-high: #e8eff3;
+  --color-surface-strong: #d9e4ea;
+  --color-text: #2a3439;
+  --color-text-muted: #566166;
+  --color-outline: #a9b4b9;
+  --color-outline-strong: #717c82;
+  --color-primary: #3f6376;
+  --color-primary-strong: #325769;
+  --color-primary-soft: #c2e8fe;
+  --color-danger: #9f403d;
+  --shadow-panel: 0 32px 64px -12px rgb(42 52 57 / 0.08);
+}
+
+html.dark {
+  --color-background: #020617;
+  --color-surface: #0f172a;
+  --color-surface-low: #111827;
+  --color-surface-high: #1e293b;
+  --color-surface-strong: #334155;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-outline: #475569;
+  --color-outline-strong: #64748b;
+  --color-primary: #60a5fa;
+  --color-primary-strong: #3b82f6;
+  --color-primary-soft: rgb(96 165 250 / 0.22);
+  --color-danger: #fda4af;
+  --shadow-panel: 0 40px 90px -36px rgb(2 6 23 / 0.95);
+}
+
 html,
 body {
-  margin: 0;
   min-height: 100%;
-  background: #020617;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top center, rgb(194 232 254 / 0.5), transparent 28%),
+    linear-gradient(180deg, var(--color-background) 0%, color-mix(in srgb, var(--color-background) 93%, black 7%) 100%);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.page-shell {
+  min-height: 100dvh;
+  padding: 1.5rem;
+}
+
+.surface-panel {
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-outline) 16%, transparent);
+  box-shadow: var(--shadow-panel);
+}
+
+.ghost-border-bottom {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-outline) 32%, transparent);
+}
+
+.ghost-border-bottom:focus-within {
+  border-bottom-color: var(--color-primary);
+}
+
+.font-headline {
+  font-family: var(--font-headline);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-outline) 28%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-high) 72%, transparent);
+  color: var(--color-text);
+}
+
+.theme-toggle:hover {
+  background: color-mix(in srgb, var(--color-surface-strong) 72%, transparent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

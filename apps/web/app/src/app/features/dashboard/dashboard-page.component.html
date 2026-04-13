@@ -1,0 +1,22 @@
+<main class="page-shell dashboard-shell">
+  <section class="dashboard-header">
+    <div>
+      <p class="brand font-headline">Themis</p>
+      <h1 class="font-headline">Workspace access confirmed</h1>
+      <p>Your authenticated application shell is ready for the next product slices.</p>
+    </div>
+
+    <div class="dashboard-actions">
+      <app-theme-toggle />
+      <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
+    </div>
+  </section>
+
+  <section class="dashboard-card surface-panel">
+    <p class="eyebrow">Active session</p>
+    <h2>{{ user()?.email }}</h2>
+    <p>
+      This route is protected by the backend session established only after password validation and email PIN verification.
+    </p>
+  </section>
+</main>

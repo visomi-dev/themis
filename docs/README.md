@@ -13,6 +13,9 @@ Documentation in this repository is organized around the Themis product itself.
 
 - `overview.md`
 - `product/prd.md`
+- `product/auth-flow.md`
 - `architecture/system-architecture.md`
+- `architecture/auth-architecture.md`
 - `architecture/backend-content-model.md`
+- `testing/auth-testing.md`
 - `design/visual-discovery.md`

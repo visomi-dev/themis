@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 
-import { app } from './app.js';
+import { createApp } from './app.js';
 
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
@@ -15,10 +15,19 @@ const isMainModule = () => {
   return import.meta.url === pathToFileURL(entryFile).href;
 };
 
+const appPromise = createApp();
+
 if (isMainModule()) {
-  app.listen(port, host, () => {
-    console.log(`[ ready ] http://${host}:${port}`);
-  });
+  appPromise
+    .then((app) => {
+      app.listen(port, host, () => {
+        console.log(`[ ready ] http://${host}:${port}`);
+      });
+    })
+    .catch((error: unknown) => {
+      console.error('[ error ] Failed to start API server', error);
+      process.exit(1);
+    });
 }
 
-export { app };
+export { appPromise };

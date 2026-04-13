@@ -9,14 +9,19 @@ const API_SERVER_ENTRYPOINT = resolve(__dirname, '../../../../../dist/apps/web/a
 const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?: string };
 
 module.exports = async function () {
-  const host = process.env.HOST ?? 'localhost';
+  const host = process.env.HOST ?? '127.0.0.1';
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
   const serverProcess = spawn(process.execPath, [API_SERVER_ENTRYPOINT], {
     env: {
       ...process.env,
+      DATABASE_AUTO_MIGRATE: 'true',
+      DATABASE_DRIVER: 'memory',
+      ENABLE_TEST_API: 'true',
       HOST: host,
+      MAIL_TRANSPORT: 'memory',
       PORT: String(port),
+      SESSION_SECRET: 'themis-api-e2e-secret',
     },
     stdio: 'inherit',
   });

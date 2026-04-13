@@ -1,0 +1,51 @@
+<main class="page-shell auth-shell">
+  <section class="auth-header">
+    <div>
+      <p class="brand font-headline">Themis</p>
+      <p class="context">Operational access layer</p>
+    </div>
+
+    <app-theme-toggle />
+  </section>
+
+  <section class="auth-card surface-panel">
+    <header class="auth-copy">
+      <h1 class="font-headline">{{ heading }}</h1>
+      <p>{{ supportingCopy }}</p>
+    </header>
+
+    @if (errorMessage) {
+      <p-message severity="error" [text]="errorMessage" />
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <label class="field-label" for="email">Email</label>
+      <div class="ghost-border-bottom field-shell">
+        <input id="email" pInputText formControlName="email" autocomplete="email" placeholder="name@organization.com" />
+      </div>
+
+      <label class="field-label" for="password">Password</label>
+      <div class="ghost-border-bottom field-shell password-shell">
+        <p-password
+          inputId="password"
+          autocomplete="current-password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          [fluid]="true"
+        />
+      </div>
+
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <p-message severity="warn" text="Use a valid email address and a password with at least 8 characters." />
+      }
+
+      <button pButton type="submit" [disabled]="authState.submitting()">{{ submitLabel }}</button>
+    </form>
+
+    <footer class="auth-footer">
+      <span>{{ footerPrompt }}</span>
+      <a [routerLink]="footerLink">{{ footerLinkLabel }}</a>
+    </footer>
+  </section>
+</main>

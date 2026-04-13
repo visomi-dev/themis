@@ -27,4 +27,18 @@ describe('composition server', () => {
     expect(response.status).toBe(200);
     expect(response.data).toEqual({ message: 'Hello Themis API' });
   });
+
+  it('serves the Angular auth surface under /app', async () => {
+    const response = await axios.get('/app/sign-in', {
+      headers: {
+        Accept: 'text/html',
+      },
+      responseType: 'text',
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers['content-type']).toContain('text/html');
+    expect(response.data).toContain('<base href="/app/">');
+    expect(response.data).toContain('<app-root>');
+  });
 });

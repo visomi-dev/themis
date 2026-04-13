@@ -10,6 +10,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/web/app",
+        "baseHref": "/app/",
         "browser": "apps/web/app/src/main.ts",
         "tsConfig": "apps/web/app/tsconfig.app.json",
         "assets": [

@@ -11,11 +11,15 @@ import express, {
 } from 'express';
 
 type ApiModule = {
-  app?: Express;
+  appPromise?: Promise<Express>;
 };
 
 type AstroMiddlewareModule = {
   handler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
+};
+
+type AngularAppModule = {
+  reqHandler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 };
 
 const host = process.env.HOST ?? '0.0.0.0';
@@ -23,17 +27,29 @@ const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const apiEntryFile = resolve(serverDistFolder, '..', 'api', 'main.js');
+const angularBrowserFolder = resolve(serverDistFolder, '..', 'app', 'browser');
+const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'server.mjs');
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
 
 const loadApiApp = async () => {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
 
-  if (!apiModule.app) {
+  if (!apiModule.appPromise) {
     throw new Error(`Could not load the API app from '${apiEntryFile}'.`);
   }
 
-  return apiModule.app;
+  return apiModule.appPromise;
+};
+
+const loadAngularRequestHandler = async () => {
+  const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularAppModule;
+
+  if (typeof angularModule.reqHandler !== 'function') {
+    throw new TypeError(`Could not load the Angular request handler from '${angularEntryFile}'.`);
+  }
+
+  return angularModule.reqHandler;
 };
 
 const loadAstroRequestHandler = async () => {
@@ -47,7 +63,11 @@ const loadAstroRequestHandler = async () => {
 };
 
 const bootstrap = async () => {
-  const [apiApp, astroRequestHandler] = await Promise.all([loadApiApp(), loadAstroRequestHandler()]);
+  const [apiApp, angularRequestHandler, astroRequestHandler] = await Promise.all([
+    loadApiApp(),
+    loadAngularRequestHandler(),
+    loadAstroRequestHandler(),
+  ]);
   const app = express();
 
   app.use(json());
@@ -55,6 +75,15 @@ const bootstrap = async () => {
     res.send({ status: 'ok' });
   });
   app.use('/api', apiApp);
+  app.use(
+    '/app',
+    serveStatic(angularBrowserFolder, {
+      index: false,
+      maxAge: '1y',
+      redirect: false,
+    }),
+  );
+  app.use('/app', (req, res, next) => angularRequestHandler(req, res, next));
   app.use(
     serveStatic(astroClientFolder, {
       index: false,
