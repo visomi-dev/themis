@@ -1,6 +1,13 @@
 import axios from 'axios';
 
 describe('composition server', () => {
+  it('exposes a runtime health endpoint', async () => {
+    const response = await axios.get('/healthz');
+
+    expect(response.status).toBe(200);
+    expect(response.data).toEqual({ status: 'ok' });
+  });
+
   it('serves the public site root', async () => {
     const response = await axios.get('/', {
       headers: {

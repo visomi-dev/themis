@@ -51,6 +51,9 @@ const bootstrap = async () => {
   const app = express();
 
   app.use(json());
+  app.get('/healthz', (_req, res) => {
+    res.send({ status: 'ok' });
+  });
   app.use('/api', apiApp);
   app.use(
     serveStatic(astroClientFolder, {

@@ -1,39 +1,384 @@
 ---
+import ThemeSwitcher from '../../components/theme-switcher.astro';
 import { getSiteContent } from '../../content/site-content';
 import BaseLayout from '../../layouts/base-layout.astro';
 
 const copy = getSiteContent('es');
+const navItems = [
+  { href: '#principios', label: 'Principios' },
+  { href: '#infraestructura', label: 'Infraestructura' },
+  { href: '#especificaciones', label: 'Especificaciones' },
+  { href: '#archivo', label: 'Archivo' },
+];
 ---
 
 <BaseLayout lang="es" title="Themis" description={copy.description}>
-  <main
-    class="mx-auto flex min-h-screen w-[min(1120px,calc(100%-32px))] flex-col justify-center gap-10 py-20 sm:w-[min(1120px,calc(100%-64px))]"
+  <div class="hero-grid pointer-events-none fixed inset-0 opacity-60"></div>
+
+  <nav
+    class="backdrop-shell sticky top-0 z-50 border-b border-[color:color-mix(in_srgb,var(--color-outline)_10%,transparent)] bg-[color:color-mix(in_srgb,var(--color-background)_82%,transparent)]"
   >
-    <section class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-      <div class="space-y-6">
-        <p class="text-sm tracking-[0.25em] text-sky-300 uppercase">{copy.eyebrow}</p>
-        <h1 class="max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-white sm:text-6xl">{copy.title}</h1>
-        <p class="max-w-2xl text-lg leading-8 text-slate-300">{copy.description}</p>
-        <div class="flex flex-wrap gap-4">
-          <a class="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 no-underline" href="/docs/"
-            >{copy.cta}</a
+    <div class="mx-auto flex max-w-screen-2xl items-center justify-between px-6 py-5 md:px-12">
+      <a href="/es/" class="font-display text-xl font-extrabold tracking-tight text-[var(--color-text)] no-underline"
+        >Themis</a
+      >
+
+      <div class="hidden items-center gap-8 md:flex">
+        {
+          navItems.map((item, index) => (
+            <a
+              href={item.href}
+              class={`font-display text-sm font-medium tracking-tight no-underline transition-colors ${index === 0 ? 'border-b border-[var(--color-primary)] pb-1 text-[var(--color-primary)] dark:text-[var(--color-text)]' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="flex items-center gap-3">
+        <ThemeSwitcher />
+        <a
+          href="/docs/"
+          class="rounded-xl bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-white no-underline transition-opacity hover:opacity-90"
+          >{copy.cta}</a
+        >
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="mx-auto flex max-w-screen-2xl flex-col items-center px-6 pt-28 pb-24 text-center md:px-12 md:pt-32">
+      <span class="mb-8 text-xs tracking-[0.2em] text-[var(--color-outline-strong)] uppercase"
+        >Centro de mando de ingenieria</span
+      >
+      <h1
+        class="font-display mb-8 max-w-5xl text-6xl font-extrabold tracking-[-0.05em] text-[var(--color-text)] md:text-8xl"
+      >
+        Claridad para ejecucion compleja.
+      </h1>
+      <p class="mb-12 max-w-3xl text-xl leading-relaxed font-light text-[var(--color-text-muted)]">
+        Themis es un ledger tecnico para leads que coordinan multiples workstreams sin el ruido de herramientas
+        genericas de gestion.
+      </p>
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <a
+          href="/docs/"
+          class="rounded-xl bg-[var(--color-primary)] px-8 py-3 font-semibold text-white no-underline transition-opacity hover:opacity-90"
+          >Solicitar acceso</a
+        >
+        <a
+          href="#principios"
+          class="rounded-xl border border-[color:color-mix(in_srgb,var(--color-outline)_35%,transparent)] px-8 py-3 font-semibold text-[var(--color-text)] no-underline transition-colors hover:bg-[var(--color-surface-high)]"
+          >Leer metodologia</a
+        >
+      </div>
+    </section>
+
+    <section id="infraestructura" class="mx-auto mb-32 max-w-screen-2xl px-6 md:px-12">
+      <div class="surface-panel ghost-border overflow-hidden rounded-[1.25rem] p-1">
+        <div class="rounded-[1rem] bg-[var(--color-surface-low)] p-6 md:p-8">
+          <div class="mb-10 flex items-center justify-between gap-6">
+            <div>
+              <h2 class="font-display text-2xl font-extrabold text-[var(--color-text)]">Resumen de proyectos</h2>
+              <p class="mt-1 text-xs font-bold tracking-[0.22em] text-[var(--color-outline-strong)] uppercase">
+                Briefing operacional para workstreams activos
+              </p>
+            </div>
+            <div class="hidden items-center gap-3 md:flex">
+              <span
+                class="rounded-full bg-[color:color-mix(in_srgb,var(--color-primary)_12%,transparent)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)]"
+                >Busqueda</span
+              >
+              <span
+                class="rounded-full bg-[color:color-mix(in_srgb,var(--color-text)_6%,transparent)] px-3 py-1 text-xs font-semibold text-[var(--color-text-muted)]"
+                >Senales</span
+              >
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-3">
+            <div class="space-y-4 lg:col-span-2">
+              <article
+                class="ghost-border rounded-xl border-l-4 border-l-[var(--color-primary)] bg-[var(--color-surface)] p-6"
+              >
+                <div class="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="font-display text-lg font-bold text-[var(--color-text)]">Proyecto Alpha</h3>
+                    <p class="mt-1 text-sm text-[var(--color-text-muted)]">
+                      Migracion completa de los modulos heredados de autenticacion.
+                    </p>
+                  </div>
+                  <span
+                    class="rounded bg-[color:color-mix(in_srgb,var(--color-tertiary-soft)_88%,white_12%)] px-2 py-0.5 text-[10px] font-black text-[var(--color-tertiary)] uppercase"
+                    >Activo</span
+                  >
+                </div>
+                <div class="space-y-2">
+                  <div class="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-surface-high)]">
+                    <div class="h-full w-[75%] bg-[var(--color-primary)]"></div>
+                  </div>
+                  <div
+                    class="flex justify-between text-[10px] font-bold tracking-[0.2em] text-[var(--color-outline-strong)] uppercase"
+                  >
+                    <span>Distribucion tecnica</span>
+                    <span>12 listas / 4 en progreso</span>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="ghost-border rounded-xl border-l-4 border-l-[var(--color-outline)] bg-[var(--color-surface)]/85 p-6 opacity-90"
+              >
+                <div class="mb-4 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="font-display text-lg font-bold text-[var(--color-text)]">Nucleo de infraestructura</h3>
+                    <p class="mt-1 text-sm text-[var(--color-text-muted)]">
+                      Provision de nuevos clusters GPU en el nodo occidental.
+                    </p>
+                  </div>
+                  <span
+                    class="rounded bg-[var(--color-surface-high)] px-2 py-0.5 text-[10px] font-black text-[var(--color-outline-strong)] uppercase"
+                    >Estancado</span
+                  >
+                </div>
+                <p class="text-[10px] font-bold tracking-[0.2em] text-[var(--color-text-muted)] uppercase italic">
+                  Esperando asignacion de hardware del cluster 4
+                </p>
+              </article>
+            </div>
+
+            <div class="space-y-6">
+              <article class="ghost-border rounded-xl bg-[var(--color-surface)] p-6">
+                <h3 class="mb-4 text-[10px] font-black tracking-[0.2em] text-[var(--color-outline-strong)] uppercase">
+                  Bloqueadores mayores
+                </h3>
+                <div class="space-y-4">
+                  <div class="flex gap-3">
+                    <div class="mt-1.5 h-1.5 w-1.5 rounded-full bg-rose-500"></div><p
+                      class="text-xs font-bold text-[var(--color-text)]"
+                    >
+                      Memory leak: Neural Edge
+                    </p>
+                  </div>
+                  <div class="flex gap-3">
+                    <div class="mt-1.5 h-1.5 w-1.5 rounded-full bg-rose-500"></div><p
+                      class="text-xs font-bold text-[var(--color-text)]"
+                    >
+                      Pico de latencia API: Core
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="ghost-border rounded-xl bg-[var(--color-surface)] p-6">
+                <h3 class="mb-4 text-[10px] font-black tracking-[0.2em] text-[var(--color-outline-strong)] uppercase">
+                  Decisiones recientes
+                </h3>
+                <div class="space-y-4 border-l-2 border-[var(--color-primary)] pl-3">
+                  <p class="text-[11px] leading-relaxed text-[var(--color-text)]">
+                    Aprobada la transicion de esquema de <span class="font-bold text-[var(--color-primary)]"
+                      >Proyecto Alpha</span
+                    >.
+                  </p>
+                  <p class="text-[11px] leading-relaxed text-[var(--color-text)]">
+                    Se baja prioridad a <span class="font-bold text-[var(--color-primary)]">Hardware Provisioning</span> para
+                    Q4.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="principios"
+      class="border-y border-[color:color-mix(in_srgb,var(--color-outline)_12%,transparent)] bg-[color:color-mix(in_srgb,var(--color-surface-high)_40%,transparent)] py-24"
+    >
+      <div class="mx-auto grid max-w-screen-2xl gap-16 px-6 md:grid-cols-3 md:px-12">
+        <div class="space-y-4 border-l-2 border-[var(--color-primary)] pl-6">
+          <h2 class="font-display text-xl font-bold text-[var(--color-text)]">Proyectos, no caos.</h2>
+          <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">
+            Ve cada proyecto activo, su estado actual y el siguiente punto de atencion en un solo lugar.
+          </p>
+        </div>
+        <div class="space-y-4 border-l-2 border-[var(--color-primary)] pl-6">
+          <h2 class="font-display text-xl font-bold text-[var(--color-text)]">Tareas con definicion.</h2>
+          <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">
+            Mantiene alcance, requisitos, decisiones y siguientes pasos unidos al trabajo.
+          </p>
+        </div>
+        <div class="space-y-4 border-l-2 border-[var(--color-primary)] pl-6">
+          <h2 class="font-display text-xl font-bold text-[var(--color-text)]">Progreso con senal.</h2>
+          <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">
+            Sigue cambios, bloqueos y proximos pasos sin ruido de status.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="especificaciones"
+      class="mx-auto grid max-w-screen-2xl items-center gap-24 px-6 py-32 md:px-12 lg:grid-cols-2"
+    >
+      <div class="space-y-8">
+        <div
+          class="inline-block rounded bg-[color:color-mix(in_srgb,var(--color-tertiary-soft)_86%,transparent)] px-3 py-1 text-[10px] font-black tracking-[0.2em] text-[var(--color-tertiary)] uppercase"
+        >
+          Ejecucion
+        </div>
+        <h2 class="font-display text-5xl leading-tight font-extrabold tracking-tight text-[var(--color-text)]">
+          Detalle de tarea: el centro de gravedad.
+        </h2>
+        <p class="text-lg leading-relaxed text-[var(--color-text-muted)]">
+          La mayoria de herramientas entierran el contexto tecnico en comentarios. Themis trata documentacion, specs y
+          estado como ciudadanos de primera clase en una vista enfocada.
+        </p>
+        <div class="space-y-4">
+          <div
+            class="flex items-center gap-4 rounded-xl border-l-4 border-l-[var(--color-primary)] bg-[var(--color-surface-low)] p-4"
           >
-          <a
-            class="rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-100 no-underline"
-            href="/">View in English</a
+            <span class="text-sm font-bold text-[var(--color-text)]">Definicion de alcance y requisitos</span>
+          </div>
+          <div
+            class="flex items-center gap-4 rounded-xl border-l-4 border-l-[var(--color-primary)] bg-[var(--color-surface-low)] p-4"
           >
+            <span class="text-sm font-bold text-[var(--color-text)]">Seguimiento directo de estado y decisiones</span>
+          </div>
         </div>
       </div>
 
-      <div class="rounded-[32px] border border-slate-800 bg-slate-950/70 p-6 shadow-2xl shadow-black/20">
-        <p class="font-mono text-xs tracking-[0.24em] text-slate-400 uppercase">Arquitectura</p>
-        <ul class="mt-6 space-y-4 text-sm text-slate-200">
-          <li><strong>Site</strong>: superficie publica con Astro</li>
-          <li><strong>App</strong>: base de UI con Angular</li>
-          <li><strong>API</strong>: superficie backend con Express</li>
-          <li><strong>Server</strong>: runtime de composicion con Node</li>
-        </ul>
+      <div class="relative">
+        <div
+          class="ghost-border relative z-10 mx-auto max-w-lg rounded-xl bg-[var(--color-surface-high)] p-8 shadow-2xl"
+        >
+          <div
+            class="mb-8 flex items-center justify-between border-b border-[color:color-mix(in_srgb,var(--color-outline)_14%,transparent)] pb-4"
+          >
+            <span class="font-mono text-[10px] font-bold tracking-[0.18em] text-[var(--color-outline-strong)] uppercase"
+              >TASK-442 / OPS</span
+            >
+            <div class="flex items-center gap-2">
+              <div class="h-2 w-2 rounded-full bg-[var(--color-tertiary)]"></div><span
+                class="text-[10px] font-black tracking-[0.14em] text-[var(--color-text)] uppercase">En progreso</span>
+            </div>
+          </div>
+          <h3 class="font-display mb-4 text-2xl font-bold text-[var(--color-text)]">
+            Implementacion de rate limiter API
+          </h3>
+          <p class="mb-8 text-sm leading-relaxed text-[var(--color-text-muted)]">
+            Implementar algoritmo token bucket en el edge gateway para prevenir saturacion upstream durante trafico
+            pico.
+          </p>
+          <div class="space-y-3">
+            <div
+              class="flex items-center justify-between rounded border border-[color:color-mix(in_srgb,var(--color-outline)_14%,transparent)] bg-[var(--color-surface)] p-4"
+            >
+              <span class="text-xs font-bold tracking-[0.14em] text-[var(--color-text)] uppercase"
+                >Especificacion tecnica</span
+              ><span class="text-[10px] font-bold text-[var(--color-outline-strong)]">v2.1 Final</span>
+            </div>
+            <div
+              class="flex items-center justify-between rounded border border-[color:color-mix(in_srgb,var(--color-outline)_14%,transparent)] bg-[var(--color-surface)] p-4"
+            >
+              <span class="text-xs font-bold tracking-[0.14em] text-[var(--color-text)] uppercase"
+                >Revision de seguridad</span
+              ><span class="text-[10px] font-bold text-[var(--color-tertiary)] uppercase">Aprobada</span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="absolute -top-6 -right-6 -z-10 h-full w-full rounded-xl bg-[var(--color-surface-highest)] opacity-40"
+        >
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="archivo"
+      class="border-t border-[color:color-mix(in_srgb,var(--color-outline)_12%,transparent)] px-6 py-32 md:px-12"
+    >
+      <div class="mx-auto max-w-screen-2xl">
+        <div class="flex flex-col gap-16 md:flex-row">
+          <div class="md:w-1/3">
+            <h2 class="font-display text-3xl leading-tight font-extrabold text-[var(--color-text)]">
+              Disenado para equipos que entregan.
+            </h2>
+          </div>
+          <div class="grid w-full gap-8 md:grid-cols-2">
+            <article class="ghost-border rounded-xl bg-[var(--color-surface-low)] p-8">
+              <h3 class="font-display mb-3 text-lg font-bold text-[var(--color-text)]">Enfoque en estado</h3><p
+                class="text-sm leading-relaxed text-[var(--color-text-muted)]"
+              >
+                Las herramientas genericas priorizan charla social. Aqui importa el estado tecnico y la velocidad de
+                ejecucion.
+              </p>
+            </article>
+            <article class="ghost-border rounded-xl bg-[var(--color-surface-low)] p-8">
+              <h3 class="font-display mb-3 text-lg font-bold text-[var(--color-text)]">Ledger relacional</h3><p
+                class="text-sm leading-relaxed text-[var(--color-text-muted)]"
+              >
+                El modelo esta pensado para integridad y rendimiento en arboles complejos de dependencias y workstreams.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="border-t border-[color:color-mix(in_srgb,var(--color-outline)_12%,transparent)] bg-[color:color-mix(in_srgb,var(--color-surface)_92%,transparent)] px-6 py-28 text-center md:px-12"
+    >
+      <div class="mx-auto max-w-3xl space-y-8">
+        <h2 class="font-display text-5xl font-extrabold tracking-tight text-[var(--color-text)]">
+          Listo para claridad estructural?
+        </h2>
+        <p class="text-xl text-[var(--color-text-muted)]">
+          Pensado para leads tecnicos que priorizan ejecucion sobre ruido.
+        </p>
+        <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <a
+            href="/docs/"
+            class="rounded-xl bg-[var(--color-primary)] px-12 py-4 text-lg font-bold text-white no-underline transition-opacity hover:opacity-90"
+            >Comenzar</a
+          >
+          <a
+            href="/"
+            class="rounded-xl border border-[color:color-mix(in_srgb,var(--color-outline)_35%,transparent)] px-12 py-4 text-lg font-bold text-[var(--color-text)] no-underline transition-colors hover:bg-[var(--color-surface-high)]"
+            >View in English</a
+          >
+        </div>
       </div>
     </section>
   </main>
+
+  <footer
+    class="border-t border-[color:color-mix(in_srgb,var(--color-outline)_12%,transparent)] bg-[color:color-mix(in_srgb,var(--color-surface-low)_90%,transparent)] px-6 py-10 md:px-12"
+  >
+    <div class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-6 md:flex-row">
+      <div class="text-[10px] font-semibold tracking-[0.22em] text-[var(--color-text-muted)] uppercase">
+        © 2026 Themis technical ledger. All rights reserved.
+      </div>
+      <div class="flex gap-8">
+        <a
+          class="text-[10px] font-semibold tracking-[0.22em] text-[var(--color-outline-strong)] uppercase no-underline transition-colors hover:text-[var(--color-primary)]"
+          href="/docs/">Documentation</a
+        >
+        <a
+          class="text-[10px] font-semibold tracking-[0.22em] text-[var(--color-outline-strong)] uppercase no-underline transition-colors hover:text-[var(--color-primary)]"
+          href="#infraestructura">System Status</a
+        >
+        <a
+          class="text-[10px] font-semibold tracking-[0.22em] text-[var(--color-outline-strong)] uppercase no-underline transition-colors hover:text-[var(--color-primary)]"
+          href="#especificaciones">Privacy</a
+        >
+        <a
+          class="text-[10px] font-semibold tracking-[0.22em] text-[var(--color-outline-strong)] uppercase no-underline transition-colors hover:text-[var(--color-primary)]"
+          href="#archivo">Terms</a
+        >
+      </div>
+    </div>
+  </footer>
 </BaseLayout>

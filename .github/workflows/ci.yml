@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  NX_DAEMON: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Check formatting
+        run: pnpm exec prettier --check .
+
+      - name: Lint workspace
+        run: pnpm nx run-many -t lint --projects site,app,api,server,site-e2e,app-e2e,api-e2e,server-e2e
+
+      - name: Typecheck site
+        run: pnpm nx run site:typecheck
+
+      - name: Run tests
+        run: pnpm nx run site:test && pnpm nx run app:vite:test && pnpm nx run api-e2e:e2e && pnpm nx run server-e2e:e2e && pnpm nx run site-e2e:e2e && pnpm nx run app-e2e:e2e
+
+      - name: Build composed runtime
+        run: pnpm nx run server:build

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky || true",
+    "prepare": "command -v husky >/dev/null 2>&1 && husky || true",
     "run-many": "nx run-many",
     "nx": "nx",
     "commitlint": "commitlint",
@@ -29,6 +29,7 @@
     "@astrojs/node": "^10.0.4",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
     "axios": "^1.14.0",
     "express": "^5.2.1",
     "primeicons": "^7.0.0",

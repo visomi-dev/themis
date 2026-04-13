@@ -75,6 +75,34 @@ pnpm nx run api:serve
 pnpm nx run server:serve
 ```
 
+## Docker
+
+Build the production image:
+
+```bash
+docker build -t themis .
+```
+
+Run the composed server container:
+
+```bash
+docker run --rm -p 8080:8080 themis
+```
+
+The container starts `dist/apps/web/server/main.js`, which mounts the built Astro site and the API behind the single Node runtime.
+
+Health endpoint:
+
+```bash
+curl http://localhost:8080/healthz
+```
+
+Expected response:
+
+```json
+{ "status": "ok" }
+```
+
 ## Verification
 
 ```bash

@@ -1,0 +1,25 @@
+<label
+  for="theme-switch-input"
+  tabindex="0"
+  class="theme-switch-label relative flex h-11 w-11 cursor-pointer items-center justify-center overflow-hidden rounded-xl transition-colors outline-none"
+>
+  <input id="theme-switch-input" type="checkbox" class="theme-switch-input sr-only" />
+  <span class="sr-only">Toggle theme</span>
+
+  <svg class="theme-icon-light absolute hidden h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M12 3V5.25M18.364 5.636L16.773 7.227M21 12H18.75M18.364 18.364L16.773 16.773M12 18.75V21M7.227 16.773L5.636 18.364M5.25 12H3M7.227 7.227L5.636 5.636M15.75 12A3.75 3.75 0 1 1 8.25 12A3.75 3.75 0 0 1 15.75 12Z"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.5"></path>
+  </svg>
+
+  <svg class="theme-icon-dark absolute hidden h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path
+      d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75C12.615 15.75 8.25 11.385 8.25 6C8.25 4.67 8.516 3.403 8.998 2.248A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21A9.753 9.753 0 0 0 21.752 15.002Z"
+    ></path>
+  </svg>
+</label>
+
+<script src="../scripts/theme-switcher.ts"></script>
