@@ -1,0 +1,402 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Themis | The Technical Manuscript</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'tertiary-fixed-dim': '#71e4b1',
+              'secondary-fixed-dim': '#c7d5ed',
+              'on-tertiary-fixed-variant': '#006545',
+              secondary: '#526074',
+              'on-secondary-fixed-variant': '#4e5c71',
+              'on-secondary': '#f8f8ff',
+              surface: '#f7f9fb',
+              'on-surface-variant': '#566166',
+              'on-primary-container': '#325668',
+              'on-background': '#2a3439',
+              'error-dim': '#4e0309',
+              'surface-dim': '#cfdce3',
+              'surface-container': '#e8eff3',
+              'secondary-dim': '#465468',
+              'on-primary': '#f1f9ff',
+              primary: '#3f6376',
+              outline: '#717c82',
+              'surface-container-lowest': '#ffffff',
+              'surface-container-highest': '#d9e4ea',
+              'secondary-fixed': '#d5e3fc',
+              'surface-container-high': '#e1e9ee',
+              'on-error': '#fff7f6',
+              'surface-container-low': '#f0f4f7',
+              'on-primary-fixed-variant': '#3c6073',
+              'surface-tint': '#3f6376',
+              tertiary: '#006d4b',
+              'on-tertiary-container': '#005a3d',
+              'surface-bright': '#f7f9fb',
+              'inverse-primary': '#c2e8fe',
+              'on-surface': '#2a3439',
+              background: '#f7f9fb',
+              'tertiary-container': '#7ff3be',
+              'primary-dim': '#325769',
+              'on-tertiary-fixed': '#00452e',
+              'tertiary-dim': '#005f41',
+              'primary-container': '#c2e8fe',
+              'on-secondary-container': '#455367',
+              'error-container': '#fe8983',
+              'inverse-surface': '#0b0f10',
+              'on-secondary-fixed': '#324053',
+              'tertiary-fixed': '#7ff3be',
+              'on-tertiary': '#e6ffef',
+              error: '#9f403d',
+              'primary-fixed-dim': '#b4daf0',
+              'outline-variant': '#a9b4b9',
+              'surface-variant': '#d9e4ea',
+              'primary-fixed': '#c2e8fe',
+              'inverse-on-surface': '#9a9d9f',
+              'on-primary-fixed': '#1e4355',
+              'secondary-container': '#d5e3fc',
+              'on-error-container': '#752121',
+            },
+            borderRadius: {
+              DEFAULT: '0.125rem',
+              lg: '0.25rem',
+              xl: '0.5rem',
+              full: '0.75rem',
+            },
+            fontFamily: {
+              headline: ['Manrope'],
+              body: ['Inter'],
+              label: ['Inter'],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      .font-manrope {
+        font-family: 'Manrope', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 300,
+          'GRAD' 0,
+          'opsz' 24;
+        vertical-align: middle;
+      }
+      .ghost-border {
+        border: 1px solid rgba(169, 180, 185, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+    <!-- TopNavBar -->
+    <nav
+      class="sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between bg-[#f7f9fb] px-12 py-6 transition-colors duration-200 ease-in-out dark:bg-slate-900"
+    >
+      <div class="text-xl font-bold tracking-tighter text-[#2a3439] dark:text-white">Themis</div>
+      <div class="hidden items-center gap-8 md:flex">
+        <a
+          class="border-b border-[#3f6376] pb-1 font-['Manrope'] text-sm font-medium tracking-tight text-[#3f6376] transition-colors duration-200 ease-in-out dark:text-white"
+          href="#"
+          >Principles</a
+        >
+        <a
+          class="font-['Manrope'] text-sm font-medium tracking-tight text-[#566166] transition-colors duration-200 ease-in-out hover:text-[#2a3439] dark:text-slate-400"
+          href="#"
+          >Infrastructure</a
+        >
+        <a
+          class="font-['Manrope'] text-sm font-medium tracking-tight text-[#566166] transition-colors duration-200 ease-in-out hover:text-[#2a3439] dark:text-slate-400"
+          href="#"
+          >Specs</a
+        >
+        <a
+          class="font-['Manrope'] text-sm font-medium tracking-tight text-[#566166] transition-colors duration-200 ease-in-out hover:text-[#2a3439] dark:text-slate-400"
+          href="#"
+          >Archive</a
+        >
+      </div>
+      <button
+        class="bg-primary text-on-primary rounded-lg px-6 py-2 text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.99]"
+      >
+        Get Started
+      </button>
+    </nav>
+    <main>
+      <!-- Hero Section -->
+      <section class="mx-auto flex max-w-screen-2xl flex-col items-center px-12 pt-32 pb-24 text-center">
+        <span class="font-label text-outline mb-8 text-xs tracking-[0.2em] uppercase">Engineering Command Center</span>
+        <h1 class="text-on-surface mb-8 max-w-4xl text-6xl leading-[0.95] font-extrabold tracking-tighter md:text-8xl">
+          Clarity for complex execution.
+        </h1>
+        <p class="text-on-surface-variant mb-12 max-w-2xl text-xl leading-relaxed font-light">
+          Themis is a technical ledger designed for leads who manage multiple concurrent workstreams without the noise
+          of generic project management tools.
+        </p>
+        <div class="flex gap-4">
+          <button class="bg-primary text-on-primary rounded-lg px-8 py-3 font-medium">Request Access</button>
+          <button
+            class="border-outline-variant/30 text-on-surface hover:bg-surface-container rounded-lg border px-8 py-3 font-medium transition-colors"
+          >
+            Read Methodology
+          </button>
+        </div>
+      </section>
+      <!-- Main Preview (Projects Overview) -->
+      <section class="mx-auto mb-32 max-w-screen-2xl px-12">
+        <div
+          class="bg-surface-container-lowest ghost-border overflow-hidden rounded-xl p-1 shadow-[0_32px_64px_-12px_rgba(42,52,57,0.04)]"
+        >
+          <div class="bg-surface-container-low rounded-lg p-8">
+            <div class="mb-12 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="bg-tertiary h-3 w-3 rounded-full"></div>
+                <h3 class="font-manrope text-lg font-semibold">Active Infrastructure Ledger</h3>
+              </div>
+              <div class="flex gap-2">
+                <span class="material-symbols-outlined text-on-surface-variant">search</span>
+                <span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+              <!-- Bento-ish Grid Items -->
+              <div class="bg-surface-container-lowest ghost-border col-span-2 rounded-lg p-8">
+                <div class="mb-6 flex items-start justify-between">
+                  <div>
+                    <p class="font-label text-outline mb-1 text-[10px] tracking-widest uppercase">Project Delta</p>
+                    <h4 class="font-manrope text-xl font-bold">Distributed Node Migration</h4>
+                  </div>
+                  <span
+                    class="bg-tertiary-container text-on-tertiary-container rounded px-2 py-0.5 text-[10px] font-bold"
+                    >84% COMPLETE</span
+                  >
+                </div>
+                <div class="space-y-4">
+                  <div class="bg-surface-container h-1.5 w-full overflow-hidden rounded-full">
+                    <div class="bg-primary h-full w-[84%]"></div>
+                  </div>
+                  <div class="text-on-surface-variant flex justify-between text-[11px] font-medium">
+                    <span>24 Tasks Pending</span>
+                    <span>Deployment Window: Oct 12</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-surface-container-lowest ghost-border flex flex-col justify-between rounded-lg p-8">
+                <div>
+                  <p class="font-label text-outline mb-1 text-[10px] tracking-widest uppercase">Resource Allocation</p>
+                  <h4 class="font-manrope text-xl font-bold">Latency Overhead</h4>
+                </div>
+                <div class="font-manrope text-primary text-4xl font-extrabold">12ms</div>
+              </div>
+              <div class="bg-surface-container-lowest ghost-border rounded-lg p-8">
+                <p class="font-label text-outline mb-1 text-[10px] tracking-widest uppercase">Recent Activity</p>
+                <div class="mt-4 space-y-4">
+                  <div class="flex items-center gap-3">
+                    <div class="bg-outline h-1.5 w-1.5 rounded-full"></div>
+                    <p class="text-on-surface-variant text-xs">
+                      Merged PR #1290 into <span class="bg-surface-container px-1 font-mono text-[10px]">main</span>
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <div class="bg-tertiary h-1.5 w-1.5 rounded-full"></div>
+                    <p class="text-on-surface-variant text-xs">Architecture review completed by @jake</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-surface-container-lowest ghost-border col-span-2 rounded-lg p-8">
+                <div class="mb-6 flex items-center justify-between">
+                  <h4 class="font-manrope text-lg font-bold">Stakeholder Velocity</h4>
+                  <span class="text-outline text-xs">Q3 Comparison</span>
+                </div>
+                <div class="flex h-24 items-end gap-2">
+                  <div class="bg-surface-container-high h-[40%] flex-1 rounded-sm"></div>
+                  <div class="bg-surface-container-high h-[65%] flex-1 rounded-sm"></div>
+                  <div class="bg-primary h-[90%] flex-1 rounded-sm"></div>
+                  <div class="bg-surface-container-high h-[55%] flex-1 rounded-sm"></div>
+                  <div class="bg-surface-container-high h-[75%] flex-1 rounded-sm"></div>
+                  <div class="bg-surface-container-high h-[45%] flex-1 rounded-sm"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Value Sections -->
+      <section class="bg-surface-container-low/50 mx-auto max-w-screen-2xl px-12 py-24">
+        <div class="grid grid-cols-1 gap-16 md:grid-cols-3">
+          <div class="space-y-6">
+            <span class="material-symbols-outlined text-primary text-3xl">filter_center_focus</span>
+            <h3 class="font-manrope text-2xl font-bold tracking-tight">Signal over Noise</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Automated filters suppress trivial notifications, surfacing only high-impact decisions and technical
+              blockers that require lead intervention.
+            </p>
+          </div>
+          <div class="space-y-6">
+            <span class="material-symbols-outlined text-primary text-3xl">account_tree</span>
+            <h3 class="font-manrope text-2xl font-bold tracking-tight">Structural Rigor</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Built on a relational ledger architecture. Tasks aren't just rows; they are interconnected nodes with
+              strict dependency tracking.
+            </p>
+          </div>
+          <div class="space-y-6">
+            <span class="material-symbols-outlined text-primary text-3xl">layers</span>
+            <h3 class="font-manrope text-2xl font-bold tracking-tight">Operational Calm</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              A neutral, editorial interface designed to reduce cognitive load during 12-hour high-concurrency
+              development cycles.
+            </p>
+          </div>
+        </div>
+      </section>
+      <!-- Second Preview (Task Detail) -->
+      <section class="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-24 px-12 py-32 lg:grid-cols-2">
+        <div>
+          <h2 class="font-manrope mb-6 text-4xl leading-tight font-bold tracking-tight">
+            Task Detail as the<br />Center of Gravity
+          </h2>
+          <p class="text-on-surface-variant mb-8 text-lg leading-relaxed">
+            Most tools bury technical context in comments. Themis treats documentation, spec links, and status markers
+            as first-class citizens in a focused, distraction-free view.
+          </p>
+          <ul class="space-y-4">
+            <li class="flex items-center gap-3 text-sm font-medium">
+              <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+              Inline Technical Specification Rendering
+            </li>
+            <li class="flex items-center gap-3 text-sm font-medium">
+              <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+              Direct Link to Version Control PRs
+            </li>
+            <li class="flex items-center gap-3 text-sm font-medium">
+              <span class="material-symbols-outlined text-tertiary text-lg">check_circle</span>
+              Automated Completeness Checklists
+            </li>
+          </ul>
+        </div>
+        <div class="relative">
+          <div class="bg-surface-container-lowest ghost-border relative z-10 mx-auto max-w-md rounded-lg p-8 shadow-xl">
+            <div class="border-outline-variant/10 mb-8 flex items-center justify-between border-b pb-4">
+              <span class="text-outline font-mono text-[10px]">TASK-442 / OPS</span>
+              <div class="flex items-center gap-2">
+                <div class="bg-tertiary h-2 w-2 rounded-full"></div>
+                <span class="text-on-surface text-[10px] font-bold">IN PROGRESS</span>
+              </div>
+            </div>
+            <h4 class="font-manrope mb-4 text-xl font-bold">API Rate Limiter Implementation</h4>
+            <p class="text-on-surface-variant mb-6 text-xs leading-relaxed">
+              Implement token bucket algorithm for the edge gateway to prevent upstream saturation during peak traffic.
+            </p>
+            <div class="space-y-3">
+              <div class="bg-surface-container-low flex items-center justify-between rounded p-3">
+                <span class="text-xs font-medium">Technical Spec</span>
+                <span class="material-symbols-outlined text-primary text-sm">link</span>
+              </div>
+              <div class="bg-surface-container-low flex items-center justify-between rounded p-3">
+                <span class="text-xs font-medium">Security Review</span>
+                <span class="material-symbols-outlined text-tertiary text-sm">verified</span>
+              </div>
+            </div>
+          </div>
+          <!-- Decorative background card for depth -->
+          <div class="bg-surface-container absolute top-8 left-12 -z-10 h-full w-full rounded-lg opacity-50"></div>
+        </div>
+      </section>
+      <!-- System Difference Section -->
+      <section class="border-outline-variant/10 mx-auto max-w-screen-2xl border-t px-12 py-32">
+        <div class="flex flex-col items-start gap-16 md:flex-row">
+          <div class="w-full md:w-1/3">
+            <h2 class="font-manrope text-3xl leading-tight font-bold tracking-tight">Why the System is Different</h2>
+          </div>
+          <div class="grid w-full grid-cols-1 gap-12 md:grid-cols-2">
+            <div class="bg-surface-container-low rounded-lg p-8">
+              <h4 class="font-manrope mb-3 text-lg font-bold">Not a "Social" Tool</h4>
+              <p class="text-on-surface-variant text-sm leading-relaxed">
+                Generic tools prioritize "likes" and chatter. We prioritize technical state and execution velocity. No
+                fluff, no distractions.
+              </p>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-8">
+              <h4 class="font-manrope mb-3 text-lg font-bold">Designed for Concurrency</h4>
+              <p class="text-on-surface-variant text-sm leading-relaxed">
+                While other tools break at 50+ tasks, our ledger architecture maintains performance and clarity at
+                enterprise scale.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- CTA Section -->
+      <section class="bg-primary-container px-12 py-32 text-center">
+        <div class="mx-auto max-w-2xl">
+          <h2 class="font-manrope text-on-primary-fixed mb-8 text-4xl font-bold">Ready for structural clarity?</h2>
+          <button
+            class="bg-primary text-on-primary rounded-lg px-12 py-4 text-lg font-bold transition-all hover:opacity-90"
+          >
+            Request Access
+          </button>
+          <p class="text-on-primary-fixed-variant mt-8 text-sm font-medium">Current Waitlist: 12 Business Days</p>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer
+      class="flex w-full flex-col items-center justify-between gap-6 border-t border-[#a9b4b9]/10 bg-[#f7f9fb] px-12 py-10 md:flex-row dark:bg-slate-950"
+    >
+      <div
+        class="font-['Inter'] text-[10px] font-semibold tracking-widest text-[#566166] uppercase dark:text-slate-500"
+      >
+        © 2024 THEMIS TECHNICAL LEDGER. ALL RIGHTS RESERVED.
+      </div>
+      <div class="flex gap-8">
+        <a
+          class="font-['Inter'] text-[10px] font-semibold tracking-widest text-[#717c82] uppercase transition-colors hover:text-[#3f6376] focus:outline-none dark:text-slate-500"
+          href="#"
+          >Documentation</a
+        >
+        <a
+          class="font-['Inter'] text-[10px] font-semibold tracking-widest text-[#717c82] uppercase transition-colors hover:text-[#3f6376] focus:outline-none dark:text-slate-500"
+          href="#"
+          >System Status</a
+        >
+        <a
+          class="font-['Inter'] text-[10px] font-semibold tracking-widest text-[#717c82] uppercase transition-colors hover:text-[#3f6376] focus:outline-none dark:text-slate-500"
+          href="#"
+          >Privacy</a
+        >
+        <a
+          class="font-['Inter'] text-[10px] font-semibold tracking-widest text-[#717c82] uppercase transition-colors hover:text-[#3f6376] focus:outline-none dark:text-slate-500"
+          href="#"
+          >Terms</a
+        >
+      </div>
+    </footer>
+  </body>
+</html>

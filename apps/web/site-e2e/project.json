@@ -1,0 +1,15 @@
+{
+  "name": "site-e2e",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/web/site-e2e/src",
+  "implicitDependencies": ["site"],
+  "targets": {
+    "e2e": {
+      "dependsOn": ["site:build"]
+    },
+    "e2e-ci": {
+      "dependsOn": ["site:build"]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+---
+import { getSiteContent } from '../../content/site-content';
+import BaseLayout from '../../layouts/base-layout.astro';
+
+const copy = getSiteContent('es');
+---
+
+<BaseLayout lang="es" title="Themis" description={copy.description}>
+  <main
+    class="mx-auto flex min-h-screen w-[min(1120px,calc(100%-32px))] flex-col justify-center gap-10 py-20 sm:w-[min(1120px,calc(100%-64px))]"
+  >
+    <section class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+      <div class="space-y-6">
+        <p class="text-sm tracking-[0.25em] text-sky-300 uppercase">{copy.eyebrow}</p>
+        <h1 class="max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-white sm:text-6xl">{copy.title}</h1>
+        <p class="max-w-2xl text-lg leading-8 text-slate-300">{copy.description}</p>
+        <div class="flex flex-wrap gap-4">
+          <a class="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 no-underline" href="/docs/"
+            >{copy.cta}</a
+          >
+          <a
+            class="rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-100 no-underline"
+            href="/">View in English</a
+          >
+        </div>
+      </div>
+
+      <div class="rounded-[32px] border border-slate-800 bg-slate-950/70 p-6 shadow-2xl shadow-black/20">
+        <p class="font-mono text-xs tracking-[0.24em] text-slate-400 uppercase">Arquitectura</p>
+        <ul class="mt-6 space-y-4 text-sm text-slate-200">
+          <li><strong>Site</strong>: superficie publica con Astro</li>
+          <li><strong>App</strong>: base de UI con Angular</li>
+          <li><strong>API</strong>: superficie backend con Express</li>
+          <li><strong>Server</strong>: runtime de composicion con Node</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

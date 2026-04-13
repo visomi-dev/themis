@@ -1,0 +1,5 @@
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+  pnpm nx affected -t lint
+else
+  NX_DAEMON=false pnpm nx run-many -t lint --projects site,app,api,server,site-e2e,app-e2e,api-e2e,server-e2e
+fi

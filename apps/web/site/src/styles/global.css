@@ -1,0 +1,28 @@
+@import '@fontsource/jetbrains-mono';
+@import '@fontsource/inter';
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css' layer(utilities);
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-family: 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: #020617;
+  color: #e2e8f0;
+  font-family: var(--font-family);
+}
+
+a,
+button:not(:disabled) {
+  cursor: pointer;
+}
