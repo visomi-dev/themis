@@ -51,3 +51,7 @@ debug/
 .tools/
 apps/web/api-e2e/.api-e2e-server.pid
 apps/web/server-e2e/.server-e2e-server.pid
+
+.nx/polygraph
+.claude/worktrees
+.claude/settings.local.json
