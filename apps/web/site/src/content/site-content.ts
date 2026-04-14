@@ -5,25 +5,30 @@ type SiteCopy = {
   description: string;
   eyebrow: string;
   hero: string;
+  methodologyCta: string;
   title: string;
 };
 
 const siteContent: Record<Locale, SiteCopy> = {
   en: {
-    eyebrow: 'Developer-native task system',
-    title: 'Themis keeps task definition, execution, and context in one calm workspace.',
+    eyebrow: 'Integrated AI execution system',
+    title: 'Themis gives developers and AI agents the same operational surface.',
     description:
-      'A monolith-ready product architecture for structured work, agent-readable context, and low-friction execution updates.',
-    hero: 'Designed for engineering teams that want rigor without PM overhead.',
-    cta: 'Open the implementation docs',
+      'A developer-native task system that keeps structured context, agent communication, and execution visibility in one calm workspace.',
+    hero:
+      'Designed for teams that want code agents to work with clear structure, shared context, and visual accountability instead of opaque automation.',
+    methodologyCta: 'Read the workflow model',
+    cta: 'Open /app',
   },
   es: {
-    eyebrow: 'Sistema de tareas para developers',
-    title: 'Themis mantiene definicion, ejecucion y contexto en un espacio de trabajo sereno.',
+    eyebrow: 'Sistema de ejecución con IA integrada',
+    title: 'Themis reúne a developers y agentes de IA en la misma superficie operativa.',
     description:
-      'Una arquitectura de producto preparada para monolito, con contexto legible por agentes y actualizaciones de ejecucion de baja friccion.',
-    hero: 'Pensado para equipos de ingenieria que quieren rigor sin sobrecarga de gestion.',
-    cta: 'Abrir la documentacion de implementacion',
+      'Un sistema de trabajo para developers que reúne contexto estructurado, comunicación con agentes y visibilidad de ejecución en una sola superficie clara.',
+    hero:
+      'Pensado para equipos que quieren que los agentes de código trabajen con estructura clara, contexto compartido y visibilidad real, no con automatización opaca.',
+    methodologyCta: 'Leer el modelo operativo',
+    cta: 'Abrir /app',
   },
 };
 

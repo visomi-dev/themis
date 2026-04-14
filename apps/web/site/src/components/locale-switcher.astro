@@ -1,0 +1,15 @@
+---
+import type { Locale } from '../content/site-content';
+
+type Props = {
+  locale: Locale;
+};
+
+const { locale } = Astro.props;
+---
+
+<div class="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-switch-muted)] font-['Inter'] dark:font-headline">
+  <a href="/" class:list={['locale-link', locale === 'en' && 'locale-link-active']}>EN</a>
+  <span class="opacity-30">/</span>
+  <a href="/es/" class:list={['locale-link', locale === 'es' && 'locale-link-active']}>ES</a>
+</div>

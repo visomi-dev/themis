@@ -4,9 +4,15 @@ const initThemeSwitcher = () => {
   const savedTheme = localStorage.getItem('theme');
   const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 
-  let isDark = savedTheme === 'dark' || (!savedTheme && systemDark);
+  let isDark = false;
 
-  html.classList.toggle('dark', isDark);
+  if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+    html.classList.add('dark');
+    isDark = true;
+  } else {
+    html.classList.remove('dark');
+    isDark = false;
+  }
 
   labels.forEach((label) => {
     const input = label.querySelector<HTMLInputElement>('.theme-switch-input');
@@ -17,21 +23,17 @@ const initThemeSwitcher = () => {
       return;
     }
 
-    const syncIcons = () => {
-      input.checked = isDark;
+    if (isDark) {
+      input.checked = true;
+      iconDark.classList.remove('hidden', 'upward-enter', 'upward-leave');
+      iconLight.classList.add('hidden');
+    } else {
+      input.checked = false;
+      iconLight.classList.remove('hidden', 'upward-enter', 'upward-leave');
+      iconDark.classList.add('hidden');
+    }
 
-      if (isDark) {
-        iconDark.classList.remove('hidden', 'upward-enter', 'upward-leave');
-        iconLight.classList.add('hidden');
-      } else {
-        iconLight.classList.remove('hidden', 'upward-enter', 'upward-leave');
-        iconDark.classList.add('hidden');
-      }
-    };
-
-    syncIcons();
-
-    const toggleTheme = (event?: Event) => {
+    function toggleTheme(event?: Event) {
       if (event?.type === 'click') {
         event.preventDefault();
       }
@@ -59,7 +61,7 @@ const initThemeSwitcher = () => {
             currentLightIcon.classList.add('hidden');
             currentDarkIcon.classList.remove('hidden', 'upward-leave');
             currentDarkIcon.classList.add('upward-enter');
-          }, 250);
+          }, 350);
           return;
         }
 
@@ -70,9 +72,9 @@ const initThemeSwitcher = () => {
           currentDarkIcon.classList.add('hidden');
           currentLightIcon.classList.remove('hidden', 'upward-leave');
           currentLightIcon.classList.add('upward-enter');
-        }, 250);
+        }, 350);
       });
-    };
+    }
 
     label.addEventListener('click', toggleTheme);
     label.addEventListener('keyup', (event) => {

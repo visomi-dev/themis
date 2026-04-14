@@ -1,0 +1,459 @@
+---
+import type { Locale } from '../content/site-content';
+import LocaleSwitcher from './locale-switcher.astro';
+import ThemeSwitcher from './theme-switcher.astro';
+
+type Props = {
+  locale: Locale;
+};
+
+const { locale } = Astro.props;
+
+const content =
+  locale === 'en'
+    ? {
+        title: 'Themis | AI-Integrated Technical Ledger',
+        heroTitle: 'Clarity for complex execution, powered by AI context.',
+        heroBody:
+          'Themis is a technical ledger designed for teams where AI agents and human developers co-author the roadmap. Bridge the gap between code generation and architectural intent.',
+        headerCta: 'Get Started',
+        heroPrimary: 'Request Access',
+        heroSecondary: 'Read Methodology',
+        overviewLabel: 'Unified briefing for Human & AI Agent workstreams',
+        projectAlphaBody: 'System-wide migration. Agent 0x42 is currently mapping dependencies.',
+        projectAlphaAgent: 'Agent 0x42',
+        infrastructureBody: 'Provisioning new GPU clusters in the Western Node.',
+        infrastructureStatus: 'Stale',
+        infrastructureNote: 'Awaiting agent validation of hardware allocation',
+        insightsTitle: 'Agent Insights',
+        insightsItems: ['Logic Loop Detected: Neural Edge', 'Auto-refactoring: API Rate Limiter'],
+        decisionsTitle: 'Recent Decisions',
+        decisions: ['Agent suggested Project Alpha schema transition.', 'Lead approved Agent 0x88 refactor plan.'],
+        valueTitles: ['Shared Context.', 'AI-Assisted Scoping.', 'Visual Agent Reports.'],
+        valueBodies: [
+          'One source of truth for humans and AI agents. No more context switching or "re-explaining" the goal to your LLM.',
+          'Agents generate technical visuals, dependency maps, and spec drafts directly within the task ledger.',
+          'See visual progress reports from code agents. High-signal updates that show exactly what changed in the codebase.',
+        ],
+        contextWindow: 'AI Context Window',
+        detailTitle: 'Agent Insights: Pushed to the plan.',
+        detailBody:
+          "Most tools bury technical context. Themis allows code agents to push architecture diagrams, security benchmarks, and implementation visuals directly into the developer's workspace.",
+        detailFeatures: ['Agent-Generated Architectural Visuals', 'Direct Agent Feedback and Decision Logs'],
+        taskTitle: 'API Rate Limiter Implementation',
+        taskBody:
+          'Implement token bucket algorithm. Agent 0x9 has drafted the spec and identified a race condition in the edge gateway.',
+        taskAgent: 'Agent 0x9',
+        taskPrimary: 'Agent Flow Diagram',
+        taskPrimaryAction: 'VIEW VISUAL',
+        taskSecondary: 'AI Security Audit',
+        taskSecondaryAction: 'Passed',
+        systemTitle: 'Engineered for teams that leverage AI.',
+        systemCards: [
+          {
+            title: 'Agent-Readable State',
+            body: 'We use a highly structured relational ledger that allows AI agents to understand project context as clearly as a developer does. No more "forgetful" assistants.',
+          },
+          {
+            title: 'Sync with Execution',
+            body: 'When your agent updates code, Themis updates the plan. Maintain structural integrity across complex dependency trees with automated status syncing.',
+          },
+        ],
+        closingTitle: 'Ready for structural clarity?',
+        closingBody: 'Join technical leads who prioritize AI-integrated execution over noise.',
+        closingPrimary: 'Get Started',
+        closingSecondary: 'Request Access',
+        footerLinks: ['Documentation', 'System Status', 'Privacy', 'Terms'],
+      }
+    : {
+        title: 'Themis | Ledger técnico con IA integrada',
+        heroTitle: 'Claridad para ejecutar sistemas complejos, con contexto compartido para IA.',
+        heroBody:
+          'Themis es un ledger técnico para equipos donde agentes de IA y developers trabajan sobre el mismo contexto operativo. Reduce la distancia entre la generación de código y la intención arquitectónica.',
+        headerCta: 'Empezar',
+        heroPrimary: 'Solicitar acceso',
+        heroSecondary: 'Ver metodología',
+        overviewLabel: 'Lectura unificada para flujos de trabajo humanos y agentes de IA',
+        projectAlphaBody: 'Migración completa del sistema. El agente 0x42 está mapeando dependencias.',
+        projectAlphaAgent: 'agente 0x42',
+        infrastructureBody: 'Provisionando nuevos clusters GPU en el nodo occidental.',
+        infrastructureStatus: 'Estancado',
+        infrastructureNote: 'Pendiente de validación del agente sobre la asignación de hardware',
+        insightsTitle: 'Señales de agentes',
+        insightsItems: ['Bucle lógico detectado: Neural Edge', 'Refactor automático: API Rate Limiter'],
+        decisionsTitle: 'Decisiones recientes',
+        decisions: [
+          'El agente propuso la transición de esquema para Project Alpha.',
+          'La persona responsable aprobó el plan de refactor del agente 0x88.',
+        ],
+        valueTitles: ['Contexto compartido.', 'Alcance asistido por IA.', 'Reportes visuales de agentes.'],
+        valueBodies: [
+          'Una sola fuente de verdad para personas y agentes de IA. Menos cambio de contexto y menos necesidad de volver a explicar el objetivo al modelo.',
+          'Los agentes generan visuales técnicos, mapas de dependencias y borradores de especificación directamente dentro del ledger.',
+          'Consulta reportes visuales de progreso generados por agentes de código. Actualizaciones de alta señal sobre lo que cambió en el repositorio.',
+        ],
+        contextWindow: 'Ventana de contexto IA',
+        detailTitle: 'Señales de agentes, incorporadas al plan.',
+        detailBody:
+          'La mayoría de herramientas esconden el contexto técnico. Themis permite que los agentes publiquen diagramas de arquitectura, validaciones de seguridad y visuales de implementación directamente en el espacio de trabajo.',
+        detailFeatures: [
+          'Visuales de arquitectura generados por agentes',
+          'Feedback directo de agentes y registro de decisiones',
+        ],
+        taskTitle: 'Implementación de API Rate Limiter',
+        taskBody:
+          'Implementar el algoritmo token bucket. El agente 0x9 ya redactó la especificación e identificó una condición de carrera en el gateway perimetral.',
+        taskAgent: 'agente 0x9',
+        taskPrimary: 'Diagrama de flujo del agente',
+        taskPrimaryAction: 'VER VISUAL',
+        taskSecondary: 'Auditoría de seguridad IA',
+        taskSecondaryAction: 'Aprobada',
+        systemTitle: 'Diseñado para equipos que integran IA de forma real.',
+        systemCards: [
+          {
+            title: 'Estado legible por agentes',
+            body: 'Usamos un ledger relacional altamente estructurado para que los agentes de IA entiendan el contexto del proyecto con la misma claridad que una persona del equipo. Menos asistentes olvidadizos, más continuidad operativa.',
+          },
+          {
+            title: 'Sincronizado con la ejecución',
+            body: 'Cuando un agente actualiza código, Themis actualiza el plan. Así mantiene la integridad estructural en árboles de dependencias complejos con sincronización automática del estado.',
+          },
+        ],
+        closingTitle: '¿Listo para trabajar con claridad estructural?',
+        closingBody:
+          'Únete a equipos técnicos que priorizan ejecución integrada con IA por encima del ruido operativo.',
+        closingPrimary: 'Empezar',
+        closingSecondary: 'Solicitar acceso',
+        footerLinks: ['Documentación', 'Estado del sistema', 'Privacidad', 'Términos'],
+      };
+
+const splitHighlightedText = (text: string, highlightedText: string) => {
+  const [before, after = ''] = text.split(highlightedText);
+
+  return { after, before };
+};
+
+const projectAlphaBodyParts = splitHighlightedText(content.projectAlphaBody, content.projectAlphaAgent);
+const taskBodyParts = splitHighlightedText(content.taskBody, content.taskAgent);
+const decisionHighlight = 'Project Alpha';
+const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHighlight);
+---
+
+<main>
+  <nav
+    class="light-nav border-outline-variant/10 bg-surface/80 sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between border-b px-12 py-3 backdrop-blur-md transition-colors duration-200 ease-in-out"
+  >
+    <div class="font-headline dark:text-on-surface text-xl font-bold tracking-tighter text-[#3f6376] dark:uppercase">
+      Themis
+    </div>
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-8">
+        <LocaleSwitcher locale={locale} />
+        <ThemeSwitcher />
+      </div>
+      <a
+        href="/app"
+        class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-6 py-2 text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.99] dark:font-bold dark:active:scale-[0.98]"
+        >{content.headerCta}</a
+      >
+    </div>
+  </nav>
+
+  <section class="min-h-screen-nav mx-auto flex max-w-screen-2xl flex-col items-center justify-center px-12 py-8 text-center">
+    <h1
+      class="font-headline text-on-surface mb-4 max-w-5xl text-6xl leading-[0.95] font-extrabold tracking-tighter md:text-8xl"
+    >
+      {content.heroTitle}
+    </h1>
+    <p class="text-on-surface-variant mb-6 max-w-2xl text-xl leading-relaxed font-light">{content.heroBody}</p>
+    <div class="flex gap-4">
+      <a
+        href="/app"
+        class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-8 py-3 font-bold transition-all hover:opacity-90"
+        >{content.heroPrimary}</a
+      >
+      <a
+        href="#methodology"
+        class="border-outline text-on-surface hover:bg-surface-container rounded-lg border px-8 py-3 font-bold transition-colors"
+        >{content.heroSecondary}</a
+      >
+    </div>
+  </section>
+
+  <section class="mx-auto mb-16 max-w-screen-2xl px-12">
+    <div
+      class="ghost-border border-outline-variant/20 bg-surface-container-lowest overflow-hidden rounded-xl border shadow-2xl dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
+    >
+      <div class="bg-surface-container-low dark:bg-surface-container/50 p-8">
+        <div class="mb-5 flex items-center justify-between">
+          <div>
+            <h3 class="font-headline text-on-surface text-2xl font-extrabold">Projects Overview</h3>
+            <p class="text-on-surface-variant mt-1 text-[10px] font-bold tracking-widest uppercase">
+              {content.overviewLabel}
+            </p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-on-surface-variant">search</span>
+            <div
+              class="border-primary/30 bg-primary/20 light-mode-pill flex items-center gap-2 rounded-full border px-3 py-1"
+            >
+              <span class="material-symbols-outlined text-primary text-sm">smart_toy</span>
+              <span class="text-primary text-[10px] font-bold tracking-tighter uppercase">4 Agents Active</span>
+            </div>
+            <div
+              class="light-avatar border-outline/20 bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded-full border"
+            >
+              <span class="material-symbols-outlined text-on-surface light-avatar-icon text-sm">person</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div class="space-y-4 lg:col-span-2">
+            <div
+              class="light-card border-outline-variant/10 border-primary bg-surface-container-low rounded border border-l-4 p-6 shadow-lg"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div>
+                  <h4 class="font-headline text-on-surface text-lg font-bold">Project Alpha</h4>
+                  <p class="text-on-surface-variant text-sm">
+                    {projectAlphaBodyParts.before}<span class="text-primary font-medium"
+                      >{content.projectAlphaAgent}</span
+                    >{projectAlphaBodyParts.after}
+                  </p>
+                </div>
+                <span
+                  class="light-active-badge text-on-tertiary-container dark:bg-tertiary/20 dark:text-tertiary rounded px-2 py-0.5 text-[10px] font-black uppercase dark:tracking-wider"
+                  >Active</span
+                >
+              </div>
+              <div class="space-y-2">
+                <div
+                  class="bg-surface-container-high dark:bg-surface-container-highest/30 h-1.5 w-full overflow-hidden rounded-full"
+                >
+                  <div class="bg-primary h-full w-[75%]"></div>
+                </div>
+                <div
+                  class="light-distribution text-outline dark:text-on-surface-variant flex justify-between text-[10px] font-bold tracking-wider uppercase"
+                >
+                  <span>Technical Distribution</span>
+                  <span class="light-distribution-count dark:text-on-surface">12 Ready / 4 In Progress</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="light-card border-outline-variant/10 border-outline-variant bg-surface-container-low light-stale-card rounded border border-l-4 p-6 opacity-70 shadow-lg"
+            >
+              <div class="mb-4 flex items-start justify-between">
+                <div>
+                  <h4 class="font-headline text-on-surface text-lg font-bold">Infrastructure Core</h4>
+                  <p class="text-on-surface-variant text-sm">{content.infrastructureBody}</p>
+                </div>
+                <span
+                  class="light-stale-badge bg-surface-container-highest text-on-surface-variant rounded px-2 py-0.5 text-[10px] font-black tracking-wider uppercase"
+                  >{content.infrastructureStatus}</span
+                >
+              </div>
+              <div class="text-on-surface-variant text-[10px] font-bold tracking-wider uppercase italic">
+                {content.infrastructureNote}
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div
+              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-6 shadow-lg"
+            >
+              <h5
+                class="light-side-title text-on-surface-variant mb-4 text-[10px] font-black tracking-[0.2em] uppercase"
+              >
+                {content.insightsTitle}
+              </h5>
+              <div class="space-y-4">
+                <div class="flex gap-3">
+                  <div class="bg-error mt-1.5 h-1.5 w-1.5 rounded-full"></div>
+                  <p class="text-on-surface text-xs font-bold">{content.insightsItems[0]}</p>
+                </div>
+                <div class="flex gap-3">
+                  <div class="bg-primary mt-1.5 h-1.5 w-1.5 rounded-full"></div>
+                  <p class="text-on-surface text-xs font-bold">{content.insightsItems[1]}</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-6 shadow-lg"
+            >
+              <h5
+                class="light-side-title text-on-surface-variant mb-4 text-[10px] font-black tracking-[0.2em] uppercase"
+              >
+                {content.decisionsTitle}
+              </h5>
+              <div class="light-decisions border-primary/40 dark:text-on-surface-variant space-y-4 border-l-2 pl-3">
+                <p class="dark:text-on-surface-variant text-[11px] leading-relaxed">
+                  {firstDecisionParts.before}<span class="text-on-surface font-bold">{decisionHighlight}</span>{
+                    firstDecisionParts.after
+                  }
+                </p>
+                <p class="dark:text-on-surface-variant text-[11px] leading-relaxed">{content.decisions[1]}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    id="methodology"
+    class="light-value-section border-outline-variant/10 bg-surface-container/30 border-y py-12"
+  >
+    <div class="mx-auto max-w-screen-2xl px-12">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          content.valueTitles.map((title, index) => (
+            <div class="light-value-item border-primary/30 space-y-4 border-l pl-6">
+              <h3 class="font-headline text-on-surface text-xl font-bold">{title}</h3>
+              <p class="text-on-surface-variant text-sm leading-relaxed">{content.valueBodies[index]}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-12 px-12 py-16 lg:grid-cols-2">
+    <div class="space-y-4">
+      <div
+        class="light-context-badge dark:bg-primary/20 dark:text-primary inline-block rounded px-3 py-1 text-[10px] font-black tracking-widest uppercase"
+      >
+        {content.contextWindow}
+      </div>
+      <h2 class="font-headline text-on-surface text-5xl leading-tight font-extrabold tracking-tight">
+        {content.detailTitle}
+      </h2>
+      <p class="text-on-surface-variant text-lg leading-relaxed">{content.detailBody}</p>
+      <div class="space-y-2">
+        <div
+          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-4 rounded border border-l-4 p-4"
+        >
+          <span class="material-symbols-outlined text-primary">auto_graph</span>
+          <span class="text-on-surface text-sm font-bold">{content.detailFeatures[0]}</span>
+        </div>
+        <div
+          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-4 rounded border border-l-4 p-4"
+        >
+          <span class="material-symbols-outlined text-primary">terminal</span>
+          <span class="text-on-surface text-sm font-bold">{content.detailFeatures[1]}</span>
+        </div>
+      </div>
+    </div>
+    <div class="relative">
+      <div
+        class="light-task-card border-outline-variant/20 bg-surface-container-low relative z-10 mx-auto max-w-lg rounded-lg border p-8 shadow-[0_48px_96px_-24px_rgba(0,0,0,0.6)]"
+      >
+        <div class="border-outline-variant/20 mb-4 flex items-center justify-between border-b pb-2">
+          <span class="text-on-surface-variant font-mono text-[10px] font-bold tracking-tighter uppercase"
+            >TASK-442 / OPS</span
+          >
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xs">smart_toy</span>
+            <span class="text-on-surface text-[10px] font-black tracking-tighter uppercase">Agent Tracking</span>
+          </div>
+        </div>
+        <h4 class="font-headline text-on-surface mb-2 text-2xl font-bold tracking-tight">{content.taskTitle}</h4>
+        <p class="text-on-surface-variant mb-4 text-sm leading-relaxed">
+          {taskBodyParts.before}<span class="text-primary font-semibold">{content.taskAgent}</span>{taskBodyParts.after}
+        </p>
+        <div class="space-y-3">
+          <div class="border-primary/30 bg-primary/10 flex items-center justify-between rounded border p-4">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-lg">schema</span>
+              <span class="text-on-surface text-xs font-bold tracking-wide uppercase">{content.taskPrimary}</span>
+            </div>
+            <span class="text-primary text-[10px] font-bold">{content.taskPrimaryAction}</span>
+          </div>
+          <div
+            class="light-task-secondary border-outline-variant/10 bg-surface-container flex items-center justify-between rounded border p-4"
+          >
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-tertiary text-lg">verified</span>
+              <span class="text-on-surface text-xs font-bold tracking-wide uppercase">{content.taskSecondary}</span>
+            </div>
+            <span class="text-tertiary text-[10px] font-bold uppercase">{content.taskSecondaryAction}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="light-task-backdrop bg-primary/5 dark:bg-primary/5 absolute -top-6 -right-6 -z-10 h-full w-full rounded-xl blur-2xl"
+      >
+      </div>
+    </div>
+  </section>
+
+  <section class="border-outline-variant/10 mx-auto max-w-screen-2xl border-t px-12 py-16">
+    <div class="flex flex-col items-start gap-8 md:flex-row">
+      <div class="w-full md:w-1/3">
+        <h2 class="font-headline text-on-surface text-3xl leading-tight font-extrabold tracking-tight">
+          {content.systemTitle}
+        </h2>
+      </div>
+      <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+        {
+          content.systemCards.map((card) => (
+            <div class="light-system-card border-outline-variant/20 bg-surface-container-low rounded-lg border p-8 shadow-md">
+              <h4 class="font-headline text-on-surface mb-3 text-lg font-bold">{card.title}</h4>
+              <p class="text-on-surface-variant text-sm leading-relaxed">{card.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="light-closing-section border-outline-variant/10 bg-surface-container-lowest border-t px-12 py-16 text-center"
+  >
+    <div class="mx-auto max-w-3xl space-y-4">
+      <h2 class="font-headline text-on-surface text-5xl font-extrabold tracking-tight">{content.closingTitle}</h2>
+      <p class="text-on-surface-variant text-xl">{content.closingBody}</p>
+      <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a
+          href="/app"
+          class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-12 py-4 text-lg font-bold transition-all hover:opacity-90"
+          >{content.closingPrimary}</a
+        >
+        <a
+          href="/app"
+          class="border-outline text-on-surface hover:bg-surface-container rounded-lg border px-12 py-4 text-lg font-bold transition-all"
+          >{content.closingSecondary}</a
+        >
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="light-footer border-outline-variant/10 bg-surface-container-lowest w-full border-t px-12 py-10">
+  <div class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-3 md:flex-row">
+    <div
+      class="text-on-surface-variant dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase"
+    >
+      © 2024 THEMIS TECHNICAL LEDGER. ALL RIGHTS RESERVED.
+    </div>
+    <div class="flex gap-8">
+      <a
+        class="text-on-surface-variant hover:text-on-surface dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase transition-colors"
+        href="#">{content.footerLinks[0]}</a
+      >
+      <a
+        class="text-on-surface-variant hover:text-on-surface dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase transition-colors"
+        href="#">{content.footerLinks[1]}</a
+      >
+      <a
+        class="text-on-surface-variant hover:text-on-surface dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase transition-colors"
+        href="#">{content.footerLinks[2]}</a
+      >
+      <a
+        class="text-on-surface-variant hover:text-on-surface dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase transition-colors"
+        href="#">{content.footerLinks[3]}</a
+      >
+    </div>
+  </div>
+</footer>
