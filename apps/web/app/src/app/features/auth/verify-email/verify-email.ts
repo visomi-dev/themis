@@ -6,17 +6,16 @@ import { ButtonModule } from 'primeng/button';
 import { InputOtpModule } from 'primeng/inputotp';
 import { MessageModule } from 'primeng/message';
 
-import { AuthStateService } from '../../core/auth/auth-state.service';
-import { ThemeToggleComponent } from '../../shared/theme-toggle.component';
+import { AuthStateService } from '../../../core/auth/auth-state.service';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
 @Component({
-  imports: [ButtonModule, InputOtpModule, MessageModule, ReactiveFormsModule, RouterLink, ThemeToggleComponent],
+  imports: [ButtonModule, InputOtpModule, MessageModule, ReactiveFormsModule, RouterLink, ThemeToggle],
   selector: 'app-verify-email-page',
-  standalone: true,
-  templateUrl: './verify-email-page.component.html',
-  styleUrl: './verify-email-page.component.css',
+  templateUrl: './verify-email.html',
+  styleUrl: './verify-email.css',
 })
-export class VerifyEmailPageComponent {
+export class VerifyEmail {
   protected readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
 

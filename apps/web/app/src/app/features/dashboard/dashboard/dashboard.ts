@@ -2,17 +2,16 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
-import { AuthStateService } from '../../core/auth/auth-state.service';
-import { ThemeToggleComponent } from '../../shared/theme-toggle.component';
+import { AuthStateService } from '../../../core/auth/auth-state.service';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
 @Component({
-  imports: [ButtonModule, ThemeToggleComponent],
+  imports: [ButtonModule, ThemeToggle],
   selector: 'app-dashboard-page',
-  standalone: true,
-  templateUrl: './dashboard-page.component.html',
-  styleUrl: './dashboard-page.component.css',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.css',
 })
-export class DashboardPageComponent {
+export class Dashboard {
   protected readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
 

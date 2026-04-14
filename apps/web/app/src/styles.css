@@ -1,76 +1,74 @@
 @import '@fontsource/inter';
 @import '@fontsource/manrope';
-@import 'primeicons/primeicons.css';
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css' layer(utilities);
 
-:root {
-  --font-body: 'Inter', sans-serif;
-  --font-headline: 'Manrope', sans-serif;
-  --color-background: #faf8ff;
-  --color-surface: #ffffff;
-  --color-surface-low: #f2f3ff;
-  --color-surface-high: #e1e7ff;
-  --color-surface-strong: #d9e2ff;
-  --color-text: #213156;
-  --color-text-muted: #4e5e86;
-  --color-outline: #6a7aa3;
-  --color-outline-strong: #6a7aa3;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-family: 'Inter', sans-serif;
+  --font-family-display: 'Manrope', sans-serif;
+
   --color-primary: #385ca9;
-  --color-primary-strong: #2a509c;
-  --color-primary-soft: #a8c0ff;
-  --color-primary-container: #a8c0ff;
   --color-on-primary: #f9f8ff;
+  --color-primary-container: #a8c0ff;
   --color-on-primary-container: #063884;
-  --color-secondary: #3d6758;
-  --color-secondary-container: #cdfbe8;
-  --color-on-secondary: #e4fff2;
-  --color-on-secondary-container: #386253;
   --color-tertiary: #006d4e;
-  --color-tertiary-container: #8dfece;
   --color-on-tertiary: #e5fff0;
+  --color-tertiary-container: #8dfece;
   --color-on-tertiary-container: #006146;
+  --color-surface: #faf8ff;
+  --color-on-surface: #213156;
   --color-surface-variant: #d9e2ff;
   --color-on-surface-variant: #4e5e86;
+  --color-outline: #6a7aa3;
   --color-outline-variant: #a1b1dd;
+  --color-background: #faf8ff;
+  --color-on-background: #213156;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f3ff;
+  --color-surface-container: #e9edff;
+  --color-surface-container-high: #e1e7ff;
+  --color-surface-container-highest: #d9e2ff;
   --color-error: #ac3434;
   --color-on-error: #fff7f6;
   --color-error-container: #f56965;
   --color-on-error-container: #65000b;
-  --shadow-panel: 0 32px 64px -12px rgb(33 49 86 / 0.08);
+  --color-success: #34d399;
+  --color-switch-muted: #717c82;
+
+  --shadow-panel: 0 32px 64px -12px rgb(42 52 57 / 0.08);
 }
 
 html.dark {
-  --font-body: 'Inter', sans-serif;
-  --font-headline: 'Manrope', sans-serif;
-  --color-background: #070d1f;
-  --color-surface: #0a1839;
-  --color-surface-low: #09122b;
-  --color-surface-high: #0b1d48;
-  --color-surface-strong: #0a2257;
-  --color-text: #dfe4ff;
-  --color-text-muted: #96a9e6;
-  --color-outline: #6073ad;
-  --color-outline-strong: #6073ad;
   --color-primary: #7bd0ff;
-  --color-primary-strong: #47c4ff;
-  --color-primary-soft: #c4e7ff;
-  --color-primary-container: #004c69;
   --color-on-primary: #004560;
+  --color-primary-container: #004c69;
   --color-on-primary-container: #97d8ff;
-  --color-secondary: #909fb4;
-  --color-secondary-container: #2e3c4e;
-  --color-on-secondary: #b1c0d6;
-  --color-on-secondary-container: #d4e4fa;
   --color-tertiary: #c6fff3;
-  --color-tertiary-container: #005e54;
   --color-on-tertiary: #003827;
+  --color-tertiary-container: #005e54;
   --color-on-tertiary-container: #65fde6;
+  --color-surface: #070d1f;
+  --color-on-surface: #dfe4ff;
   --color-surface-variant: #0a2257;
   --color-on-surface-variant: #96a9e6;
+  --color-outline: #6073ad;
   --color-outline-variant: #32457c;
+  --color-background: #070d1f;
+  --color-on-background: #dfe4ff;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #09122b;
+  --color-surface-container: #0a1839;
+  --color-surface-container-high: #0b1d48;
+  --color-surface-container-highest: #0a2257;
   --color-error: #ee7d77;
   --color-on-error: #490106;
   --color-error-container: #7f2927;
   --color-on-error-container: #ff9993;
+  --color-success: #34d399;
+  --color-switch-muted: #96a9e6;
+
   --shadow-panel: 0 32px 64px -12px rgb(0 0 0 / 0.4);
 }
 
@@ -79,21 +77,18 @@ body {
   min-height: 100%;
 }
 
-html {
-  color-scheme: light;
-}
-
-html.dark {
-  color-scheme: dark;
-}
-
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top center, rgb(194 232 254 / 0.5), transparent 28%),
-    linear-gradient(180deg, var(--color-background) 0%, color-mix(in srgb, var(--color-background) 93%, black 7%) 100%);
-  color: var(--color-text);
-  font-family: var(--font-body);
+  background: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+html.dark body {
+  font-family: var(--font-family-display);
 }
 
 button,
@@ -106,43 +101,135 @@ a {
   color: inherit;
 }
 
-.page-shell {
+@utility font-display {
+  font-family: var(--font-family-display);
+}
+
+@utility auth-page-shell {
   min-height: 100dvh;
-  padding: 1.5rem;
+  background: var(--color-background);
 }
 
-.surface-panel {
-  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-outline) 16%, transparent);
+@utility auth-panel {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid rgb(from var(--color-outline-variant) r g b / 0.1);
   box-shadow: var(--shadow-panel);
+
+  @variant dark {
+    background: var(--color-surface-container-low);
+    border-color: rgb(148 163 184 / 0.1);
+  }
 }
 
-.ghost-border-bottom {
-  border-bottom: 1px solid color-mix(in srgb, var(--color-outline) 32%, transparent);
+@utility auth-inline-field {
+  border-bottom: 1px solid rgb(from var(--color-outline) r g b / 0.32);
+
+  &:focus-within {
+    border-bottom-color: var(--color-primary);
+  }
 }
 
-.ghost-border-bottom:focus-within {
-  border-bottom-color: var(--color-primary);
-}
-
-.font-headline {
-  font-family: var(--font-headline);
-}
-
-.theme-toggle {
+@utility auth-theme-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-outline) 28%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-surface-high) 72%, transparent);
-  color: var(--color-text);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(from var(--color-outline) r g b / 0.18);
+  border-radius: 0.375rem;
+  background: var(--color-surface);
+  color: var(--color-switch-muted);
+
+  &:hover {
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-surface-container-low) 86%, transparent);
+  }
 }
 
-.theme-toggle:hover {
-  background: color-mix(in srgb, var(--color-surface-strong) 72%, transparent);
+.p-button {
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+
+.p-button:not(.p-button-text):not(.p-button-secondary) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.p-button:not(.p-button-text):not(.p-button-secondary):enabled:hover {
+  background: color-mix(in srgb, var(--color-primary) 90%, black 10%);
+  border-color: color-mix(in srgb, var(--color-primary) 90%, black 10%);
+}
+
+.p-button.p-button-secondary.p-button-outlined,
+.p-button.p-button-secondary:not(.p-button-text) {
+  background: transparent;
+  border-color: rgb(from var(--color-outline) r g b / 0.28);
+  color: var(--color-on-surface);
+}
+
+.p-button.p-button-text {
+  color: var(--color-primary);
+}
+
+.p-inputtext,
+.p-password-input,
+.p-password,
+.p-inputotp-input {
+  background: transparent;
+  color: var(--color-on-surface);
+}
+
+.p-inputtext,
+.p-password-input {
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding-inline: 0;
+}
+
+.p-password,
+.p-password-input {
+  width: 100%;
+}
+
+.p-password-toggle-mask-icon {
+  color: var(--color-on-surface-variant);
+}
+
+.p-inputotp {
+  gap: 0.75rem;
+}
+
+.p-inputotp-input {
+  width: 3rem;
+  height: 3.5rem;
+  border: 1px solid rgb(from var(--color-outline) r g b / 0.24);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-surface-container-low) 88%, transparent);
+}
+
+.p-inputotp-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgb(from var(--color-primary) r g b / 0.24);
+}
+
+.p-message {
+  border-radius: 0.5rem;
+}
+
+.p-message-error {
+  background: color-mix(in srgb, var(--color-error-container) 24%, transparent);
+  border: 1px solid rgb(from var(--color-error) r g b / 0.22);
+  color: var(--color-on-surface);
+}
+
+.p-message-warn,
+.p-message-success {
+  background: color-mix(in srgb, var(--color-tertiary-container) 18%, transparent);
+  border: 1px solid rgb(from var(--color-tertiary) r g b / 0.18);
+  color: var(--color-on-surface);
 }
 
 .sr-only {

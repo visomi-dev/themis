@@ -1,19 +1,19 @@
 import { Route } from '@angular/router';
 
 import { authGuard, guestGuard } from './core/auth/auth.guards';
-import { DashboardPageComponent } from './features/dashboard/dashboard-page.component';
-import { AuthFormPageComponent } from './features/auth/auth-form-page.component';
-import { VerifyEmailPageComponent } from './features/auth/verify-email-page.component';
+import { AuthForm } from './features/auth/auth-form/auth-form';
+import { VerifyEmail } from './features/auth/verify-email/verify-email';
+import { Dashboard } from './features/dashboard/dashboard/dashboard';
 
 export const appRoutes: Route[] = [
   {
     path: '',
-    component: DashboardPageComponent,
+    component: Dashboard,
     canActivate: [authGuard],
   },
   {
     path: 'sign-in',
-    component: AuthFormPageComponent,
+    component: AuthForm,
     canActivate: [guestGuard],
     data: {
       mode: 'sign_in',
@@ -21,7 +21,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'sign-up',
-    component: AuthFormPageComponent,
+    component: AuthForm,
     canActivate: [guestGuard],
     data: {
       mode: 'sign_up',
@@ -29,7 +29,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'verify-email',
-    component: VerifyEmailPageComponent,
+    component: VerifyEmail,
     canActivate: [guestGuard],
   },
   {

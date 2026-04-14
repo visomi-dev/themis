@@ -7,26 +7,17 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
 
-import { AuthStateService } from '../../core/auth/auth-state.service';
-import type { AuthMode } from '../../core/auth/auth.models';
-import { ThemeToggleComponent } from '../../shared/theme-toggle.component';
+import { AuthStateService } from '../../../core/auth/auth-state.service';
+import type { AuthMode } from '../../../core/auth/auth.models';
+import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
 
 @Component({
-  imports: [
-    ButtonModule,
-    InputTextModule,
-    MessageModule,
-    PasswordModule,
-    ReactiveFormsModule,
-    RouterLink,
-    ThemeToggleComponent,
-  ],
+  imports: [ButtonModule, InputTextModule, MessageModule, PasswordModule, ReactiveFormsModule, RouterLink, ThemeToggle],
   selector: 'app-auth-form-page',
-  standalone: true,
-  templateUrl: './auth-form-page.component.html',
-  styleUrl: './auth-form-page.component.css',
+  templateUrl: './auth-form.html',
+  styleUrl: './auth-form.css',
 })
-export class AuthFormPageComponent {
+export class AuthForm {
   protected readonly authState = inject(AuthStateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
