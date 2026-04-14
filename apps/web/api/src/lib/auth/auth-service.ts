@@ -25,7 +25,11 @@ const createAuthService = (config: AuthConfig) => {
   const db = getDb(config);
 
   const findUserByEmail = async (email: string) => {
-    const [user] = await db.select().from(users).where(eq(users.email, normalizeEmail(email))).limit(1);
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, normalizeEmail(email)))
+      .limit(1);
 
     return user;
   };
@@ -48,7 +52,10 @@ const createAuthService = (config: AuthConfig) => {
     return matches ? user : null;
   };
 
-  const createChallenge = async (user: typeof users.$inferSelect, purpose: VerificationPurpose): Promise<AuthChallengePayload> => {
+  const createChallenge = async (
+    user: typeof users.$inferSelect,
+    purpose: VerificationPurpose,
+  ): Promise<AuthChallengePayload> => {
     const pin = generateVerificationPin();
     const now = new Date();
     const expiresAt = new Date(now.getTime() + config.pinExpiryMinutes * 60 * 1000);

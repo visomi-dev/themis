@@ -20,11 +20,14 @@ type AuthConfig = {
   sessionSecret: string;
 };
 
-const parseBoolean = (value: string | undefined, fallback = false) => value === undefined ? fallback : value === 'true';
+const parseBoolean = (value: string | undefined, fallback = false) =>
+  value === undefined ? fallback : value === 'true';
 
 const getAuthConfig = (): AuthConfig => {
   const inferredTransport = process.env['MAIL_TRANSPORT'] as MailTransport | undefined;
-  const hasMailgunCredentials = Boolean(process.env['MAILGUN_API_KEY'] && process.env['MAILGUN_DOMAIN'] && process.env['MAILGUN_FROM']);
+  const hasMailgunCredentials = Boolean(
+    process.env['MAILGUN_API_KEY'] && process.env['MAILGUN_DOMAIN'] && process.env['MAILGUN_FROM'],
+  );
 
   return {
     appBaseUrl: process.env['APP_BASE_URL'] ?? 'http://localhost:8080/app',

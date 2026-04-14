@@ -45,7 +45,8 @@ export class VerifyEmailPageComponent {
       await this.authState.submitVerification(this.form.controls.pin.getRawValue());
       await this.router.navigate(['/']);
     } catch (error) {
-      this.errorMessage = error instanceof HttpErrorResponse ? error.error?.message ?? 'Verification failed.' : 'Verification failed.';
+      this.errorMessage =
+        error instanceof HttpErrorResponse ? (error.error?.message ?? 'Verification failed.') : 'Verification failed.';
     }
   }
 
@@ -56,7 +57,10 @@ export class VerifyEmailPageComponent {
       await this.authState.resendVerification();
       this.statusMessage = 'A fresh verification code was sent.';
     } catch (error) {
-      this.errorMessage = error instanceof HttpErrorResponse ? error.error?.message ?? 'Could not resend the verification code.' : 'Could not resend the verification code.';
+      this.errorMessage =
+        error instanceof HttpErrorResponse
+          ? (error.error?.message ?? 'Could not resend the verification code.')
+          : 'Could not resend the verification code.';
     }
   }
 }

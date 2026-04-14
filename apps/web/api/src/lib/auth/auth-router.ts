@@ -72,30 +72,34 @@ const buildAuthRouter = (config: AuthConfig) => {
   });
 
   router.post('/sign-in/password', (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('local', { session: false }, async (error: unknown, user?: Express.User, info?: { message?: string }) => {
-      if (error) {
-        next(error);
-        return;
-      }
-
-      if (!user) {
-        next(new AuthError(401, 'invalid_credentials', info?.message ?? 'Incorrect email or password.'));
-        return;
-      }
-
-      try {
-        const fullUser = await service.findUserById(user.id);
-
-        if (!fullUser) {
-          throw new AuthError(404, 'user_not_found', 'The account could not be found.');
+    passport.authenticate(
+      'local',
+      { session: false },
+      async (error: unknown, user?: Express.User, info?: { message?: string }) => {
+        if (error) {
+          next(error);
+          return;
         }
 
-        const challenge = await service.beginSignIn(fullUser);
-        res.send(challenge);
-      } catch (innerError) {
-        next(innerError);
-      }
-    })(req, res, next);
+        if (!user) {
+          next(new AuthError(401, 'invalid_credentials', info?.message ?? 'Incorrect email or password.'));
+          return;
+        }
+
+        try {
+          const fullUser = await service.findUserById(user.id);
+
+          if (!fullUser) {
+            throw new AuthError(404, 'user_not_found', 'The account could not be found.');
+          }
+
+          const challenge = await service.beginSignIn(fullUser);
+          res.send(challenge);
+        } catch (innerError) {
+          next(innerError);
+        }
+      },
+    )(req, res, next);
   });
 
   router.post('/sign-in/verify', async (req, res) => {

@@ -12,7 +12,15 @@ import type { AuthMode } from '../../core/auth/auth.models';
 import { ThemeToggleComponent } from '../../shared/theme-toggle.component';
 
 @Component({
-  imports: [ButtonModule, InputTextModule, MessageModule, PasswordModule, ReactiveFormsModule, RouterLink, ThemeToggleComponent],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    MessageModule,
+    PasswordModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ThemeToggleComponent,
+  ],
   selector: 'app-auth-form-page',
   standalone: true,
   templateUrl: './auth-form-page.component.html',
@@ -75,7 +83,10 @@ export class AuthFormPageComponent {
       await this.authState.submitCredentials(this.mode, this.form.getRawValue());
       await this.router.navigate(['/verify-email']);
     } catch (error) {
-      this.errorMessage = error instanceof HttpErrorResponse ? error.error?.message ?? 'Authentication failed.' : 'Authentication failed.';
+      this.errorMessage =
+        error instanceof HttpErrorResponse
+          ? (error.error?.message ?? 'Authentication failed.')
+          : 'Authentication failed.';
     }
   }
 }

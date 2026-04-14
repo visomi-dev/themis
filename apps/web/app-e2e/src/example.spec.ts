@@ -22,7 +22,9 @@ test('completes sign-up and sign-in through the Angular auth flow', async ({ pag
 
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 
-  const signUpMail = await request.get(`/api/test/mailbox/latest?email=${encodeURIComponent(uniqueEmail)}&purpose=sign_up`);
+  const signUpMail = await request.get(
+    `/api/test/mailbox/latest?email=${encodeURIComponent(uniqueEmail)}&purpose=sign_up`,
+  );
   const signUpPayload = await signUpMail.json();
 
   await fillOtp(page, signUpPayload.pin);
@@ -42,7 +44,9 @@ test('completes sign-up and sign-in through the Angular auth flow', async ({ pag
 
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 
-  const signInMail = await request.get(`/api/test/mailbox/latest?email=${encodeURIComponent(uniqueEmail)}&purpose=sign_in`);
+  const signInMail = await request.get(
+    `/api/test/mailbox/latest?email=${encodeURIComponent(uniqueEmail)}&purpose=sign_in`,
+  );
   const signInPayload = await signInMail.json();
 
   await fillOtp(page, signInPayload.pin);
