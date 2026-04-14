@@ -141,7 +141,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
 
 <main>
   <nav
-    class="light-nav border-outline-variant/10 bg-surface/80 sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between border-b px-4 md:px-12 py-3 backdrop-blur-md transition-colors duration-200 ease-in-out"
+    class="light-nav border-outline-variant/10 bg-surface/80 sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between border-b px-4 py-3 backdrop-blur-md transition-colors duration-200 ease-in-out md:px-12"
   >
     <div class="font-headline dark:text-on-surface text-xl font-bold tracking-tighter text-[#3f6376] dark:uppercase">
       Themis
@@ -159,28 +159,32 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     </div>
   </nav>
 
-  <section class="min-h-screen-nav mx-auto flex max-w-screen-2xl flex-col items-center justify-center px-4 md:px-12 py-6 md:py-8 text-center">
+  <section
+    class="min-h-screen-nav mx-auto flex max-w-screen-2xl flex-col items-center justify-center px-4 py-6 text-center md:px-12 md:py-8"
+  >
     <h1
       class="font-headline text-on-surface mb-4 max-w-5xl text-4xl leading-[0.95] font-extrabold tracking-tighter md:text-6xl lg:text-8xl"
     >
       {content.heroTitle}
     </h1>
-    <p class="text-on-surface-variant mb-6 max-w-2xl text-base leading-relaxed font-light md:text-xl">{content.heroBody}</p>
-    <div class="flex flex-col sm:flex-row gap-3 md:gap-4">
+    <p class="text-on-surface-variant mb-6 max-w-2xl text-base leading-relaxed font-light md:text-xl">
+      {content.heroBody}
+    </p>
+    <div class="flex flex-col gap-3 sm:flex-row md:gap-4">
       <a
         href="/app"
-        class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-6 md:px-8 py-2.5 md:py-3 font-semibold md:font-bold transition-all hover:opacity-90 w-full sm:w-auto text-center"
+        class="bg-primary text-on-primary dark:hover:bg-primary/90 w-full rounded-lg px-6 py-2.5 text-center font-semibold transition-all hover:opacity-90 sm:w-auto md:px-8 md:py-3 md:font-bold"
         >{content.heroPrimary}</a
       >
       <a
         href="#methodology"
-        class="border-outline text-on-surface hover:bg-surface-container rounded-lg border px-6 md:px-8 py-2.5 md:py-3 font-semibold md:font-bold transition-colors w-full sm:w-auto text-center"
+        class="border-outline text-on-surface hover:bg-surface-container w-full rounded-lg border px-6 py-2.5 text-center font-semibold transition-colors sm:w-auto md:px-8 md:py-3 md:font-bold"
         >{content.heroSecondary}</a
       >
     </div>
   </section>
 
-  <section class="mx-auto mb-8 md:mb-16 max-w-screen-2xl px-4 md:px-12">
+  <section class="mx-auto mb-8 max-w-screen-2xl px-4 md:mb-16 md:px-12">
     <div
       class="ghost-border border-outline-variant/20 bg-surface-container-lowest overflow-hidden rounded-xl border shadow-2xl dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
     >
@@ -210,7 +214,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
         <div class="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
           <div class="space-y-4 lg:col-span-2">
             <div
-              class="light-card border-outline-variant/10 border-primary bg-surface-container-low rounded border border-l-4 p-4 md:p-6 shadow-lg"
+              class="light-card border-outline-variant/10 border-primary bg-surface-container-low rounded border border-l-4 p-4 shadow-lg md:p-6"
             >
               <div class="mb-4 flex items-start justify-between">
                 <div>
@@ -241,7 +245,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
               </div>
             </div>
             <div
-              class="light-card border-outline-variant/10 border-outline-variant bg-surface-container-low light-stale-card rounded border border-l-4 p-4 md:p-6 opacity-70 shadow-lg"
+              class="light-card border-outline-variant/10 border-outline-variant bg-surface-container-low light-stale-card rounded border border-l-4 p-4 opacity-70 shadow-lg md:p-6"
             >
               <div class="mb-4 flex items-start justify-between">
                 <div>
@@ -260,7 +264,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
           </div>
           <div class="space-y-3">
             <div
-              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-4 md:p-6 shadow-lg"
+              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-4 shadow-lg md:p-6"
             >
               <h5
                 class="light-side-title text-on-surface-variant mb-4 text-[10px] font-black tracking-[0.2em] uppercase"
@@ -279,7 +283,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
               </div>
             </div>
             <div
-              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-4 md:p-6 shadow-lg"
+              class="light-card border-outline-variant/20 bg-surface-container-low light-info-card rounded border p-4 shadow-lg md:p-6"
             >
               <h5
                 class="light-side-title text-on-surface-variant mb-4 text-[10px] font-black tracking-[0.2em] uppercase"
@@ -306,7 +310,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     class="light-value-section border-outline-variant/10 bg-surface-container/30 border-y py-8 md:py-12"
   >
     <div class="mx-auto max-w-screen-2xl px-4 md:px-12">
-      <div class="grid grid-cols-1 gap-6 md:gap-8 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
         {
           content.valueTitles.map((title, index) => (
             <div class="light-value-item border-primary/30 space-y-4 border-l pl-6">
@@ -319,35 +323,39 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     </div>
   </section>
 
-  <section class="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-8 md:gap-12 px-4 md:px-12 py-10 md:py-16 lg:grid-cols-2">
+  <section
+    class="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-8 px-4 py-10 md:gap-12 md:px-12 md:py-16 lg:grid-cols-2"
+  >
     <div class="space-y-4">
       <div
-        class="light-context-badge dark:bg-primary/20 dark:text-primary inline-block rounded px-2 md:px-3 py-1 text-[10px] font-black tracking-widest uppercase"
+        class="light-context-badge dark:bg-primary/20 dark:text-primary inline-block rounded px-2 py-1 text-[10px] font-black tracking-widest uppercase md:px-3"
       >
         {content.contextWindow}
       </div>
-      <h2 class="font-headline text-on-surface text-3xl md:text-4xl lg:text-5xl leading-tight font-extrabold tracking-tight">
+      <h2
+        class="font-headline text-on-surface text-3xl leading-tight font-extrabold tracking-tight md:text-4xl lg:text-5xl"
+      >
         {content.detailTitle}
       </h2>
-      <p class="text-on-surface-variant text-base md:text-lg leading-relaxed">{content.detailBody}</p>
+      <p class="text-on-surface-variant text-base leading-relaxed md:text-lg">{content.detailBody}</p>
       <div class="space-y-2">
         <div
-          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 md:gap-4 rounded border border-l-4 p-3 md:p-4"
+          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 rounded border border-l-4 p-3 md:gap-4 md:p-4"
         >
           <span class="material-symbols-outlined text-primary">auto_graph</span>
-          <span class="text-on-surface text-xs md:text-sm font-bold">{content.detailFeatures[0]}</span>
+          <span class="text-on-surface text-xs font-bold md:text-sm">{content.detailFeatures[0]}</span>
         </div>
         <div
-          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 md:gap-4 rounded border border-l-4 p-3 md:p-4"
+          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 rounded border border-l-4 p-3 md:gap-4 md:p-4"
         >
           <span class="material-symbols-outlined text-primary">terminal</span>
-          <span class="text-on-surface text-xs md:text-sm font-bold">{content.detailFeatures[1]}</span>
+          <span class="text-on-surface text-xs font-bold md:text-sm">{content.detailFeatures[1]}</span>
         </div>
       </div>
     </div>
     <div class="relative">
       <div
-        class="light-task-card border-outline-variant/20 bg-surface-container-low relative z-10 mx-auto max-w-lg rounded-lg border p-5 md:p-8 shadow-[0_48px_96px_-24px_rgba(0,0,0,0.6)]"
+        class="light-task-card border-outline-variant/20 bg-surface-container-low relative z-10 mx-auto max-w-lg rounded-lg border p-5 shadow-[0_48px_96px_-24px_rgba(0,0,0,0.6)] md:p-8"
       >
         <div class="border-outline-variant/20 mb-4 flex items-center justify-between border-b pb-2">
           <span class="text-on-surface-variant font-mono text-[10px] font-bold tracking-tighter uppercase"
@@ -388,7 +396,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     </div>
   </section>
 
-  <section class="border-outline-variant/10 mx-auto max-w-screen-2xl border-t px-4 md:px-12 py-10 md:py-16">
+  <section class="border-outline-variant/10 mx-auto max-w-screen-2xl border-t px-4 py-10 md:px-12 md:py-16">
     <div class="flex flex-col items-start gap-8 md:flex-row">
       <div class="w-full md:w-1/3">
         <h2 class="font-headline text-on-surface text-3xl leading-tight font-extrabold tracking-tight">
@@ -409,20 +417,22 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
   </section>
 
   <section
-    class="light-closing-section border-outline-variant/10 bg-surface-container-lowest border-t px-4 md:px-12 py-10 md:py-16 text-center"
+    class="light-closing-section border-outline-variant/10 bg-surface-container-lowest border-t px-4 py-10 text-center md:px-12 md:py-16"
   >
     <div class="mx-auto max-w-3xl space-y-4">
-      <h2 class="font-headline text-on-surface text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">{content.closingTitle}</h2>
+      <h2 class="font-headline text-on-surface text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl">
+        {content.closingTitle}
+      </h2>
       <p class="text-on-surface-variant text-base md:text-xl">{content.closingBody}</p>
-      <div class="flex flex-col items-center justify-center gap-3 md:gap-4 sm:flex-row">
+      <div class="flex flex-col items-center justify-center gap-3 sm:flex-row md:gap-4">
         <a
           href="/app"
-          class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold transition-all hover:opacity-90 w-full sm:w-auto"
+          class="bg-primary text-on-primary dark:hover:bg-primary/90 w-full rounded-lg px-8 py-3 text-base font-bold transition-all hover:opacity-90 sm:w-auto md:px-12 md:py-4 md:text-lg"
           >{content.closingPrimary}</a
         >
         <a
           href="/app"
-          class="border-outline text-on-surface hover:bg-surface-container rounded-lg border px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold transition-all w-full sm:w-auto"
+          class="border-outline text-on-surface hover:bg-surface-container w-full rounded-lg border px-8 py-3 text-base font-bold transition-all sm:w-auto md:px-12 md:py-4 md:text-lg"
           >{content.closingSecondary}</a
         >
       </div>
@@ -430,7 +440,9 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
   </section>
 </main>
 
-<footer class="light-footer border-outline-variant/10 bg-surface-container-lowest w-full border-t px-4 md:px-12 py-8 md:py-10">
+<footer
+  class="light-footer border-outline-variant/10 bg-surface-container-lowest w-full border-t px-4 py-8 md:px-12 md:py-10"
+>
   <div class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-3 md:flex-row">
     <div
       class="text-on-surface-variant dark:font-headline font-['Inter'] text-[10px] font-bold tracking-widest uppercase"

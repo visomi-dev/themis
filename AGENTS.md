@@ -421,19 +421,21 @@ Generated components must be adjusted to follow **all** the conventions above (e
 The project uses design tokens defined in Stitch. These are the **source of truth**:
 
 #### Stitch Project
+
 - **Title:** Themis
 - **ID:** 13964447050944642949
 
 #### Design Systems
+
 1. **Slate & Syntax** (Light Mode) - `assets/b1e9286749f74476a692557a989a8dd1`
 2. **Slate & Syntax: Night Edition** (Dark Mode) - `assets/d3dbb06bfbc24346aeda94cc7ca17f87`
 
 #### Token Sources
 
-| File | Design System |
-|------|-------------|
+| File                                  | Design System                                     |
+| ------------------------------------- | ------------------------------------------------- |
 | `apps/web/site/src/styles/global.css` | Website - uses Stitch tokens directly in `@theme` |
-| `apps/web/app/src/styles.css` | Webapp - uses CSS custom properties |
+| `apps/web/app/src/styles.css`         | Webapp - uses CSS custom properties               |
 
 #### Light Mode Tokens (`apps/web/site/src/styles/global.css`)
 
@@ -490,11 +492,13 @@ The project uses design tokens defined in Stitch. These are the **source of trut
 ```
 
 #### Typography
+
 - **Display/Headlines:** Manrope (`--font-family-display`)
 - **Body:** Inter (`--font-family`)
 - **Mono:** JetBrains Mono (`--font-family-mono`)
 
 #### Key Principles (from Stitch "Technical Manuscript")
+
 - No solid 1px borders for sectioning; use tonal shifts
 - Surface hierarchy: `surface` (base) → `surface-container-low` → `surface-container` → `surface-container-high` → `surface-container-highest` (top)
 - Ghost borders using `outline-variant` at low opacity for inputs
@@ -504,16 +508,17 @@ The project uses design tokens defined in Stitch. These are the **source of trut
 
 Stitch does not define explicit mobile breakpoints. Use responsive Tailwind classes with mobile-first approach:
 
-| Element | Mobile (default) | Desktop (md:, lg:) |
-|---------|-----------------|-------------------|
-| Section padding | `px-4 py-8` | `md:px-12 md:py-16` |
-| Card padding | `p-4` | `md:p-6 md:p-8` |
-| Grid gaps | `gap-4` | `md:gap-6 lg:gap-8` |
-| Hero title | `text-4xl` | `md:text-6xl lg:text-8xl` |
-| Hero body | `text-base` | `md:text-xl` |
-| CTAs | full-width, `px-6 py-2.5` | `md:px-8 md:py-3`, auto width |
+| Element         | Mobile (default)          | Desktop (md:, lg:)            |
+| --------------- | ------------------------- | ----------------------------- |
+| Section padding | `px-4 py-8`               | `md:px-12 md:py-16`           |
+| Card padding    | `p-4`                     | `md:p-6 md:p-8`               |
+| Grid gaps       | `gap-4`                   | `md:gap-6 lg:gap-8`           |
+| Hero title      | `text-4xl`                | `md:text-6xl lg:text-8xl`     |
+| Hero body       | `text-base`               | `md:text-xl`                  |
+| CTAs            | full-width, `px-6 py-2.5` | `md:px-8 md:py-3`, auto width |
 
 **Rules:**
+
 - Always provide mobile-first spacing (small values default, larger for md:/lg:)
 - Use `sm:flex-row` for button groups on mobile, stacking vertically
 - Use full-width buttons on mobile (`w-full sm:w-auto`)
