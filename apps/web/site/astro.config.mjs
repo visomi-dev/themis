@@ -3,7 +3,7 @@ import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 
 const base = process.env.BASE_URL ?? '/';
-const site = process.env.SITE_URL ?? 'https://themis.local';
+const site = process.env.SITE_URL ?? 'https://themis.visomi.dev';
 
 export default defineConfig({
   adapter: node({
