@@ -1,6 +1,7 @@
 @import '@fontsource/inter';
 @import '@fontsource/manrope';
 @import 'tailwindcss';
+@import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css' layer(utilities);
 
 @custom-variant dark (&:where(.dark, .dark *));

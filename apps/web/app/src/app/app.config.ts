@@ -3,10 +3,10 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
-import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
 import { appRoutes } from './app.routes';
+import { ThemisPreset } from './app.theme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
         options: {
           darkModeSelector: '.dark',
         },
-        preset: Aura,
+        preset: ThemisPreset,
       },
     }),
     provideRouter(appRoutes),
