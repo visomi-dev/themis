@@ -1,22 +1,27 @@
 <main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
-  <section class="mx-auto grid min-h-[calc(100dvh-2rem)] max-w-6xl content-center gap-10 md:min-h-[calc(100dvh-3rem)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+  <section
+    class="mx-auto grid min-h-[calc(100dvh-2rem)] max-w-6xl content-center gap-10 md:min-h-[calc(100dvh-3rem)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
+  >
     <div class="space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="font-display text-sm font-bold tracking-[0.18em] text-on-surface uppercase">Themis</p>
-          <p class="mt-2 text-sm text-on-surface-variant">Verification checkpoint</p>
+          <p class="font-display text-on-surface text-sm font-bold tracking-[0.18em] uppercase">Themis</p>
+          <p class="text-on-surface-variant mt-2 text-sm">Verification checkpoint</p>
         </div>
 
         <app-theme-toggle />
       </div>
 
       <div class="hidden space-y-5 lg:block">
-        <p class="text-[11px] font-black tracking-[0.22em] text-on-surface-variant uppercase">Verification flow</p>
-        <h1 class="font-display max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter text-on-surface xl:text-6xl">
+        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Verification flow</p>
+        <h1
+          class="font-display text-on-surface max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
+        >
           Confirm the email step before opening the workspace.
         </h1>
-        <p class="max-w-xl text-lg leading-relaxed text-on-surface-variant">
-          This verification layer keeps the authenticated product entry aligned with the same calm visual system used across Themis.
+        <p class="text-on-surface-variant max-w-xl text-lg leading-relaxed">
+          This verification layer keeps the authenticated product entry aligned with the same calm visual system used
+          across Themis.
         </p>
       </div>
     </div>
@@ -24,9 +29,11 @@
     @if (hasChallenge()) {
       <section class="auth-panel w-full max-w-xl rounded-xl p-6 md:p-8 lg:justify-self-end">
         <header>
-          <p class="text-[11px] font-black tracking-[0.22em] text-on-surface-variant uppercase">Email verification</p>
-          <h2 class="font-display mt-4 text-4xl leading-tight font-extrabold tracking-tight text-on-surface">Verify email</h2>
-          <p class="mt-4 max-w-lg text-base leading-relaxed text-on-surface-variant">
+          <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Email verification</p>
+          <h2 class="font-display text-on-surface mt-4 text-4xl leading-tight font-extrabold tracking-tight">
+            Verify email
+          </h2>
+          <p class="text-on-surface-variant mt-4 max-w-lg text-base leading-relaxed">
             Enter the verification code sent to
             <strong class="text-on-surface">{{ challenge()?.email }}</strong>
             to continue.
@@ -50,16 +57,18 @@
           </div>
         </form>
 
-        <footer class="mt-6 text-sm text-on-surface-variant">
-          <a class="font-semibold text-primary no-underline hover:underline" routerLink="/sign-in">Start again</a>
+        <footer class="text-on-surface-variant mt-6 text-sm">
+          <a class="text-primary font-semibold no-underline hover:underline" routerLink="/sign-in">Start again</a>
         </footer>
       </section>
     } @else {
       <section class="auth-panel w-full max-w-xl rounded-xl p-6 md:p-8 lg:justify-self-end">
         <header>
-          <p class="text-[11px] font-black tracking-[0.22em] text-on-surface-variant uppercase">Verification flow</p>
-          <h2 class="font-display mt-4 text-4xl leading-tight font-extrabold tracking-tight text-on-surface">No active verification request</h2>
-          <p class="mt-4 max-w-lg text-base leading-relaxed text-on-surface-variant">
+          <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Verification flow</p>
+          <h2 class="font-display text-on-surface mt-4 text-4xl leading-tight font-extrabold tracking-tight">
+            No active verification request
+          </h2>
+          <p class="text-on-surface-variant mt-4 max-w-lg text-base leading-relaxed">
             Start from sign in or sign up to request a fresh verification code.
           </p>
         </header>
