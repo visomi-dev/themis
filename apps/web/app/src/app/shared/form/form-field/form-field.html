@@ -1,0 +1,15 @@
+<div class="grid gap-2">
+  <label class="text-on-surface text-sm font-semibold" [for]="fieldId()">{{ label() }}</label>
+
+  <ng-content />
+
+  @if (error()) {
+    <p-message severity="error" size="small" variant="simple" [text]="error()" />
+  } @else if (help()) {
+    <p class="text-on-surface-variant text-sm leading-relaxed">{{ help() }}</p>
+  }
+
+  <div class="flex justify-end">
+    <ng-content select="[footer]" />
+  </div>
+</div>

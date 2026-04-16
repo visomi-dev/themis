@@ -1,26 +1,29 @@
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
-import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
 import { appRoutes } from './app.routes';
+import { ThemisPreset } from './app.theme';
+import { Auth } from './shared/auth/auth';
+import { Settings } from './shared/settings';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimationsAsync(),
+    Auth,
+    Settings,
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideHttpClient(withFetch()),
     provideClientHydration(withEventReplay()),
-    provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       ripple: false,
       theme: {
         options: {
           darkModeSelector: '.dark',
         },
-        preset: Aura,
+        preset: ThemisPreset,
       },
     }),
     provideRouter(appRoutes),

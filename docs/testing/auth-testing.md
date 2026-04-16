@@ -66,11 +66,18 @@ pnpm exec nx run app-e2e:e2e
 
 Covered behavior:
 
-- sign-up through the Angular UI
-- PIN verification through the Angular UI
-- sign-out
-- sign-in through the Angular UI
-- theme toggle behavior on the auth route
+- `/app/sign-up` validation and happy-path transition into verification
+- `/app/sign-in` validation, happy path, and authenticated redirect behavior
+- `/app/verify-email` invalid PIN handling, cooldown-safe resend behavior, and valid verification
+- `/app/` redirect behavior for anonymous users and authenticated sign-out
+- theme toggle behavior across auth and app routes
+
+The Playwright suite is organized by route and shared support helpers:
+
+- `apps/web/app-e2e/src/auth/`
+- `apps/web/app-e2e/src/app/`
+- `apps/web/app-e2e/src/theme/`
+- `apps/web/app-e2e/src/support/`
 
 ## Test Runtime Configuration
 
@@ -162,6 +169,16 @@ http://127.0.0.1:8080/app/sign-up
 2. Toggle the theme switch.
 3. Confirm the route updates between light and dark presentation.
 4. Confirm the same visual mode still works on `/app/verify-email` and `/app`.
+
+### Guards
+
+1. Open `/app` without a session.
+2. Confirm the app redirects to `/app/sign-in`.
+3. Complete authentication.
+4. Open `/app/sign-in` again.
+5. Confirm the app redirects back to `/app`.
+6. Open `/app/verify-email` without an active challenge.
+7. Confirm the app redirects to `/app/sign-in`.
 
 ## Notes
 

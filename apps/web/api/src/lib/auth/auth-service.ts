@@ -253,11 +253,22 @@ const createAuthService = (config: AuthConfig) => {
     return challenge;
   };
 
+  const requestPasswordReset = async (email: string) => {
+    const user = await findUserByEmail(email);
+
+    if (!user || !user.emailVerifiedAt) {
+      return;
+    }
+
+    await createChallenge(user, 'sign_in');
+  };
+
   return {
     beginSignIn,
     findUserByEmail,
     findUserById,
     getLatestChallengeForUser,
+    requestPasswordReset,
     resendChallenge,
     signUp,
     verifyChallenge,
