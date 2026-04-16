@@ -32,6 +32,12 @@ export class AuthStateService {
       return;
     }
 
+    if (!isPlatformBrowser(this.platformId)) {
+      this.userState.set(null);
+      this.sessionLoadedState.set(true);
+      return;
+    }
+
     const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
     this.userState.set(response.user);
     this.sessionLoadedState.set(true);

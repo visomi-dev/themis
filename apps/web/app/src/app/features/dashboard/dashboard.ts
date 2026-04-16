@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
-import { AuthStateService } from '../../../core/auth/auth-state.service';
-import { ThemeToggle } from '../../../shared/theme-toggle/theme-toggle';
+import { AuthStateService } from '../../core/auth/auth-state.service';
+import { ThemeToggle } from '../../shared/theme-toggle/theme-toggle';
 
 @Component({
   imports: [ButtonModule, ThemeToggle],

@@ -3,7 +3,7 @@ import { Route } from '@angular/router';
 import { authGuard, guestGuard } from './core/auth/auth.guards';
 import { AuthForm } from './features/auth/auth-form/auth-form';
 import { VerifyEmail } from './features/auth/verify-email/verify-email';
-import { Dashboard } from './features/dashboard/dashboard/dashboard';
+import { Dashboard } from './features/dashboard/dashboard';
 
 export const appRoutes: Route[] = [
   {
