@@ -6,9 +6,13 @@ import { providePrimeNG } from 'primeng/config';
 
 import { appRoutes } from './app.routes';
 import { ThemisPreset } from './app.theme';
+import { Auth } from './shared/auth/auth';
+import { Settings } from './shared/settings';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    Auth,
+    Settings,
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideHttpClient(withFetch()),

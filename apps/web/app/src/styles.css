@@ -122,14 +122,6 @@ a {
   }
 }
 
-@utility auth-inline-field {
-  border-bottom: 1px solid rgb(from var(--color-outline) r g b / 0.32);
-
-  &:focus-within {
-    border-bottom-color: var(--color-primary);
-  }
-}
-
 @utility auth-theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -222,7 +214,6 @@ a {
 
 .p-message-error {
   background: color-mix(in srgb, var(--color-error-container) 24%, transparent);
-  border: 1px solid rgb(from var(--color-error) r g b / 0.22);
   color: var(--color-on-surface);
 }
 

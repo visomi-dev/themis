@@ -1,39 +1,45 @@
-import { Route } from '@angular/router';
+import type { Route } from '@angular/router';
 
-import { authGuard, guestGuard } from './core/auth/auth.guards';
-import { AuthForm } from './features/auth/auth-form/auth-form';
-import { VerifyEmail } from './features/auth/verify-email/verify-email';
-import { Dashboard } from './features/dashboard/dashboard';
+import { authenticatedGuard } from './shared/auth/authenticated.guard';
+import { guestGuard } from './shared/auth/guest.guard';
+import { verificationGuard } from './shared/auth/verification.guard';
+import {
+  APP_PATH,
+  FORGOTTEN_PASSWORD_PATH,
+  SIGN_IN_PATH,
+  SIGN_UP_PATH,
+  VERIFY_EMAIL_PATH,
+} from './shared/constants/routes';
 
 export const appRoutes: Route[] = [
   {
-    path: '',
-    component: Dashboard,
-    canActivate: [authGuard],
+    path: APP_PATH,
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./pages/home/home').then((module) => module.Home),
   },
   {
-    path: 'sign-in',
-    component: AuthForm,
+    path: SIGN_IN_PATH,
     canActivate: [guestGuard],
-    data: {
-      mode: 'sign_in',
-    },
+    loadComponent: () => import('./pages/auth/sign-in/sign-in').then((module) => module.SignIn),
   },
   {
-    path: 'sign-up',
-    component: AuthForm,
+    path: SIGN_UP_PATH,
     canActivate: [guestGuard],
-    data: {
-      mode: 'sign_up',
-    },
+    loadComponent: () => import('./pages/auth/sign-up/sign-up').then((module) => module.SignUp),
   },
   {
-    path: 'verify-email',
-    component: VerifyEmail,
+    path: VERIFY_EMAIL_PATH,
+    canActivate: [verificationGuard],
+    loadComponent: () => import('./pages/auth/verify-email/verify-email').then((module) => module.VerifyEmail),
+  },
+  {
+    path: FORGOTTEN_PASSWORD_PATH,
     canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/auth/forgotten-password/forgotten-password').then((module) => module.ForgottenPassword),
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: APP_PATH,
   },
 ];

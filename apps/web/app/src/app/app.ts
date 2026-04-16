@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   host: {
-    class: 'app-shell',
+    class: /* tw */ 'block min-h-full w-full',
   },
   imports: [RouterOutlet],
   selector: 'app-root',

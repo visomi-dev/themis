@@ -51,8 +51,12 @@
       "defaultConfiguration": "production"
     },
     "serve": {
+      "dependsOn": ["server:serve"],
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "options": {
+        "proxyConfig": "apps/web/app/proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "app:build:production"

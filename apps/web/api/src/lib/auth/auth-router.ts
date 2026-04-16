@@ -126,6 +126,12 @@ const buildAuthRouter = (config: AuthConfig) => {
     res.status(204).send();
   });
 
+  router.post('/password/forgotten', async (req, res) => {
+    const email = asNonEmptyString(req.body?.email, 'email');
+    await service.requestPasswordReset(email);
+    res.status(200).send({ message: 'If an account exists for that email, a reset link has been sent.' });
+  });
+
   return router;
 };
 

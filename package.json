@@ -85,6 +85,7 @@
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.24",
     "@swc/helpers": "0.5.21",
+    "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "@types/connect-pg-simple": "^7.0.3",
     "@types/express": "^5.0.6",

@@ -185,6 +185,11 @@ This convention applies to **all** uses of `effect()` in both services and compo
   }
   ```
 
+### Async UI State
+
+- In the zoneless Angular app, async view state must use signals. Do not rely on plain mutable class properties for error banners, status copy, loading state, or other values that change after awaited work.
+- Short-lived async feedback should use `signal()` and be read in templates as `message()` rather than plain strings.
+
 ### Dynamic Imports (Deps Service Only)
 
 - `import()` for external/heavy libraries is only allowed inside the `Deps` service (`shared/deps.ts`).
@@ -202,6 +207,14 @@ This convention applies to **all** uses of `effect()` in both services and compo
 - Do not assume browser globals (e.g., `new Date()`) are available in templates.
 - Do not write arrow functions in templates.
 - Use the `async` pipe for Observables.
+
+## Forms
+
+- Keep reactive forms typed with explicit `FormGroup` and `FormControl` shapes.
+- Prefer shared field wrappers for repeated label, help, and error presentation rather than rebuilding field chrome in every page.
+- PrimeNG inputs are allowed, but page components should wrap them in local shared form primitives when the same field pattern repeats.
+- Validation copy belongs in the component or shared form helper, not inline as duplicated template conditionals.
+- Route-level auth forms should keep accessibility stable for tests: use explicit labels, stable button names, and straightforward heading text.
 
 ---
 
@@ -274,6 +287,7 @@ This convention applies to **all** uses of `effect()` in both services and compo
 
 - **File naming:** guard files follow the `name.guard.ts` pattern (e.g., `auth.guard.ts`).
 - **Location:** place guards in `shared/guards/` when shared across routes, or alongside the feature route when specific to one page.
+- Prefer one concern per guard file. Do not group unrelated guards in a single `auth.guards.ts`-style file.
 - Apply guards in the route definition:
   ```ts
   {
@@ -388,6 +402,18 @@ describe('Deps', () => {
   });
 });
 ```
+
+### Playwright End-To-End Tests
+
+- Organize Playwright specs by route and feature area, not as one monolithic auth flow file.
+- Put shared helpers under `src/support/` for mailbox access, OTP filling, route constants, and auth helpers.
+- Prefer `getByRole`, `getByLabel`, and visible heading assertions over brittle CSS selectors or test IDs.
+- Auth changes should keep the route suite green for:
+  - `/app/sign-in`
+  - `/app/sign-up`
+  - `/app/verify-email`
+  - `/app/`
+  - theme behavior across auth and app routes
 
 ## Code Generation
 

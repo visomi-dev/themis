@@ -1,0 +1,4 @@
+<button class="auth-theme-toggle" type="button" (click)="settings.toggleTheme()">
+  <span class="sr-only">Toggle theme</span>
+  <i class="pi" [class.pi-moon]="!settings.isDark()" [class.pi-sun]="settings.isDark()"></i>
+</button>
