@@ -14,7 +14,9 @@ export const clearMailbox = async (request: APIRequestContext) => {
 
 export const readLatestPin = async (request: APIRequestContext, email: string, purpose: AuthMode) => {
   for (let attempt = 0; attempt < 10; attempt += 1) {
-    const response = await request.get(`/api/test/mailbox/latest?email=${encodeURIComponent(email)}&purpose=${purpose}`);
+    const response = await request.get(
+      `/api/test/mailbox/latest?email=${encodeURIComponent(email)}&purpose=${purpose}`,
+    );
 
     if (response.ok()) {
       const payload = (await response.json()) as MailboxMessage;

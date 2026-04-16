@@ -1,4 +1,4 @@
-<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6 relative">
+<main class="auth-page-shell relative px-4 py-4 md:px-8 md:py-6">
   <div class="absolute top-4 right-4 md:top-6 md:right-8">
     <app-theme-switcher />
   </div>
@@ -14,7 +14,9 @@
 
       <div class="hidden space-y-5 lg:block">
         <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Verification flow</p>
-        <h1 class="font-display text-on-surface max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl">
+        <h1
+          class="font-display text-on-surface max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
+        >
           Confirm the email step before opening the workspace.
         </h1>
       </div>
@@ -23,9 +25,12 @@
     <section class="auth-panel w-full max-w-xl rounded-xl p-6 md:p-8 lg:justify-self-end">
       <header>
         <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Email verification</p>
-        <h2 class="font-display text-on-surface mt-2 text-4xl leading-tight font-extrabold tracking-tight">Verify email</h2>
+        <h2 class="font-display text-on-surface mt-2 text-4xl leading-tight font-extrabold tracking-tight">
+          Verify email
+        </h2>
         <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed">
-          Enter the verification code sent to <strong class="text-on-surface">{{ challenge()?.email }}</strong> to continue.
+          Enter the verification code sent to <strong class="text-on-surface">{{ challenge()?.email }}</strong> to
+          continue.
         </p>
       </header>
 
@@ -38,7 +43,12 @@
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-6" novalidate>
-        <app-form-field fieldId="verification-pin" label="Verification code" [error]="pinError()" help="Enter the 6-digit code from your email.">
+        <app-form-field
+          fieldId="verification-pin"
+          label="Verification code"
+          [error]="pinError()"
+          help="Enter the 6-digit code from your email."
+        >
           <p-inputotp formControlName="pin" inputId="verification-pin" [length]="6" />
         </app-form-field>
 

@@ -29,7 +29,7 @@
       </header>
 
       @if (errorMessage()) {
-      <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
+        <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-5" novalidate>
@@ -55,7 +55,12 @@
               [fluid]="true"
             />
           </div>
-          <a footer class="text-primary text-sm font-semibold no-underline hover:underline" [routerLink]="forgottenPasswordUrl">Forgotten password?</a>
+          <a
+            footer
+            class="text-primary text-sm font-semibold no-underline hover:underline"
+            [routerLink]="forgottenPasswordUrl"
+            >Forgotten password?</a
+          >
         </app-form-field>
 
         <button class="mt-2" pButton type="submit" [disabled]="submitting()">Sign in</button>

@@ -44,7 +44,12 @@ export const verifyLatestCode = async (
   await expect(page.getByRole('heading', { name: /Workspace access confirmed/ })).toBeVisible();
 };
 
-export const registerAndAuthenticate = async (page: Page, request: APIRequestContext, email: string, password: string) => {
+export const registerAndAuthenticate = async (
+  page: Page,
+  request: APIRequestContext,
+  email: string,
+  password: string,
+) => {
   await clearMailbox(request);
   await signUp(page, email, password);
   await verifyLatestCode(page, request, email, 'sign_up');

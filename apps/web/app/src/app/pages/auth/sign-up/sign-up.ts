@@ -23,7 +23,17 @@ type SignUpForm = FormGroup<{
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, FormField, InputTextModule, Logo, MessageModule, PasswordModule, ReactiveFormsModule, RouterLink, ThemeSwitcher],
+  imports: [
+    ButtonModule,
+    FormField,
+    InputTextModule,
+    Logo,
+    MessageModule,
+    PasswordModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ThemeSwitcher,
+  ],
   selector: 'app-sign-up',
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css',
@@ -74,7 +84,9 @@ export class SignUp {
       await this.router.navigate([VERIFY_EMAIL_URL]);
     } catch (error) {
       this.errorMessage.set(
-        error instanceof HttpErrorResponse ? (error.error?.message ?? 'Authentication failed.') : 'Authentication failed.',
+        error instanceof HttpErrorResponse
+          ? (error.error?.message ?? 'Authentication failed.')
+          : 'Authentication failed.',
       );
     }
   }

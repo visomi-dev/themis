@@ -21,7 +21,16 @@ type VerificationForm = FormGroup<{
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, FormField, InputOtpModule, Logo, MessageModule, ReactiveFormsModule, RouterLink, ThemeSwitcher],
+  imports: [
+    ButtonModule,
+    FormField,
+    InputOtpModule,
+    Logo,
+    MessageModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ThemeSwitcher,
+  ],
   selector: 'app-verify-email',
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',

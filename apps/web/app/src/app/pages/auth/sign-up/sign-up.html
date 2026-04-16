@@ -31,7 +31,7 @@
       </header>
 
       @if (errorMessage()) {
-      <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
+        <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-5" novalidate>

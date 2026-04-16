@@ -1,6 +1,12 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, registerAndAuthenticate, registerAndSignOut, signIn, verifyLatestCode } from '../support/auth';
+import {
+  createCredentials,
+  registerAndAuthenticate,
+  registerAndSignOut,
+  signIn,
+  verifyLatestCode,
+} from '../support/auth';
 import { appRoute, signInRoute } from '../support/routes';
 
 test.describe('/app/sign-in', () => {
