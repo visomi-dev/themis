@@ -21,7 +21,16 @@ type ForgottenPasswordForm = FormGroup<{
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, FormField, InputTextModule, Logo, MessageModule, ReactiveFormsModule, RouterLink, ThemeSwitcher],
+  imports: [
+    ButtonModule,
+    FormField,
+    InputTextModule,
+    Logo,
+    MessageModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ThemeSwitcher,
+  ],
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.html',
   styleUrl: './forgotten-password.css',
