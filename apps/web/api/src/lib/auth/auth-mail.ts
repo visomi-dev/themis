@@ -50,16 +50,18 @@ const createMessageBody = (message: VerificationMessage) => {
 };
 
 const sendVerificationMessage = async (config: AuthConfig, message: VerificationMessage) => {
+  const body = createMessageBody(message);
+
   if (config.mailTransport === 'memory') {
     mailbox.push({
       ...message,
       sentAt: new Date(),
     });
+
     return;
   }
 
   const client = getMailgunClient(config);
-  const body = createMessageBody(message);
 
   await client.messages.create(config.mailgunDomain, {
     from: config.mailFrom,

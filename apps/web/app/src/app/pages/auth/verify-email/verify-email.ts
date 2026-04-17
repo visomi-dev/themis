@@ -10,6 +10,7 @@ import { Auth } from '../../../shared/auth/auth';
 import { APP_URL, SIGN_IN_URL } from '../../../shared/constants/routes';
 import { FormField } from '../../../shared/form/form-field/form-field';
 import { controlError } from '../../../shared/form/form-errors';
+import { LanguageSwitcher } from '../../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../../shared/layout/theme-switcher/theme-switcher';
 
@@ -25,6 +26,7 @@ type VerificationForm = FormGroup<{
     ButtonModule,
     FormField,
     InputOtpModule,
+    LanguageSwitcher,
     Logo,
     MessageModule,
     ReactiveFormsModule,
@@ -53,9 +55,9 @@ export class VerifyEmail {
 
   pinError() {
     return controlError(this.form.controls.pin, {
-      maxlength: 'Enter the full 6-digit code.',
-      minlength: 'Enter the full 6-digit code.',
-      required: 'Enter the verification code.',
+      maxlength: $localize`:@@verifyEmailCodeErrorLength:Enter the full 6-digit code.`,
+      minlength: $localize`:@@verifyEmailCodeErrorLength:Enter the full 6-digit code.`,
+      required: $localize`:@@verifyEmailCodeErrorRequired:Enter the verification code.`,
     });
   }
 
@@ -73,7 +75,9 @@ export class VerifyEmail {
       await this.router.navigate([APP_URL]);
     } catch (error) {
       this.errorMessage.set(
-        error instanceof HttpErrorResponse ? (error.error?.message ?? 'Verification failed.') : 'Verification failed.',
+        error instanceof HttpErrorResponse
+          ? (error.error?.message ?? $localize`:@@verifyEmailFailed:Verification failed.`)
+          : $localize`:@@verifyEmailFailed:Verification failed.`,
       );
     }
   }
@@ -84,12 +88,12 @@ export class VerifyEmail {
 
     try {
       await this.auth.resendVerification();
-      this.statusMessage.set('A fresh verification code was sent.');
+      this.statusMessage.set($localize`:@@verifyEmailResendSuccess:A fresh verification code was sent.`);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse
-          ? (error.error?.message ?? 'Could not resend the verification code.')
-          : 'Could not resend the verification code.',
+          ? (error.error?.message ?? $localize`:@@verifyEmailResendFailed:Could not resend the verification code.`)
+          : $localize`:@@verifyEmailResendFailed:Could not resend the verification code.`,
       );
     }
   }

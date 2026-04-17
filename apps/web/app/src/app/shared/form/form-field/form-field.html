@@ -4,7 +4,7 @@
   <ng-content />
 
   @if (error()) {
-    <p-message severity="error" size="small" variant="simple" [text]="error()" />
+    <p-message severity="error" size="small" variant="simple">{{ error() }}</p-message>
   } @else if (help()) {
     <p class="text-on-surface-variant text-sm leading-relaxed">{{ help() }}</p>
   }

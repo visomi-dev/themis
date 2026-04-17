@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="forgottenPasswordEyebrow" datatype="html">
+        <source> AI-integrated technical access layer </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">14,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordHeroKicker" datatype="html">
+        <source> Account recovery </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">23,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordHeroTitle" datatype="html">
+        <source> Reset your access. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">30,33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordPanelKicker" datatype="html">
+        <source> Account access </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">41,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordPanelTitle" datatype="html">
+        <source>Reset password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">45,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordEmailLabel" datatype="html">
+        <source>Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordEmailPlaceholder" datatype="html">
+        <source>name@organization.com</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">68,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordSubmitButton" datatype="html">
+        <source> Send reset link </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">75,79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordFooterLink" datatype="html">
+        <source> Back to sign in </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.html</context>
+          <context context-type="linenumber">85,88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordEmailErrorInvalid" datatype="html">
+        <source>Enter a valid email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordEmailErrorRequired" datatype="html">
+        <source>Enter your email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordSuccess" datatype="html">
+        <source>If an account exists with that email, a reset link has been sent.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="forgottenPasswordRequestFailed" datatype="html">
+        <source>Request failed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/forgotten-password/forgotten-password.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInEyebrow" datatype="html">
+        <source>AI-integrated technical access layer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">13,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInHeroKicker" datatype="html">
+        <source> Workspace access </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInHeroTitle" datatype="html">
+        <source> Human and agent execution, secured. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">25,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInPanelKicker" datatype="html">
+        <source> Account access </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">36,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInPanelTitle" datatype="html">
+        <source> Sign in </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInEmailLabel" datatype="html">
+        <source>Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInEmailPlaceholder" datatype="html">
+        <source>name@organization.com</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInPasswordLabel" datatype="html">
+        <source>Password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInForgottenPasswordLink" datatype="html">
+        <source> Forgotten password? </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">88,90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInSubmitButton" datatype="html">
+        <source> Sign in </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">93,95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInFooterPrompt" datatype="html">
+        <source>New to Themis?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">98,100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInFooterLink" datatype="html">
+        <source> Create an account </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">104,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInEmailErrorInvalid" datatype="html">
+        <source>Enter a valid email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInEmailErrorRequired" datatype="html">
+        <source>Enter your email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInPasswordErrorMinlength" datatype="html">
+        <source>Use at least 8 characters.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInPasswordErrorRequired" datatype="html">
+        <source>Enter your password.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signInAuthFailed" datatype="html">
+        <source>Authentication failed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-in/sign-in.ts</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpEyebrow" datatype="html">
+        <source>AI-integrated technical access layer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">13,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpHeroKicker" datatype="html">
+        <source> New account </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpHeroTitle" datatype="html">
+        <source> Start your secured workspace. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">25,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpPanelKicker" datatype="html">
+        <source> Account access </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">36,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpPanelTitle" datatype="html">
+        <source>Create account</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">40,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpEmailLabel" datatype="html">
+        <source>Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpEmailPlaceholder" datatype="html">
+        <source>name@organization.com</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpPasswordLabel" datatype="html">
+        <source>Password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpSubmitButton" datatype="html">
+        <source> Create account </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">80,82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpFooterPrompt" datatype="html">
+        <source>Already have an account?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">85,87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpFooterLink" datatype="html">
+        <source> Back to sign in </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.html</context>
+          <context context-type="linenumber">91,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpEmailErrorInvalid" datatype="html">
+        <source>Enter a valid email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpEmailErrorRequired" datatype="html">
+        <source>Enter your email address.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpPasswordErrorMinlength" datatype="html">
+        <source>Use at least 8 characters.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpPasswordErrorRequired" datatype="html">
+        <source>Create a password before continuing.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="signUpAuthFailed" datatype="html">
+        <source>Authentication failed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/sign-up/sign-up.ts</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailEyebrow" datatype="html">
+        <source>Verification checkpoint</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">13,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailHeroKicker" datatype="html">
+        <source> Verification flow </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">21,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailHeroTitle" datatype="html">
+        <source> Confirm the email step before opening the workspace. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">28,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailPanelKicker" datatype="html">
+        <source> Email verification </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">39,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailPanelTitle" datatype="html">
+        <source>Verify email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">43,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailDescription" datatype="html">
+        <source> Enter the verification code sent to <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;text-on-surface&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ challenge()?.email }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> to continue. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">47,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailCodeLabel" datatype="html">
+        <source>Verification code</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailCodeHelp" datatype="html">
+        <source>Enter the 6-digit code from your email.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">65,66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailSubmitButton" datatype="html">
+        <source> Verify and continue </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">73,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailResendButton" datatype="html">
+        <source> Resend code </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">83,85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailFooterLink" datatype="html">
+        <source> Start again </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.html</context>
+          <context context-type="linenumber">94,96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailCodeErrorLength" datatype="html">
+        <source>Enter the full 6-digit code.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailCodeErrorRequired" datatype="html">
+        <source>Enter the verification code.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailFailed" datatype="html">
+        <source>Verification failed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailResendSuccess" datatype="html">
+        <source>A fresh verification code was sent.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="verifyEmailResendFailed" datatype="html">
+        <source>Could not resend the verification code.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/auth/verify-email/verify-email.ts</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeBrand" datatype="html">
+        <source> Themis </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">6,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeTitle" datatype="html">
+        <source> Workspace access confirmed. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeDescription" datatype="html">
+        <source> Your authenticated application shell is now aligned with the same visual system as the public site and the sign-in flow. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeSignOutButton" datatype="html">
+        <source> Sign out </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">34,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeSessionKicker" datatype="html">
+        <source> Active session </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">41,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="homeSessionDescription" datatype="html">
+        <source> This route is protected by the backend session established only after password validation and email PIN verification. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/pages/home/home.html</context>
+          <context context-type="linenumber">45,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="languageSwitcherSpanish" datatype="html">
+        <source>Switch to Spanish</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/language-switcher/language-switcher.ts</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="languageSwitcherEnglish" datatype="html">
+        <source>Switch to English</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/language-switcher/language-switcher.ts</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="themeSwitcherToggleTheme" datatype="html">
+        <source>Toggle theme</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/theme-switcher/theme-switcher.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

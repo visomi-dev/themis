@@ -1,5 +1,6 @@
 <main class="auth-page-shell relative px-4 py-4 md:px-8 md:py-6">
-  <div class="absolute top-4 right-4 md:top-6 md:right-8">
+  <div class="absolute top-4 right-4 flex items-center gap-6 md:top-6 md:right-8">
+    <app-language-switcher />
     <app-theme-switcher />
   </div>
 
@@ -9,13 +10,20 @@
     <div class="space-y-6">
       <div>
         <app-logo variant="wordmark" />
-        <p class="text-on-surface-variant mt-2 text-sm">Verification checkpoint</p>
+        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@verifyEmailEyebrow">Verification checkpoint</p>
       </div>
 
       <div class="hidden space-y-5 lg:block">
-        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Verification flow</p>
+        <p
+          class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase"
+          i18n="@@verifyEmailHeroKicker"
+        >
+          Verification flow
+        </p>
+
         <h1
           class="font-display text-on-surface max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
+          i18n="@@verifyEmailHeroTitle"
         >
           Confirm the email step before opening the workspace.
         </h1>
@@ -24,42 +32,67 @@
 
     <section class="auth-panel w-full max-w-xl rounded-xl p-6 md:p-8 lg:justify-self-end">
       <header>
-        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Email verification</p>
-        <h2 class="font-display text-on-surface mt-2 text-4xl leading-tight font-extrabold tracking-tight">
-          Verify email
+        <p
+          class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase"
+          i18n="@@verifyEmailPanelKicker"
+        >
+          Email verification
+        </p>
+
+        <h2 class="font-display text-on-surface mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight">
+          <ng-container i18n="@@verifyEmailPanelTitle">Verify email</ng-container>
         </h2>
-        <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed">
+
+        <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed" i18n="@@verifyEmailDescription">
           Enter the verification code sent to <strong class="text-on-surface">{{ challenge()?.email }}</strong> to
           continue.
         </p>
       </header>
 
       @if (errorMessage()) {
-        <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
+        <p-message class="mt-4 block" severity="error">{{ errorMessage() }}</p-message>
       }
-
       @if (statusMessage()) {
-        <p-message class="mt-4 block" severity="success" [text]="statusMessage()" />
+        <p-message class="mt-4 block" severity="success">{{ statusMessage() }}</p-message>
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-6" novalidate>
         <app-form-field
           fieldId="verification-pin"
           label="Verification code"
+          i18n-label="@@verifyEmailCodeLabel"
           [error]="pinError()"
           help="Enter the 6-digit code from your email."
+          i18n-help="@@verifyEmailCodeHelp"
         >
           <p-inputotp formControlName="pin" inputId="verification-pin" [length]="6" />
         </app-form-field>
 
         <div class="flex flex-wrap items-center gap-3">
-          <button pButton type="submit" [disabled]="verificationSubmitting()">Verify and continue</button>
-          <button pButton type="button" severity="secondary" [text]="true" (click)="resend()">Resend code</button>
+          <button pButton type="submit" [disabled]="verificationSubmitting()" i18n="@@verifyEmailSubmitButton">
+            Verify and continue
+          </button>
+          <button
+            pButton
+            type="button"
+            severity="secondary"
+            [text]="true"
+            (click)="resend()"
+            i18n="@@verifyEmailResendButton"
+          >
+            Resend code
+          </button>
         </div>
       </form>
 
       <footer class="text-on-surface-variant mt-6 text-sm">
-        <a class="text-primary font-semibold no-underline hover:underline" [routerLink]="signInUrl">Start again</a>
+        <a
+          class="text-primary font-semibold no-underline hover:underline"
+          [routerLink]="signInUrl"
+          i18n="@@verifyEmailFooterLink"
+        >
+          Start again
+        </a>
       </footer>
     </section>
   </section>

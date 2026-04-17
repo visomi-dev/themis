@@ -44,6 +44,42 @@ export class Auth {
     this.sessionLoadedState.set(true);
   }
 
+  async signInWithPassword(payload: CredentialsPayload) {
+    this.submittingState.set(true);
+
+    try {
+      const response = await firstValueFrom(this.http.post<AuthChallenge>('/api/auth/sign-in/password', payload));
+
+      this.setPendingChallenge(response);
+
+      return response;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      this.submittingState.set(false);
+    }
+  }
+
+  async signUp(payload: CredentialsPayload) {
+    this.submittingState.set(true);
+
+    try {
+      const response = await firstValueFrom(this.http.post<AuthChallenge>('/api/auth/sign-up', payload));
+
+      this.setPendingChallenge(response);
+
+      return response;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      this.submittingState.set(false);
+    }
+  }
+
   async submitCredentials(mode: AuthMode, payload: CredentialsPayload) {
     this.submittingState.set(true);
 

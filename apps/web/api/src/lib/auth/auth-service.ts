@@ -21,6 +21,16 @@ const mapUser = (user: typeof users.$inferSelect): AuthUser => ({
   id: user.id,
 });
 
+const mapChallengePayload = (
+  challenge: typeof authVerificationChallenges.$inferSelect,
+  user: typeof users.$inferSelect,
+): AuthChallengePayload => ({
+  challengeId: challenge.id,
+  email: user.email,
+  expiresAt: challenge.expiresAt.toISOString(),
+  purpose: challenge.purpose as VerificationPurpose,
+});
+
 const createAuthService = (config: AuthConfig) => {
   const db = getDb(config);
 
@@ -103,6 +113,16 @@ const createAuthService = (config: AuthConfig) => {
     };
   };
 
+  const getOrCreateActiveChallenge = async (user: typeof users.$inferSelect, purpose: VerificationPurpose) => {
+    const challenge = await getLatestChallengeForUser(user.id, purpose);
+
+    if (challenge) {
+      return mapChallengePayload(challenge, user);
+    }
+
+    return createChallenge(user, purpose);
+  };
+
   const signUp = async (email: string, password: string) => {
     const normalizedEmail = normalizeEmail(email);
     const existingUser = await findUserByEmail(normalizedEmail);
@@ -128,7 +148,7 @@ const createAuthService = (config: AuthConfig) => {
 
   const beginSignIn = async (user: typeof users.$inferSelect) => {
     if (!user.emailVerifiedAt) {
-      throw new AuthError(403, 'email_not_verified', 'Verify your email before signing in.');
+      return getOrCreateActiveChallenge(user, 'sign_up');
     }
 
     return createChallenge(user, 'sign_in');

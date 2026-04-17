@@ -11,6 +11,7 @@ import { Auth } from '../../../shared/auth/auth';
 import { FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_EMAIL_URL } from '../../../shared/constants/routes';
 import { FormField } from '../../../shared/form/form-field/form-field';
 import { controlError } from '../../../shared/form/form-errors';
+import { LanguageSwitcher } from '../../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../../shared/layout/theme-switcher/theme-switcher';
 
@@ -27,6 +28,7 @@ type SignInForm = FormGroup<{
     ButtonModule,
     FormField,
     InputTextModule,
+    LanguageSwitcher,
     Logo,
     MessageModule,
     PasswordModule,
@@ -59,15 +61,15 @@ export class SignIn {
 
   emailError() {
     return controlError(this.form.controls.email, {
-      email: 'Enter a valid email address.',
-      required: 'Enter your email address.',
+      email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address.`,
+      required: $localize`:@@signInEmailErrorRequired:Enter your email address.`,
     });
   }
 
   passwordError() {
     return controlError(this.form.controls.password, {
-      minlength: 'Use at least 8 characters.',
-      required: 'Enter your password.',
+      minlength: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.`,
+      required: $localize`:@@signInPasswordErrorRequired:Enter your password.`,
     });
   }
 
@@ -80,13 +82,13 @@ export class SignIn {
     this.errorMessage.set('');
 
     try {
-      await this.auth.submitCredentials('sign_in', this.form.getRawValue());
+      await this.auth.signInWithPassword(this.form.getRawValue());
       await this.router.navigate([VERIFY_EMAIL_URL]);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse
-          ? (error.error?.message ?? 'Authentication failed.')
-          : 'Authentication failed.',
+          ? (error.error?.message ?? $localize`:@@signInAuthFailed:Authentication failed.`)
+          : $localize`:@@signInAuthFailed:Authentication failed.`,
       );
     }
   }

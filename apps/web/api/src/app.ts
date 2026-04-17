@@ -1,6 +1,7 @@
+import connectPgSimple from 'connect-pg-simple';
 import express, { json, type Express, type NextFunction, type Request, type Response } from 'express';
 import session, { MemoryStore } from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
+import morgan from 'morgan';
 import passport from 'passport';
 
 import { getAuthConfig } from './lib/config/auth-config.js';
@@ -11,6 +12,8 @@ import { getPool } from './lib/db/pool.js';
 import { buildTestRouter } from './lib/testing/test-router.js';
 
 let appPromise: Promise<Express> | undefined;
+
+const morganFormat = process.env['MORGAN_FORMAT'] ?? 'dev';
 
 const buildApp = async () => {
   const config = getAuthConfig();
@@ -29,6 +32,7 @@ const buildApp = async () => {
         });
 
   app.use(json());
+  app.use(morgan(morganFormat));
   app.use(
     session({
       cookie: {

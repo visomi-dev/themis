@@ -1,0 +1,23 @@
+<div
+  class="dark:font-display flex items-center gap-4 font-[Inter] text-[10px] font-black tracking-[0.2em] text-(--color-switch-muted) uppercase"
+>
+  <a
+    [href]="localeUrl('en')"
+    hreflang="en"
+    [attr.aria-current]="currentLocale() === 'en' ? 'page' : null"
+    [attr.aria-label]="localeLabel('en')"
+    class="auth-locale-link"
+    [class.auth-locale-link-active]="currentLocale() === 'en'"
+    >EN</a
+  >
+  <span class="opacity-30">/</span>
+  <a
+    [href]="localeUrl('es')"
+    hreflang="es"
+    [attr.aria-current]="currentLocale() === 'es' ? 'page' : null"
+    [attr.aria-label]="localeLabel('es')"
+    class="auth-locale-link"
+    [class.auth-locale-link-active]="currentLocale() === 'es'"
+    >ES</a
+  >
+</div>

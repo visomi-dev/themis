@@ -55,3 +55,5 @@ apps/web/server-e2e/.server-e2e-server.pid
 .nx/polygraph
 .claude/worktrees
 .claude/settings.local.json
+
+.env

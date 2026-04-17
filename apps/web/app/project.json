@@ -4,6 +4,15 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/web/app/src",
+  "i18n": {
+    "sourceLocale": "en-US",
+    "locales": {
+      "es": {
+        "translation": "apps/web/app/src/locales/messages.es.xlf",
+        "subPath": "es"
+      }
+    }
+  },
   "targets": {
     "build": {
       "executor": "@angular/build:application",
@@ -11,6 +20,7 @@
       "options": {
         "outputPath": "dist/apps/web/app",
         "browser": "apps/web/app/src/main.ts",
+        "polyfills": ["@angular/localize/init"],
         "tsConfig": "apps/web/app/tsconfig.app.json",
         "assets": [
           {
@@ -27,6 +37,7 @@
       },
       "configurations": {
         "production": {
+          "localize": true,
           "baseHref": "/app/",
           "budgets": [
             {
@@ -51,7 +62,6 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "dependsOn": ["server:serve"],
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "options": {
@@ -69,6 +79,15 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n",
+      "options": {
+        "buildTarget": "app:build",
+        "format": "xlf",
+        "outFile": "messages.xlf",
+        "outputPath": "apps/web/app/src/locales"
+      }
     },
     "serve-static": {
       "continuous": true,

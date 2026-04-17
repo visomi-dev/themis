@@ -1,6 +1,6 @@
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration, withEventReplay, withI18nSupport } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideHttpClient(withFetch()),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(withI18nSupport(), withEventReplay()),
     providePrimeNG({
       ripple: false,
       theme: {

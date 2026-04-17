@@ -11,6 +11,7 @@ import { Auth } from '../../../shared/auth/auth';
 import { SIGN_IN_URL, VERIFY_EMAIL_URL } from '../../../shared/constants/routes';
 import { FormField } from '../../../shared/form/form-field/form-field';
 import { controlError } from '../../../shared/form/form-errors';
+import { LanguageSwitcher } from '../../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../../shared/layout/theme-switcher/theme-switcher';
 
@@ -27,6 +28,7 @@ type SignUpForm = FormGroup<{
     ButtonModule,
     FormField,
     InputTextModule,
+    LanguageSwitcher,
     Logo,
     MessageModule,
     PasswordModule,
@@ -59,15 +61,15 @@ export class SignUp {
 
   emailError() {
     return controlError(this.form.controls.email, {
-      email: 'Enter a valid email address.',
-      required: 'Enter your email address.',
+      email: $localize`:@@signUpEmailErrorInvalid:Enter a valid email address.`,
+      required: $localize`:@@signUpEmailErrorRequired:Enter your email address.`,
     });
   }
 
   passwordError() {
     return controlError(this.form.controls.password, {
-      minlength: 'Use at least 8 characters.',
-      required: 'Create a password before continuing.',
+      minlength: $localize`:@@signUpPasswordErrorMinlength:Use at least 8 characters.`,
+      required: $localize`:@@signUpPasswordErrorRequired:Create a password before continuing.`,
     });
   }
 
@@ -85,8 +87,8 @@ export class SignUp {
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse
-          ? (error.error?.message ?? 'Authentication failed.')
-          : 'Authentication failed.',
+          ? (error.error?.message ?? $localize`:@@signUpAuthFailed:Authentication failed.`)
+          : $localize`:@@signUpAuthFailed:Authentication failed.`,
       );
     }
   }
