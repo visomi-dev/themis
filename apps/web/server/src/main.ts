@@ -77,7 +77,12 @@ const bootstrap = async () => {
   });
   app.use('/api', apiApp);
   app.use('/app', (req, res, next) => {
-    if (req.path === `/${defaultAngularLocale}` || req.path.startsWith(`/${defaultAngularLocale}/`) || req.path === '/es' || req.path.startsWith('/es/')) {
+    if (
+      req.path === `/${defaultAngularLocale}` ||
+      req.path.startsWith(`/${defaultAngularLocale}/`) ||
+      req.path === '/es' ||
+      req.path.startsWith('/es/')
+    ) {
       next();
       return;
     }
