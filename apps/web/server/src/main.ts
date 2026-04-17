@@ -31,6 +31,7 @@ const angularBrowserFolder = resolve(serverDistFolder, '..', 'app', 'browser');
 const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'server.mjs');
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
+const defaultAngularLocale = 'en-US';
 
 const loadApiApp = async () => {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
@@ -75,6 +76,17 @@ const bootstrap = async () => {
     res.send({ status: 'ok' });
   });
   app.use('/api', apiApp);
+  app.use('/app', (req, res, next) => {
+    if (req.path === `/${defaultAngularLocale}` || req.path.startsWith(`/${defaultAngularLocale}/`) || req.path === '/es' || req.path.startsWith('/es/')) {
+      next();
+      return;
+    }
+
+    const redirectPath = req.path === '/' ? '' : req.path;
+    const redirectQuery = req.url.slice(req.path.length);
+
+    res.redirect(302, `/app/${defaultAngularLocale}${redirectPath}${redirectQuery}`);
+  });
   app.use(
     '/app',
     serveStatic(angularBrowserFolder, {

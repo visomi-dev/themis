@@ -5,7 +5,10 @@
   "prefix": "app",
   "sourceRoot": "apps/web/app/src",
   "i18n": {
-    "sourceLocale": "en-US",
+    "sourceLocale": {
+      "code": "en-US",
+      "subPath": ""
+    },
     "locales": {
       "es": {
         "translation": "apps/web/app/src/locales/messages.es.xlf",
