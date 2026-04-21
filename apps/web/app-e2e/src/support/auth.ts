@@ -33,6 +33,26 @@ const fillCredentials = async (page: Page, email: string, password: string) => {
   await expect(passwordField).toHaveValue(password);
 };
 
+const waitForAuthenticatedSession = async (page: Page, email: string) => {
+  await expect
+    .poll(async () => {
+      return page.evaluate(async () => {
+        const response = await fetch('/api/auth/session', {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          return null;
+        }
+
+        const payload = (await response.json()) as { user: { email?: string } | null };
+
+        return payload.user?.email ?? null;
+      });
+    })
+    .toBe(email);
+};
+
 export const signUp = async (page: Page, email: string, password: string) => {
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);
@@ -68,6 +88,7 @@ export const verifyLatestCode = async (
 
   await expect(page).toHaveURL(appUrlPattern);
   await expect(page.getByRole('heading', { name: /Workspace access confirmed/ })).toBeVisible();
+  await waitForAuthenticatedSession(page, email);
 };
 
 export const registerAndAuthenticate = async (
