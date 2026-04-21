@@ -47,7 +47,7 @@ jobs:
         run: pnpm nx run site:typecheck
 
       - name: Run tests
-        run: pnpm nx run site:test && pnpm nx run app:vite:test
+        run: pnpm nx run site:test && pnpm nx run app:vite:test && pnpm nx run api:test && pnpm nx run server:test
 
       - name: Build composed runtime
         run: pnpm nx run server:build

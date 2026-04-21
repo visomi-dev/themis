@@ -1,14 +1,9 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import express, {
-  json,
-  static as serveStatic,
-  type Express,
-  type NextFunction,
-  type Request,
-  type Response,
-} from 'express';
+import type { Express, NextFunction, Request, Response } from 'express';
+
+import { createGatewayApp } from './gateway.js';
 
 type ApiModule = {
   appPromise?: Promise<Express>;
@@ -67,25 +62,12 @@ const bootstrap = async () => {
     loadAngularHandler(),
     loadAstroRequestHandler(),
   ]);
-  const app = express();
-
-  app.use(json());
-  app.get('/healthz', (_req, res) => {
-    res.send({ status: 'ok' });
+  const app = createGatewayApp({
+    apiApp,
+    angularHandler,
+    astroClientFolder,
+    astroRequestHandler,
   });
-  app.get('/', (_req, res) => {
-    res.redirect(302, '/en/');
-  });
-  app.use('/api', apiApp);
-  app.use('/app', angularHandler);
-  app.use(
-    serveStatic(astroClientFolder, {
-      index: false,
-      maxAge: '1y',
-      redirect: false,
-    }),
-  );
-  app.use((req, res, next) => astroRequestHandler(req, res, next));
 
   app.listen(port, host, () => {
     console.log(`[ ready ] http://${host}:${port}`);
