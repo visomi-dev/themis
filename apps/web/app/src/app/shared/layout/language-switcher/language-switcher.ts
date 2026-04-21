@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 type Locale = 'en' | 'es';
 
 const APP_BASE_URL = '/app';
+const ENGLISH_LOCALE_SEGMENT = 'en';
 
 @Component({
   host: {
@@ -25,7 +26,7 @@ export class LanguageSwitcher {
   localeUrl(locale: Locale) {
     const routePath = this.router.url === '/' ? '' : this.router.url;
 
-    return locale === 'es' ? `${APP_BASE_URL}/es${routePath}` : `${APP_BASE_URL}${routePath}`;
+    return locale === 'es' ? `${APP_BASE_URL}/es${routePath}` : `${APP_BASE_URL}/${ENGLISH_LOCALE_SEGMENT}${routePath}`;
   }
 
   localeLabel(locale: Locale) {

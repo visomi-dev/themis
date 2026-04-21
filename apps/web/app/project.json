@@ -7,7 +7,7 @@
   "i18n": {
     "sourceLocale": {
       "code": "en-US",
-      "subPath": ""
+      "subPath": "en"
     },
     "locales": {
       "es": {
@@ -98,7 +98,7 @@
       "options": {
         "buildTarget": "app:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/web/app/browser",
+        "staticFilePath": "dist/apps/web/app/browser/en",
         "spa": true
       }
     }

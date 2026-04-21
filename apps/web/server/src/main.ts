@@ -73,6 +73,9 @@ const bootstrap = async () => {
   app.get('/healthz', (_req, res) => {
     res.send({ status: 'ok' });
   });
+  app.get('/', (_req, res) => {
+    res.redirect(302, '/en/');
+  });
   app.use('/api', apiApp);
   app.use('/app', angularHandler);
   app.use(

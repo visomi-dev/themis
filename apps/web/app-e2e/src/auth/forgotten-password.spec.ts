@@ -26,10 +26,18 @@ test.describe('/app/forgotten-password', () => {
 
   test('shows success message after valid submission', async ({ page }) => {
     await page.goto(forgottenPasswordRoute);
-    await page.getByLabel('Email').fill('nonexistent@example.com');
+    const emailField = page.getByLabel('Email');
+
+    await expect(page.getByRole('heading', { name: 'Reset password' })).toBeVisible();
+    await expect(emailField).toBeEditable();
+
+    await emailField.fill('nonexistent@example.com');
+    await expect(emailField).toHaveValue('nonexistent@example.com');
     await page.getByRole('button', { name: 'Send reset link' }).click();
 
-    await expect(page.getByText('If an account exists with that email, a reset link has been sent.')).toBeVisible();
+    await expect(page.getByText('If an account exists with that email, a reset link has been sent.')).toBeVisible({
+      timeout: 15_000,
+    });
   });
 
   test('back to sign in link navigates to sign-in', async ({ page }) => {

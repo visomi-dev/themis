@@ -13,12 +13,13 @@ describe('composition server', () => {
       headers: {
         Accept: 'text/html',
       },
+      maxRedirects: 0,
+      validateStatus: () => true,
       responseType: 'text',
     });
 
-    expect(response.status).toBe(200);
-    expect(response.headers['content-type']).toContain('text/html');
-    expect(response.data).toContain('Themis');
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe('/en/');
   });
 
   it('mounts the api under /api', async () => {
@@ -29,7 +30,7 @@ describe('composition server', () => {
   });
 
   it('serves the Angular auth surface under /app', async () => {
-    const response = await axios.get('/app/sign-in', {
+    const response = await axios.get('/app/en/sign-in', {
       headers: {
         Accept: 'text/html',
       },
@@ -38,7 +39,7 @@ describe('composition server', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toContain('text/html');
-    expect(response.data).toContain('<base href="/app/">');
+    expect(response.data).toContain('<base href="/app/en/">');
     expect(response.data).toContain('<app-root');
   });
 });

@@ -83,5 +83,5 @@ export const registerAndAuthenticate = async (
 export const registerAndSignOut = async (page: Page, request: APIRequestContext, email: string, password: string) => {
   await registerAndAuthenticate(page, request, email, password);
   await page.getByRole('button', { name: 'Sign out' }).click();
-  await expect(page).toHaveURL(/\/app(?:\/en-US)?\/sign-in$/);
+  await expect(page).toHaveURL(/\/app\/en\/sign-in$/);
 };

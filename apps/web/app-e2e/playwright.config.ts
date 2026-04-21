@@ -26,7 +26,7 @@ export default defineConfig({
       SESSION_SECRET: 'themis-app-e2e-secret',
     },
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:8080/healthz',
+    url: 'http://127.0.0.1:8080/app/en/sign-in',
   },
   projects: [
     {
