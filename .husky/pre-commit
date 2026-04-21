@@ -1,5 +1,7 @@
-if git rev-parse --verify HEAD >/dev/null 2>&1; then
-  pnpm nx affected -t lint
-else
-  NX_DAEMON=false pnpm nx run-many -t lint --projects site,app,api,server,site-e2e,app-e2e,api-e2e,server-e2e
-fi
+export NX_DAEMON=false
+export PATH="$HOME/.local/share/fnm/node-versions/v24.14.1/installation/bin:$HOME/.local/share/pnpm:$PATH"
+
+pnpm exec prettier --check .
+pnpm exec nx run-many -t lint
+pnpm exec nx run-many -t test
+pnpm exec nx run-many -t e2e --parallel=1

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, signUp } from '../support/auth';
-import { signUpRoute, verifyEmailRoute } from '../support/routes';
+import { signUpRoute, verifyEmailUrlPattern } from '../support/routes';
 
 test.describe('/app/sign-up', () => {
   test('shows validation errors for invalid credentials', async ({ page }) => {
@@ -17,6 +17,6 @@ test.describe('/app/sign-up', () => {
 
     await signUp(page, credentials.email, credentials.password);
 
-    await expect(page).toHaveURL(verifyEmailRoute);
+    await expect(page).toHaveURL(verifyEmailUrlPattern);
   });
 });

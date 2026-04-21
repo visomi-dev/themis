@@ -14,12 +14,12 @@ type ApiModule = {
   appPromise?: Promise<Express>;
 };
 
-type AstroMiddlewareModule = {
-  handler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
+type AngularModule = {
+  reqHandler?: Express;
 };
 
-type AngularAppModule = {
-  reqHandler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
+type AstroMiddlewareModule = {
+  handler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 };
 
 const host = process.env.HOST ?? '0.0.0.0';
@@ -27,11 +27,9 @@ const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const apiEntryFile = resolve(serverDistFolder, '..', 'api', 'main.js');
-const angularBrowserFolder = resolve(serverDistFolder, '..', 'app', 'browser');
 const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'server.mjs');
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
-const defaultAngularLocale = 'en-US';
 
 const loadApiApp = async () => {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
@@ -41,16 +39,6 @@ const loadApiApp = async () => {
   }
 
   return apiModule.appPromise;
-};
-
-const loadAngularRequestHandler = async () => {
-  const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularAppModule;
-
-  if (typeof angularModule.reqHandler !== 'function') {
-    throw new TypeError(`Could not load the Angular request handler from '${angularEntryFile}'.`);
-  }
-
-  return angularModule.reqHandler;
 };
 
 const loadAstroRequestHandler = async () => {
@@ -63,10 +51,20 @@ const loadAstroRequestHandler = async () => {
   return astroModule.handler;
 };
 
+const loadAngularHandler = async () => {
+  const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularModule;
+
+  if (!angularModule.reqHandler) {
+    throw new Error(`Could not load the Angular request handler from '${angularEntryFile}'.`);
+  }
+
+  return angularModule.reqHandler;
+};
+
 const bootstrap = async () => {
-  const [apiApp, angularRequestHandler, astroRequestHandler] = await Promise.all([
+  const [apiApp, angularHandler, astroRequestHandler] = await Promise.all([
     loadApiApp(),
-    loadAngularRequestHandler(),
+    loadAngularHandler(),
     loadAstroRequestHandler(),
   ]);
   const app = express();
@@ -76,31 +74,7 @@ const bootstrap = async () => {
     res.send({ status: 'ok' });
   });
   app.use('/api', apiApp);
-  app.use('/app', (req, res, next) => {
-    if (
-      req.path === `/${defaultAngularLocale}` ||
-      req.path.startsWith(`/${defaultAngularLocale}/`) ||
-      req.path === '/es' ||
-      req.path.startsWith('/es/')
-    ) {
-      next();
-      return;
-    }
-
-    const redirectPath = req.path === '/' ? '' : req.path;
-    const redirectQuery = req.url.slice(req.path.length);
-
-    res.redirect(302, `/app/${defaultAngularLocale}${redirectPath}${redirectQuery}`);
-  });
-  app.use(
-    '/app',
-    serveStatic(angularBrowserFolder, {
-      index: false,
-      maxAge: '1y',
-      redirect: false,
-    }),
-  );
-  app.use('/app', (req, res, next) => angularRequestHandler(req, res, next));
+  app.use('/app', angularHandler);
   app.use(
     serveStatic(astroClientFolder, {
       index: false,
