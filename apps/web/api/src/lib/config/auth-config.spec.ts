@@ -41,4 +41,10 @@ describe('getAuthConfig', () => {
     expect(config.enableTestApi).toBe(true);
     expect(config.mailTransport).toBe('memory');
   });
+  it('provides realtime and redis defaults when unset', () => {
+    const config = getAuthConfig();
+
+    expect(config.redisUrl).toBe('redis://127.0.0.1:6379');
+    expect(config.realtimePath).toBe('/socket.io');
+  });
 });

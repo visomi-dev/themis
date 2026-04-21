@@ -39,6 +39,24 @@ export type Project = {
 
 export type ProjectWithDocuments = Project & {
   documents: ProjectDocument[];
+  jobs: AsyncJobRecord[];
+};
+
+export type AsyncJobType = 'project_seed';
+export type AsyncJobStatus = 'completed' | 'failed' | 'queued' | 'running';
+
+export type AsyncJobRecord = {
+  completedAt: string | null;
+  createdAt: string;
+  errorMessage: string | null;
+  id: string;
+  progress: number;
+  projectId: string | null;
+  resultJson: string | null;
+  status: AsyncJobStatus;
+  type: AsyncJobType;
+  updatedAt: string;
+  userId: string;
 };
 
 export type CreateProjectPayload = {

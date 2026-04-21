@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import type {
+  AsyncJobRecord,
   CreateDocumentPayload,
   CreateProjectPayload,
   Project,
@@ -13,6 +14,10 @@ import type {
 
 type ProjectsListResponse = {
   projects: Project[];
+};
+
+type JobsListResponse = {
+  jobs: AsyncJobRecord[];
 };
 
 @Injectable({
@@ -43,5 +48,13 @@ export class ProjectsService {
 
   async createDocument(projectId: string, payload: CreateDocumentPayload) {
     return firstValueFrom(this.http.post<ProjectDocument>(`/api/projects/${projectId}/documents`, payload));
+  }
+
+  async listJobs(projectId: string) {
+    return firstValueFrom(this.http.get<JobsListResponse>(`/api/projects/${projectId}/jobs`));
+  }
+
+  async startSeed(projectId: string) {
+    return firstValueFrom(this.http.post<AsyncJobRecord>(`/api/projects/${projectId}/seed`, {}));
   }
 }

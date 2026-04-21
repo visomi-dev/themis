@@ -53,6 +53,6 @@ test.describe('/app/verify-email', () => {
     await fillOtp(page, signInPin);
     await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-    await expect(page.getByRole('heading', { name: /Workspace access confirmed/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
   });
 });

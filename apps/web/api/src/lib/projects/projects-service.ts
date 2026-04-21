@@ -1,17 +1,18 @@
 import { randomUUID } from 'node:crypto';
 
-import { and, asc, desc, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 
 import type { AuthConfig } from '../config/auth-config.js';
 import { getDb } from '../db/client.js';
 import { projectDocuments, projects } from '../db/schema.js';
-
 import { AuthError } from '../auth/auth-errors.js';
+import { createJobStore } from '../jobs/job-store.js';
 
 import type {
   Project,
   ProjectDocument,
   ProjectDocumentStatus,
+  ProjectDocumentType,
   ProjectSourceType,
   ProjectStatus,
   ProjectWithDocuments,
@@ -27,7 +28,14 @@ const normalizeSlug = (name: string) =>
 const PROJECT_STATUSES = new Set<ProjectStatus>(['active', 'archived', 'draft']);
 const PROJECT_SOURCE_TYPES = new Set<ProjectSourceType>(['imported', 'manual', 'seeded']);
 const DOCUMENT_STATUSES = new Set<ProjectDocumentStatus>(['active', 'archived', 'draft']);
-const DOCUMENT_TYPES = new Set<ProjectDocumentType>(['architecture', 'brief', 'imported_reference', 'operational_notes', 'overview', 'setup']);
+const DOCUMENT_TYPES = new Set<ProjectDocumentType>([
+  'architecture',
+  'brief',
+  'imported_reference',
+  'operational_notes',
+  'overview',
+  'setup',
+]);
 
 const mapProject = (record: typeof projects.$inferSelect): Project => ({
   createdAt: record.createdAt.toISOString(),
@@ -45,7 +53,7 @@ const mapDocument = (record: typeof projectDocuments.$inferSelect): ProjectDocum
   contentMarkdown: record.contentMarkdown,
   createdAt: record.createdAt.toISOString(),
   createdByUserId: record.createdByUserId,
-  documentType: record.documentType as ProjectDocument['documentType'],
+  documentType: record.documentType as ProjectDocumentType,
   id: record.id,
   projectId: record.projectId,
   source: record.source,
@@ -56,6 +64,7 @@ const mapDocument = (record: typeof projectDocuments.$inferSelect): ProjectDocum
 
 const createProjectsService = (config: AuthConfig) => {
   const db = getDb(config);
+  const jobStore = createJobStore(config);
 
   const listProjects = async (userId: string): Promise<Project[]> => {
     const rows = await db
@@ -63,7 +72,6 @@ const createProjectsService = (config: AuthConfig) => {
       .from(projects)
       .where(eq(projects.createdByUserId, userId))
       .orderBy(asc(projects.createdAt));
-
     return rows.map(mapProject);
   };
 
@@ -78,15 +86,19 @@ const createProjectsService = (config: AuthConfig) => {
       return null;
     }
 
-    const documentRows = await db
-      .select()
-      .from(projectDocuments)
-      .where(eq(projectDocuments.projectId, projectId))
-      .orderBy(asc(projectDocuments.createdAt));
+    const [documentRows, jobRows] = await Promise.all([
+      db
+        .select()
+        .from(projectDocuments)
+        .where(eq(projectDocuments.projectId, projectId))
+        .orderBy(asc(projectDocuments.createdAt)),
+      jobStore.listJobsForProject(userId, projectId),
+    ]);
 
     return {
       ...mapProject(projectRow),
       documents: documentRows.map(mapDocument),
+      jobs: jobRows,
     };
   };
 
@@ -95,17 +107,14 @@ const createProjectsService = (config: AuthConfig) => {
     data: { name: string; summary?: string; sourceType?: ProjectSourceType },
   ): Promise<Project> => {
     const name = data.name.trim();
-
-    if (name.length === 0) {
+    if (!name) {
       throw new AuthError(400, 'invalid_name', 'Project name is required.');
     }
-
     if (name.length > 120) {
       throw new AuthError(400, 'invalid_name', 'Project name must be 120 characters or fewer.');
     }
 
     const sourceType = data.sourceType ?? 'manual';
-
     if (!PROJECT_SOURCE_TYPES.has(sourceType)) {
       throw new AuthError(400, 'invalid_source_type', 'The source type is not supported.');
     }
@@ -113,13 +122,7 @@ const createProjectsService = (config: AuthConfig) => {
     const now = new Date();
     const baseSlug = normalizeSlug(name);
     let slug = baseSlug;
-
-    const [existing] = await db
-      .select({ slug: projects.slug })
-      .from(projects)
-      .where(eq(projects.slug, slug))
-      .limit(1);
-
+    const [existing] = await db.select({ slug: projects.slug }).from(projects).where(eq(projects.slug, slug)).limit(1);
     if (existing) {
       slug = `${baseSlug}-${randomUUID().slice(0, 8)}`;
     }
@@ -152,37 +155,24 @@ const createProjectsService = (config: AuthConfig) => {
       .from(projects)
       .where(and(eq(projects.id, projectId), eq(projects.createdByUserId, userId)))
       .limit(1);
-
     if (!existing) {
       throw new AuthError(404, 'project_not_found', 'The project could not be found.');
     }
 
-    const updates: Partial<typeof projects.$inferInsert> = {
-      updatedAt: new Date(),
-    };
-
+    const updates: Partial<typeof projects.$inferInsert> = { updatedAt: new Date() };
     if (data.name !== undefined) {
       const trimmedName = data.name.trim();
-
-      if (trimmedName.length === 0) {
+      if (!trimmedName) {
         throw new AuthError(400, 'invalid_name', 'Project name is required.');
       }
-
-      if (trimmedName.length > 120) {
-        throw new AuthError(400, 'invalid_name', 'Project name must be 120 characters or fewer.');
-      }
-
       updates.name = trimmedName;
     }
-
     if (data.status !== undefined) {
       if (!PROJECT_STATUSES.has(data.status)) {
         throw new AuthError(400, 'invalid_status', 'The status value is not supported.');
       }
-
       updates.status = data.status;
     }
-
     if (data.summary !== undefined) {
       updates.summary = data.summary;
     }
@@ -192,21 +182,18 @@ const createProjectsService = (config: AuthConfig) => {
       .set(updates)
       .where(and(eq(projects.id, projectId), eq(projects.createdByUserId, userId)))
       .returning();
-
     return mapProject(updated);
   };
 
-  const deleteProject = async (userId: string, projectId: string): Promise<void> => {
+  const deleteProject = async (userId: string, projectId: string) => {
     const [existing] = await db
       .select()
       .from(projects)
       .where(and(eq(projects.id, projectId), eq(projects.createdByUserId, userId)))
       .limit(1);
-
     if (!existing) {
       throw new AuthError(404, 'project_not_found', 'The project could not be found.');
     }
-
     await db.delete(projects).where(eq(projects.id, projectId));
   };
 
@@ -215,42 +202,35 @@ const createProjectsService = (config: AuthConfig) => {
     projectId: string,
     data: {
       contentMarkdown: string;
-      documentType: ProjectDocument['documentType'];
+      documentType: ProjectDocumentType;
       source?: string;
       status?: ProjectDocumentStatus;
       title: string;
     },
-  ): Promise<ProjectDocument> => {
+  ) => {
     const [project] = await db
       .select()
       .from(projects)
       .where(and(eq(projects.id, projectId), eq(projects.createdByUserId, userId)))
       .limit(1);
-
     if (!project) {
       throw new AuthError(404, 'project_not_found', 'The project could not be found.');
     }
-
-    const documentType = data.documentType;
-    const status = data.status ?? 'active';
-
-    if (!DOCUMENT_TYPES.has(documentType)) {
+    if (!DOCUMENT_TYPES.has(data.documentType)) {
       throw new AuthError(400, 'invalid_document_type', 'The document type is not supported.');
     }
-
+    const status = data.status ?? 'active';
     if (!DOCUMENT_STATUSES.has(status)) {
       throw new AuthError(400, 'invalid_document_status', 'The document status is not supported.');
     }
-
     const now = new Date();
-
     const [created] = await db
       .insert(projectDocuments)
       .values({
         contentMarkdown: data.contentMarkdown,
         createdAt: now,
         createdByUserId: userId,
-        documentType,
+        documentType: data.documentType,
         id: randomUUID(),
         projectId,
         source: data.source ?? 'manual',
@@ -259,18 +239,10 @@ const createProjectsService = (config: AuthConfig) => {
         updatedAt: now,
       })
       .returning();
-
     return mapDocument(created);
   };
 
-  return {
-    createDocument,
-    createProject,
-    deleteProject,
-    getProject,
-    listProjects,
-    updateProject,
-  };
+  return { createDocument, createProject, deleteProject, getProject, listProjects, updateProject };
 };
 
 export { createProjectsService };

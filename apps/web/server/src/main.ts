@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { Express, NextFunction, Request, Response } from 'express';
 
 import { createGatewayApp } from './gateway.js';
+import { createRealtimeServer } from './realtime/socket.js';
 
 type ApiModule = {
   appPromise?: Promise<Express>;
@@ -69,9 +70,11 @@ const bootstrap = async () => {
     astroRequestHandler,
   });
 
-  app.listen(port, host, () => {
+  const httpServer = app.listen(port, host, () => {
     console.log(`[ ready ] http://${host}:${port}`);
   });
+
+  createRealtimeServer(httpServer);
 };
 
 bootstrap().catch((error: unknown) => {

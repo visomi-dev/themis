@@ -16,6 +16,8 @@ type AuthConfig = {
   mailgunUrl: string | undefined;
   pinExpiryMinutes: number;
   pinResendCooldownSeconds: number;
+  redisUrl: string;
+  realtimePath: string;
   sessionMaxAgeMs: number;
   sessionSecret: string;
 };
@@ -44,6 +46,8 @@ const getAuthConfig = (): AuthConfig => {
     mailgunUrl: process.env['MAILGUN_URL'],
     pinExpiryMinutes: Number(process.env['PIN_EXPIRY_MINUTES'] ?? '10'),
     pinResendCooldownSeconds: Number(process.env['PIN_RESEND_COOLDOWN_SECONDS'] ?? '45'),
+    redisUrl: process.env['REDIS_URL'] ?? 'redis://127.0.0.1:6379',
+    realtimePath: process.env['REALTIME_PATH'] ?? '/socket.io',
     sessionMaxAgeMs: Number(process.env['SESSION_MAX_AGE_MS'] ?? String(1000 * 60 * 60 * 24 * 7)),
     sessionSecret: process.env['SESSION_SECRET'] ?? 'themis-dev-session-secret',
   };

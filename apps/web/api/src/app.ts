@@ -1,16 +1,16 @@
-import connectPgSimple from 'connect-pg-simple';
 import express, { json, type Express, type NextFunction, type Request, type Response } from 'express';
-import session, { MemoryStore } from 'express-session';
 import morgan from 'morgan';
 import passport from 'passport';
 
-import { getAuthConfig } from './lib/config/auth-config.js';
 import { buildActivationRouter } from './lib/activation/activation-router.js';
-import { buildProjectsRouter } from './lib/projects/projects-router.js';
+import { createSessionMiddleware, createSessionStore } from './lib/session/session.js';
 import { buildAuthRouter } from './lib/auth/auth-router.js';
 import { configurePassport } from './lib/auth/passport.js';
+import { getAuthConfig } from './lib/config/auth-config.js';
 import { runMigrationsIfEnabled } from './lib/db/migrate.js';
 import { getPool } from './lib/db/pool.js';
+import { createProjectSeedService } from './lib/jobs/project-seed-service.js';
+import { buildProjectsRouter } from './lib/projects/projects-router.js';
 import { buildTestRouter } from './lib/testing/test-router.js';
 
 let appPromise: Promise<Express> | undefined;
@@ -22,34 +22,15 @@ const buildApp = async () => {
 
   await runMigrationsIfEnabled(config);
   configurePassport();
+  createProjectSeedService(config).ensureWorker();
 
   const app = express();
-  const sessionStore =
-    config.databaseDriver === 'memory'
-      ? new MemoryStore()
-      : new (connectPgSimple(session))({
-          pool: getPool(config),
-          createTableIfMissing: true,
-          tableName: 'user_sessions',
-        });
+  const sessionStore = createSessionStore(config, config.databaseDriver === 'pg' ? getPool(config) : undefined);
+  const sessionMiddleware = createSessionMiddleware(config, sessionStore);
 
   app.use(json());
   app.use(morgan(morganFormat));
-  app.use(
-    session({
-      cookie: {
-        httpOnly: true,
-        maxAge: config.sessionMaxAgeMs,
-        sameSite: 'lax',
-        secure: config.cookieSecure,
-      },
-      resave: false,
-      rolling: true,
-      saveUninitialized: false,
-      secret: config.sessionSecret,
-      store: sessionStore,
-    }),
-  );
+  app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -92,7 +73,6 @@ const buildApp = async () => {
 
 const createApp = () => {
   appPromise ??= buildApp();
-
   return appPromise;
 };
 

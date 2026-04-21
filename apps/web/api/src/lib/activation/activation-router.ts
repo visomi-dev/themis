@@ -1,7 +1,6 @@
 import { Router, type NextFunction, type Request, type Response } from 'express';
 
 import type { AuthConfig } from '../config/auth-config.js';
-
 import { AuthError } from '../auth/auth-errors.js';
 
 import { createActivationService } from './activation-service.js';
@@ -39,6 +38,13 @@ const requireAuthenticatedUser = (req: Request, _res: Response, next: NextFuncti
 
   next();
 };
+const authenticatedUserId = (req: Request) => {
+  if (!req.user) {
+    throw new AuthError(401, 'authentication_required', 'Sign in to access activation settings.');
+  }
+
+  return req.user.id;
+};
 
 const buildActivationRouter = (config: AuthConfig) => {
   const router = Router();
@@ -47,12 +53,12 @@ const buildActivationRouter = (config: AuthConfig) => {
   router.use(requireAuthenticatedUser);
 
   router.get('/', async (req, res) => {
-    res.send(await service.getActivationState(req.user.id));
+    res.send(await service.getActivationState(authenticatedUserId(req)));
   });
 
   router.post('/api-keys', async (req, res) => {
     const label = asNonEmptyString(req.body?.label, 'label');
-    const key = await service.createApiKey(req.user.id, label);
+    const key = await service.createApiKey(authenticatedUserId(req), label);
 
     res.status(201).send(key);
   });
@@ -61,14 +67,14 @@ const buildActivationRouter = (config: AuthConfig) => {
     const milestone = asNonEmptyString(req.body?.milestone, 'milestone') as ActivationMilestone;
     const metadata = readMetadata(req.body?.metadata);
 
-    await service.recordMilestone(req.user.id, milestone, metadata);
+    await service.recordMilestone(authenticatedUserId(req), milestone, metadata);
 
     res.status(204).send();
   });
 
   router.post('/api-keys/:apiKeyId/revoke', async (req, res) => {
     const apiKeyId = asNonEmptyString(req.params.apiKeyId, 'apiKeyId');
-    await service.revokeApiKey(req.user.id, apiKeyId);
+    await service.revokeApiKey(authenticatedUserId(req), apiKeyId);
     res.status(204).send();
   });
 

@@ -5,7 +5,6 @@ import { desc, eq } from 'drizzle-orm';
 import type { AuthConfig } from '../config/auth-config.js';
 import { getDb } from '../db/client.js';
 import { apiKeys, userActivationMilestones } from '../db/schema.js';
-
 import { hashSecret } from '../auth/auth-crypto.js';
 import { AuthError } from '../auth/auth-errors.js';
 
@@ -45,11 +44,7 @@ const createActivationService = (config: AuthConfig) => {
   const db = getDb(config);
 
   const getActivationState = async (userId: string): Promise<ActivationState> => {
-    const keyRows = await db
-      .select()
-      .from(apiKeys)
-      .where(eq(apiKeys.userId, userId))
-      .orderBy(desc(apiKeys.createdAt));
+    const keyRows = await db.select().from(apiKeys).where(eq(apiKeys.userId, userId)).orderBy(desc(apiKeys.createdAt));
 
     const milestoneRows = await db
       .select({ milestone: userActivationMilestones.milestone })
@@ -120,11 +115,7 @@ const createActivationService = (config: AuthConfig) => {
   };
 
   const revokeApiKey = async (userId: string, apiKeyId: string) => {
-    const [existingKey] = await db
-      .select()
-      .from(apiKeys)
-      .where(eq(apiKeys.id, apiKeyId))
-      .limit(1);
+    const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
 
     if (!existingKey || existingKey.userId !== userId || existingKey.revokedAt) {
       throw new AuthError(404, 'api_key_not_found', 'The API key could not be found.');

@@ -87,7 +87,7 @@ export const verifyLatestCode = async (
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 
   await expect(page).toHaveURL(appUrlPattern);
-  await expect(page.getByRole('heading', { name: /Workspace access confirmed/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
   await waitForAuthenticatedSession(page, email);
 };
 

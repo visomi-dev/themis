@@ -19,7 +19,9 @@ export class Activation {
   }
 
   async recordMilestone(milestone: ActivationMilestone, metadata?: Record<string, string | null>) {
-    await firstValueFrom(this.http.post('/api/activation/milestones', { metadata, milestone }, { responseType: 'text' }));
+    await firstValueFrom(
+      this.http.post('/api/activation/milestones', { metadata, milestone }, { responseType: 'text' }),
+    );
   }
 
   async revokeApiKey(apiKeyId: string) {

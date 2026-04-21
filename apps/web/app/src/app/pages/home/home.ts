@@ -8,7 +8,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 
 import { Activation } from '../../shared/activation/activation';
-import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from '../../shared/activation/activation.models';
+import type {
+  ActivationApiKey,
+  ActivationMilestone,
+  ActivationState,
+  CreatedApiKey,
+} from '../../shared/activation/activation.models';
 import { Auth } from '../../shared/auth/auth';
 import { PROJECTS_URL, SIGN_IN_URL } from '../../shared/constants/routes';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';

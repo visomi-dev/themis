@@ -3,7 +3,7 @@
     <header class="mb-12 text-center">
       <div class="inline-flex items-center gap-3">
         <p class="font-display text-on-surface text-2xl font-bold tracking-tight">Themis</p>
-        <span class="h-4 w-px bg-outline-variant/30"></span>
+        <span class="bg-outline-variant/30 h-4 w-px"></span>
         <p class="text-on-surface-variant text-[12px] tracking-[0.18em] uppercase">v1.0.2_STABLE</p>
       </div>
 
@@ -44,12 +44,16 @@
           <section class="auth-panel rounded-xl p-6 md:p-8">
             <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
               <div>
-                <label class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-[0.2em] uppercase">
+                <label
+                  class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-[0.2em] uppercase"
+                  for="activation-api-key-label"
+                >
                   Named API access keys
                 </label>
 
                 <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="grid gap-3 md:grid-cols-[1fr_auto]">
                   <input
+                    id="activation-api-key-label"
                     pInputText
                     type="text"
                     formControlName="label"
@@ -127,7 +131,7 @@
           </div>
 
           <section class="auth-panel overflow-hidden rounded-xl">
-            <div class="activation-tab-strip flex flex-wrap border-b border-outline-variant/10">
+            <div class="activation-tab-strip border-outline-variant/10 flex flex-wrap border-b">
               <button
                 type="button"
                 class="activation-tab"
@@ -180,7 +184,9 @@
           <section class="auth-panel rounded-xl p-6 md:p-8">
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p class="text-on-surface-variant text-[11px] font-semibold tracking-[0.2em] uppercase">System seed prompt</p>
+                <p class="text-on-surface-variant text-[11px] font-semibold tracking-[0.2em] uppercase">
+                  System seed prompt
+                </p>
                 <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
                   Use this prompt inside OpenCode to analyze the repository and seed the first project context into
                   Themis.
@@ -196,7 +202,9 @@
           </section>
         </section>
 
-        <footer class="border-outline-variant/10 flex flex-col gap-6 border-t pt-8 md:flex-row md:items-center md:justify-between">
+        <footer
+          class="border-outline-variant/10 flex flex-col gap-6 border-t pt-8 md:flex-row md:items-center md:justify-between"
+        >
           <div class="flex items-center gap-3">
             <span class="bg-tertiary h-2 w-2 rounded-full"></span>
             <span class="text-on-surface-variant font-mono text-[10px] tracking-[0.15em] uppercase">
@@ -223,7 +231,13 @@
               Skip for now
             </button>
 
-            <button pButton type="button" class="w-full sm:w-auto" [disabled]="continuing()" (click)="continueToProjects()">
+            <button
+              pButton
+              type="button"
+              class="w-full sm:w-auto"
+              [disabled]="continuing()"
+              (click)="continueToProjects()"
+            >
               Continue to projects
             </button>
           </div>

@@ -1,9 +1,8 @@
+import type { AsyncJobRecord } from '../realtime/realtime-events.js';
+
 type ProjectSourceType = 'imported' | 'manual' | 'seeded';
-
 type ProjectStatus = 'active' | 'archived' | 'draft';
-
 type ProjectDocumentType = 'architecture' | 'brief' | 'imported_reference' | 'operational_notes' | 'overview' | 'setup';
-
 type ProjectDocumentStatus = 'active' | 'archived' | 'draft';
 
 type ProjectDocument = {
@@ -33,6 +32,7 @@ type Project = {
 
 type ProjectWithDocuments = Project & {
   documents: ProjectDocument[];
+  jobs: AsyncJobRecord[];
 };
 
 export type {

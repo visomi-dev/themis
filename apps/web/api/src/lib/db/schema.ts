@@ -52,16 +52,6 @@ const userActivationMilestones = pgTable('user_activation_milestones', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-const userActivationMilestones = pgTable('user_activation_milestones', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  milestone: text('milestone').notNull(),
-  metadataJson: text('metadata_json'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-});
-
 const projects = pgTable('projects', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -93,4 +83,21 @@ const projectDocuments = pgTable('project_documents', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-export { apiKeys, authVerificationChallenges, projectDocuments, projects, userActivationMilestones, users };
+const asyncJobs = pgTable('async_jobs', {
+  id: text('id').primaryKey(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
+  type: text('type').notNull(),
+  status: text('status').notNull(),
+  progress: integer('progress').default(0).notNull(),
+  inputJson: text('input_json'),
+  resultJson: text('result_json'),
+  errorMessage: text('error_message'),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export { apiKeys, asyncJobs, authVerificationChallenges, projectDocuments, projects, userActivationMilestones, users };

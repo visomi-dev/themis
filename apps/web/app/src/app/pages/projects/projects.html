@@ -30,9 +30,7 @@
       </section>
     } @else {
       <section class="mb-6 flex justify-end">
-        <a [routerLink]="projectNewUrl" pButton type="button">
-          New project
-        </a>
+        <a [routerLink]="projectNewUrl" pButton type="button"> New project </a>
       </section>
 
       @if (projects().length === 0) {
@@ -47,13 +45,15 @@
                 <div class="min-w-0">
                   <div class="flex flex-wrap items-center gap-2">
                     <a
-                      class="font-display text-on-surface text-xl font-bold tracking-tight hover:text-primary"
+                      class="font-display text-on-surface hover:text-primary text-xl font-bold tracking-tight"
                       [routerLink]="['/projects', project.id]"
                     >
                       {{ project.name }}
                     </a>
 
-                    <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                    <span
+                      class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase"
+                    >
                       {{ statusLabel(project.status) }}
                     </span>
                   </div>
@@ -68,7 +68,13 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                  <a [routerLink]="['/projects', project.id]" pButton type="button" severity="secondary" [outlined]="true">
+                  <a
+                    [routerLink]="['/projects', project.id]"
+                    pButton
+                    type="button"
+                    severity="secondary"
+                    [outlined]="true"
+                  >
                     View
                   </a>
 

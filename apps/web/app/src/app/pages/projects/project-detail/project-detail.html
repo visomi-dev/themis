@@ -12,7 +12,9 @@
       <header class="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div class="space-y-2">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+            <span
+              class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase"
+            >
               {{ statusLabel(project()!.status) }}
             </span>
             <span class="text-on-surface-variant text-xs">{{ project()!.sourceType }}</span>
@@ -31,14 +33,37 @@
 
         <div class="flex items-center gap-3">
           <app-theme-switcher />
-
-          <a [routerLink]="projectsUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline">
-            Projects
-          </a>
-
+          <a [routerLink]="projectsUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline"
+            >Projects</a
+          >
           <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
         </div>
       </header>
+
+      <section class="auth-panel mb-8 rounded-xl p-6 md:p-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Project seed</h2>
+            <p class="text-on-surface-variant mt-2 text-sm leading-relaxed">
+              Start the base seed job to create the initial project context and overview document.
+            </p>
+          </div>
+
+          <button pButton type="button" [disabled]="seeding()" (click)="runSeed()">Run project seed</button>
+        </div>
+
+        @if (currentSeedJob()) {
+          <div class="project-seed-status mt-5 rounded-lg p-4">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <p class="text-on-surface text-sm font-semibold">{{ currentSeedJob()!.status }}</p>
+              <p class="text-on-surface-variant text-xs">{{ currentSeedJob()!.progress }}% complete</p>
+            </div>
+            @if (currentSeedJob()!.errorMessage) {
+              <p class="text-error mt-2 text-sm">{{ currentSeedJob()!.errorMessage }}</p>
+            }
+          </div>
+        }
+      </section>
 
       <section>
         <div class="mb-6 flex items-center justify-between">
@@ -47,7 +72,9 @@
 
         @if (project()!.documents.length === 0) {
           <section class="auth-panel rounded-xl p-6 md:p-8">
-            <p class="text-on-surface-variant text-sm">No documents yet. Documents can be added through the MCP integration once configured.</p>
+            <p class="text-on-surface-variant text-sm">
+              No documents yet. Run the seed job to create the first overview.
+            </p>
           </section>
         } @else {
           <section class="space-y-3">
@@ -57,8 +84,9 @@
                   <div class="min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
                       <h3 class="text-on-surface text-base font-semibold">{{ doc.title }}</h3>
-
-                      <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                      <span
+                        class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase"
+                      >
                         {{ documentTypeLabel(doc.documentType) }}
                       </span>
                     </div>

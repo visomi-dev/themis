@@ -1,15 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import {
-  createCredentials,
-  registerAndAuthenticate,
-} from '../support/auth';
-import {
-  appUrlPattern,
-  projectsUrlPattern,
-  projectsRoute,
-  signInUrlPattern,
-} from '../support/routes';
+import { createCredentials, registerAndAuthenticate } from '../support/auth';
+import { appUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 test.describe('/app (first-run activation)', () => {
   test('shows activation screen after auth instead of the old placeholder', async ({ page, request }) => {
@@ -36,10 +28,9 @@ test.describe('/app (first-run activation)', () => {
 
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
 
-    const generateButton = page.getByRole('button', { name: /Generate key/i });
-    await generateButton.click();
+    await page.getByRole('button', { name: /Generate key/i }).click();
 
-    await expect(page.getByText(/thm_/)).toBeVisible();
+    await expect(page.locator('.activation-mask-panel p.font-mono').first()).toContainText('thm_');
   });
 
   test('shows workspace configuration section with copyable config', async ({ page, request }) => {
@@ -48,7 +39,7 @@ test.describe('/app (first-run activation)', () => {
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
 
     await expect(page.getByRole('heading', { name: /Workspace configuration/i })).toBeVisible();
-    await expect(page.getByText('~/.config/themis/core.json')).toBeVisible();
+    await expect(page.getByRole('button', { name: '~/.config/themis/core.json' })).toBeVisible();
   });
 
   test('shows seed configuration section', async ({ page, request }) => {
