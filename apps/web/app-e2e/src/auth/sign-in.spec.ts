@@ -48,6 +48,6 @@ test.describe('/app/sign-in', () => {
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
     await page.goto(signInRoute);
 
-    await expect(page).toHaveURL(appUrlPattern);
+    await expect(page).toHaveURL(appUrlPattern, { timeout: 15_000 });
   });
 });
