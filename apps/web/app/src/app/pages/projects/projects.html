@@ -1,0 +1,92 @@
+<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
+  <section class="mx-auto max-w-5xl py-6 md:py-10">
+    <header class="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div class="space-y-2">
+        <p class="font-display text-on-surface text-sm font-bold tracking-[0.18em] uppercase">Themis</p>
+        <h1 class="font-display text-on-surface text-4xl font-extrabold tracking-tighter md:text-5xl">Projects</h1>
+        <p class="text-on-surface-variant mt-1 max-w-xl text-sm leading-relaxed">
+          Software projects registered in Themis.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <app-theme-switcher />
+
+        <a [routerLink]="activationUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline">
+          Activation
+        </a>
+
+        <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
+      </div>
+    </header>
+
+    @if (errorMessage()) {
+      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
+    }
+
+    @if (loading()) {
+      <section class="auth-panel rounded-xl p-6 md:p-8">
+        <p class="text-on-surface-variant text-sm">Loading projects…</p>
+      </section>
+    } @else {
+      <section class="mb-6 flex justify-end">
+        <a [routerLink]="projectNewUrl" pButton type="button">
+          New project
+        </a>
+      </section>
+
+      @if (projects().length === 0) {
+        <section class="auth-panel rounded-xl p-6 md:p-8">
+          <p class="text-on-surface-variant text-sm">No projects yet. Create the first one to get started.</p>
+        </section>
+      } @else {
+        <section class="space-y-3">
+          @for (project of projects(); track project.id) {
+            <article class="auth-panel rounded-xl p-5">
+              <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <a
+                      class="font-display text-on-surface text-xl font-bold tracking-tight hover:text-primary"
+                      [routerLink]="['/projects', project.id]"
+                    >
+                      {{ project.name }}
+                    </a>
+
+                    <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                      {{ statusLabel(project.status) }}
+                    </span>
+                  </div>
+
+                  @if (project.summary) {
+                    <p class="text-on-surface-variant mt-1 text-sm">{{ project.summary }}</p>
+                  }
+
+                  <p class="text-on-surface-variant mt-2 text-xs">
+                    {{ project.sourceType }} · Created {{ formatDate(project.createdAt) }}
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <a [routerLink]="['/projects', project.id]" pButton type="button" severity="secondary" [outlined]="true">
+                    View
+                  </a>
+
+                  <button
+                    pButton
+                    type="button"
+                    severity="secondary"
+                    [outlined]="true"
+                    (click)="deleteProject(project.id, $event)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </section>
+      }
+    }
+  </section>
+</main>

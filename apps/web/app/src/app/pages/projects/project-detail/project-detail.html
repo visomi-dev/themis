@@ -1,0 +1,82 @@
+<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
+  <section class="mx-auto max-w-5xl py-6 md:py-10">
+    @if (errorMessage()) {
+      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
+    }
+
+    @if (loading()) {
+      <section class="auth-panel rounded-xl p-6 md:p-8">
+        <p class="text-on-surface-variant text-sm">Loading project…</p>
+      </section>
+    } @else if (project()) {
+      <header class="mb-10 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+              {{ statusLabel(project()!.status) }}
+            </span>
+            <span class="text-on-surface-variant text-xs">{{ project()!.sourceType }}</span>
+          </div>
+
+          <h1 class="font-display text-on-surface text-4xl font-extrabold tracking-tighter md:text-5xl">
+            {{ project()!.name }}
+          </h1>
+
+          @if (project()!.summary) {
+            <p class="text-on-surface-variant mt-1 max-w-2xl text-base leading-relaxed">{{ project()!.summary }}</p>
+          }
+
+          <p class="text-on-surface-variant mt-2 text-xs">Created {{ formatDate(project()!.createdAt) }}</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <app-theme-switcher />
+
+          <a [routerLink]="projectsUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline">
+            Projects
+          </a>
+
+          <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
+        </div>
+      </header>
+
+      <section>
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Documents</h2>
+        </div>
+
+        @if (project()!.documents.length === 0) {
+          <section class="auth-panel rounded-xl p-6 md:p-8">
+            <p class="text-on-surface-variant text-sm">No documents yet. Documents can be added through the MCP integration once configured.</p>
+          </section>
+        } @else {
+          <section class="space-y-3">
+            @for (doc of project()!.documents; track doc.id) {
+              <article class="auth-panel rounded-xl p-5">
+                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-on-surface text-base font-semibold">{{ doc.title }}</h3>
+
+                      <span class="text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                        {{ documentTypeLabel(doc.documentType) }}
+                      </span>
+                    </div>
+
+                    <p class="text-on-surface-variant mt-1 text-xs">
+                      {{ doc.source }} · {{ formatDate(doc.createdAt) }}
+                    </p>
+
+                    @if (doc.contentMarkdown) {
+                      <p class="text-on-surface-variant mt-3 line-clamp-3 text-sm">{{ doc.contentMarkdown }}</p>
+                    }
+                  </div>
+                </div>
+              </article>
+            }
+          </section>
+        }
+      </section>
+    }
+  </section>
+</main>

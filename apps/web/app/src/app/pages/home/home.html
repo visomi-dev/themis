@@ -1,50 +1,234 @@
 <main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
-  <section class="mx-auto grid min-h-[calc(100dvh-2rem)] max-w-6xl content-center gap-8 md:min-h-[calc(100dvh-3rem)]">
-    <section class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-      <div class="space-y-4">
-        <p class="font-display text-on-surface text-sm font-bold tracking-[0.18em] uppercase" i18n="@@homeBrand">
-          Themis
-        </p>
-        <div>
-          <h1
-            class="font-display text-on-surface text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
-            i18n="@@homeTitle"
-          >
-            Workspace access confirmed.
-          </h1>
-
-          <p class="text-on-surface-variant mt-4 max-w-3xl text-lg leading-relaxed" i18n="@@homeDescription">
-            Your authenticated application shell is now aligned with the same visual system as the public site and the
-            sign-in flow.
-          </p>
-        </div>
+  <section class="mx-auto max-w-5xl py-6 md:py-12">
+    <header class="mb-12 text-center">
+      <div class="inline-flex items-center gap-3">
+        <p class="font-display text-on-surface text-2xl font-bold tracking-tight">Themis</p>
+        <span class="h-4 w-px bg-outline-variant/30"></span>
+        <p class="text-on-surface-variant text-[12px] tracking-[0.18em] uppercase">v1.0.2_STABLE</p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="mt-6 flex justify-center gap-3">
         <app-theme-switcher />
-
-        <button
-          pButton
-          type="button"
-          severity="secondary"
-          [outlined]="true"
-          (click)="signOut()"
-          i18n="@@homeSignOutButton"
-        >
-          Sign out
-        </button>
+        <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
       </div>
-    </section>
 
-    <section class="auth-panel rounded-xl p-6 md:p-8">
-      <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase" i18n="@@homeSessionKicker">
-        Active session
+      <h1 class="font-display text-on-surface mt-8 text-4xl font-extrabold tracking-tighter md:text-5xl">
+        System activation
+      </h1>
+      <p class="text-on-surface-variant mx-auto mt-3 max-w-2xl text-sm leading-relaxed md:text-base">
+        Configure your API key, local workspace settings, and project seed prompt before entering the first projects
+        surface.
       </p>
-      <h2 class="font-display text-on-surface mt-4 text-3xl font-bold tracking-tight">{{ user()?.email }}</h2>
-      <p class="text-on-surface-variant mt-4 max-w-3xl text-base leading-relaxed" i18n="@@homeSessionDescription">
-        This route is protected by the backend session established only after password validation and email PIN
-        verification.
-      </p>
-    </section>
+    </header>
+
+    @if (errorMessage()) {
+      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
+    }
+
+    @if (copyMessage()) {
+      <p-message class="mb-6 block" severity="success">{{ copyMessage() }}</p-message>
+    }
+
+    @if (loading()) {
+      <section class="auth-panel rounded-xl p-6 md:p-8">
+        <p class="text-on-surface-variant text-sm">Loading activation settings…</p>
+      </section>
+    } @else {
+      <div class="space-y-10">
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">01</span>
+            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">API infrastructure</h2>
+          </div>
+
+          <section class="auth-panel rounded-xl p-6 md:p-8">
+            <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+              <div>
+                <label class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-[0.2em] uppercase">
+                  Named API access keys
+                </label>
+
+                <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="grid gap-3 md:grid-cols-[1fr_auto]">
+                  <input
+                    pInputText
+                    type="text"
+                    formControlName="label"
+                    placeholder="Production workspace key"
+                    class="w-full"
+                  />
+
+                  <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
+                </form>
+
+                @if (generatedKey()) {
+                  <div class="activation-mask-panel mt-4 rounded-lg p-4">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p class="text-on-surface text-sm font-semibold">{{ generatedKey()?.label }}</p>
+                        <p class="text-on-surface-variant mt-1 font-mono text-xs break-all">
+                          {{ generatedKey()?.plaintextToken }}
+                        </p>
+                      </div>
+
+                      <button pButton type="button" severity="secondary" [outlined]="true" (click)="copyGeneratedKey()">
+                        Copy key
+                      </button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="activation-mask-panel mt-4 rounded-lg px-4 py-5 font-mono text-sm italic">
+                    ••••••••••••••••••••••••••••••••••••
+                  </div>
+                }
+
+                <div class="mt-4 grid gap-3">
+                  @for (apiKey of activationState()?.apiKeys ?? []; track apiKey.id) {
+                    <article class="activation-key-row rounded-lg px-4 py-4">
+                      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <p class="text-on-surface text-sm font-semibold">{{ apiKey.label }}</p>
+                          <p class="text-on-surface-variant mt-1 font-mono text-xs">
+                            {{ apiKey.tokenPrefix }}… created {{ keyCreatedAtLabel(apiKey) }}
+                          </p>
+                        </div>
+
+                        <button
+                          pButton
+                          type="button"
+                          severity="secondary"
+                          [outlined]="true"
+                          [disabled]="revokingKeyId() === apiKey.id"
+                          (click)="revokeApiKey(apiKey.id)"
+                        >
+                          Revoke
+                        </button>
+                      </div>
+                    </article>
+                  }
+                </div>
+              </div>
+
+              <div class="activation-warning rounded-lg p-4">
+                <p class="text-on-surface text-xs font-black tracking-[0.18em] uppercase">Caution</p>
+                <p class="text-on-surface-variant mt-2 text-sm leading-relaxed">
+                  Each key is displayed only once at creation time. Copy it immediately and store it in your environment
+                  vault before leaving this screen.
+                </p>
+                <p class="text-on-surface-variant mt-4 text-sm">Signed in as {{ user()?.email }}</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">02</span>
+            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Workspace configuration</h2>
+          </div>
+
+          <section class="auth-panel overflow-hidden rounded-xl">
+            <div class="activation-tab-strip flex flex-wrap border-b border-outline-variant/10">
+              <button
+                type="button"
+                class="activation-tab"
+                [class.activation-tab-active]="selectedConfigTab() === 'themis'"
+                (click)="selectConfigTab('themis')"
+              >
+                ~/.config/themis/core.json
+              </button>
+              <button
+                type="button"
+                class="activation-tab"
+                [class.activation-tab-active]="selectedConfigTab() === 'opencode'"
+                (click)="selectConfigTab('opencode')"
+              >
+                ~/.config/opencode/opencode.json
+              </button>
+              <button
+                type="button"
+                class="activation-tab"
+                [class.activation-tab-active]="selectedConfigTab() === 'env'"
+                (click)="selectConfigTab('env')"
+              >
+                .env.production
+              </button>
+            </div>
+
+            <div class="activation-code-panel p-6">
+              <div class="flex items-center justify-between gap-4">
+                <p class="text-on-surface-variant font-mono text-xs">{{ currentConfigPath() }}</p>
+                <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySelectedConfig()">
+                  Copy config
+                </button>
+              </div>
+
+              <pre class="activation-code-block mt-5">{{ currentConfigText() }}</pre>
+            </div>
+          </section>
+
+          <p class="text-on-surface-variant mt-4 text-right text-[11px] italic">
+            Local workspace setup is ready now. Transport-level MCP wiring can be added as a later backend slice.
+          </p>
+        </section>
+
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">03</span>
+            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Seed configuration</h2>
+          </div>
+
+          <section class="auth-panel rounded-xl p-6 md:p-8">
+            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p class="text-on-surface-variant text-[11px] font-semibold tracking-[0.2em] uppercase">System seed prompt</p>
+                <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
+                  Use this prompt inside OpenCode to analyze the repository and seed the first project context into
+                  Themis.
+                </p>
+              </div>
+
+              <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySeedPrompt()">
+                Copy prompt
+              </button>
+            </div>
+
+            <pre class="activation-prompt mt-5">{{ activationState()?.seedPrompt }}</pre>
+          </section>
+        </section>
+
+        <footer class="border-outline-variant/10 flex flex-col gap-6 border-t pt-8 md:flex-row md:items-center md:justify-between">
+          <div class="flex items-center gap-3">
+            <span class="bg-tertiary h-2 w-2 rounded-full"></span>
+            <span class="text-on-surface-variant font-mono text-[10px] tracking-[0.15em] uppercase">
+              @if (hasMilestone('activation_completed')) {
+                Activation completed
+              } @else if (hasMilestone('activation_skipped')) {
+                Activation skipped once
+              } @else {
+                Pending secure initialization
+              }
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              [outlined]="true"
+              class="w-full sm:w-auto"
+              [disabled]="continuing()"
+              (click)="skipForNow()"
+            >
+              Skip for now
+            </button>
+
+            <button pButton type="button" class="w-full sm:w-auto" [disabled]="continuing()" (click)="continueToProjects()">
+              Continue to projects
+            </button>
+          </div>
+        </footer>
+      </div>
+    }
   </section>
 </main>

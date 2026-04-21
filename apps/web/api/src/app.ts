@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import passport from 'passport';
 
 import { getAuthConfig } from './lib/config/auth-config.js';
+import { buildActivationRouter } from './lib/activation/activation-router.js';
+import { buildProjectsRouter } from './lib/projects/projects-router.js';
 import { buildAuthRouter } from './lib/auth/auth-router.js';
 import { configurePassport } from './lib/auth/passport.js';
 import { runMigrationsIfEnabled } from './lib/db/migrate.js';
@@ -60,6 +62,8 @@ const buildApp = async () => {
   });
 
   app.use('/auth', buildAuthRouter(config));
+  app.use('/activation', buildActivationRouter(config));
+  app.use('/projects', buildProjectsRouter(config));
 
   if (config.enableTestApi) {
     app.use('/test', buildTestRouter());
