@@ -20,6 +20,7 @@ module.exports = async function () {
       ENABLE_TEST_API: 'true',
       HOST: host,
       MAIL_TRANSPORT: 'memory',
+      NG_ALLOWED_HOSTS: host,
       PORT: String(port),
       SESSION_SECRET: 'themis-server-e2e-secret',
     },

@@ -2,12 +2,18 @@
   <section class="mx-auto grid min-h-[calc(100dvh-2rem)] max-w-6xl content-center gap-8 md:min-h-[calc(100dvh-3rem)]">
     <section class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
       <div class="space-y-4">
-        <p class="font-display text-on-surface text-sm font-bold tracking-[0.18em] uppercase">Themis</p>
+        <p class="font-display text-on-surface text-sm font-bold tracking-[0.18em] uppercase" i18n="@@homeBrand">
+          Themis
+        </p>
         <div>
-          <h1 class="font-display text-on-surface text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl">
+          <h1
+            class="font-display text-on-surface text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
+            i18n="@@homeTitle"
+          >
             Workspace access confirmed.
           </h1>
-          <p class="text-on-surface-variant mt-4 max-w-3xl text-lg leading-relaxed">
+
+          <p class="text-on-surface-variant mt-4 max-w-3xl text-lg leading-relaxed" i18n="@@homeDescription">
             Your authenticated application shell is now aligned with the same visual system as the public site and the
             sign-in flow.
           </p>
@@ -16,14 +22,26 @@
 
       <div class="flex items-center gap-3">
         <app-theme-switcher />
-        <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
+
+        <button
+          pButton
+          type="button"
+          severity="secondary"
+          [outlined]="true"
+          (click)="signOut()"
+          i18n="@@homeSignOutButton"
+        >
+          Sign out
+        </button>
       </div>
     </section>
 
     <section class="auth-panel rounded-xl p-6 md:p-8">
-      <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Active session</p>
+      <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase" i18n="@@homeSessionKicker">
+        Active session
+      </p>
       <h2 class="font-display text-on-surface mt-4 text-3xl font-bold tracking-tight">{{ user()?.email }}</h2>
-      <p class="text-on-surface-variant mt-4 max-w-3xl text-base leading-relaxed">
+      <p class="text-on-surface-variant mt-4 max-w-3xl text-base leading-relaxed" i18n="@@homeSessionDescription">
         This route is protected by the backend session established only after password validation and email PIN
         verification.
       </p>

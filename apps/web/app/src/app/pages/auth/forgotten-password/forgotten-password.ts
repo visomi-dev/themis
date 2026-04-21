@@ -10,6 +10,7 @@ import { Auth } from '../../../shared/auth/auth';
 import { SIGN_IN_URL } from '../../../shared/constants/routes';
 import { FormField } from '../../../shared/form/form-field/form-field';
 import { controlError } from '../../../shared/form/form-errors';
+import { LanguageSwitcher } from '../../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../../shared/layout/theme-switcher/theme-switcher';
 
@@ -25,6 +26,7 @@ type ForgottenPasswordForm = FormGroup<{
     ButtonModule,
     FormField,
     InputTextModule,
+    LanguageSwitcher,
     Logo,
     MessageModule,
     ReactiveFormsModule,
@@ -51,8 +53,8 @@ export class ForgottenPassword {
 
   emailError() {
     return controlError(this.form.controls.email, {
-      email: 'Enter a valid email address.',
-      required: 'Enter your email address.',
+      email: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address.`,
+      required: $localize`:@@forgottenPasswordEmailErrorRequired:Enter your email address.`,
     });
   }
 
@@ -68,11 +70,15 @@ export class ForgottenPassword {
 
     try {
       await this.auth.requestPasswordReset(this.form.getRawValue().email);
-      this.successMessage.set('If an account exists with that email, a reset link has been sent.');
+      this.successMessage.set(
+        $localize`:@@forgottenPasswordSuccess:If an account exists with that email, a reset link has been sent.`,
+      );
       this.form.reset();
     } catch (error) {
       this.errorMessage.set(
-        error instanceof HttpErrorResponse ? (error.error?.message ?? 'Request failed.') : 'Request failed.',
+        error instanceof HttpErrorResponse
+          ? (error.error?.message ?? $localize`:@@forgottenPasswordRequestFailed:Request failed.`)
+          : $localize`:@@forgottenPasswordRequestFailed:Request failed.`,
       );
     } finally {
       this.submitting.set(false);

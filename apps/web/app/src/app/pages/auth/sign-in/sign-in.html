@@ -1,5 +1,6 @@
 <main class="auth-page-shell relative px-4 py-4 md:px-8 md:py-6">
-  <div class="absolute top-4 right-4 md:top-6 md:right-8">
+  <div class="absolute top-4 right-4 flex items-center gap-6 md:top-6 md:right-8">
+    <app-language-switcher />
     <app-theme-switcher />
   </div>
 
@@ -9,13 +10,17 @@
     <div class="space-y-6">
       <div>
         <app-logo variant="wordmark" />
-        <p class="text-on-surface-variant mt-2 text-sm">AI-integrated technical access layer</p>
+        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@signInEyebrow">AI-integrated technical access layer</p>
       </div>
 
       <div class="hidden space-y-5 lg:block">
-        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Workspace access</p>
+        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase" i18n="@@signInHeroKicker">
+          Workspace access
+        </p>
+
         <h1
           class="font-display text-on-surface max-w-xl text-5xl leading-[0.94] font-extrabold tracking-tighter xl:text-6xl"
+          i18n="@@signInHeroTitle"
         >
           Human and agent execution, secured.
         </h1>
@@ -24,53 +29,80 @@
 
     <section class="auth-panel w-full max-w-xl rounded-xl p-6 md:p-8 lg:justify-self-end">
       <header>
-        <p class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase">Account access</p>
-        <h2 class="font-display text-on-surface mt-2 text-4xl leading-tight font-extrabold tracking-tight">Sign in</h2>
+        <p
+          class="text-on-surface-variant text-[11px] font-black tracking-[0.22em] uppercase"
+          i18n="@@signInPanelKicker"
+        >
+          Account access
+        </p>
+
+        <h2
+          class="font-display text-on-surface mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight"
+          i18n="@@signInPanelTitle"
+        >
+          Sign in
+        </h2>
       </header>
 
       @if (errorMessage()) {
-        <p-message class="mt-4 block" severity="error" [text]="errorMessage()" />
+        <p-message class="mt-4 block" severity="error">{{ errorMessage() }}</p-message>
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-5" novalidate>
-        <app-form-field fieldId="sign-in-email" label="Email" [error]="emailError()">
+        <app-form-field fieldId="sign-in-email" label="Email" i18n-label="@@signInEmailLabel" [error]="emailError()">
           <input
             id="sign-in-email"
             pInputText
             formControlName="email"
             autocomplete="email"
             placeholder="name@organization.com"
+            i18n-placeholder="@@signInEmailPlaceholder"
             class="w-full"
           />
         </app-form-field>
 
-        <app-form-field fieldId="sign-in-password" label="Password" [error]="passwordError()">
+        <app-form-field
+          fieldId="sign-in-password"
+          label="Password"
+          i18n-label="@@signInPasswordLabel"
+          [error]="passwordError()"
+        >
           <div class="pb-1.5">
             <p-password
               inputId="sign-in-password"
               autocomplete="current-password"
               formControlName="password"
+              placeholder="***************"
               [feedback]="false"
               [toggleMask]="true"
               [fluid]="true"
             />
           </div>
+
           <a
             footer
             class="text-primary text-sm font-semibold no-underline hover:underline"
             [routerLink]="forgottenPasswordUrl"
-            >Forgotten password?</a
+            i18n="@@signInForgottenPasswordLink"
           >
+            Forgotten password?
+          </a>
         </app-form-field>
 
-        <button class="mt-2" pButton type="submit" [disabled]="submitting()">Sign in</button>
+        <button class="mt-2" pButton type="submit" [disabled]="submitting()" i18n="@@signInSubmitButton">
+          Sign in
+        </button>
       </form>
 
       <footer class="text-on-surface-variant mt-6 flex flex-wrap gap-x-1.5 gap-y-2 text-sm">
-        <span>New to Themis?</span>
-        <a class="text-primary font-semibold no-underline hover:underline" [routerLink]="footerLink"
-          >Create an account</a
+        <span i18n="@@signInFooterPrompt">New to Themis?</span>
+        <a
+          class="text-primary font-semibold no-underline hover:underline"
+          [routerLink]="footerLink"
+          i18n="@@signInFooterLink"
         >
+          Create an account
+        </a>
       </footer>
     </section>
   </section>

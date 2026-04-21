@@ -1,25 +1,20 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import express, {
-  json,
-  static as serveStatic,
-  type Express,
-  type NextFunction,
-  type Request,
-  type Response,
-} from 'express';
+import type { Express, NextFunction, Request, Response } from 'express';
+
+import { createGatewayApp } from './gateway.js';
 
 type ApiModule = {
   appPromise?: Promise<Express>;
 };
 
-type AstroMiddlewareModule = {
-  handler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
+type AngularModule = {
+  reqHandler?: Express;
 };
 
-type AngularAppModule = {
-  reqHandler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
+type AstroMiddlewareModule = {
+  handler?: (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 };
 
 const host = process.env.HOST ?? '0.0.0.0';
@@ -27,7 +22,6 @@ const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const apiEntryFile = resolve(serverDistFolder, '..', 'api', 'main.js');
-const angularBrowserFolder = resolve(serverDistFolder, '..', 'app', 'browser');
 const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'server.mjs');
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
@@ -42,16 +36,6 @@ const loadApiApp = async () => {
   return apiModule.appPromise;
 };
 
-const loadAngularRequestHandler = async () => {
-  const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularAppModule;
-
-  if (typeof angularModule.reqHandler !== 'function') {
-    throw new TypeError(`Could not load the Angular request handler from '${angularEntryFile}'.`);
-  }
-
-  return angularModule.reqHandler;
-};
-
 const loadAstroRequestHandler = async () => {
   const astroModule = (await import(pathToFileURL(astroEntryFile).href)) as AstroMiddlewareModule;
 
@@ -62,36 +46,28 @@ const loadAstroRequestHandler = async () => {
   return astroModule.handler;
 };
 
+const loadAngularHandler = async () => {
+  const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularModule;
+
+  if (!angularModule.reqHandler) {
+    throw new Error(`Could not load the Angular request handler from '${angularEntryFile}'.`);
+  }
+
+  return angularModule.reqHandler;
+};
+
 const bootstrap = async () => {
-  const [apiApp, angularRequestHandler, astroRequestHandler] = await Promise.all([
+  const [apiApp, angularHandler, astroRequestHandler] = await Promise.all([
     loadApiApp(),
-    loadAngularRequestHandler(),
+    loadAngularHandler(),
     loadAstroRequestHandler(),
   ]);
-  const app = express();
-
-  app.use(json());
-  app.get('/healthz', (_req, res) => {
-    res.send({ status: 'ok' });
+  const app = createGatewayApp({
+    apiApp,
+    angularHandler,
+    astroClientFolder,
+    astroRequestHandler,
   });
-  app.use('/api', apiApp);
-  app.use(
-    '/app',
-    serveStatic(angularBrowserFolder, {
-      index: false,
-      maxAge: '1y',
-      redirect: false,
-    }),
-  );
-  app.use('/app', (req, res, next) => angularRequestHandler(req, res, next));
-  app.use(
-    serveStatic(astroClientFolder, {
-      index: false,
-      maxAge: '1y',
-      redirect: false,
-    }),
-  );
-  app.use((req, res, next) => astroRequestHandler(req, res, next));
 
   app.listen(port, host, () => {
     console.log(`[ ready ] http://${host}:${port}`);

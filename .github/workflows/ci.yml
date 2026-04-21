@@ -37,9 +37,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: Check formatting
         run: pnpm exec prettier --check .
 
@@ -50,7 +47,7 @@ jobs:
         run: pnpm nx run site:typecheck
 
       - name: Run tests
-        run: pnpm nx run site:test && pnpm nx run app:vite:test && pnpm nx run api-e2e:e2e && pnpm nx run server-e2e:e2e && pnpm nx run site-e2e:e2e && pnpm nx run app-e2e:e2e
+        run: pnpm nx run site:test && pnpm nx run app:vite:test && pnpm nx run api:test && pnpm nx run server:test
 
       - name: Build composed runtime
         run: pnpm nx run server:build

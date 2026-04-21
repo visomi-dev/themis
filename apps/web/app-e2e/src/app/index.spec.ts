@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, registerAndAuthenticate } from '../support/auth';
-import { appRoute, signInRoute } from '../support/routes';
+import { appRoute, signInUrlPattern } from '../support/routes';
 
 test.describe('/app', () => {
   test('redirects unauthenticated visitors to sign-in', async ({ page }) => {
     await page.goto(appRoute);
 
-    await expect(page).toHaveURL(signInRoute);
+    await expect(page).toHaveURL(signInUrlPattern);
   });
 
   test('shows the authenticated app surface and supports sign out', async ({ page, request }) => {
@@ -19,6 +19,6 @@ test.describe('/app', () => {
 
     await page.getByRole('button', { name: 'Sign out' }).click();
 
-    await expect(page).toHaveURL(signInRoute);
+    await expect(page).toHaveURL(signInUrlPattern);
   });
 });

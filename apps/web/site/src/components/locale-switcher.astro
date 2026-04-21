@@ -11,7 +11,7 @@ const { locale } = Astro.props;
 <div
   class="dark:font-headline flex items-center gap-4 font-['Inter'] text-[10px] font-black tracking-[0.2em] text-[var(--color-switch-muted)] uppercase"
 >
-  <a href="/" class:list={['locale-link', locale === 'en' && 'locale-link-active']}>EN</a>
+  <a href="/en/" class:list={['locale-link', locale === 'en' && 'locale-link-active']}>EN</a>
   <span class="opacity-30">/</span>
   <a href="/es/" class:list={['locale-link', locale === 'es' && 'locale-link-active']}>ES</a>
 </div>

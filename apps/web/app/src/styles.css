@@ -139,6 +139,19 @@ a {
   }
 }
 
+@utility auth-locale-link {
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+@utility auth-locale-link-active {
+  color: var(--color-on-surface);
+  font-weight: 800;
+}
+
 .p-button {
   border-radius: 0.5rem;
   font-weight: 700;

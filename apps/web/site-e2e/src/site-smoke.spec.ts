@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const routes = ['/', '/es/'] as const;
+const routes = ['/en/', '/es/'] as const;
 
 test.describe('site smoke', () => {
   for (const route of routes) {
