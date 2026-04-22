@@ -4,8 +4,8 @@ import { Server } from 'socket.io';
 
 import { getRealtimeConfig } from './config.js';
 import { getRealtimePool } from './pool.js';
-import { realtimeBus } from './realtime-bus.js';
-import { createSessionMiddleware, createSessionStore } from './session.js';
+
+import { createSessionMiddleware, createSessionStore, realtimeBus } from 'web-shared';
 
 const createRealtimeServer = (server: HttpServer) => {
   const config = getRealtimeConfig();

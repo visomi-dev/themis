@@ -1,6 +1,7 @@
 type VerificationPurpose = 'sign_in' | 'sign_up';
 
 type AuthUser = {
+  accountId: string;
   email: string;
   emailVerifiedAt: string | null;
   id: string;

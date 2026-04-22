@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 
-import { and, desc, eq, gt, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, isNull } from 'drizzle-orm';
 
 import type { AuthConfig } from '../config/auth-config.js';
 import { getDb } from '../db/client.js';
-import { authVerificationChallenges, users } from '../db/schema.js';
+import { accountMemberships, accounts, authVerificationChallenges, users } from '../db/schema.js';
 
 import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto.js';
 import { AuthError } from './auth-errors.js';
@@ -14,22 +14,12 @@ import type { AuthChallengePayload, AuthUser, VerificationPurpose } from './auth
 const MAX_CHALLENGE_ATTEMPTS = 5;
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
-
-const mapUser = (user: typeof users.$inferSelect): AuthUser => ({
-  email: user.email,
-  emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
-  id: user.id,
-});
-
-const mapChallengePayload = (
-  challenge: typeof authVerificationChallenges.$inferSelect,
-  user: typeof users.$inferSelect,
-): AuthChallengePayload => ({
-  challengeId: challenge.id,
-  email: user.email,
-  expiresAt: challenge.expiresAt.toISOString(),
-  purpose: challenge.purpose as VerificationPurpose,
-});
+const normalizeAccountSlug = (email: string) =>
+  normalizeEmail(email)
+    .split('@')[0]
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
 
 const createAuthService = (config: AuthConfig) => {
   const db = getDb(config);
@@ -49,6 +39,42 @@ const createAuthService = (config: AuthConfig) => {
 
     return user;
   };
+
+  const getPrimaryMembership = async (userId: string) => {
+    const [membership] = await db
+      .select()
+      .from(accountMemberships)
+      .where(eq(accountMemberships.userId, userId))
+      .orderBy(asc(accountMemberships.createdAt))
+      .limit(1);
+
+    return membership;
+  };
+
+  const resolveAuthUser = async (user: typeof users.$inferSelect): Promise<AuthUser> => {
+    const membership = await getPrimaryMembership(user.id);
+
+    if (!membership) {
+      throw new AuthError(500, 'account_membership_missing', 'The account membership could not be found.');
+    }
+
+    return {
+      accountId: membership.accountId,
+      email: user.email,
+      emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+      id: user.id,
+    };
+  };
+
+  const mapChallengePayload = (
+    challenge: typeof authVerificationChallenges.$inferSelect,
+    user: typeof users.$inferSelect,
+  ): AuthChallengePayload => ({
+    challengeId: challenge.id,
+    email: user.email,
+    expiresAt: challenge.expiresAt.toISOString(),
+    purpose: challenge.purpose as VerificationPurpose,
+  });
 
   const verifyPassword = async (email: string, password: string) => {
     const user = await findUserByEmail(email);
@@ -142,6 +168,29 @@ const createAuthService = (config: AuthConfig) => {
         updatedAt: now,
       })
       .returning();
+
+    const accountId = randomUUID();
+    const baseSlug = normalizeAccountSlug(normalizedEmail);
+    const [existingAccount] = await db.select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
+    const accountSlug = existingAccount ? `${baseSlug}-${user.id.slice(0, 8)}` : baseSlug;
+
+    await db.insert(accounts).values({
+      createdAt: now,
+      id: accountId,
+      name: normalizedEmail.split('@')[0],
+      ownerUserId: user.id,
+      slug: accountSlug,
+      updatedAt: now,
+    });
+
+    await db.insert(accountMemberships).values({
+      accountId,
+      createdAt: now,
+      id: randomUUID(),
+      role: 'owner',
+      updatedAt: now,
+      userId: user.id,
+    });
 
     return createChallenge(user, 'sign_up');
   };
@@ -252,7 +301,7 @@ const createAuthService = (config: AuthConfig) => {
       nextUser = updatedUser;
     }
 
-    return mapUser(nextUser);
+    return resolveAuthUser(nextUser);
   };
 
   const getLatestChallengeForUser = async (userId: string, purpose: VerificationPurpose) => {
@@ -290,6 +339,7 @@ const createAuthService = (config: AuthConfig) => {
     getLatestChallengeForUser,
     requestPasswordReset,
     resendChallenge,
+    resolveAuthUser,
     signUp,
     verifyChallenge,
     verifyPassword,

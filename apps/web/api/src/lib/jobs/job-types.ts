@@ -1,6 +1,7 @@
 import type { AsyncJobRecord } from '../realtime/realtime-events.js';
 
 type ProjectSeedJobInput = {
+  accountId: string;
   jobId: string;
   projectId: string;
   userId: string;

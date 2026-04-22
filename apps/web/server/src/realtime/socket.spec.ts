@@ -1,10 +1,11 @@
-import { createRealtimeServer } from './socket';
-import { realtimeBus } from './realtime-bus';
+import { EventEmitter } from 'node:events';
+
 const engineUse = jest.fn();
 const emitToRoom = jest.fn();
 const join = jest.fn();
 const on = jest.fn();
 const to = jest.fn(() => ({ emit: emitToRoom }));
+const realtimeBus = new EventEmitter();
 
 let connectionHandler: ((socket: { data: { userId: string }; join: typeof join }) => void) | undefined;
 let authMiddleware:
@@ -30,9 +31,10 @@ jest.mock('socket.io', () => ({
   })),
 }));
 
-jest.mock('./session', () => ({
+jest.mock('web-shared', () => ({
   createSessionMiddleware: jest.fn(() => (_req: unknown, _res: unknown, next: () => void) => next()),
   createSessionStore: jest.fn(() => ({ store: true })),
+  realtimeBus,
 }));
 
 jest.mock('./config', () => ({
@@ -50,11 +52,14 @@ jest.mock('./pool', () => ({
   getRealtimePool: jest.fn(),
 }));
 
+import { createRealtimeServer } from './socket';
+
 describe('createRealtimeServer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     connectionHandler = undefined;
     authMiddleware = undefined;
+    realtimeBus.removeAllListeners();
   });
 
   it('authenticates a socket from the shared session and joins the user room', () => {

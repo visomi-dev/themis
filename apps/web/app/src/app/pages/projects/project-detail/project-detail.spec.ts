@@ -19,6 +19,7 @@ describe('ProjectDetail', () => {
     signOut.mockReset();
     navigate.mockReset();
     getProject.mockResolvedValue({
+      accountId: 'account-1',
       createdAt: '2026-01-01T00:00:00.000Z',
       createdByUserId: 'user-1',
       documents: [],
@@ -50,7 +51,7 @@ describe('ProjectDetail', () => {
           provide: Auth,
           useValue: {
             signOut,
-            user: () => ({ email: 'engineer@themis.dev', emailVerifiedAt: null, id: 'user-1' }),
+            user: () => ({ accountId: 'account-1', email: 'engineer@themis.dev', emailVerifiedAt: null, id: 'user-1' }),
           },
         },
         {

@@ -9,12 +9,16 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
+    "ignoreDeprecations": "6.0",
     "module": "esnext",
     "lib": ["es2020", "dom"],
-    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "."
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "web-shared": ["libs/web/shared/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

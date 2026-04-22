@@ -19,6 +19,7 @@ type ProjectDocument = {
 };
 
 type Project = {
+  accountId: string;
   createdAt: string;
   createdByUserId: string;
   id: string;

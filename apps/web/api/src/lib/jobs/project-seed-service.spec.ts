@@ -10,7 +10,9 @@ const updateJob = jest.fn();
 const workerOn = jest.fn();
 const getProject = jest.fn();
 
-let workerProcessor: ((job: { data: { jobId: string } }) => Promise<unknown>) | undefined;
+let workerProcessor:
+  | ((job: { data: { accountId: string; jobId: string; userId: string } }) => Promise<unknown>)
+  | undefined;
 
 jest.mock('../projects/projects-service', () => ({
   createProjectsService: () => ({
@@ -41,13 +43,18 @@ jest.mock('../realtime/realtime-publisher', () => ({
 jest.mock('bullmq', () => ({
   Worker: jest
     .fn()
-    .mockImplementation((_name: string, processor: (job: { data: { jobId: string } }) => Promise<unknown>) => {
-      workerProcessor = processor;
+    .mockImplementation(
+      (
+        _name: string,
+        processor: (job: { data: { accountId: string; jobId: string; userId: string } }) => Promise<unknown>,
+      ) => {
+        workerProcessor = processor;
 
-      return {
-        on: workerOn,
-      };
-    }),
+        return {
+          on: workerOn,
+        };
+      },
+    ),
 }));
 
 import { createProjectSeedService } from './project-seed-service';
@@ -62,6 +69,7 @@ describe('createProjectSeedService', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
       errorMessage: null,
       id: 'job-1',
+      accountId: 'account-1',
       progress: 0,
       projectId: 'project-1',
       resultJson: null,
@@ -76,15 +84,18 @@ describe('createProjectSeedService', () => {
   it('queues a project seed job and emits the queued event', async () => {
     const service = createProjectSeedService({} as never);
 
-    const job = await service.queueProjectSeed('user-1', 'project-1');
+    const job = await service.queueProjectSeed({ accountId: 'account-1', userId: 'user-1' }, 'project-1');
 
-    expect(createJob).toHaveBeenCalledWith({
-      inputJson: JSON.stringify({ projectId: 'project-1' }),
-      projectId: 'project-1',
-      type: 'project_seed',
-      userId: 'user-1',
-    });
+    expect(createJob).toHaveBeenCalledWith(
+      { accountId: 'account-1', userId: 'user-1' },
+      {
+        inputJson: JSON.stringify({ projectId: 'project-1' }),
+        projectId: 'project-1',
+        type: 'project_seed',
+      },
+    );
     expect(queueAdd).toHaveBeenCalledWith('project_seed', {
+      accountId: 'account-1',
       jobId: 'job-1',
       projectId: 'project-1',
       userId: 'user-1',
@@ -98,6 +109,7 @@ describe('createProjectSeedService', () => {
       createdAt: '2026-01-01T00:00:00.000Z',
       errorMessage: null,
       id: 'job-1',
+      accountId: 'account-1',
       progress: 0,
       projectId: 'project-1',
       resultJson: null,
@@ -129,10 +141,10 @@ describe('createProjectSeedService', () => {
 
     expect(workerProcessor).toBeDefined();
 
-    await workerProcessor?.({ data: { jobId: 'job-1' } });
+    await workerProcessor?.({ data: { accountId: 'account-1', jobId: 'job-1', userId: 'user-1' } });
 
     expect(createDocument).toHaveBeenCalledWith(
-      'user-1',
+      { accountId: 'account-1', userId: 'user-1' },
       'project-1',
       expect.objectContaining({
         documentType: 'overview',

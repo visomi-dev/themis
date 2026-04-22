@@ -1,6 +1,7 @@
 export type AuthMode = 'sign_in' | 'sign_up';
 
 export type AuthUser = {
+  accountId: string;
   email: string;
   emailVerifiedAt: string | null;
   id: string;

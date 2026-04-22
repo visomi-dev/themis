@@ -22,7 +22,9 @@ vi.mock('socket.io-client', () => ({
 import { Realtime } from './realtime';
 
 describe('Realtime', () => {
-  const userState = signal<{ email: string; emailVerifiedAt: string | null; id: string } | null>(null);
+  const userState = signal<{ accountId: string; email: string; emailVerifiedAt: string | null; id: string } | null>(
+    null,
+  );
 
   beforeEach(() => {
     userState.set(null);
@@ -46,7 +48,12 @@ describe('Realtime', () => {
   it('connects when an authenticated user is available', () => {
     TestBed.inject(Realtime);
 
-    userState.set({ email: 'engineer@themis.dev', emailVerifiedAt: '2026-01-01T00:00:00.000Z', id: 'user-1' });
+    userState.set({
+      accountId: 'account-1',
+      email: 'engineer@themis.dev',
+      emailVerifiedAt: '2026-01-01T00:00:00.000Z',
+      id: 'user-1',
+    });
     TestBed.flushEffects();
 
     expect(socketMocks.socketFactory).toHaveBeenCalledWith('/', expect.objectContaining({ path: '/socket.io' }));
@@ -55,7 +62,12 @@ describe('Realtime', () => {
   it('disconnects when the authenticated user becomes null', () => {
     TestBed.inject(Realtime);
 
-    userState.set({ email: 'engineer@themis.dev', emailVerifiedAt: '2026-01-01T00:00:00.000Z', id: 'user-1' });
+    userState.set({
+      accountId: 'account-1',
+      email: 'engineer@themis.dev',
+      emailVerifiedAt: '2026-01-01T00:00:00.000Z',
+      id: 'user-1',
+    });
     TestBed.flushEffects();
     userState.set(null);
     TestBed.flushEffects();

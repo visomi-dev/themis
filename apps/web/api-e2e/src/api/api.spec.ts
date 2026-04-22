@@ -18,6 +18,16 @@ describe('auth API', () => {
     expect(res.data).toEqual({ message: 'Hello Themis API' });
   });
 
+  it('serves the OpenAPI document', async () => {
+    const res = await axios.get('/openapi.json');
+
+    expect(res.status).toBe(200);
+    expect(res.data.openapi).toBe('3.1.0');
+    expect(res.data.info.title).toBe('Themis API');
+    expect(res.data.paths['/auth/session']).toBeDefined();
+    expect(res.data.paths['/projects/{projectId}/seed']).toBeDefined();
+  });
+
   it('completes sign-up, verification, session restore, sign-out, and sign-in verification', async () => {
     const signUpResponse = await axios.post('/auth/sign-up', {
       email,
@@ -48,6 +58,7 @@ describe('auth API', () => {
 
     expect(signUpVerifyResponse.status).toBe(200);
     expect(signUpVerifyResponse.data.user.email).toBe(email);
+    expect(signUpVerifyResponse.data.user.accountId).toBeTruthy();
     expect(signUpVerifyResponse.data.user.emailVerifiedAt).not.toBeNull();
 
     const sessionCookie = toCookieHeader(signUpVerifyResponse.headers['set-cookie']);
@@ -59,6 +70,7 @@ describe('auth API', () => {
 
     expect(sessionResponse.data.authenticated).toBe(true);
     expect(sessionResponse.data.user.email).toBe(email);
+    expect(sessionResponse.data.user.accountId).toBe(signUpVerifyResponse.data.user.accountId);
 
     const signOutResponse = await axios.post(
       '/auth/sign-out',
@@ -110,5 +122,6 @@ describe('auth API', () => {
 
     expect(signInVerifyResponse.status).toBe(200);
     expect(signInVerifyResponse.data.user.email).toBe(email);
+    expect(signInVerifyResponse.data.user.accountId).toBe(signUpVerifyResponse.data.user.accountId);
   });
 });

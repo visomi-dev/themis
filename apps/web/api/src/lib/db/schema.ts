@@ -13,6 +13,38 @@ const users = pgTable(
   (table) => [uniqueIndex('users_email_idx').on(table.email)],
 );
 
+const accounts = pgTable(
+  'accounts',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(),
+    ownerUserId: text('owner_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex('accounts_slug_idx').on(table.slug)],
+);
+
+const accountMemberships = pgTable(
+  'account_memberships',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    role: text('role').notNull().default('owner'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex('account_memberships_account_user_idx').on(table.accountId, table.userId)],
+);
+
 const authVerificationChallenges = pgTable('auth_verification_challenges', {
   id: text('id').primaryKey(),
   userId: text('user_id')
@@ -30,6 +62,9 @@ const authVerificationChallenges = pgTable('auth_verification_challenges', {
 
 const apiKeys = pgTable('api_keys', {
   id: text('id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
@@ -44,6 +79,9 @@ const apiKeys = pgTable('api_keys', {
 
 const userActivationMilestones = pgTable('user_activation_milestones', {
   id: text('id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
@@ -54,6 +92,9 @@ const userActivationMilestones = pgTable('user_activation_milestones', {
 
 const projects = pgTable('projects', {
   id: text('id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   slug: text('slug').notNull(),
   summary: text('summary'),
@@ -68,6 +109,9 @@ const projects = pgTable('projects', {
 
 const projectDocuments = pgTable('project_documents', {
   id: text('id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
   projectId: text('project_id')
     .notNull()
     .references(() => projects.id, { onDelete: 'cascade' }),
@@ -85,6 +129,9 @@ const projectDocuments = pgTable('project_documents', {
 
 const asyncJobs = pgTable('async_jobs', {
   id: text('id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
@@ -100,4 +147,14 @@ const asyncJobs = pgTable('async_jobs', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-export { apiKeys, asyncJobs, authVerificationChallenges, projectDocuments, projects, userActivationMilestones, users };
+export {
+  accounts,
+  accountMemberships,
+  apiKeys,
+  asyncJobs,
+  authVerificationChallenges,
+  projectDocuments,
+  projects,
+  userActivationMilestones,
+  users,
+};

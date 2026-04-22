@@ -24,11 +24,7 @@ const configurePassport = () => {
           return done(null, false, { message: 'Incorrect email or password.' });
         }
 
-        return done(null, {
-          email: user.email,
-          emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
-          id: user.id,
-        });
+        return done(null, await service.resolveAuthUser(user));
       } catch (error) {
         return done(error as Error);
       }
@@ -36,10 +32,10 @@ const configurePassport = () => {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, { id: user.id });
+    done(null, { accountId: user.accountId, id: user.id });
   });
 
-  passport.deserializeUser(async (serializedUser: { id: string }, done) => {
+  passport.deserializeUser(async (serializedUser: { accountId: string; id: string }, done) => {
     try {
       const user = await service.findUserById(serializedUser.id);
 
@@ -47,11 +43,7 @@ const configurePassport = () => {
         return done(null, false);
       }
 
-      return done(null, {
-        email: user.email,
-        emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
-        id: user.id,
-      });
+      return done(null, await service.resolveAuthUser(user));
     } catch (error) {
       return done(error as Error);
     }

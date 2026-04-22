@@ -9,6 +9,11 @@ import { createJobStore } from './job-store.js';
 import { getBullConnection, getProjectSeedQueue, hasProjectSeedWorker, setProjectSeedWorker } from './queue.js';
 import type { ProjectSeedJobInput, ProjectSeedJobResult } from './job-types.js';
 
+type SeedContext = {
+  accountId: string;
+  userId: string;
+};
+
 const wait = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const createProjectSeedService = (config: AuthConfig) => {
@@ -23,33 +28,37 @@ const createProjectSeedService = (config: AuthConfig) => {
     const worker = new Worker(
       'project-seed',
       async (bullJob: Job<ProjectSeedJobInput>) => {
-        const existing = await jobStore.findJobById(bullJob.data.jobId ?? bullJob.id!);
+        const context = {
+          accountId: bullJob.data.accountId,
+          userId: bullJob.data.userId,
+        };
+        const existing = await jobStore.findJobById(context, bullJob.data.jobId ?? bullJob.id!);
 
         if (!existing) {
           return null;
         }
 
-        const startJob = await jobStore.updateJob(existing.id, {
+        const startJob = await jobStore.updateJob(context, existing.id, {
           progress: 10,
           status: 'running',
         });
         publishAsyncJobEvent('job:started', startJob, 'Project seed started.');
 
         await wait(600);
-        const scanJob = await jobStore.updateJob(existing.id, {
+        const scanJob = await jobStore.updateJob(context, existing.id, {
           progress: 45,
           status: 'running',
         });
         publishAsyncJobEvent('job:progress', scanJob, 'Repository structure scanned.');
 
         await wait(600);
-        const contextJob = await jobStore.updateJob(existing.id, {
+        const contextJob = await jobStore.updateJob(context, existing.id, {
           progress: 80,
           status: 'running',
         });
         publishAsyncJobEvent('job:progress', contextJob, 'Project context draft prepared.');
 
-        await projectsService.createDocument(existing.userId, existing.projectId!, {
+        await projectsService.createDocument(context, existing.projectId!, {
           contentMarkdown: [
             '# Seeded Project Overview',
             '',
@@ -68,7 +77,7 @@ const createProjectSeedService = (config: AuthConfig) => {
         const result: ProjectSeedJobResult = {
           summary: 'Initial project overview generated.',
         };
-        const completedJob = await jobStore.updateJob(existing.id, {
+        const completedJob = await jobStore.updateJob(context, existing.id, {
           completedAt: new Date(),
           progress: 100,
           resultJson: JSON.stringify(result),
@@ -88,7 +97,11 @@ const createProjectSeedService = (config: AuthConfig) => {
         return;
       }
 
-      const failedJob = await jobStore.updateJob(bullJob.data.jobId ?? bullJob.id!, {
+      const context = {
+        accountId: bullJob.data.accountId,
+        userId: bullJob.data.userId,
+      };
+      const failedJob = await jobStore.updateJob(context, bullJob.data.jobId ?? bullJob.id!, {
         completedAt: new Date(),
         errorMessage: error.message,
         progress: 100,
@@ -100,8 +113,8 @@ const createProjectSeedService = (config: AuthConfig) => {
     setProjectSeedWorker(worker);
   };
 
-  const queueProjectSeed = async (userId: string, projectId: string) => {
-    const project = await projectsService.getProject(userId, projectId);
+  const queueProjectSeed = async (context: SeedContext, projectId: string) => {
+    const project = await projectsService.getProject(context, projectId);
 
     if (!project) {
       throw new AuthError(404, 'project_not_found', 'The project could not be found.');
@@ -109,17 +122,17 @@ const createProjectSeedService = (config: AuthConfig) => {
 
     ensureWorker();
 
-    const job = await jobStore.createJob({
+    const job = await jobStore.createJob(context, {
       inputJson: JSON.stringify({ projectId }),
       projectId,
       type: 'project_seed',
-      userId,
     });
 
     await getProjectSeedQueue(config).add('project_seed', {
+      accountId: context.accountId,
       jobId: job.id,
       projectId,
-      userId,
+      userId: context.userId,
     });
 
     publishAsyncJobEvent('job:queued', job, 'Project seed queued.');
@@ -127,7 +140,8 @@ const createProjectSeedService = (config: AuthConfig) => {
     return job;
   };
 
-  const listProjectJobs = async (userId: string, projectId: string) => jobStore.listJobsForProject(userId, projectId);
+  const listProjectJobs = async (context: SeedContext, projectId: string) =>
+    jobStore.listJobsForProject(context, projectId);
 
   return { ensureWorker, listProjectJobs, queueProjectSeed };
 };

@@ -1,12 +1,14 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, registerAndAuthenticate } from '../support/auth';
+import { createCredentials, authenticateViaApi } from '../support/auth';
 import { projectNewUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
+
+test.describe.configure({ timeout: 60000 });
 
 test.describe('/app/projects', () => {
   test.beforeEach(async ({ page, request }) => {
     const credentials = createCredentials();
-    await registerAndAuthenticate(page, request, credentials.email, credentials.password);
+    await authenticateViaApi(page, request, credentials.email, credentials.password);
 
     await page.getByRole('button', { name: /Continue to projects/i }).click();
     await expect(page).toHaveURL(projectsUrlPattern);

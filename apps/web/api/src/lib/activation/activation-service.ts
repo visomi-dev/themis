@@ -3,7 +3,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { desc, eq } from 'drizzle-orm';
 
 import type { AuthConfig } from '../config/auth-config.js';
-import { getDb } from '../db/client.js';
+import { withAccountContext } from '../db/account-context.js';
 import { apiKeys, userActivationMilestones } from '../db/schema.js';
 import { hashSecret } from '../auth/auth-crypto.js';
 import { AuthError } from '../auth/auth-errors.js';
@@ -11,6 +11,11 @@ import { AuthError } from '../auth/auth-errors.js';
 import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types.js';
 
 type ActivationMilestoneMetadata = Record<string, string | null>;
+
+type ActivationContext = {
+  accountId: string;
+  userId: string;
+};
 
 const ACTIVATION_MILESTONES = new Set<ActivationMilestone>([
   'activation_completed',
@@ -41,26 +46,29 @@ const mapApiKey = (record: typeof apiKeys.$inferSelect): ActivationApiKey => ({
 });
 
 const createActivationService = (config: AuthConfig) => {
-  const db = getDb(config);
+  const getActivationState = async ({ accountId, userId }: ActivationContext): Promise<ActivationState> =>
+    withAccountContext(config, { accountId, userId }, async (db) => {
+      const keyRows = await db
+        .select()
+        .from(apiKeys)
+        .where(eq(apiKeys.accountId, accountId))
+        .orderBy(desc(apiKeys.createdAt));
 
-  const getActivationState = async (userId: string): Promise<ActivationState> => {
-    const keyRows = await db.select().from(apiKeys).where(eq(apiKeys.userId, userId)).orderBy(desc(apiKeys.createdAt));
+      const milestoneRows = await db
+        .select({ milestone: userActivationMilestones.milestone })
+        .from(userActivationMilestones)
+        .where(eq(userActivationMilestones.accountId, accountId))
+        .orderBy(desc(userActivationMilestones.createdAt));
 
-    const milestoneRows = await db
-      .select({ milestone: userActivationMilestones.milestone })
-      .from(userActivationMilestones)
-      .where(eq(userActivationMilestones.userId, userId))
-      .orderBy(desc(userActivationMilestones.createdAt));
-
-    return {
-      apiKeys: keyRows.filter((row) => row.revokedAt === null).map(mapApiKey),
-      milestones: [...new Set(milestoneRows.map((row) => row.milestone as ActivationMilestone))],
-      seedPrompt: buildSeedPrompt(),
-    };
-  };
+      return {
+        apiKeys: keyRows.filter((row) => row.revokedAt === null).map(mapApiKey),
+        milestones: [...new Set(milestoneRows.map((row) => row.milestone as ActivationMilestone))],
+        seedPrompt: buildSeedPrompt(),
+      };
+    });
 
   const recordMilestone = async (
-    userId: string,
+    { accountId, userId }: ActivationContext,
     milestone: ActivationMilestone,
     metadata?: ActivationMilestoneMetadata,
   ) => {
@@ -68,16 +76,19 @@ const createActivationService = (config: AuthConfig) => {
       throw new AuthError(400, 'invalid_milestone', 'The activation milestone is not supported.');
     }
 
-    await db.insert(userActivationMilestones).values({
-      createdAt: new Date(),
-      id: randomUUID(),
-      metadataJson: metadata ? JSON.stringify(metadata) : null,
-      milestone,
-      userId,
+    await withAccountContext(config, { accountId, userId }, async (db) => {
+      await db.insert(userActivationMilestones).values({
+        accountId,
+        createdAt: new Date(),
+        id: randomUUID(),
+        metadataJson: metadata ? JSON.stringify(metadata) : null,
+        milestone,
+        userId,
+      });
     });
   };
 
-  const createApiKey = async (userId: string, label: string): Promise<CreatedApiKey> => {
+  const createApiKey = async ({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> => {
     const normalizedLabel = label.trim();
 
     if (normalizedLabel.length === 0) {
@@ -90,20 +101,25 @@ const createActivationService = (config: AuthConfig) => {
 
     const plaintextToken = `thm_${randomBytes(24).toString('base64url')}`;
     const now = new Date();
-    const [createdKey] = await db
-      .insert(apiKeys)
-      .values({
-        createdAt: now,
-        id: randomUUID(),
-        label: normalizedLabel,
-        tokenHash: await hashSecret(plaintextToken),
-        tokenPrefix: plaintextToken.slice(0, 12),
-        updatedAt: now,
-        userId,
-      })
-      .returning();
+    const createdKey = await withAccountContext(config, { accountId, userId }, async (db) => {
+      const [row] = await db
+        .insert(apiKeys)
+        .values({
+          accountId,
+          createdAt: now,
+          id: randomUUID(),
+          label: normalizedLabel,
+          tokenHash: await hashSecret(plaintextToken),
+          tokenPrefix: plaintextToken.slice(0, 12),
+          updatedAt: now,
+          userId,
+        })
+        .returning();
 
-    await recordMilestone(userId, 'api_key_created', {
+      return row;
+    });
+
+    await recordMilestone({ accountId, userId }, 'api_key_created', {
       apiKeyId: createdKey.id,
       label: createdKey.label,
     });
@@ -114,20 +130,22 @@ const createActivationService = (config: AuthConfig) => {
     };
   };
 
-  const revokeApiKey = async (userId: string, apiKeyId: string) => {
-    const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
+  const revokeApiKey = async ({ accountId, userId }: ActivationContext, apiKeyId: string) => {
+    await withAccountContext(config, { accountId, userId }, async (db) => {
+      const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
 
-    if (!existingKey || existingKey.userId !== userId || existingKey.revokedAt) {
-      throw new AuthError(404, 'api_key_not_found', 'The API key could not be found.');
-    }
+      if (!existingKey || existingKey.accountId !== accountId || existingKey.revokedAt) {
+        throw new AuthError(404, 'api_key_not_found', 'The API key could not be found.');
+      }
 
-    await db
-      .update(apiKeys)
-      .set({
-        revokedAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .where(eq(apiKeys.id, apiKeyId));
+      await db
+        .update(apiKeys)
+        .set({
+          revokedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(apiKeys.id, apiKeyId));
+    });
   };
 
   return {

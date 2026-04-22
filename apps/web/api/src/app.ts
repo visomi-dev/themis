@@ -3,8 +3,8 @@ import morgan from 'morgan';
 import passport from 'passport';
 
 import { buildActivationRouter } from './lib/activation/activation-router.js';
-import { createSessionMiddleware, createSessionStore } from './lib/session/session.js';
 import { buildAuthRouter } from './lib/auth/auth-router.js';
+import { createOpenApiDocument } from './lib/http/openapi.js';
 import { configurePassport } from './lib/auth/passport.js';
 import { getAuthConfig } from './lib/config/auth-config.js';
 import { runMigrationsIfEnabled } from './lib/db/migrate.js';
@@ -12,6 +12,8 @@ import { getPool } from './lib/db/pool.js';
 import { createProjectSeedService } from './lib/jobs/project-seed-service.js';
 import { buildProjectsRouter } from './lib/projects/projects-router.js';
 import { buildTestRouter } from './lib/testing/test-router.js';
+
+import { createSessionMiddleware, createSessionStore } from 'web-shared';
 
 let appPromise: Promise<Express> | undefined;
 
@@ -40,6 +42,10 @@ const buildApp = async () => {
 
   app.get('/health', (_req, res) => {
     res.send({ status: 'ok' });
+  });
+
+  app.get('/openapi.json', (_req, res) => {
+    res.send(createOpenApiDocument());
   });
 
   app.use('/auth', buildAuthRouter(config));

@@ -26,6 +26,7 @@ export type ProjectDocument = {
 };
 
 export type Project = {
+  accountId: string;
   createdAt: string;
   createdByUserId: string;
   id: string;
