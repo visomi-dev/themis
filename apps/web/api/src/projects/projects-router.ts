@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 import { authMiddleware } from '../auth/auth-middleware';
 import { AuthError } from '../auth/auth-errors';
-import { projectIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas';
+import { projectIdParamSchema, readValidated, validateRequest, z } from '../shared/http/route-schemas';
 import { projectSeedService } from '../jobs/project-seed-service';
 
 import { projectsService } from './projects-service';

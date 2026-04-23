@@ -7,15 +7,19 @@ import { guestGuard } from './guest.guard';
 import { verificationGuard } from './verification.guard';
 
 describe('auth guards', () => {
-  const createRouter = () => ({
-    createUrlTree: (segments: string[]) => segments.join('/'),
-  });
+  function createRouter() {
+    return {
+      createUrlTree: (segments: string[]) => segments.join('/'),
+    };
+  }
 
-  const createAuth = (authenticated: boolean, hasChallenge = false) => ({
-    ensureSessionLoaded: vi.fn().mockResolvedValue(undefined),
-    isAuthenticated: () => authenticated,
-    pendingChallenge: () => (hasChallenge ? { challengeId: 'challenge-1' } : null),
-  });
+  function createAuth(authenticated: boolean, hasChallenge = false) {
+    return {
+      ensureSessionLoaded: vi.fn().mockResolvedValue(undefined),
+      isAuthenticated: () => authenticated,
+      pendingChallenge: () => (hasChallenge ? { challengeId: 'challenge-1' } : null),
+    };
+  }
 
   it('redirects unauthenticated users away from protected routes', async () => {
     const router = createRouter();

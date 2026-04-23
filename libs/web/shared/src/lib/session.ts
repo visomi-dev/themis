@@ -113,7 +113,7 @@ const globalState = globalThis as typeof globalThis & {
   [globalKey]?: session.Store;
 };
 
-const createSessionStore = (config: SessionConfig, pool?: Pool) => {
+function createSessionStore(config: SessionConfig, pool?: Pool) {
   if (globalState[globalKey]) {
     return globalState[globalKey] as session.Store;
   }
@@ -123,7 +123,7 @@ const createSessionStore = (config: SessionConfig, pool?: Pool) => {
   globalState[globalKey] = store;
 
   return store;
-};
+}
 
 const createSessionMiddleware = (config: SessionConfig, store: session.Store): ReturnType<typeof session> =>
   session({

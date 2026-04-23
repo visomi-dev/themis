@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 import { authMiddleware } from '../auth/auth-middleware';
-import { apiKeyIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas';
+import { apiKeyIdParamSchema, readValidated, validateRequest, z } from '../shared/http/route-schemas';
 
 import { activationService } from './activation-service';
 import type { ActivationMilestone } from './activation-types';

@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 
 import { and, asc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config';
-import { withAccountContext } from '../db/account-context';
-import { asyncJobs, projectDocuments, projects } from '../db/schema';
+import type { AuthConfig } from '../shared/config/auth-config';
+import { withAccountContext } from '../shared/db/account-context';
+import { asyncJobs, projectDocuments, projects } from '../shared/db/schema';
 import { AuthError } from '../auth/auth-errors';
 
 import type {

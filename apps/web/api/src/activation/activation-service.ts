@@ -2,9 +2,9 @@ import { randomBytes, randomUUID } from 'node:crypto';
 
 import { desc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config';
-import { withAccountContext } from '../db/account-context';
-import { apiKeys, userActivationMilestones } from '../db/schema';
+import type { AuthConfig } from '../shared/config/auth-config';
+import { withAccountContext } from '../shared/db/account-context';
+import { apiKeys, userActivationMilestones } from '../shared/db/schema';
 import { hashSecret } from '../auth/auth-crypto';
 import { AuthError } from '../auth/auth-errors';
 

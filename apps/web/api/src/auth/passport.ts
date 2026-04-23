@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 
-import { getAuthConfig } from '../config/auth-config';
+import { getAuthConfig } from '../shared/config/auth-config';
 
 import { authService } from './auth-service';
 

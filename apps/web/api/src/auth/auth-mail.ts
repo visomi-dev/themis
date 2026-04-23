@@ -1,7 +1,7 @@
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 
 import { AuthError } from './auth-errors';
 import type { VerificationPurpose } from './auth-types';

@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 
 const connectionKey = '__themisBullConnection';
 const queueKey = '__themisProjectSeedQueue';

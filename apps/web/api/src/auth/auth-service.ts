@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 
 import { and, asc, desc, eq, gt, isNull } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config';
-import { getDb } from '../db/client';
-import { accountMemberships, accounts, authVerificationChallenges, users } from '../db/schema';
+import type { AuthConfig } from '../shared/config/auth-config';
+import { getDb } from '../shared/db/client';
+import { accountMemberships, accounts, authVerificationChallenges, users } from '../shared/db/schema';
 
 import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
 import { AuthError } from './auth-errors';

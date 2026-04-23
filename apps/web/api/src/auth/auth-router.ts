@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Router, type NextFunction, type Request, type Response } from 'express';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 import {
   challengeIdSchema,
   emailSchema,
@@ -10,7 +10,7 @@ import {
   readValidated,
   validateRequest,
   z,
-} from '../http/route-schemas';
+} from '../shared/http/route-schemas';
 
 import { authMiddleware } from './auth-middleware';
 import { AuthError } from './auth-errors';

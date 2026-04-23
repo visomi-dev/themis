@@ -1,6 +1,6 @@
 import { Job, Worker } from 'bullmq';
 
-import type { AuthConfig } from '../config/auth-config';
+import type { AuthConfig } from '../shared/config/auth-config';
 import { AuthError } from '../auth/auth-errors';
 import { projectsService } from '../projects/projects-service';
 import { publishAsyncJobEvent } from '../realtime/realtime-publisher';

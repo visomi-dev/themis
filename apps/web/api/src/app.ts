@@ -2,16 +2,16 @@ import express, { json, type Express, type NextFunction, type Request, type Resp
 import morgan from 'morgan';
 import passport from 'passport';
 
-import { activationRouter } from './lib/activation/activation-router';
-import { authRouter } from './lib/auth/auth-router';
-import { configurePassport } from './lib/auth/passport';
-import { getAuthConfig } from './lib/config/auth-config';
-import { runMigrationsIfEnabled } from './lib/db/migrate';
-import { getPool } from './lib/db/pool';
-import { createOpenApiDocument } from './lib/http/openapi';
-import { projectSeedService } from './lib/jobs/project-seed-service';
-import { projectsRouter } from './lib/projects/projects-router';
-import { testRouter } from './lib/testing/test-router';
+import { activationRouter } from './activation/activation-router';
+import { authRouter } from './auth/auth-router';
+import { configurePassport } from './auth/passport';
+import { getAuthConfig } from './shared/config/auth-config';
+import { runMigrationsIfEnabled } from './shared/db/migrate';
+import { getPool } from './shared/db/pool';
+import { createOpenApiDocument } from './shared/http/openapi';
+import { projectSeedService } from './jobs/project-seed-service';
+import { projectsRouter } from './projects/projects-router';
+import { testRouter } from './testing/test-router';
 
 import { createSessionMiddleware, createSessionStore } from 'web-shared';
 

@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 
 import { and, desc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config';
-import { withAccountContext } from '../db/account-context';
-import { asyncJobs } from '../db/schema';
+import type { AuthConfig } from '../shared/config/auth-config';
+import { withAccountContext } from '../shared/db/account-context';
+import { asyncJobs } from '../shared/db/schema';
 import type { AsyncJobRecord, AsyncJobStatus, AsyncJobType } from '../realtime/realtime-events';
 
 type JobContext = {

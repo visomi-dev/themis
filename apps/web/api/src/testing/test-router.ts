@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { clearMailbox, listSentMessages } from '../auth/auth-mail';
-import { emailSchema, readValidated, validateRequest, z } from '../http/route-schemas';
+import { emailSchema, readValidated, validateRequest, z } from '../shared/http/route-schemas';
 
 const mailboxQuerySchema = z
   .object({
