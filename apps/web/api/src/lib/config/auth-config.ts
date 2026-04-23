@@ -22,10 +22,11 @@ type AuthConfig = {
   sessionSecret: string;
 };
 
-const parseBoolean = (value: string | undefined, fallback = false) =>
-  value === undefined ? fallback : value === 'true';
+function parseBoolean(value: string | undefined, fallback = false) {
+  return value === undefined ? fallback : value === 'true';
+}
 
-const getAuthConfig = (): AuthConfig => {
+function getAuthConfig(): AuthConfig {
   const inferredTransport = process.env['MAIL_TRANSPORT'] as MailTransport | undefined;
   const hasMailgunCredentials = Boolean(
     process.env['MAILGUN_API_KEY'] && process.env['MAILGUN_DOMAIN'] && process.env['MAILGUN_FROM'],
@@ -51,7 +52,7 @@ const getAuthConfig = (): AuthConfig => {
     sessionMaxAgeMs: Number(process.env['SESSION_MAX_AGE_MS'] ?? String(1000 * 60 * 60 * 24 * 7)),
     sessionSecret: process.env['SESSION_SECRET'] ?? 'themis-dev-session-secret',
   };
-};
+}
 
 export { getAuthConfig };
 export type { AuthConfig, DatabaseDriver };

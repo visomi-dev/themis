@@ -4,14 +4,14 @@ import { promisify } from 'node:util';
 const scrypt = promisify(scryptCallback);
 const KEY_LENGTH = 32;
 
-const hashSecret = async (secret: string) => {
+async function hashSecret(secret: string) {
   const salt = randomBytes(16).toString('hex');
   const derivedKey = (await scrypt(secret, salt, KEY_LENGTH)) as Buffer;
 
   return `${salt}:${derivedKey.toString('hex')}`;
-};
+}
 
-const verifySecret = async (secret: string, storedHash: string) => {
+async function verifySecret(secret: string, storedHash: string) {
   const [salt, hash] = storedHash.split(':');
 
   if (!salt || !hash) {
@@ -26,8 +26,10 @@ const verifySecret = async (secret: string, storedHash: string) => {
   }
 
   return timingSafeEqual(storedBuffer, derivedKey);
-};
+}
 
-const generateVerificationPin = () => randomInt(0, 1_000_000).toString().padStart(6, '0');
+function generateVerificationPin() {
+  return randomInt(0, 1_000_000).toString().padStart(6, '0');
+}
 
 export { generateVerificationPin, hashSecret, verifySecret };

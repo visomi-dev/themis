@@ -2,13 +2,13 @@ import { randomBytes, randomUUID } from 'node:crypto';
 
 import { desc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { withAccountContext } from '../db/account-context.js';
-import { apiKeys, userActivationMilestones } from '../db/schema.js';
-import { hashSecret } from '../auth/auth-crypto.js';
-import { AuthError } from '../auth/auth-errors.js';
+import type { AuthConfig } from '../config/auth-config';
+import { withAccountContext } from '../db/account-context';
+import { apiKeys, userActivationMilestones } from '../db/schema';
+import { hashSecret } from '../auth/auth-crypto';
+import { AuthError } from '../auth/auth-errors';
 
-import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types.js';
+import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types';
 
 type ActivationMilestoneMetadata = Record<string, string | null>;
 
@@ -25,7 +25,8 @@ const ACTIVATION_MILESTONES = new Set<ActivationMilestone>([
   'seed_prompt_copied',
 ]);
 
-const buildSeedPrompt = () => `Analyze this repository and prepare the initial project context for Themis.
+function buildSeedPrompt() {
+  return `Analyze this repository and prepare the initial project context for Themis.
 
 Please:
 1. Identify the app, framework, runtime, and package manager used.
@@ -35,6 +36,7 @@ Please:
 5. Suggest the first 3 useful setup tasks inside Themis.
 
 Return the result as a concise project setup summary suitable for storing as project context.`;
+}
 
 const mapApiKey = (record: typeof apiKeys.$inferSelect): ActivationApiKey => ({
   createdAt: record.createdAt.toISOString(),
@@ -45,9 +47,17 @@ const mapApiKey = (record: typeof apiKeys.$inferSelect): ActivationApiKey => ({
   tokenPrefix: record.tokenPrefix,
 });
 
-const createActivationService = (config: AuthConfig) => {
-  const getActivationState = async ({ accountId, userId }: ActivationContext): Promise<ActivationState> =>
-    withAccountContext(config, { accountId, userId }, async (db) => {
+class ActivationService {
+  private config?: AuthConfig;
+
+  configure(config: AuthConfig) {
+    this.config = config;
+
+    return this;
+  }
+
+  async getActivationState({ accountId, userId }: ActivationContext): Promise<ActivationState> {
+    return withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
       const keyRows = await db
         .select()
         .from(apiKeys)
@@ -66,17 +76,18 @@ const createActivationService = (config: AuthConfig) => {
         seedPrompt: buildSeedPrompt(),
       };
     });
+  }
 
-  const recordMilestone = async (
+  async recordMilestone(
     { accountId, userId }: ActivationContext,
     milestone: ActivationMilestone,
     metadata?: ActivationMilestoneMetadata,
-  ) => {
+  ) {
     if (!ACTIVATION_MILESTONES.has(milestone)) {
       throw new AuthError(400, 'invalid_milestone', 'The activation milestone is not supported.');
     }
 
-    await withAccountContext(config, { accountId, userId }, async (db) => {
+    await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
       await db.insert(userActivationMilestones).values({
         accountId,
         createdAt: new Date(),
@@ -86,9 +97,9 @@ const createActivationService = (config: AuthConfig) => {
         userId,
       });
     });
-  };
+  }
 
-  const createApiKey = async ({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> => {
+  async createApiKey({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> {
     const normalizedLabel = label.trim();
 
     if (normalizedLabel.length === 0) {
@@ -101,7 +112,7 @@ const createActivationService = (config: AuthConfig) => {
 
     const plaintextToken = `thm_${randomBytes(24).toString('base64url')}`;
     const now = new Date();
-    const createdKey = await withAccountContext(config, { accountId, userId }, async (db) => {
+    const createdKey = await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
       const [row] = await db
         .insert(apiKeys)
         .values({
@@ -119,7 +130,7 @@ const createActivationService = (config: AuthConfig) => {
       return row;
     });
 
-    await recordMilestone({ accountId, userId }, 'api_key_created', {
+    await this.recordMilestone({ accountId, userId }, 'api_key_created', {
       apiKeyId: createdKey.id,
       label: createdKey.label,
     });
@@ -128,10 +139,10 @@ const createActivationService = (config: AuthConfig) => {
       ...mapApiKey(createdKey),
       plaintextToken,
     };
-  };
+  }
 
-  const revokeApiKey = async ({ accountId, userId }: ActivationContext, apiKeyId: string) => {
-    await withAccountContext(config, { accountId, userId }, async (db) => {
+  async revokeApiKey({ accountId, userId }: ActivationContext, apiKeyId: string) {
+    await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
       const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
 
       if (!existingKey || existingKey.accountId !== accountId || existingKey.revokedAt) {
@@ -146,14 +157,17 @@ const createActivationService = (config: AuthConfig) => {
         })
         .where(eq(apiKeys.id, apiKeyId));
     });
-  };
+  }
 
-  return {
-    createApiKey,
-    getActivationState,
-    recordMilestone,
-    revokeApiKey,
-  };
-};
+  private getConfig() {
+    if (!this.config) {
+      throw new Error('ActivationService.configure() must be called before use.');
+    }
 
-export { createActivationService };
+    return this.config;
+  }
+}
+
+const activationService = new ActivationService();
+
+export { activationService };

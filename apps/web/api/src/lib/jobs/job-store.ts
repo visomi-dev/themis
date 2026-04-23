@@ -2,35 +2,34 @@ import { randomUUID } from 'node:crypto';
 
 import { and, desc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { withAccountContext } from '../db/account-context.js';
-import { asyncJobs } from '../db/schema.js';
-import type { AsyncJobRecord, AsyncJobStatus, AsyncJobType } from '../realtime/realtime-events.js';
+import type { AuthConfig } from '../config/auth-config';
+import { withAccountContext } from '../db/account-context';
+import { asyncJobs } from '../db/schema';
+import type { AsyncJobRecord, AsyncJobStatus, AsyncJobType } from '../realtime/realtime-events';
 
 type JobContext = {
   accountId: string;
   userId: string;
 };
 
-const mapJob = (record: typeof asyncJobs.$inferSelect): AsyncJobRecord => ({
-  completedAt: record.completedAt?.toISOString() ?? null,
-  createdAt: record.createdAt.toISOString(),
-  errorMessage: record.errorMessage ?? null,
-  id: record.id,
-  progress: record.progress,
-  projectId: record.projectId ?? null,
-  resultJson: record.resultJson ?? null,
-  status: record.status as AsyncJobStatus,
-  type: record.type as AsyncJobType,
-  updatedAt: record.updatedAt.toISOString(),
-  userId: record.userId,
-});
+function mapJob(record: typeof asyncJobs.$inferSelect): AsyncJobRecord {
+  return {
+    completedAt: record.completedAt?.toISOString() ?? null,
+    createdAt: record.createdAt.toISOString(),
+    errorMessage: record.errorMessage ?? null,
+    id: record.id,
+    progress: record.progress,
+    projectId: record.projectId ?? null,
+    resultJson: record.resultJson ?? null,
+    status: record.status as AsyncJobStatus,
+    type: record.type as AsyncJobType,
+    updatedAt: record.updatedAt.toISOString(),
+    userId: record.userId,
+  };
+}
 
-const createJobStore = (config: AuthConfig) => {
-  const createJob = async (
-    context: JobContext,
-    data: { inputJson?: string; projectId?: string; type: AsyncJobType },
-  ) => {
+function createJobStore(config: AuthConfig) {
+  async function createJob(context: JobContext, data: { inputJson?: string; projectId?: string; type: AsyncJobType }) {
     const now = new Date();
 
     return withAccountContext(config, context, async (db) => {
@@ -52,10 +51,10 @@ const createJobStore = (config: AuthConfig) => {
 
       return mapJob(job);
     });
-  };
+  }
 
-  const listJobsForProject = async (context: JobContext, projectId: string) =>
-    withAccountContext(config, context, async (db) => {
+  async function listJobsForProject(context: JobContext, projectId: string) {
+    return withAccountContext(config, context, async (db) => {
       const jobs = await db
         .select()
         .from(asyncJobs)
@@ -64,9 +63,10 @@ const createJobStore = (config: AuthConfig) => {
 
       return jobs.map(mapJob);
     });
+  }
 
-  const findJobById = async (context: JobContext, jobId: string) =>
-    withAccountContext(config, context, async (db) => {
+  async function findJobById(context: JobContext, jobId: string) {
+    return withAccountContext(config, context, async (db) => {
       const [job] = await db
         .select()
         .from(asyncJobs)
@@ -75,8 +75,9 @@ const createJobStore = (config: AuthConfig) => {
 
       return job ? mapJob(job) : null;
     });
+  }
 
-  const updateJob = async (
+  async function updateJob(
     context: JobContext,
     jobId: string,
     data: {
@@ -86,8 +87,8 @@ const createJobStore = (config: AuthConfig) => {
       resultJson?: string | null;
       status: AsyncJobStatus;
     },
-  ) =>
-    withAccountContext(config, context, async (db) => {
+  ) {
+    return withAccountContext(config, context, async (db) => {
       const [job] = await db
         .update(asyncJobs)
         .set({
@@ -103,8 +104,9 @@ const createJobStore = (config: AuthConfig) => {
 
       return mapJob(job);
     });
+  }
 
   return { createJob, findJobById, listJobsForProject, updateJob };
-};
+}
 
 export { createJobStore };

@@ -20,7 +20,7 @@
         "platform": "node",
         "outputPath": "dist/apps/web/server",
         "format": ["esm"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/web/server/src/main.ts",
         "tsConfig": "apps/web/server/tsconfig.app.json",
         "assets": ["apps/web/server/src/assets"],

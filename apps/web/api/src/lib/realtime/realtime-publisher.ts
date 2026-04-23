@@ -1,8 +1,8 @@
-import type { AsyncJobEvent, AsyncJobEventName, AsyncJobRecord } from './realtime-events.js';
+import type { AsyncJobEvent, AsyncJobEventName, AsyncJobRecord } from './realtime-events';
 
 import { realtimeBus } from 'web-shared';
 
-const publishAsyncJobEvent = (eventName: AsyncJobEventName, job: AsyncJobRecord, message: string) => {
+function publishAsyncJobEvent(eventName: AsyncJobEventName, job: AsyncJobRecord, message: string) {
   const event: AsyncJobEvent = {
     eventName,
     job,
@@ -11,6 +11,6 @@ const publishAsyncJobEvent = (eventName: AsyncJobEventName, job: AsyncJobRecord,
   };
 
   realtimeBus.emit('async-job', event);
-};
+}
 
 export { publishAsyncJobEvent };

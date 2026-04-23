@@ -1,4 +1,4 @@
-import type { AsyncJobRecord } from '../realtime/realtime-events.js';
+import type { AsyncJobRecord } from '../realtime/realtime-events';
 
 type ProjectSeedJobInput = {
   accountId: string;

@@ -12,7 +12,7 @@
         "platform": "node",
         "outputPath": "dist/apps/web/api",
         "format": ["esm"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/web/api/src/main.ts",
         "tsConfig": "apps/web/api/tsconfig.app.json",
         "assets": ["apps/web/api/src/assets"],

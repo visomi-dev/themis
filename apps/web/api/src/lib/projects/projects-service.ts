@@ -2,10 +2,10 @@ import { randomUUID } from 'node:crypto';
 
 import { and, asc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { withAccountContext } from '../db/account-context.js';
-import { asyncJobs, projectDocuments, projects } from '../db/schema.js';
-import { AuthError } from '../auth/auth-errors.js';
+import type { AuthConfig } from '../config/auth-config';
+import { withAccountContext } from '../db/account-context';
+import { asyncJobs, projectDocuments, projects } from '../db/schema';
+import { AuthError } from '../auth/auth-errors';
 
 import type {
   Project,
@@ -15,19 +15,20 @@ import type {
   ProjectSourceType,
   ProjectStatus,
   ProjectWithDocuments,
-} from './projects-types.js';
+} from './projects-types';
 
 type ProjectsContext = {
   accountId: string;
   userId: string;
 };
 
-const normalizeSlug = (name: string) =>
-  name
+function normalizeSlug(name: string) {
+  return name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80);
+}
 
 const PROJECT_STATUSES = new Set<ProjectStatus>(['active', 'archived', 'draft']);
 const PROJECT_SOURCE_TYPES = new Set<ProjectSourceType>(['imported', 'manual', 'seeded']);
@@ -67,23 +68,33 @@ const mapDocument = (record: typeof projectDocuments.$inferSelect): ProjectDocum
   updatedAt: record.updatedAt.toISOString(),
 });
 
-const createProjectsService = (config: AuthConfig) => {
-  const mapJob = (record: typeof asyncJobs.$inferSelect) => ({
-    completedAt: record.completedAt?.toISOString() ?? null,
-    createdAt: record.createdAt.toISOString(),
-    errorMessage: record.errorMessage ?? null,
-    id: record.id,
-    progress: record.progress,
-    projectId: record.projectId ?? null,
-    resultJson: record.resultJson ?? null,
-    status: record.status as 'completed' | 'failed' | 'queued' | 'running',
-    type: record.type as 'project_seed',
-    updatedAt: record.updatedAt.toISOString(),
-    userId: record.userId,
-  });
+class ProjectsService {
+  private config?: AuthConfig;
 
-  const listProjects = async (context: ProjectsContext): Promise<Project[]> =>
-    withAccountContext(config, context, async (db) => {
+  configure(config: AuthConfig) {
+    this.config = config;
+
+    return this;
+  }
+
+  mapJob(record: typeof asyncJobs.$inferSelect) {
+    return {
+      completedAt: record.completedAt?.toISOString() ?? null,
+      createdAt: record.createdAt.toISOString(),
+      errorMessage: record.errorMessage ?? null,
+      id: record.id,
+      progress: record.progress,
+      projectId: record.projectId ?? null,
+      resultJson: record.resultJson ?? null,
+      status: record.status as 'completed' | 'failed' | 'queued' | 'running',
+      type: record.type as 'project_seed',
+      updatedAt: record.updatedAt.toISOString(),
+      userId: record.userId,
+    };
+  }
+
+  async listProjects(context: ProjectsContext): Promise<Project[]> {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const rows = await db
         .select()
         .from(projects)
@@ -91,9 +102,10 @@ const createProjectsService = (config: AuthConfig) => {
         .orderBy(asc(projects.createdAt));
       return rows.map(mapProject);
     });
+  }
 
-  const getProject = async (context: ProjectsContext, projectId: string): Promise<ProjectWithDocuments | null> =>
-    withAccountContext(config, context, async (db) => {
+  async getProject(context: ProjectsContext, projectId: string): Promise<ProjectWithDocuments | null> {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const [projectRow] = await db
         .select()
         .from(projects)
@@ -120,14 +132,15 @@ const createProjectsService = (config: AuthConfig) => {
       return {
         ...mapProject(projectRow),
         documents: documentRows.map(mapDocument),
-        jobs: jobRows.map(mapJob),
+        jobs: jobRows.map((row) => this.mapJob(row)),
       };
     });
+  }
 
-  const createProject = async (
+  async createProject(
     context: ProjectsContext,
     data: { name: string; summary?: string; sourceType?: ProjectSourceType },
-  ): Promise<Project> => {
+  ): Promise<Project> {
     const name = data.name.trim();
     if (!name) {
       throw new AuthError(400, 'invalid_name', 'Project name is required.');
@@ -141,7 +154,7 @@ const createProjectsService = (config: AuthConfig) => {
       throw new AuthError(400, 'invalid_source_type', 'The source type is not supported.');
     }
 
-    return withAccountContext(config, context, async (db) => {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const now = new Date();
       const baseSlug = normalizeSlug(name);
       let slug = baseSlug;
@@ -172,14 +185,14 @@ const createProjectsService = (config: AuthConfig) => {
 
       return mapProject(created);
     });
-  };
+  }
 
-  const updateProject = async (
+  async updateProject(
     context: ProjectsContext,
     projectId: string,
     data: { name?: string; status?: ProjectStatus; summary?: string | null },
-  ): Promise<Project> =>
-    withAccountContext(config, context, async (db) => {
+  ): Promise<Project> {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const [existing] = await db
         .select()
         .from(projects)
@@ -214,9 +227,10 @@ const createProjectsService = (config: AuthConfig) => {
         .returning();
       return mapProject(updated);
     });
+  }
 
-  const deleteProject = async (context: ProjectsContext, projectId: string) =>
-    withAccountContext(config, context, async (db) => {
+  async deleteProject(context: ProjectsContext, projectId: string) {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const [existing] = await db
         .select()
         .from(projects)
@@ -227,8 +241,9 @@ const createProjectsService = (config: AuthConfig) => {
       }
       await db.delete(projects).where(and(eq(projects.accountId, context.accountId), eq(projects.id, projectId)));
     });
+  }
 
-  const createDocument = async (
+  async createDocument(
     context: ProjectsContext,
     projectId: string,
     data: {
@@ -238,8 +253,8 @@ const createProjectsService = (config: AuthConfig) => {
       status?: ProjectDocumentStatus;
       title: string;
     },
-  ) =>
-    withAccountContext(config, context, async (db) => {
+  ) {
+    return withAccountContext(this.getConfig(), context, async (db) => {
       const [project] = await db
         .select()
         .from(projects)
@@ -274,8 +289,17 @@ const createProjectsService = (config: AuthConfig) => {
         .returning();
       return mapDocument(created);
     });
+  }
 
-  return { createDocument, createProject, deleteProject, getProject, listProjects, updateProject };
-};
+  private getConfig() {
+    if (!this.config) {
+      throw new Error('ProjectsService.configure() must be called before use.');
+    }
 
-export { createProjectsService };
+    return this.config;
+  }
+}
+
+const projectsService = new ProjectsService();
+
+export { projectsService };

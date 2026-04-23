@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 
-import type { AsyncJobEvent } from './realtime-events.js';
+import type { AsyncJobEvent } from './realtime-events';
 
 type RealtimeBus = EventEmitter<{
   'async-job': [AsyncJobEvent];

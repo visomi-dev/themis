@@ -1,12 +1,12 @@
 import { createDocument } from 'zod-openapi';
 
-import { activationOpenApiPaths } from '../activation/activation-router.js';
-import { authOpenApiPaths } from '../auth/auth-router.js';
-import { projectsOpenApiPaths } from '../projects/projects-router.js';
-import { testOpenApiPaths } from '../testing/test-router.js';
+import { activationOpenApiPaths } from '../activation/activation-router';
+import { authOpenApiPaths } from '../auth/auth-router';
+import { projectsOpenApiPaths } from '../projects/projects-router';
+import { testOpenApiPaths } from '../testing/test-router';
 
-const createOpenApiDocument = () =>
-  createDocument({
+function createOpenApiDocument() {
+  return createDocument({
     openapi: '3.1.0',
     info: {
       title: 'Themis API',
@@ -19,5 +19,6 @@ const createOpenApiDocument = () =>
       ...testOpenApiPaths,
     },
   });
+}
 
 export { createOpenApiDocument };

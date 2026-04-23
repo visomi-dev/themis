@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-import type { AuthConfig } from '../config/auth-config.js';
+import type { AuthConfig } from '../config/auth-config';
 
 let pool: Pool | undefined;
 let cachedUrl: string | undefined;

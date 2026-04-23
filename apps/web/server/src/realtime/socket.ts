@@ -2,8 +2,8 @@ import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node
 
 import { Server } from 'socket.io';
 
-import { getRealtimeConfig } from './config.js';
-import { getRealtimePool } from './pool.js';
+import { getRealtimeConfig } from './config';
+import { getRealtimePool } from './pool';
 
 import { createSessionMiddleware, createSessionStore, realtimeBus } from 'web-shared';
 

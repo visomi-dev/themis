@@ -6,7 +6,20 @@ declare global {
       email: string;
       emailVerifiedAt: string | null;
       id: string;
+      role: string;
     }
+  }
+}
+
+declare module 'express-session' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface SessionData {
+    passport?: {
+      user?: {
+        accountId: string;
+        id: string;
+      };
+    };
   }
 }
 

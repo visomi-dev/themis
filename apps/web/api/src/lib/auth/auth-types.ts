@@ -5,6 +5,7 @@ type AuthUser = {
   email: string;
   emailVerifiedAt: string | null;
   id: string;
+  role: string;
 };
 
 type AuthChallengePayload = {

@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config.js';
+import type { AuthConfig } from '../config/auth-config';
 
-import { getDb } from './client.js';
+import { getDb } from './client';
 
 type TenantContext = {
   accountId: string;

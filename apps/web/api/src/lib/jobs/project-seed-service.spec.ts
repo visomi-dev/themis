@@ -15,10 +15,11 @@ let workerProcessor:
   | undefined;
 
 jest.mock('../projects/projects-service', () => ({
-  createProjectsService: () => ({
+  projectsService: {
+    configure: jest.fn().mockReturnThis(),
     createDocument,
     getProject,
-  }),
+  },
 }));
 
 jest.mock('./job-store', () => ({
@@ -57,9 +58,9 @@ jest.mock('bullmq', () => ({
     ),
 }));
 
-import { createProjectSeedService } from './project-seed-service';
+import { projectSeedService } from './project-seed-service';
 
-describe('createProjectSeedService', () => {
+describe('projectSeedService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     workerProcessor = undefined;
@@ -82,7 +83,7 @@ describe('createProjectSeedService', () => {
   });
 
   it('queues a project seed job and emits the queued event', async () => {
-    const service = createProjectSeedService({} as never);
+    const service = projectSeedService.configure({} as never);
 
     const job = await service.queueProjectSeed({ accountId: 'account-1', userId: 'user-1' }, 'project-1');
 
@@ -136,7 +137,7 @@ describe('createProjectSeedService', () => {
       .mockResolvedValueOnce(contextJob)
       .mockResolvedValueOnce(completedJob);
 
-    const service = createProjectSeedService({} as never);
+    const service = projectSeedService.configure({} as never);
     service.ensureWorker();
 
     expect(workerProcessor).toBeDefined();

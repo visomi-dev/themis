@@ -1,10 +1,10 @@
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-import type { AuthConfig } from '../config/auth-config.js';
+import type { AuthConfig } from '../config/auth-config';
 
-import { AuthError } from './auth-errors.js';
-import type { VerificationPurpose } from './auth-types.js';
+import { AuthError } from './auth-errors';
+import type { VerificationPurpose } from './auth-types';
 
 type VerificationMessage = {
   challengeId: string;
@@ -22,7 +22,7 @@ const mailbox: SentVerificationMessage[] = [];
 
 let mailgunClient: ReturnType<InstanceType<typeof Mailgun>['client']> | undefined;
 
-const getMailgunClient = (config: AuthConfig) => {
+function getMailgunClient(config: AuthConfig) {
   if (!config.mailgunApiKey || !config.mailgunDomain) {
     throw new AuthError(500, 'mailgun_not_configured', 'Mailgun credentials are not configured.');
   }
@@ -37,9 +37,9 @@ const getMailgunClient = (config: AuthConfig) => {
   }
 
   return mailgunClient;
-};
+}
 
-const createMessageBody = (message: VerificationMessage) => {
+function createMessageBody(message: VerificationMessage) {
   const intent = message.purpose === 'sign_in' ? 'sign in' : 'finish creating your account';
 
   return {
@@ -47,9 +47,9 @@ const createMessageBody = (message: VerificationMessage) => {
     subject: 'Your Themis verification code',
     text: `Your Themis verification code is ${message.pin}. Use it to ${intent}. This code expires at ${message.expiresAt.toISOString()}.`,
   };
-};
+}
 
-const sendVerificationMessage = async (config: AuthConfig, message: VerificationMessage) => {
+async function sendVerificationMessage(config: AuthConfig, message: VerificationMessage) {
   const body = createMessageBody(message);
 
   if (config.mailTransport === 'memory') {
@@ -70,13 +70,15 @@ const sendVerificationMessage = async (config: AuthConfig, message: Verification
     text: body.text,
     to: [message.email],
   });
-};
+}
 
-const listSentMessages = () => mailbox.map((message) => ({ ...message }));
+function listSentMessages() {
+  return mailbox.map((message) => ({ ...message }));
+}
 
-const clearMailbox = () => {
+function clearMailbox() {
   mailbox.length = 0;
-};
+}
 
 export { clearMailbox, listSentMessages, sendVerificationMessage };
 export type { SentVerificationMessage };

@@ -1,4 +1,4 @@
-import type { AsyncJobRecord } from '../realtime/realtime-events.js';
+import type { AsyncJobRecord } from '../realtime/realtime-events';
 
 type ProjectSourceType = 'imported' | 'manual' | 'seeded';
 type ProjectStatus = 'active' | 'archived' | 'draft';

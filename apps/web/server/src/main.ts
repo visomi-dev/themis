@@ -3,8 +3,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { Express, NextFunction, Request, Response } from 'express';
 
-import { createGatewayApp } from './gateway.js';
-import { createRealtimeServer } from './realtime/socket.js';
+import { createGatewayApp } from './gateway';
+import { createRealtimeServer } from './realtime/socket';
 
 type ApiModule = {
   appPromise?: Promise<Express>;

@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Router, type NextFunction, type Request, type Response } from 'express';
 
-import type { AuthConfig } from '../config/auth-config.js';
+import type { AuthConfig } from '../config/auth-config';
 import {
   challengeIdSchema,
   emailSchema,
@@ -10,10 +10,11 @@ import {
   readValidated,
   validateRequest,
   z,
-} from '../http/route-schemas.js';
+} from '../http/route-schemas';
 
-import { AuthError } from './auth-errors.js';
-import { createAuthService } from './auth-service.js';
+import { authMiddleware } from './auth-middleware';
+import { AuthError } from './auth-errors';
+import { authService } from './auth-service';
 
 const authUserSchema = z
   .object({
@@ -27,6 +28,7 @@ const authUserSchema = z
       id: 'AuthEmailVerifiedAt',
     }),
     id: z.string().meta({ description: 'User identifier.', example: 'user-123', id: 'AuthUserId' }),
+    role: z.string().meta({ description: 'Active account role.', example: 'owner', id: 'AuthRole' }),
   })
   .meta({ id: 'AuthUser' });
 
@@ -169,8 +171,8 @@ const authOpenApiPaths = {
   },
 };
 
-const loginUser = (req: Request, user: Express.User) =>
-  new Promise<void>((resolve, reject) => {
+function loginUser(req: Request, user: Express.User) {
+  return new Promise<void>((resolve, reject) => {
     req.login(user, (error) => {
       if (error) {
         reject(error);
@@ -180,9 +182,10 @@ const loginUser = (req: Request, user: Express.User) =>
       resolve();
     });
   });
+}
 
-const logoutUser = (req: Request) =>
-  new Promise<void>((resolve, reject) => {
+function logoutUser(req: Request) {
+  return new Promise<void>((resolve, reject) => {
     req.logout((error) => {
       if (error) {
         reject(error);
@@ -192,101 +195,131 @@ const logoutUser = (req: Request) =>
       resolve();
     });
   });
+}
 
-const buildAuthRouter = (config: AuthConfig) => {
-  const router = Router();
-  const service = createAuthService(config);
+class AuthRouter {
+  private configured = false;
 
-  router.get('/session', (_req, res) => {
-    res.send({
-      authenticated: _req.isAuthenticated(),
-      user: _req.user ?? null,
+  private readonly router = Router();
+
+  configure(config: AuthConfig) {
+    if (this.configured) {
+      return this.router;
+    }
+
+    authService.configure(config);
+
+    this.router.get('/session', function sessionHandler(req, res) {
+      res.send({
+        authenticated: req.isAuthenticated(),
+        user: req.user ?? null,
+      });
     });
-  });
 
-  router.post('/sign-up', validateRequest({ body: credentialsSchema }), async (req, res) => {
-    const { email, password } = readValidated<{ body: typeof credentialsSchema }>(req).body!;
-    const challenge = await service.signUp(email, password);
-    res.status(201).send(challenge);
-  });
+    this.router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
+      const { email, password } = readValidated<{ body: typeof credentialsSchema }>(req).body!;
+      const challenge = await authService.signUp(email, password);
+      res.status(201).send(challenge);
+    });
 
-  router.post('/sign-up/verify', validateRequest({ body: challengeVerificationSchema }), async (req, res) => {
-    const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
-    const user = await service.verifyChallenge(challengeId, pin, 'sign_up');
+    this.router.post(
+      '/sign-up/verify',
+      validateRequest({ body: challengeVerificationSchema }),
+      async function verifySignUpHandler(req, res) {
+        const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+        const user = await authService.verifyChallenge(challengeId, pin, 'sign_up');
 
-    await loginUser(req, user);
+        await loginUser(req, user);
 
-    res.send({ authenticated: true, user });
-  });
+        res.send({ authenticated: true, user });
+      },
+    );
 
-  router.post(
-    '/sign-in/password',
-    validateRequest({ body: credentialsSchema }),
-    (req: Request, res: Response, next: NextFunction) => {
-      const credentials = readValidated<{ body: typeof credentialsSchema }>(req).body!;
-      req.body = credentials;
+    this.router.post(
+      '/sign-in/password',
+      validateRequest({ body: credentialsSchema }),
+      function signInPasswordHandler(req: Request, res: Response, next: NextFunction) {
+        const credentials = readValidated<{ body: typeof credentialsSchema }>(req).body!;
+        req.body = credentials;
 
-      passport.authenticate(
-        'local',
-        { session: false },
-        async (error: unknown, user?: Express.User, info?: { message?: string }) => {
-          if (error) {
-            next(error);
-            return;
-          }
-
-          if (!user) {
-            next(new AuthError(401, 'invalid_credentials', info?.message ?? 'Incorrect email or password.'));
-            return;
-          }
-
-          try {
-            const fullUser = await service.findUserById(user.id);
-
-            if (!fullUser) {
-              throw new AuthError(404, 'user_not_found', 'The account could not be found.');
+        passport.authenticate(
+          'local',
+          { session: false },
+          async function passportCallback(error: unknown, user?: Express.User, info?: { message?: string }) {
+            if (error) {
+              next(error);
+              return;
             }
 
-            const challenge = await service.beginSignIn(fullUser);
-            res.send(challenge);
-          } catch (innerError) {
-            next(innerError);
-          }
-        },
-      )(req, res, next);
-    },
-  );
+            if (!user) {
+              next(new AuthError(401, 'invalid_credentials', info?.message ?? 'Incorrect email or password.'));
+              return;
+            }
 
-  router.post('/sign-in/verify', validateRequest({ body: challengeVerificationSchema }), async (req, res) => {
-    const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
-    const user = await service.verifyChallenge(challengeId, pin, 'sign_in');
+            try {
+              const fullUser = await authService.findUserById(user.id);
 
-    await loginUser(req, user);
+              if (!fullUser) {
+                throw new AuthError(404, 'user_not_found', 'The account could not be found.');
+              }
 
-    res.send({ authenticated: true, user });
-  });
+              const challenge = await authService.beginSignIn(fullUser);
+              res.send(challenge);
+            } catch (innerError) {
+              next(innerError);
+            }
+          },
+        )(req, res, next);
+      },
+    );
 
-  router.post('/verification/resend', validateRequest({ body: resendVerificationSchema }), async (req, res) => {
-    const { challengeId } = readValidated<{ body: typeof resendVerificationSchema }>(req).body!;
-    const challenge = await service.resendChallenge(challengeId);
+    this.router.post(
+      '/sign-in/verify',
+      validateRequest({ body: challengeVerificationSchema }),
+      async function verifySignInHandler(req, res) {
+        const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+        const user = await authService.verifyChallenge(challengeId, pin, 'sign_in');
 
-    res.send(challenge);
-  });
+        await loginUser(req, user);
 
-  router.post('/sign-out', async (req, res) => {
-    await logoutUser(req);
-    req.session.destroy(() => undefined);
-    res.clearCookie('connect.sid');
-    res.status(204).send();
-  });
+        res.send({ authenticated: true, user });
+      },
+    );
 
-  router.post('/password/forgotten', validateRequest({ body: forgottenPasswordSchema }), async (req, res) => {
-    const { email } = readValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
-    await service.requestPasswordReset(email);
-    res.status(200).send({ message: 'If an account exists for that email, a reset link has been sent.' });
-  });
+    this.router.post(
+      '/verification/resend',
+      validateRequest({ body: resendVerificationSchema }),
+      async function resendVerificationHandler(req, res) {
+        const { challengeId } = readValidated<{ body: typeof resendVerificationSchema }>(req).body!;
+        const challenge = await authService.resendChallenge(challengeId);
 
-  return router;
-};
+        res.send(challenge);
+      },
+    );
 
-export { authOpenApiPaths, buildAuthRouter };
+    this.router.post('/sign-out', authMiddleware.authenticated(), async function signOutHandler(req, res) {
+      await logoutUser(req);
+      req.session.destroy(() => undefined);
+      res.clearCookie('connect.sid');
+      res.status(204).send();
+    });
+
+    this.router.post(
+      '/password/forgotten',
+      validateRequest({ body: forgottenPasswordSchema }),
+      async function forgottenPasswordHandler(req, res) {
+        const { email } = readValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
+        await authService.requestPasswordReset(email);
+        res.status(200).send({ message: 'If an account exists for that email, a reset link has been sent.' });
+      },
+    );
+
+    this.configured = true;
+
+    return this.router;
+  }
+}
+
+const authRouter = new AuthRouter();
+
+export { authOpenApiPaths, authRouter };

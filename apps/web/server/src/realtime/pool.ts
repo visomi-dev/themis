@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-import type { RealtimeConfig } from './config.js';
+import type { RealtimeConfig } from './config';
 
 let pool: Pool | undefined;
 

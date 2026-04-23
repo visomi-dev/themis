@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { emailSchema, readValidated, validateRequest, z } from '../http/route-schemas.js';
-import { clearMailbox, listSentMessages } from '../auth/auth-mail.js';
+import { clearMailbox, listSentMessages } from '../auth/auth-mail';
+import { emailSchema, readValidated, validateRequest, z } from '../http/route-schemas';
 
 const mailboxQuerySchema = z
   .object({
@@ -39,31 +39,47 @@ const testOpenApiPaths = {
   },
 };
 
-const buildTestRouter = () => {
-  const router = Router();
+class TestRouter {
+  private configured = false;
 
-  router.get('/mailbox/latest', validateRequest({ query: mailboxQuerySchema }), (req, res) => {
-    const { email, purpose } = readValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
-    const messages = listSentMessages();
-    const matchingMessages = messages.filter(
-      (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),
-    );
-    const match = matchingMessages[matchingMessages.length - 1];
+  private readonly router = Router();
 
-    if (!match) {
-      res.status(404).send({ error: 'mail_not_found' });
-      return;
+  configure() {
+    if (this.configured) {
+      return this.router;
     }
 
-    res.send(match);
-  });
+    this.router.get(
+      '/mailbox/latest',
+      validateRequest({ query: mailboxQuerySchema }),
+      function mailboxLatestHandler(req, res) {
+        const { email, purpose } = readValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
+        const messages = listSentMessages();
+        const matchingMessages = messages.filter(
+          (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),
+        );
+        const match = matchingMessages[matchingMessages.length - 1];
 
-  router.delete('/mailbox', (_req, res) => {
-    clearMailbox();
-    res.status(204).send();
-  });
+        if (!match) {
+          res.status(404).send({ error: 'mail_not_found' });
+          return;
+        }
 
-  return router;
-};
+        res.send(match);
+      },
+    );
 
-export { buildTestRouter, testOpenApiPaths };
+    this.router.delete('/mailbox', function clearMailboxHandler(_req, res) {
+      clearMailbox();
+      res.status(204).send();
+    });
+
+    this.configured = true;
+
+    return this.router;
+  }
+}
+
+const testRouter = new TestRouter();
+
+export { testOpenApiPaths, testRouter };

@@ -1,12 +1,13 @@
-import { Router, type NextFunction, type Request, type Response } from 'express';
+import { Router } from 'express';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { AuthError } from '../auth/auth-errors.js';
-import { projectIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas.js';
-import { createProjectSeedService } from '../jobs/project-seed-service.js';
+import type { AuthConfig } from '../config/auth-config';
+import { authMiddleware } from '../auth/auth-middleware';
+import { AuthError } from '../auth/auth-errors';
+import { projectIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas';
+import { projectSeedService } from '../jobs/project-seed-service';
 
-import { createProjectsService } from './projects-service.js';
-import type { ProjectDocumentStatus, ProjectDocumentType, ProjectSourceType, ProjectStatus } from './projects-types.js';
+import { projectsService } from './projects-service';
+import type { ProjectDocumentStatus, ProjectDocumentType, ProjectSourceType, ProjectStatus } from './projects-types';
 
 const projectStatusSchema = z.enum(['active', 'archived', 'draft']);
 const projectSourceTypeSchema = z.enum(['imported', 'manual', 'seeded']);
@@ -73,9 +74,7 @@ const projectWithDocumentsSchema = projectSchema
   })
   .meta({ id: 'ProjectWithDocuments' });
 
-const projectParamsSchema = z
-  .object({ apiKeyId: z.never().optional(), projectId: projectIdParamSchema })
-  .meta({ id: 'ProjectParams' });
+const projectParamsSchema = z.object({ projectId: projectIdParamSchema }).meta({ id: 'ProjectParams' });
 
 const createProjectSchema = z
   .object({
@@ -179,110 +178,131 @@ const projectsOpenApiPaths = {
   },
 };
 
-const requireAuthenticatedUser = (req: Request, _res: Response, next: NextFunction) => {
-  if (!req.isAuthenticated() || !req.user) {
-    next(new AuthError(401, 'authentication_required', 'Sign in to access your projects.'));
-    return;
-  }
-  next();
-};
+class ProjectsRouter {
+  private configured = false;
 
-const authenticatedContext = (req: Request) => {
-  if (!req.user) {
-    throw new AuthError(401, 'authentication_required', 'Sign in to access your projects.');
-  }
+  private readonly router = Router();
 
-  return {
-    accountId: req.user.accountId,
-    userId: req.user.id,
-  };
-};
-
-const buildProjectsRouter = (config: AuthConfig) => {
-  const router = Router();
-  const projectSeedService = createProjectSeedService(config);
-  const service = createProjectsService(config);
-
-  router.use(requireAuthenticatedUser);
-
-  router.get('/', async (req, res) => {
-    res.send({ projects: await service.listProjects(authenticatedContext(req)) });
-  });
-
-  router.get('/:projectId', validateRequest({ params: projectParamsSchema }), async (req, res) => {
-    const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    const project = await service.getProject(authenticatedContext(req), projectId);
-    if (!project) {
-      throw new AuthError(404, 'project_not_found', 'The project could not be found.');
+  configure(config: AuthConfig) {
+    if (this.configured) {
+      return this.router;
     }
-    res.send(project);
-  });
 
-  router.post('/', validateRequest({ body: createProjectSchema }), async (req, res) => {
-    const body = readValidated<{ body: typeof createProjectSchema }>(req).body!;
-    const project = await service.createProject(
-      authenticatedContext(req),
-      body as { name: string; sourceType?: ProjectSourceType; summary?: string },
+    projectSeedService.configure(config);
+    projectsService.configure(config);
+
+    this.router.use(authMiddleware.authenticated());
+
+    this.router.get('/', async function listProjectsHandler(req, res) {
+      res.send({ projects: await projectsService.listProjects(authMiddleware.context(req)) });
+    });
+
+    this.router.get(
+      '/:projectId',
+      validateRequest({ params: projectParamsSchema }),
+      async function projectDetailHandler(req, res) {
+        const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
+        const project = await projectsService.getProject(authMiddleware.context(req), projectId);
+
+        if (!project) {
+          throw new AuthError(404, 'project_not_found', 'The project could not be found.');
+        }
+
+        res.send(project);
+      },
     );
-    res.status(201).send(project);
-  });
 
-  router.patch(
-    '/:projectId',
-    validateRequest({ body: updateProjectSchema, params: projectParamsSchema }),
-    async (req, res) => {
-      const { body, params } = readValidated<{ body: typeof updateProjectSchema; params: typeof projectParamsSchema }>(
-        req,
-      );
-      const project = await service.updateProject(
-        authenticatedContext(req),
-        params!.projectId,
-        body as { name?: string; status?: ProjectStatus; summary?: string | null },
-      );
-      res.send(project);
-    },
-  );
+    this.router.post(
+      '/',
+      validateRequest({ body: createProjectSchema }),
+      async function createProjectHandler(req, res) {
+        const body = readValidated<{ body: typeof createProjectSchema }>(req).body!;
+        const project = await projectsService.createProject(
+          authMiddleware.context(req),
+          body as { name: string; sourceType?: ProjectSourceType; summary?: string },
+        );
 
-  router.delete('/:projectId', validateRequest({ params: projectParamsSchema }), async (req, res) => {
-    const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    await service.deleteProject(authenticatedContext(req), projectId);
-    res.status(204).send();
-  });
+        res.status(201).send(project);
+      },
+    );
 
-  router.post(
-    '/:projectId/documents',
-    validateRequest({ body: createDocumentSchema, params: projectParamsSchema }),
-    async (req, res) => {
-      const { body, params } = readValidated<{ body: typeof createDocumentSchema; params: typeof projectParamsSchema }>(
-        req,
-      );
-      const document = await service.createDocument(
-        authenticatedContext(req),
-        params!.projectId,
-        body as {
-          contentMarkdown: string;
-          documentType: ProjectDocumentType;
-          source?: string;
-          status?: ProjectDocumentStatus;
-          title: string;
-        },
-      );
-      res.status(201).send(document);
-    },
-  );
+    this.router.patch(
+      '/:projectId',
+      validateRequest({ body: updateProjectSchema, params: projectParamsSchema }),
+      async function updateProjectHandler(req, res) {
+        const { body, params } = readValidated<{
+          body: typeof updateProjectSchema;
+          params: typeof projectParamsSchema;
+        }>(req);
+        const project = await projectsService.updateProject(
+          authMiddleware.context(req),
+          params!.projectId,
+          body as { name?: string; status?: ProjectStatus; summary?: string | null },
+        );
 
-  router.get('/:projectId/jobs', validateRequest({ params: projectParamsSchema }), async (req, res) => {
-    const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    res.send({ jobs: await projectSeedService.listProjectJobs(authenticatedContext(req), projectId) });
-  });
+        res.send(project);
+      },
+    );
 
-  router.post('/:projectId/seed', validateRequest({ params: projectParamsSchema }), async (req, res) => {
-    const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    const job = await projectSeedService.queueProjectSeed(authenticatedContext(req), projectId);
-    res.status(202).send(job);
-  });
+    this.router.delete(
+      '/:projectId',
+      validateRequest({ params: projectParamsSchema }),
+      async function deleteProjectHandler(req, res) {
+        const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
+        await projectsService.deleteProject(authMiddleware.context(req), projectId);
+        res.status(204).send();
+      },
+    );
 
-  return router;
-};
+    this.router.post(
+      '/:projectId/documents',
+      validateRequest({ body: createDocumentSchema, params: projectParamsSchema }),
+      async function createDocumentHandler(req, res) {
+        const { body, params } = readValidated<{
+          body: typeof createDocumentSchema;
+          params: typeof projectParamsSchema;
+        }>(req);
+        const document = await projectsService.createDocument(
+          authMiddleware.context(req),
+          params!.projectId,
+          body as {
+            contentMarkdown: string;
+            documentType: ProjectDocumentType;
+            source?: string;
+            status?: ProjectDocumentStatus;
+            title: string;
+          },
+        );
 
-export { buildProjectsRouter, projectsOpenApiPaths };
+        res.status(201).send(document);
+      },
+    );
+
+    this.router.get(
+      '/:projectId/jobs',
+      validateRequest({ params: projectParamsSchema }),
+      async function projectJobsHandler(req, res) {
+        const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
+        res.send({ jobs: await projectSeedService.listProjectJobs(authMiddleware.context(req), projectId) });
+      },
+    );
+
+    this.router.post(
+      '/:projectId/seed',
+      validateRequest({ params: projectParamsSchema }),
+      async function seedProjectHandler(req, res) {
+        const { projectId } = readValidated<{ params: typeof projectParamsSchema }>(req).params!;
+        const job = await projectSeedService.queueProjectSeed(authMiddleware.context(req), projectId);
+        res.status(202).send(job);
+      },
+    );
+
+    this.configured = true;
+
+    return this.router;
+  }
+}
+
+const projectsRouter = new ProjectsRouter();
+
+export { projectsOpenApiPaths, projectsRouter };

@@ -5,6 +5,7 @@ export type AuthUser = {
   email: string;
   emailVerifiedAt: string | null;
   id: string;
+  role: string;
 };
 
 export type AuthChallenge = {

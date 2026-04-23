@@ -1,11 +1,11 @@
-import { Router, type NextFunction, type Request, type Response } from 'express';
+import { Router } from 'express';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { apiKeyIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas.js';
-import { AuthError } from '../auth/auth-errors.js';
+import type { AuthConfig } from '../config/auth-config';
+import { authMiddleware } from '../auth/auth-middleware';
+import { apiKeyIdParamSchema, readValidated, validateRequest, z } from '../http/route-schemas';
 
-import { createActivationService } from './activation-service.js';
-import type { ActivationMilestone } from './activation-types.js';
+import { activationService } from './activation-service';
+import type { ActivationMilestone } from './activation-types';
 
 const activationMilestoneSchema = z.enum([
   'activation_completed',
@@ -91,58 +91,67 @@ const activationOpenApiPaths = {
   },
 };
 
-const requireAuthenticatedUser = (req: Request, _res: Response, next: NextFunction) => {
-  if (!req.isAuthenticated() || !req.user) {
-    next(new AuthError(401, 'authentication_required', 'Sign in to access activation settings.'));
-    return;
+class ActivationRouter {
+  private configured = false;
+
+  private readonly router = Router();
+
+  configure(config: AuthConfig) {
+    if (this.configured) {
+      return this.router;
+    }
+
+    activationService.configure(config);
+
+    this.router.use(authMiddleware.authenticated());
+
+    this.router.get('/', async function activationStateHandler(req, res) {
+      res.send(await activationService.getActivationState(authMiddleware.context(req)));
+    });
+
+    this.router.post(
+      '/api-keys',
+      validateRequest({ body: createApiKeySchema }),
+      async function createApiKeyHandler(req, res) {
+        const { label } = readValidated<{ body: typeof createApiKeySchema }>(req).body!;
+        const key = await activationService.createApiKey(authMiddleware.context(req), label);
+
+        res.status(201).send(key);
+      },
+    );
+
+    this.router.post(
+      '/milestones',
+      validateRequest({ body: milestoneBodySchema }),
+      async function milestoneHandler(req, res) {
+        const { metadata, milestone } = readValidated<{ body: typeof milestoneBodySchema }>(req).body!;
+
+        await activationService.recordMilestone(
+          authMiddleware.context(req),
+          milestone as ActivationMilestone,
+          metadata,
+        );
+
+        res.status(204).send();
+      },
+    );
+
+    this.router.post(
+      '/api-keys/:apiKeyId/revoke',
+      validateRequest({ params: apiKeyParamsSchema }),
+      async function revokeApiKeyHandler(req, res) {
+        const { apiKeyId } = readValidated<{ params: typeof apiKeyParamsSchema }>(req).params!;
+        await activationService.revokeApiKey(authMiddleware.context(req), apiKeyId);
+        res.status(204).send();
+      },
+    );
+
+    this.configured = true;
+
+    return this.router;
   }
+}
 
-  next();
-};
+const activationRouter = new ActivationRouter();
 
-const authenticatedContext = (req: Request) => {
-  if (!req.user) {
-    throw new AuthError(401, 'authentication_required', 'Sign in to access activation settings.');
-  }
-
-  return {
-    accountId: req.user.accountId,
-    userId: req.user.id,
-  };
-};
-
-const buildActivationRouter = (config: AuthConfig) => {
-  const router = Router();
-  const service = createActivationService(config);
-
-  router.use(requireAuthenticatedUser);
-
-  router.get('/', async (req, res) => {
-    res.send(await service.getActivationState(authenticatedContext(req)));
-  });
-
-  router.post('/api-keys', validateRequest({ body: createApiKeySchema }), async (req, res) => {
-    const { label } = readValidated<{ body: typeof createApiKeySchema }>(req).body!;
-    const key = await service.createApiKey(authenticatedContext(req), label);
-
-    res.status(201).send(key);
-  });
-
-  router.post('/milestones', validateRequest({ body: milestoneBodySchema }), async (req, res) => {
-    const { metadata, milestone } = readValidated<{ body: typeof milestoneBodySchema }>(req).body!;
-
-    await service.recordMilestone(authenticatedContext(req), milestone as ActivationMilestone, metadata);
-
-    res.status(204).send();
-  });
-
-  router.post('/api-keys/:apiKeyId/revoke', validateRequest({ params: apiKeyParamsSchema }), async (req, res) => {
-    const { apiKeyId } = readValidated<{ params: typeof apiKeyParamsSchema }>(req).params!;
-    await service.revokeApiKey(authenticatedContext(req), apiKeyId);
-    res.status(204).send();
-  });
-
-  return router;
-};
-
-export { activationOpenApiPaths, buildActivationRouter };
+export { activationOpenApiPaths, activationRouter };

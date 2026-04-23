@@ -3,13 +3,13 @@ import { resolve } from 'node:path';
 import { migrate as migratePglite } from 'drizzle-orm/pglite/migrator';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
-import type { AuthConfig } from '../config/auth-config.js';
+import type { AuthConfig } from '../config/auth-config';
 
-import { getDb } from './client.js';
+import { getDb } from './client';
 
 let migrationPromise: Promise<void> | undefined;
 
-const runMigrationsIfEnabled = async (config: AuthConfig) => {
+async function runMigrationsIfEnabled(config: AuthConfig) {
   if (!config.databaseAutoMigrate) {
     return;
   }
@@ -24,6 +24,6 @@ const runMigrationsIfEnabled = async (config: AuthConfig) => {
         }).then(() => undefined);
 
   await migrationPromise;
-};
+}
 
 export { runMigrationsIfEnabled };

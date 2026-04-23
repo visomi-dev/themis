@@ -51,6 +51,14 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer **type inference** when the type is obvious from the right-hand side.
 - Use `type` (not `interface`) for type definitions. ESLint enforces `@typescript-eslint/consistent-type-definitions: ['error', 'type']`.
 - Prefix unused variables/parameters with `_` (e.g., `_event`).
+- Use **function declarations or class methods** for application logic. Do not use arrow functions for service methods, router handlers stored as class members, or reusable module logic. Arrow functions are only acceptable for short inline callbacks where the API requires them.
+
+### Backend Module Pattern
+
+- For backend features, prefer a **singleton module pattern** over `buildXRouter` / `createXService` factories.
+- If a module needs runtime setup, implement it as a **class with a `configure(...)` method** and export a singleton instance.
+- Shared auth and authorization concerns must live in **reusable middleware modules**, not be redefined per feature.
+- Role/permission checks should be expressible through shared middleware options such as arrays of allowed roles or permissions.
 
 ### File Naming
 

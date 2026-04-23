@@ -1,29 +1,42 @@
 import { Job, Worker } from 'bullmq';
 
-import type { AuthConfig } from '../config/auth-config.js';
-import { AuthError } from '../auth/auth-errors.js';
-import { publishAsyncJobEvent } from '../realtime/realtime-publisher.js';
-import { createProjectsService } from '../projects/projects-service.js';
+import type { AuthConfig } from '../config/auth-config';
+import { AuthError } from '../auth/auth-errors';
+import { projectsService } from '../projects/projects-service';
+import { publishAsyncJobEvent } from '../realtime/realtime-publisher';
 
-import { createJobStore } from './job-store.js';
-import { getBullConnection, getProjectSeedQueue, hasProjectSeedWorker, setProjectSeedWorker } from './queue.js';
-import type { ProjectSeedJobInput, ProjectSeedJobResult } from './job-types.js';
+import { createJobStore } from './job-store';
+import { getBullConnection, getProjectSeedQueue, hasProjectSeedWorker, setProjectSeedWorker } from './queue';
+import type { ProjectSeedJobInput, ProjectSeedJobResult } from './job-types';
 
 type SeedContext = {
   accountId: string;
   userId: string;
 };
 
-const wait = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+async function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-const createProjectSeedService = (config: AuthConfig) => {
-  const jobStore = createJobStore(config);
-  const projectsService = createProjectsService(config);
+class ProjectSeedService {
+  private config?: AuthConfig;
+  private jobStore?: ReturnType<typeof createJobStore>;
 
-  const ensureWorker = () => {
+  configure(config: AuthConfig) {
+    this.config = config;
+    this.jobStore = createJobStore(config);
+    projectsService.configure(config);
+
+    return this;
+  }
+
+  ensureWorker() {
     if (hasProjectSeedWorker()) {
       return;
     }
+
+    const config = this.getConfig();
+    const jobStore = this.getJobStore();
 
     const worker = new Worker(
       'project-seed',
@@ -111,16 +124,18 @@ const createProjectSeedService = (config: AuthConfig) => {
     });
 
     setProjectSeedWorker(worker);
-  };
+  }
 
-  const queueProjectSeed = async (context: SeedContext, projectId: string) => {
+  async queueProjectSeed(context: SeedContext, projectId: string) {
+    const config = this.getConfig();
+    const jobStore = this.getJobStore();
     const project = await projectsService.getProject(context, projectId);
 
     if (!project) {
       throw new AuthError(404, 'project_not_found', 'The project could not be found.');
     }
 
-    ensureWorker();
+    this.ensureWorker();
 
     const job = await jobStore.createJob(context, {
       inputJson: JSON.stringify({ projectId }),
@@ -138,12 +153,29 @@ const createProjectSeedService = (config: AuthConfig) => {
     publishAsyncJobEvent('job:queued', job, 'Project seed queued.');
 
     return job;
-  };
+  }
 
-  const listProjectJobs = async (context: SeedContext, projectId: string) =>
-    jobStore.listJobsForProject(context, projectId);
+  async listProjectJobs(context: SeedContext, projectId: string) {
+    return this.getJobStore().listJobsForProject(context, projectId);
+  }
 
-  return { ensureWorker, listProjectJobs, queueProjectSeed };
-};
+  private getConfig() {
+    if (!this.config) {
+      throw new Error('ProjectSeedService.configure() must be called before use.');
+    }
 
-export { createProjectSeedService };
+    return this.config;
+  }
+
+  private getJobStore() {
+    if (!this.jobStore) {
+      throw new Error('ProjectSeedService.configure() must be called before use.');
+    }
+
+    return this.jobStore;
+  }
+}
+
+const projectSeedService = new ProjectSeedService();
+
+export { projectSeedService };

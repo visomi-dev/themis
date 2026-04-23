@@ -1,18 +1,18 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 
-import { getAuthConfig } from '../config/auth-config.js';
+import { getAuthConfig } from '../config/auth-config';
 
-import { createAuthService } from './auth-service.js';
+import { authService } from './auth-service';
 
 let isConfigured = false;
 
-const configurePassport = () => {
+function configurePassport() {
   if (isConfigured) {
     return passport;
   }
 
-  const service = createAuthService(getAuthConfig());
+  const service = authService.configure(getAuthConfig());
 
   passport.use(
     'local',
@@ -52,6 +52,6 @@ const configurePassport = () => {
   isConfigured = true;
 
   return passport;
-};
+}
 
 export { configurePassport };
