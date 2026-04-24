@@ -34,18 +34,20 @@ jest.mock('socket.io', () => ({
 jest.mock('web-shared', () => ({
   createSessionMiddleware: jest.fn(() => (_req: unknown, _res: unknown, next: () => void) => next()),
   createSessionStore: jest.fn(() => ({ store: true })),
+  env: {
+    APP_BASE_URL: 'http://localhost:8080/app',
+    COOKIE_SECURE: false,
+    DATABASE_DRIVER: 'memory',
+    DATABASE_SSL: false,
+    DATABASE_URL: 'postgresql://example',
+    REALTIME_PATH: '/socket.io',
+    SESSION_MAX_AGE_MS: 1000,
+    SESSION_SECRET: 'secret',
+  },
+  logger: {
+    info: jest.fn(),
+  },
   realtimeBus,
-}));
-
-jest.mock('./config', () => ({
-  getRealtimeConfig: jest.fn(() => ({
-    appBaseUrl: 'http://localhost:8080/app',
-    cookieSecure: false,
-    databaseDriver: 'memory',
-    realtimePath: '/socket.io',
-    sessionMaxAgeMs: 1000,
-    sessionSecret: 'secret',
-  })),
 }));
 
 jest.mock('./pool', () => ({

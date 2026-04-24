@@ -2,13 +2,13 @@ import { randomBytes, randomUUID } from 'node:crypto';
 
 import { desc, eq } from 'drizzle-orm';
 
-import type { AuthConfig } from '../shared/config/auth-config';
+import { hashSecret } from '../auth/auth-crypto';
 import { withAccountContext } from '../shared/db/account-context';
 import { apiKeys, userActivationMilestones } from '../shared/db/schema';
-import { hashSecret } from '../auth/auth-crypto';
-import { AuthError } from '../auth/auth-errors';
 
 import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types';
+
+import { HttpError } from 'web-shared';
 
 type ActivationMilestoneMetadata = Record<string, string | null>;
 
@@ -38,136 +38,125 @@ Please:
 Return the result as a concise project setup summary suitable for storing as project context.`;
 }
 
-const mapApiKey = (record: typeof apiKeys.$inferSelect): ActivationApiKey => ({
-  createdAt: record.createdAt.toISOString(),
-  id: record.id,
-  label: record.label,
-  lastUsedAt: record.lastUsedAt?.toISOString() ?? null,
-  revokedAt: record.revokedAt?.toISOString() ?? null,
-  tokenPrefix: record.tokenPrefix,
-});
-
-class ActivationService {
-  private config?: AuthConfig;
-
-  configure(config: AuthConfig) {
-    this.config = config;
-
-    return this;
-  }
-
-  async getActivationState({ accountId, userId }: ActivationContext): Promise<ActivationState> {
-    return withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
-      const keyRows = await db
-        .select()
-        .from(apiKeys)
-        .where(eq(apiKeys.accountId, accountId))
-        .orderBy(desc(apiKeys.createdAt));
-
-      const milestoneRows = await db
-        .select({ milestone: userActivationMilestones.milestone })
-        .from(userActivationMilestones)
-        .where(eq(userActivationMilestones.accountId, accountId))
-        .orderBy(desc(userActivationMilestones.createdAt));
-
-      return {
-        apiKeys: keyRows.filter((row) => row.revokedAt === null).map(mapApiKey),
-        milestones: [...new Set(milestoneRows.map((row) => row.milestone as ActivationMilestone))],
-        seedPrompt: buildSeedPrompt(),
-      };
-    });
-  }
-
-  async recordMilestone(
-    { accountId, userId }: ActivationContext,
-    milestone: ActivationMilestone,
-    metadata?: ActivationMilestoneMetadata,
-  ) {
-    if (!ACTIVATION_MILESTONES.has(milestone)) {
-      throw new AuthError(400, 'invalid_milestone', 'The activation milestone is not supported.');
-    }
-
-    await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
-      await db.insert(userActivationMilestones).values({
-        accountId,
-        createdAt: new Date(),
-        id: randomUUID(),
-        metadataJson: metadata ? JSON.stringify(metadata) : null,
-        milestone,
-        userId,
-      });
-    });
-  }
-
-  async createApiKey({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> {
-    const normalizedLabel = label.trim();
-
-    if (normalizedLabel.length === 0) {
-      throw new AuthError(400, 'invalid_label', 'API key label is required.');
-    }
-
-    if (normalizedLabel.length > 80) {
-      throw new AuthError(400, 'invalid_label', 'API key label must be 80 characters or fewer.');
-    }
-
-    const plaintextToken = `thm_${randomBytes(24).toString('base64url')}`;
-    const now = new Date();
-    const createdKey = await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
-      const [row] = await db
-        .insert(apiKeys)
-        .values({
-          accountId,
-          createdAt: now,
-          id: randomUUID(),
-          label: normalizedLabel,
-          tokenHash: await hashSecret(plaintextToken),
-          tokenPrefix: plaintextToken.slice(0, 12),
-          updatedAt: now,
-          userId,
-        })
-        .returning();
-
-      return row;
-    });
-
-    await this.recordMilestone({ accountId, userId }, 'api_key_created', {
-      apiKeyId: createdKey.id,
-      label: createdKey.label,
-    });
-
-    return {
-      ...mapApiKey(createdKey),
-      plaintextToken,
-    };
-  }
-
-  async revokeApiKey({ accountId, userId }: ActivationContext, apiKeyId: string) {
-    await withAccountContext(this.getConfig(), { accountId, userId }, async (db) => {
-      const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
-
-      if (!existingKey || existingKey.accountId !== accountId || existingKey.revokedAt) {
-        throw new AuthError(404, 'api_key_not_found', 'The API key could not be found.');
-      }
-
-      await db
-        .update(apiKeys)
-        .set({
-          revokedAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .where(eq(apiKeys.id, apiKeyId));
-    });
-  }
-
-  private getConfig() {
-    if (!this.config) {
-      throw new Error('ActivationService.configure() must be called before use.');
-    }
-
-    return this.config;
-  }
+function mapApiKey(record: typeof apiKeys.$inferSelect): ActivationApiKey {
+  return {
+    createdAt: record.createdAt.toISOString(),
+    id: record.id,
+    label: record.label,
+    lastUsedAt: record.lastUsedAt?.toISOString() ?? null,
+    revokedAt: record.revokedAt?.toISOString() ?? null,
+    tokenPrefix: record.tokenPrefix,
+  };
 }
 
-const activationService = new ActivationService();
+async function getActivationState({ accountId, userId }: ActivationContext): Promise<ActivationState> {
+  return withAccountContext({ accountId, userId }, async (db) => {
+    const keyRows = await db
+      .select()
+      .from(apiKeys)
+      .where(eq(apiKeys.accountId, accountId))
+      .orderBy(desc(apiKeys.createdAt));
+    const milestoneRows = await db
+      .select({ milestone: userActivationMilestones.milestone })
+      .from(userActivationMilestones)
+      .where(eq(userActivationMilestones.accountId, accountId))
+      .orderBy(desc(userActivationMilestones.createdAt));
 
-export { activationService };
+    return {
+      apiKeys: keyRows.filter((row) => row.revokedAt === null).map(mapApiKey),
+      milestones: [...new Set(milestoneRows.map((row) => row.milestone as ActivationMilestone))],
+      seedPrompt: buildSeedPrompt(),
+    };
+  });
+}
+
+async function recordMilestone(
+  { accountId, userId }: ActivationContext,
+  milestone: ActivationMilestone,
+  metadata?: ActivationMilestoneMetadata,
+) {
+  if (!ACTIVATION_MILESTONES.has(milestone)) {
+    throw new HttpError({
+      code: 'invalid_milestone',
+      message: 'The activation milestone is not supported.',
+      statusCode: 400,
+    });
+  }
+
+  await withAccountContext({ accountId, userId }, async (db) => {
+    await db.insert(userActivationMilestones).values({
+      accountId,
+      createdAt: new Date(),
+      id: randomUUID(),
+      metadataJson: metadata ? JSON.stringify(metadata) : null,
+      milestone,
+      userId,
+    });
+  });
+}
+
+async function createApiKey({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> {
+  const normalizedLabel = label.trim();
+
+  if (normalizedLabel.length === 0) {
+    throw new HttpError({ code: 'invalid_label', message: 'API key label is required.', statusCode: 400 });
+  }
+
+  if (normalizedLabel.length > 80) {
+    throw new HttpError({
+      code: 'invalid_label',
+      message: 'API key label must be 80 characters or fewer.',
+      statusCode: 400,
+    });
+  }
+
+  const plaintextToken = `thm_${randomBytes(24).toString('base64url')}`;
+  const now = new Date();
+  const createdKey = await withAccountContext({ accountId, userId }, async (db) => {
+    const [row] = await db
+      .insert(apiKeys)
+      .values({
+        accountId,
+        createdAt: now,
+        id: randomUUID(),
+        label: normalizedLabel,
+        tokenHash: await hashSecret(plaintextToken),
+        tokenPrefix: plaintextToken.slice(0, 12),
+        updatedAt: now,
+        userId,
+      })
+      .returning();
+
+    return row;
+  });
+
+  await recordMilestone({ accountId, userId }, 'api_key_created', {
+    apiKeyId: createdKey.id,
+    label: createdKey.label,
+  });
+
+  return {
+    ...mapApiKey(createdKey),
+    plaintextToken,
+  };
+}
+
+async function revokeApiKey({ accountId, userId }: ActivationContext, apiKeyId: string) {
+  await withAccountContext({ accountId, userId }, async (db) => {
+    const [existingKey] = await db.select().from(apiKeys).where(eq(apiKeys.id, apiKeyId)).limit(1);
+
+    if (!existingKey || existingKey.accountId !== accountId || existingKey.revokedAt) {
+      throw new HttpError({ code: 'api_key_not_found', message: 'The API key could not be found.', statusCode: 404 });
+    }
+
+    await db
+      .update(apiKeys)
+      .set({
+        revokedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(apiKeys.id, apiKeyId));
+  });
+}
+
+export { createApiKey, getActivationState, recordMilestone, revokeApiKey };

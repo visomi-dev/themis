@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 
-import type { AuthConfig } from '../shared/config/auth-config';
+import { env } from '../shared/env';
 
 const connectionKey = '__themisBullConnection';
 const queueKey = '__themisProjectSeedQueue';
@@ -12,17 +12,17 @@ const globalState = globalThis as typeof globalThis & {
   [workerKey]?: Worker;
 };
 
-function getBullConnection(config: AuthConfig) {
-  globalState[connectionKey] ??= new IORedis(config.redisUrl, {
+function getBullConnection() {
+  globalState[connectionKey] ??= new IORedis(env.REDIS_URL, {
     maxRetriesPerRequest: null,
   });
 
   return globalState[connectionKey] as IORedis;
 }
 
-function getProjectSeedQueue(config: AuthConfig) {
+function getProjectSeedQueue() {
   globalState[queueKey] ??= new Queue('project-seed', {
-    connection: getBullConnection(config),
+    connection: getBullConnection(),
   });
 
   return globalState[queueKey] as Queue;

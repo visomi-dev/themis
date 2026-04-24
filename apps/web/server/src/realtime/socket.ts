@@ -1,22 +1,26 @@
-import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
+import type { IncomingMessage, Server as HttpServer, ServerResponse } from 'node:http';
 
 import { Server } from 'socket.io';
 
-import { getRealtimeConfig } from './config';
 import { getRealtimePool } from './pool';
 
-import { createSessionMiddleware, createSessionStore, realtimeBus } from 'web-shared';
+import { createSessionMiddleware, createSessionStore, env, logger, realtimeBus } from 'web-shared';
 
-const createRealtimeServer = (server: HttpServer) => {
-  const config = getRealtimeConfig();
-  const store = createSessionStore(config, config.databaseDriver === 'pg' ? getRealtimePool(config) : undefined);
-  const sessionMiddleware = createSessionMiddleware(config, store);
+function createRealtimeServer(server: HttpServer) {
+  const sessionConfig = {
+    cookieSecure: env.COOKIE_SECURE,
+    databaseDriver: env.DATABASE_DRIVER,
+    sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
+    sessionSecret: env.SESSION_SECRET,
+  };
+  const store = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getRealtimePool() : undefined);
+  const sessionMiddleware = createSessionMiddleware(sessionConfig, store);
   const io = new Server(server, {
     cors: {
-      origin: config.appBaseUrl,
       credentials: true,
+      origin: env.APP_BASE_URL,
     },
-    path: config.realtimePath,
+    path: env.REALTIME_PATH,
   });
 
   io.engine.use((req: IncomingMessage, res: ServerResponse, next: (error?: Error) => void) =>
@@ -39,15 +43,16 @@ const createRealtimeServer = (server: HttpServer) => {
   });
 
   io.on('connection', (socket) => {
-    const userRoom = `user:${socket.data.userId}`;
-    socket.join(userRoom);
+    socket.join(`user:${socket.data.userId}`);
   });
 
   realtimeBus.on('async-job', (event) => {
     io.to(`user:${event.job.userId}`).emit(event.eventName, event);
   });
 
+  logger.info({ path: env.REALTIME_PATH }, 'Realtime server ready');
+
   return io;
-};
+}
 
 export { createRealtimeServer };

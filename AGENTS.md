@@ -51,14 +51,17 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer **type inference** when the type is obvious from the right-hand side.
 - Use `type` (not `interface`) for type definitions. ESLint enforces `@typescript-eslint/consistent-type-definitions: ['error', 'type']`.
 - Prefix unused variables/parameters with `_` (e.g., `_event`).
-- Use **function declarations or class methods** for application logic. Do not use arrow functions for service methods, router handlers stored as class members, or reusable module logic. Arrow functions are only acceptable for short inline callbacks where the API requires them.
+- Use **function declarations or class methods** for application logic. Do not use arrow functions for service methods, router handlers stored as class members, reusable module logic, or other named helpers that can be written as normal functions.
+- Arrow functions are allowed for **short inline callbacks passed directly to an API** when that shape is natural or required. Examples: array helpers like `map`/`filter`, Promise constructors, event listeners, or inline router/middleware callbacks passed directly into framework APIs.
 
 ### Backend Module Pattern
 
-- For backend features, prefer a **singleton module pattern** over `buildXRouter` / `createXService` factories.
-- If a module needs runtime setup, implement it as a **class with a `configure(...)` method** and export a singleton instance.
+- Organize backend source using **feature-first folders** at `src/<feature>` and shared infrastructure at `src/shared/<area>`.
+- Prefer **plain module exports** for backend features: feature-local schemas, service functions, and a `router` constant exported directly from the feature.
+- Avoid `buildXRouter` / `createXService` factories for normal feature wiring.
 - Shared auth and authorization concerns must live in **reusable middleware modules**, not be redefined per feature.
 - Role/permission checks should be expressible through shared middleware options such as arrays of allowed roles or permissions.
+- Cross-cutting runtime pieces that are shared between API and server belong in `libs/web/shared` and are imported via `web-shared`.
 
 ### File Naming
 

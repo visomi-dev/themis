@@ -6,6 +6,8 @@ import type { Express, NextFunction, Request, Response } from 'express';
 import { createGatewayApp } from './gateway';
 import { createRealtimeServer } from './realtime/socket';
 
+import { logger } from 'web-shared';
+
 type ApiModule = {
   appPromise?: Promise<Express>;
 };
@@ -27,7 +29,7 @@ const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'serve
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
 
-const loadApiApp = async () => {
+async function loadApiApp() {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
 
   if (!apiModule.appPromise) {
@@ -35,9 +37,9 @@ const loadApiApp = async () => {
   }
 
   return apiModule.appPromise;
-};
+}
 
-const loadAstroRequestHandler = async () => {
+async function loadAstroRequestHandler() {
   const astroModule = (await import(pathToFileURL(astroEntryFile).href)) as AstroMiddlewareModule;
 
   if (typeof astroModule.handler !== 'function') {
@@ -45,9 +47,9 @@ const loadAstroRequestHandler = async () => {
   }
 
   return astroModule.handler;
-};
+}
 
-const loadAngularHandler = async () => {
+async function loadAngularHandler() {
   const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularModule;
 
   if (!angularModule.reqHandler) {
@@ -55,9 +57,9 @@ const loadAngularHandler = async () => {
   }
 
   return angularModule.reqHandler;
-};
+}
 
-const bootstrap = async () => {
+async function bootstrap() {
   const [apiApp, angularHandler, astroRequestHandler] = await Promise.all([
     loadApiApp(),
     loadAngularHandler(),
@@ -71,13 +73,13 @@ const bootstrap = async () => {
   });
 
   const httpServer = app.listen(port, host, () => {
-    console.log(`[ ready ] http://${host}:${port}`);
+    logger.info({ host, port }, 'Gateway server ready');
   });
 
   createRealtimeServer(httpServer);
-};
+}
 
 bootstrap().catch((error: unknown) => {
-  console.error('[ error ] Failed to bootstrap gateway server', error);
+  logger.error({ error }, 'Failed to bootstrap gateway server');
   process.exit(1);
 });

@@ -39,47 +39,31 @@ const testOpenApiPaths = {
   },
 };
 
-class TestRouter {
-  private configured = false;
+const testRouter = Router();
 
-  private readonly router = Router();
+testRouter.get(
+  '/mailbox/latest',
+  validateRequest({ query: mailboxQuerySchema }),
+  function mailboxLatestHandler(req, res) {
+    const { email, purpose } = readValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
+    const messages = listSentMessages();
+    const matchingMessages = messages.filter(
+      (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),
+    );
+    const match = matchingMessages[matchingMessages.length - 1];
 
-  configure() {
-    if (this.configured) {
-      return this.router;
+    if (!match) {
+      res.status(404).send({ error: 'mail_not_found' });
+      return;
     }
 
-    this.router.get(
-      '/mailbox/latest',
-      validateRequest({ query: mailboxQuerySchema }),
-      function mailboxLatestHandler(req, res) {
-        const { email, purpose } = readValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
-        const messages = listSentMessages();
-        const matchingMessages = messages.filter(
-          (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),
-        );
-        const match = matchingMessages[matchingMessages.length - 1];
+    res.send(match);
+  },
+);
 
-        if (!match) {
-          res.status(404).send({ error: 'mail_not_found' });
-          return;
-        }
-
-        res.send(match);
-      },
-    );
-
-    this.router.delete('/mailbox', function clearMailboxHandler(_req, res) {
-      clearMailbox();
-      res.status(204).send();
-    });
-
-    this.configured = true;
-
-    return this.router;
-  }
-}
-
-const testRouter = new TestRouter();
+testRouter.delete('/mailbox', function clearMailboxHandler(_req, res) {
+  clearMailbox();
+  res.status(204).send();
+});
 
 export { testOpenApiPaths, testRouter };

@@ -15,19 +15,15 @@ let workerProcessor:
   | undefined;
 
 jest.mock('../projects/projects-service', () => ({
-  projectsService: {
-    configure: jest.fn().mockReturnThis(),
-    createDocument,
-    getProject,
-  },
+  createDocument,
+  getProject,
 }));
 
 jest.mock('./job-store', () => ({
-  createJobStore: () => ({
-    createJob,
-    findJobById,
-    updateJob,
-  }),
+  createJob,
+  findJobById,
+  listJobsForProject: jest.fn(),
+  updateJob,
 }));
 
 jest.mock('./queue', () => ({
@@ -83,7 +79,7 @@ describe('projectSeedService', () => {
   });
 
   it('queues a project seed job and emits the queued event', async () => {
-    const service = projectSeedService.configure({} as never);
+    const service = projectSeedService;
 
     const job = await service.queueProjectSeed({ accountId: 'account-1', userId: 'user-1' }, 'project-1');
 
@@ -137,7 +133,7 @@ describe('projectSeedService', () => {
       .mockResolvedValueOnce(contextJob)
       .mockResolvedValueOnce(completedJob);
 
-    const service = projectSeedService.configure({} as never);
+    const service = projectSeedService;
     service.ensureWorker();
 
     expect(workerProcessor).toBeDefined();

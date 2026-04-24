@@ -1,6 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 
-import { AuthError } from './auth-errors';
+import { HttpError } from 'web-shared';
 
 type AuthenticatedContext = {
   accountId: string;
@@ -20,12 +20,24 @@ class AuthMiddleware {
   authenticated(options?: AuthenticatedOptions): RequestHandler {
     return (req: Request, _res: Response, next: NextFunction) => {
       if (!req.isAuthenticated() || !req.user) {
-        next(new AuthError(401, 'authentication_required', 'Sign in to access this resource.'));
+        next(
+          new HttpError({
+            code: 'authentication_required',
+            message: 'Sign in to access this resource.',
+            statusCode: 401,
+          }),
+        );
         return;
       }
 
       if (options?.roles && !options.roles.includes(req.user.role)) {
-        next(new AuthError(403, 'forbidden', 'You do not have access to this resource.'));
+        next(
+          new HttpError({
+            code: 'forbidden',
+            message: 'You do not have access to this resource.',
+            statusCode: 403,
+          }),
+        );
         return;
       }
 
@@ -35,7 +47,11 @@ class AuthMiddleware {
 
   request(req: Request): AuthenticatedRequest {
     if (!req.user) {
-      throw new AuthError(401, 'authentication_required', 'Sign in to access this resource.');
+      throw new HttpError({
+        code: 'authentication_required',
+        message: 'Sign in to access this resource.',
+        statusCode: 401,
+      });
     }
 
     return req as AuthenticatedRequest;

@@ -2,14 +2,15 @@ import { randomUUID } from 'node:crypto';
 
 import { and, asc, desc, eq, gt, isNull } from 'drizzle-orm';
 
-import type { AuthConfig } from '../shared/config/auth-config';
-import { getDb } from '../shared/db/client';
+import { db } from '../shared/db/client';
 import { accountMemberships, accounts, authVerificationChallenges, users } from '../shared/db/schema';
+import { env } from '../shared/env';
 
 import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
-import { AuthError } from './auth-errors';
 import { sendVerificationMessage } from './auth-mail';
 import type { AuthChallengePayload, AuthUser, VerificationPurpose } from './auth-types';
+
+import { HttpError } from 'web-shared';
 
 const MAX_CHALLENGE_ATTEMPTS = 5;
 
@@ -25,312 +26,124 @@ function normalizeAccountSlug(email: string) {
     .slice(0, 80);
 }
 
-class AuthService {
-  private config?: AuthConfig;
+async function findUserByEmail(email: string) {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, normalizeEmail(email)))
+    .limit(1);
+  return user;
+}
 
-  configure(config: AuthConfig) {
-    this.config = config;
+async function findUserById(id: string) {
+  const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return user;
+}
 
-    return this;
+async function getLatestChallengeForUser(userId: string, purpose: VerificationPurpose) {
+  const [challenge] = await db
+    .select()
+    .from(authVerificationChallenges)
+    .where(
+      and(
+        eq(authVerificationChallenges.userId, userId),
+        eq(authVerificationChallenges.purpose, purpose),
+        isNull(authVerificationChallenges.consumedAt),
+        gt(authVerificationChallenges.expiresAt, new Date()),
+      ),
+    )
+    .orderBy(desc(authVerificationChallenges.createdAt))
+    .limit(1);
+
+  return challenge;
+}
+
+async function getPrimaryMembership(userId: string) {
+  const [membership] = await db
+    .select()
+    .from(accountMemberships)
+    .where(eq(accountMemberships.userId, userId))
+    .orderBy(asc(accountMemberships.createdAt))
+    .limit(1);
+
+  return membership;
+}
+
+async function resolveAuthUser(user: typeof users.$inferSelect): Promise<AuthUser> {
+  const membership = await getPrimaryMembership(user.id);
+
+  if (!membership) {
+    throw new HttpError({
+      code: 'account_membership_missing',
+      message: 'The account membership could not be found.',
+      statusCode: 500,
+    });
   }
 
-  async beginSignIn(user: typeof users.$inferSelect) {
-    if (!user.emailVerifiedAt) {
-      return this.getOrCreateActiveChallenge(user, 'sign_up');
-    }
+  return {
+    accountId: membership.accountId,
+    email: user.email,
+    emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+    id: user.id,
+    role: membership.role,
+  };
+}
 
-    return this.createChallenge(user, 'sign_in');
-  }
+async function createChallenge(
+  user: typeof users.$inferSelect,
+  purpose: VerificationPurpose,
+): Promise<AuthChallengePayload> {
+  const pin = generateVerificationPin();
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + env.PIN_EXPIRY_MINUTES * 60 * 1000);
+  const challengeId = randomUUID();
 
-  async findUserByEmail(email: string) {
-    const [user] = await this.getDb()
-      .select()
-      .from(users)
-      .where(eq(users.email, normalizeEmail(email)))
-      .limit(1);
-
-    return user;
-  }
-
-  async findUserById(id: string) {
-    const [user] = await this.getDb().select().from(users).where(eq(users.id, id)).limit(1);
-
-    return user;
-  }
-
-  async getLatestChallengeForUser(userId: string, purpose: VerificationPurpose) {
-    const [challenge] = await this.getDb()
-      .select()
-      .from(authVerificationChallenges)
-      .where(
-        and(
-          eq(authVerificationChallenges.userId, userId),
-          eq(authVerificationChallenges.purpose, purpose),
-          isNull(authVerificationChallenges.consumedAt),
-          gt(authVerificationChallenges.expiresAt, new Date()),
-        ),
-      )
-      .orderBy(desc(authVerificationChallenges.createdAt))
-      .limit(1);
-
-    return challenge;
-  }
-
-  async getPrimaryMembership(userId: string) {
-    const [membership] = await this.getDb()
-      .select()
-      .from(accountMemberships)
-      .where(eq(accountMemberships.userId, userId))
-      .orderBy(asc(accountMemberships.createdAt))
-      .limit(1);
-
-    return membership;
-  }
-
-  async requestPasswordReset(email: string) {
-    const user = await this.findUserByEmail(email);
-
-    if (!user || !user.emailVerifiedAt) {
-      return;
-    }
-
-    await this.createChallenge(user, 'sign_in');
-  }
-
-  async resendChallenge(challengeId: string) {
-    const [challenge] = await this.getDb()
-      .select()
-      .from(authVerificationChallenges)
-      .where(eq(authVerificationChallenges.id, challengeId))
-      .limit(1);
-
-    if (!challenge) {
-      throw new AuthError(404, 'challenge_not_found', 'The verification request could not be found.');
-    }
-
-    if (challenge.consumedAt) {
-      throw new AuthError(409, 'challenge_consumed', 'This verification request has already been completed.');
-    }
-
-    const nextAllowedAt = challenge.lastSentAt.getTime() + this.getConfig().pinResendCooldownSeconds * 1000;
-
-    if (Date.now() < nextAllowedAt) {
-      throw new AuthError(429, 'challenge_cooldown', 'Wait before requesting another verification code.');
-    }
-
-    const user = await this.findUserById(challenge.userId);
-
-    if (!user) {
-      throw new AuthError(404, 'user_not_found', 'The verification request is no longer valid.');
-    }
-
-    return this.createChallenge(user, challenge.purpose as VerificationPurpose);
-  }
-
-  async resolveAuthUser(user: typeof users.$inferSelect): Promise<AuthUser> {
-    const membership = await this.getPrimaryMembership(user.id);
-
-    if (!membership) {
-      throw new AuthError(500, 'account_membership_missing', 'The account membership could not be found.');
-    }
-
-    return {
-      accountId: membership.accountId,
-      email: user.email,
-      emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
-      id: user.id,
-      role: membership.role,
-    };
-  }
-
-  async signUp(email: string, password: string) {
-    const normalizedEmail = normalizeEmail(email);
-    const existingUser = await this.findUserByEmail(normalizedEmail);
-
-    if (existingUser) {
-      throw new AuthError(409, 'email_already_registered', 'An account already exists for this email address.');
-    }
-
-    const now = new Date();
-    const [user] = await this.getDb()
-      .insert(users)
-      .values({
-        createdAt: now,
-        email: normalizedEmail,
-        id: randomUUID(),
-        passwordHash: await hashSecret(password),
-        updatedAt: now,
-      })
-      .returning();
-
-    const accountId = randomUUID();
-    const baseSlug = normalizeAccountSlug(normalizedEmail);
-    const [existingAccount] = await this.getDb().select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
-    const accountSlug = existingAccount ? `${baseSlug}-${user.id.slice(0, 8)}` : baseSlug;
-
-    await this.getDb()
-      .insert(accounts)
-      .values({
-        createdAt: now,
-        id: accountId,
-        name: normalizedEmail.split('@')[0],
-        ownerUserId: user.id,
-        slug: accountSlug,
-        updatedAt: now,
-      });
-
-    await this.getDb().insert(accountMemberships).values({
-      accountId,
-      createdAt: now,
-      id: randomUUID(),
-      role: 'owner',
+  await db
+    .update(authVerificationChallenges)
+    .set({
+      consumedAt: now,
       updatedAt: now,
-      userId: user.id,
-    });
+    })
+    .where(
+      and(
+        eq(authVerificationChallenges.userId, user.id),
+        eq(authVerificationChallenges.purpose, purpose),
+        isNull(authVerificationChallenges.consumedAt),
+      ),
+    );
 
-    return this.createChallenge(user, 'sign_up');
-  }
+  await db.insert(authVerificationChallenges).values({
+    attemptCount: 0,
+    createdAt: now,
+    expiresAt,
+    id: challengeId,
+    lastSentAt: now,
+    pinHash: await hashSecret(pin),
+    purpose,
+    updatedAt: now,
+    userId: user.id,
+  });
 
-  async verifyChallenge(challengeId: string, pin: string, purpose: VerificationPurpose) {
-    const [challenge] = await this.getDb()
-      .select()
-      .from(authVerificationChallenges)
-      .where(eq(authVerificationChallenges.id, challengeId))
-      .limit(1);
+  await sendVerificationMessage({
+    challengeId,
+    email: user.email,
+    expiresAt,
+    pin,
+    purpose,
+  });
 
-    if (!challenge || challenge.purpose !== purpose) {
-      throw new AuthError(404, 'challenge_not_found', 'The verification request could not be found.');
-    }
+  return {
+    challengeId,
+    email: user.email,
+    expiresAt: expiresAt.toISOString(),
+    purpose,
+  };
+}
 
-    if (challenge.consumedAt) {
-      throw new AuthError(409, 'challenge_consumed', 'This verification request has already been completed.');
-    }
+async function getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpose: VerificationPurpose) {
+  const challenge = await getLatestChallengeForUser(user.id, purpose);
 
-    if (challenge.expiresAt <= new Date()) {
-      throw new AuthError(410, 'challenge_expired', 'This verification code has expired.');
-    }
-
-    if (challenge.attemptCount >= MAX_CHALLENGE_ATTEMPTS) {
-      throw new AuthError(429, 'challenge_attempt_limit', 'Too many invalid verification attempts.');
-    }
-
-    const isValid = await verifySecret(pin, challenge.pinHash);
-
-    if (!isValid) {
-      await this.getDb()
-        .update(authVerificationChallenges)
-        .set({
-          attemptCount: challenge.attemptCount + 1,
-          updatedAt: new Date(),
-        })
-        .where(eq(authVerificationChallenges.id, challenge.id));
-
-      throw new AuthError(401, 'invalid_verification_code', 'The verification code is invalid.');
-    }
-
-    const [user] = await this.getDb().select().from(users).where(eq(users.id, challenge.userId)).limit(1);
-
-    if (!user) {
-      throw new AuthError(404, 'user_not_found', 'The account could not be found.');
-    }
-
-    const now = new Date();
-
-    await this.getDb()
-      .update(authVerificationChallenges)
-      .set({
-        consumedAt: now,
-        updatedAt: now,
-      })
-      .where(eq(authVerificationChallenges.id, challenge.id));
-
-    let nextUser = user;
-
-    if (purpose === 'sign_up' && !user.emailVerifiedAt) {
-      const [updatedUser] = await this.getDb()
-        .update(users)
-        .set({
-          emailVerifiedAt: now,
-          updatedAt: now,
-        })
-        .where(eq(users.id, user.id))
-        .returning();
-
-      nextUser = updatedUser;
-    }
-
-    return this.resolveAuthUser(nextUser);
-  }
-
-  async verifyPassword(email: string, password: string) {
-    const user = await this.findUserByEmail(email);
-
-    if (!user) {
-      return null;
-    }
-
-    const matches = await verifySecret(password, user.passwordHash);
-
-    return matches ? user : null;
-  }
-
-  private async createChallenge(
-    user: typeof users.$inferSelect,
-    purpose: VerificationPurpose,
-  ): Promise<AuthChallengePayload> {
-    const pin = generateVerificationPin();
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + this.getConfig().pinExpiryMinutes * 60 * 1000);
-    const challengeId = randomUUID();
-
-    await this.getDb()
-      .update(authVerificationChallenges)
-      .set({
-        consumedAt: now,
-        updatedAt: now,
-      })
-      .where(
-        and(
-          eq(authVerificationChallenges.userId, user.id),
-          eq(authVerificationChallenges.purpose, purpose),
-          isNull(authVerificationChallenges.consumedAt),
-        ),
-      );
-
-    await this.getDb()
-      .insert(authVerificationChallenges)
-      .values({
-        attemptCount: 0,
-        createdAt: now,
-        expiresAt,
-        id: challengeId,
-        lastSentAt: now,
-        pinHash: await hashSecret(pin),
-        purpose,
-        updatedAt: now,
-        userId: user.id,
-      });
-
-    await sendVerificationMessage(this.getConfig(), {
-      challengeId,
-      email: user.email,
-      expiresAt,
-      pin,
-      purpose,
-    });
-
-    return {
-      challengeId,
-      email: user.email,
-      expiresAt: expiresAt.toISOString(),
-      purpose,
-    };
-  }
-
-  private getChallengePayload(
-    challenge: typeof authVerificationChallenges.$inferSelect,
-    user: typeof users.$inferSelect,
-  ): AuthChallengePayload {
+  if (challenge) {
     return {
       challengeId: challenge.id,
       email: user.email,
@@ -339,29 +152,242 @@ class AuthService {
     };
   }
 
-  private getConfig() {
-    if (!this.config) {
-      throw new Error('AuthService.configure() must be called before use.');
-    }
-
-    return this.config;
-  }
-
-  private getDb() {
-    return getDb(this.getConfig());
-  }
-
-  private async getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpose: VerificationPurpose) {
-    const challenge = await this.getLatestChallengeForUser(user.id, purpose);
-
-    if (challenge) {
-      return this.getChallengePayload(challenge, user);
-    }
-
-    return this.createChallenge(user, purpose);
-  }
+  return createChallenge(user, purpose);
 }
 
-const authService = new AuthService();
+async function beginSignIn(user: typeof users.$inferSelect) {
+  if (!user.emailVerifiedAt) {
+    return getOrCreateActiveChallenge(user, 'sign_up');
+  }
 
-export { authService, normalizeEmail };
+  return createChallenge(user, 'sign_in');
+}
+
+async function signUp(email: string, password: string) {
+  const normalizedEmail = normalizeEmail(email);
+  const existingUser = await findUserByEmail(normalizedEmail);
+
+  if (existingUser) {
+    throw new HttpError({
+      code: 'email_already_registered',
+      message: 'An account already exists for this email address.',
+      statusCode: 409,
+    });
+  }
+
+  const now = new Date();
+  const [user] = await db
+    .insert(users)
+    .values({
+      createdAt: now,
+      email: normalizedEmail,
+      id: randomUUID(),
+      passwordHash: await hashSecret(password),
+      updatedAt: now,
+    })
+    .returning();
+
+  const accountId = randomUUID();
+  const baseSlug = normalizeAccountSlug(normalizedEmail);
+  const [existingAccount] = await db.select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
+  const accountSlug = existingAccount ? `${baseSlug}-${user.id.slice(0, 8)}` : baseSlug;
+
+  await db.insert(accounts).values({
+    createdAt: now,
+    id: accountId,
+    name: normalizedEmail.split('@')[0],
+    ownerUserId: user.id,
+    slug: accountSlug,
+    updatedAt: now,
+  });
+
+  await db.insert(accountMemberships).values({
+    accountId,
+    createdAt: now,
+    id: randomUUID(),
+    role: 'owner',
+    updatedAt: now,
+    userId: user.id,
+  });
+
+  return createChallenge(user, 'sign_up');
+}
+
+async function resendChallenge(challengeId: string) {
+  const [challenge] = await db
+    .select()
+    .from(authVerificationChallenges)
+    .where(eq(authVerificationChallenges.id, challengeId))
+    .limit(1);
+
+  if (!challenge) {
+    throw new HttpError({
+      code: 'challenge_not_found',
+      message: 'The verification request could not be found.',
+      statusCode: 404,
+    });
+  }
+
+  if (challenge.consumedAt) {
+    throw new HttpError({
+      code: 'challenge_consumed',
+      message: 'This verification request has already been completed.',
+      statusCode: 409,
+    });
+  }
+
+  const nextAllowedAt = challenge.lastSentAt.getTime() + env.PIN_RESEND_COOLDOWN_SECONDS * 1000;
+
+  if (Date.now() < nextAllowedAt) {
+    throw new HttpError({
+      code: 'challenge_cooldown',
+      message: 'Wait before requesting another verification code.',
+      statusCode: 429,
+    });
+  }
+
+  const user = await findUserById(challenge.userId);
+
+  if (!user) {
+    throw new HttpError({
+      code: 'user_not_found',
+      message: 'The verification request is no longer valid.',
+      statusCode: 404,
+    });
+  }
+
+  return createChallenge(user, challenge.purpose as VerificationPurpose);
+}
+
+async function verifyChallenge(challengeId: string, pin: string, purpose: VerificationPurpose) {
+  const [challenge] = await db
+    .select()
+    .from(authVerificationChallenges)
+    .where(eq(authVerificationChallenges.id, challengeId))
+    .limit(1);
+
+  if (!challenge || challenge.purpose !== purpose) {
+    throw new HttpError({
+      code: 'challenge_not_found',
+      message: 'The verification request could not be found.',
+      statusCode: 404,
+    });
+  }
+
+  if (challenge.consumedAt) {
+    throw new HttpError({
+      code: 'challenge_consumed',
+      message: 'This verification request has already been completed.',
+      statusCode: 409,
+    });
+  }
+
+  if (challenge.expiresAt <= new Date()) {
+    throw new HttpError({
+      code: 'challenge_expired',
+      message: 'This verification code has expired.',
+      statusCode: 410,
+    });
+  }
+
+  if (challenge.attemptCount >= MAX_CHALLENGE_ATTEMPTS) {
+    throw new HttpError({
+      code: 'challenge_attempt_limit',
+      message: 'Too many invalid verification attempts.',
+      statusCode: 429,
+    });
+  }
+
+  const isValid = await verifySecret(pin, challenge.pinHash);
+
+  if (!isValid) {
+    await db
+      .update(authVerificationChallenges)
+      .set({
+        attemptCount: challenge.attemptCount + 1,
+        updatedAt: new Date(),
+      })
+      .where(eq(authVerificationChallenges.id, challenge.id));
+
+    throw new HttpError({
+      code: 'invalid_verification_code',
+      message: 'The verification code is invalid.',
+      statusCode: 401,
+    });
+  }
+
+  const [user] = await db.select().from(users).where(eq(users.id, challenge.userId)).limit(1);
+
+  if (!user) {
+    throw new HttpError({
+      code: 'user_not_found',
+      message: 'The account could not be found.',
+      statusCode: 404,
+    });
+  }
+
+  const now = new Date();
+
+  await db
+    .update(authVerificationChallenges)
+    .set({
+      consumedAt: now,
+      updatedAt: now,
+    })
+    .where(eq(authVerificationChallenges.id, challenge.id));
+
+  let nextUser = user;
+
+  if (purpose === 'sign_up' && !user.emailVerifiedAt) {
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        emailVerifiedAt: now,
+        updatedAt: now,
+      })
+      .where(eq(users.id, user.id))
+      .returning();
+
+    nextUser = updatedUser;
+  }
+
+  return resolveAuthUser(nextUser);
+}
+
+async function verifyPassword(email: string, password: string) {
+  const user = await findUserByEmail(email);
+
+  if (!user) {
+    return null;
+  }
+
+  const matches = await verifySecret(password, user.passwordHash);
+  return matches ? user : null;
+}
+
+async function requestPasswordReset(email: string) {
+  const user = await findUserByEmail(email);
+
+  if (!user || !user.emailVerifiedAt) {
+    return;
+  }
+
+  await createChallenge(user, 'sign_in');
+}
+
+export {
+  beginSignIn,
+  createChallenge,
+  findUserByEmail,
+  findUserById,
+  getLatestChallengeForUser,
+  getPrimaryMembership,
+  normalizeAccountSlug,
+  normalizeEmail,
+  requestPasswordReset,
+  resendChallenge,
+  resolveAuthUser,
+  signUp,
+  verifyChallenge,
+  verifyPassword,
+};

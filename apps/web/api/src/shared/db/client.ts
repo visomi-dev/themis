@@ -2,16 +2,18 @@ import { PGlite } from '@electric-sql/pglite';
 import { drizzle as drizzlePglite } from 'drizzle-orm/pglite';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
-import type { AuthConfig } from '../config/auth-config';
+import { env } from '../env';
 
 import { getPool } from './pool';
 import * as schema from './schema';
 
 let pgliteClient: PGlite | undefined;
 
-function getDb(config: AuthConfig) {
-  if (config.databaseDriver === 'memory') {
-    pgliteClient ??= new PGlite();
+function getDb() {
+  if (env.DATABASE_DRIVER === 'memory') {
+    if (!pgliteClient) {
+      pgliteClient = new PGlite();
+    }
 
     return drizzlePglite({
       casing: 'snake_case',
@@ -22,9 +24,11 @@ function getDb(config: AuthConfig) {
 
   return drizzle({
     casing: 'snake_case',
-    client: getPool(config),
+    client: getPool(),
     schema,
   });
 }
 
-export { getDb };
+const db = getDb();
+
+export { db, getDb };

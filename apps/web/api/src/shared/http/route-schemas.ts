@@ -4,7 +4,7 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import { ZodError } from 'zod/v4';
 import * as z from 'zod/v4';
 
-import { AuthError } from '../../auth/auth-errors';
+import { HttpError } from 'web-shared';
 
 type RequestSchemas = {
   body?: z.ZodType;
@@ -24,7 +24,7 @@ type RequestWithValidated<T extends RequestSchemas> = Request & {
   validated: ValidatedData<T>;
 };
 
-const emailSchema = z.string().email().meta({
+const emailSchema = z.email().meta({
   description: 'Account email address.',
   example: 'engineer@themis.dev',
   id: 'AuthEmail',
@@ -66,7 +66,12 @@ const validate = <T>(schema: z.ZodType<T>, input: unknown): T => {
   } catch (error) {
     if (error instanceof ZodError) {
       const issue = error.issues[0];
-      throw new AuthError(400, 'invalid_request', issue?.message ?? 'The request payload is invalid.');
+      throw new HttpError({
+        data: issue,
+        code: 'invalid_request',
+        message: issue?.message ?? 'The request payload is invalid.',
+        statusCode: 400,
+      });
     }
 
     throw error;

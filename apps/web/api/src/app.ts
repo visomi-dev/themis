@@ -1,34 +1,37 @@
-import express, { json, type Express, type NextFunction, type Request, type Response } from 'express';
+import express, { json, type Express } from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
 
 import { activationRouter } from './activation/activation-router';
 import { authRouter } from './auth/auth-router';
-import { configurePassport } from './auth/passport';
-import { getAuthConfig } from './shared/config/auth-config';
-import { runMigrationsIfEnabled } from './shared/db/migrate';
-import { getPool } from './shared/db/pool';
-import { createOpenApiDocument } from './shared/http/openapi';
+import './auth/passport';
 import { projectSeedService } from './jobs/project-seed-service';
 import { projectsRouter } from './projects/projects-router';
+import { runMigrationsIfEnabled } from './shared/db/migrate';
+import { getPool } from './shared/db/pool';
+import { env } from './shared/env';
+import { createOpenApiDocument } from './shared/http/openapi';
 import { testRouter } from './testing/test-router';
 
-import { createSessionMiddleware, createSessionStore } from 'web-shared';
+import { createSessionMiddleware, createSessionStore, errorHandler } from 'web-shared';
 
 let appPromise: Promise<Express> | undefined;
 
 const morganFormat = process.env['MORGAN_FORMAT'] ?? 'dev';
 
 async function buildApp() {
-  const config = getAuthConfig();
-
-  await runMigrationsIfEnabled(config);
-  configurePassport();
-  projectSeedService.configure(config).ensureWorker();
+  await runMigrationsIfEnabled();
+  projectSeedService.ensureWorker();
 
   const app = express();
-  const sessionStore = createSessionStore(config, config.databaseDriver === 'pg' ? getPool(config) : undefined);
-  const sessionMiddleware = createSessionMiddleware(config, sessionStore);
+  const sessionConfig = {
+    cookieSecure: env.COOKIE_SECURE,
+    databaseDriver: env.DATABASE_DRIVER,
+    sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
+    sessionSecret: env.SESSION_SECRET,
+  };
+  const sessionStore = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getPool() : undefined);
+  const sessionMiddleware = createSessionMiddleware(sessionConfig, sessionStore);
 
   app.use(json());
   app.use(morgan(morganFormat));
@@ -36,43 +39,27 @@ async function buildApp() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.get('/', function rootHandler(_req, res) {
+  app.get('/', (_req, res) => {
     res.send({ message: 'Hello Themis API' });
   });
 
-  app.get('/health', function healthHandler(_req, res) {
+  app.get('/health', (_req, res) => {
     res.send({ status: 'ok' });
   });
 
-  app.get('/openapi.json', function openApiHandler(_req, res) {
+  app.get('/openapi.json', (_req, res) => {
     res.send(createOpenApiDocument());
   });
 
-  app.use('/auth', authRouter.configure(config));
-  app.use('/activation', activationRouter.configure(config));
-  app.use('/projects', projectsRouter.configure(config));
+  app.use('/auth', authRouter);
+  app.use('/activation', activationRouter);
+  app.use('/projects', projectsRouter);
 
-  if (config.enableTestApi) {
-    app.use('/test', testRouter.configure());
+  if (env.ENABLE_TEST_API) {
+    app.use('/test', testRouter);
   }
 
-  app.use(function errorHandler(error: unknown, _req: Request, res: Response, _next: NextFunction) {
-    console.error('[ error ] API request failed', error);
-
-    if (typeof error === 'object' && error && 'statusCode' in error) {
-      const payload = error as { code?: string; message?: string; statusCode: number };
-      res.status(payload.statusCode).send({
-        error: payload.code ?? 'request_failed',
-        message: payload.message ?? 'The request could not be completed.',
-      });
-      return;
-    }
-
-    res.status(500).send({
-      error: 'internal_server_error',
-      message: 'The request could not be completed.',
-    });
-  });
+  app.use(errorHandler);
 
   return app;
 }

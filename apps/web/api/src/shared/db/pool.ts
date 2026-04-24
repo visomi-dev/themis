@@ -1,20 +1,23 @@
 import { Pool } from 'pg';
 
-import type { AuthConfig } from '../config/auth-config';
+import { env } from '../env';
 
 let pool: Pool | undefined;
 let cachedUrl: string | undefined;
 
-const getPool = (config: AuthConfig): Pool => {
-  if (!pool || cachedUrl !== config.databaseUrl) {
-    cachedUrl = config.databaseUrl;
+export function getPool() {
+  if (env.DATABASE_DRIVER !== 'pg') {
+    throw new Error('Postgres pool requested while DATABASE_DRIVER is not pg.');
+  }
+
+  if (!pool || cachedUrl !== env.DATABASE_URL) {
+    pool?.end().catch(() => undefined);
+    cachedUrl = env.DATABASE_URL;
     pool = new Pool({
-      connectionString: config.databaseUrl,
-      ssl: config.databaseSsl ? { rejectUnauthorized: false } : undefined,
+      connectionString: env.DATABASE_URL,
+      ssl: env.DATABASE_SSL ? { rejectUnauthorized: false } : undefined,
     });
   }
 
-  return pool as Pool;
-};
-
-export { getPool };
+  return pool;
+}

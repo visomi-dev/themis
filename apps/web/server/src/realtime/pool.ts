@@ -1,16 +1,25 @@
 import { Pool } from 'pg';
 
-import type { RealtimeConfig } from './config';
+import { env } from 'web-shared';
 
 let pool: Pool | undefined;
+let cachedUrl: string | undefined;
 
-const getRealtimePool = (config: RealtimeConfig) => {
-  pool ??= new Pool({
-    connectionString: config.databaseUrl,
-    ssl: config.databaseSsl ? { rejectUnauthorized: false } : undefined,
-  });
+function getRealtimePool() {
+  if (env.DATABASE_DRIVER !== 'pg') {
+    throw new Error('Realtime pool requested while DATABASE_DRIVER is not pg.');
+  }
+
+  if (!pool || cachedUrl !== env.DATABASE_URL) {
+    pool?.end().catch(() => undefined);
+    cachedUrl = env.DATABASE_URL;
+    pool = new Pool({
+      connectionString: env.DATABASE_URL,
+      ssl: env.DATABASE_SSL ? { rejectUnauthorized: false } : undefined,
+    });
+  }
 
   return pool;
-};
+}
 
 export { getRealtimePool };

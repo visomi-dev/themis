@@ -1,10 +1,11 @@
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-import type { AuthConfig } from '../shared/config/auth-config';
+import { env } from '../shared/env';
 
-import { AuthError } from './auth-errors';
 import type { VerificationPurpose } from './auth-types';
+
+import { HttpError } from 'web-shared';
 
 type VerificationMessage = {
   challengeId: string;
@@ -22,16 +23,20 @@ const mailbox: SentVerificationMessage[] = [];
 
 let mailgunClient: ReturnType<InstanceType<typeof Mailgun>['client']> | undefined;
 
-function getMailgunClient(config: AuthConfig) {
-  if (!config.mailgunApiKey || !config.mailgunDomain) {
-    throw new AuthError(500, 'mailgun_not_configured', 'Mailgun credentials are not configured.');
+function getMailgunClient() {
+  if (!env.MAILGUN_API_KEY || !env.MAILGUN_DOMAIN) {
+    throw new HttpError({
+      code: 'mailgun_not_configured',
+      message: 'Mailgun credentials are not configured.',
+      statusCode: 500,
+    });
   }
 
   if (!mailgunClient) {
     const mailgun = new Mailgun(FormData);
     mailgunClient = mailgun.client({
-      key: config.mailgunApiKey,
-      url: config.mailgunUrl,
+      key: env.MAILGUN_API_KEY,
+      url: env.MAILGUN_URL,
       username: 'api',
     });
   }
@@ -49,10 +54,10 @@ function createMessageBody(message: VerificationMessage) {
   };
 }
 
-async function sendVerificationMessage(config: AuthConfig, message: VerificationMessage) {
+async function sendVerificationMessage(message: VerificationMessage) {
   const body = createMessageBody(message);
 
-  if (config.mailTransport === 'memory') {
+  if (env.MAIL_TRANSPORT === 'memory') {
     mailbox.push({
       ...message,
       sentAt: new Date(),
@@ -61,10 +66,10 @@ async function sendVerificationMessage(config: AuthConfig, message: Verification
     return;
   }
 
-  const client = getMailgunClient(config);
+  const client = getMailgunClient();
 
-  await client.messages.create(config.mailgunDomain, {
-    from: config.mailFrom,
+  await client.messages.create(env.MAILGUN_DOMAIN, {
+    from: env.MAILGUN_FROM,
     html: body.html,
     subject: body.subject,
     text: body.text,

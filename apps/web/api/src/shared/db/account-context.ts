@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 
-import type { AuthConfig } from '../config/auth-config';
+import { env } from '../env';
 
 import { getDb } from './client';
 
@@ -9,22 +9,18 @@ type TenantContext = {
   userId: string;
 };
 
-const withAccountContext = async <T>(
-  config: AuthConfig,
-  context: TenantContext,
-  operation: (tx: ReturnType<typeof getDb>) => Promise<T>,
-) => {
-  const db = getDb(config);
+async function withAccountContext<T>(context: TenantContext, operation: (tx: ReturnType<typeof getDb>) => Promise<T>) {
+  const db = getDb();
 
   return db.transaction(async (tx) => {
-    if (config.databaseDriver === 'pg') {
+    if (env.DATABASE_DRIVER === 'pg') {
       await tx.execute(sql`select set_config('app.current_account_id', ${context.accountId}, true)`);
       await tx.execute(sql`select set_config('app.current_user_id', ${context.userId}, true)`);
     }
 
     return operation(tx as unknown as ReturnType<typeof getDb>);
   });
-};
+}
 
 export { withAccountContext };
 export type { TenantContext };
