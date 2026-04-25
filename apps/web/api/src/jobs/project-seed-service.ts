@@ -7,7 +7,7 @@ import { createJob, findJobById, listJobsForProject, updateJob } from './job-sto
 import { getBullConnection, getProjectSeedQueue, hasProjectSeedWorker, setProjectSeedWorker } from './queue';
 import type { ProjectSeedJobInput, ProjectSeedJobResult } from './job-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 type SeedContext = {
   accountId: string;

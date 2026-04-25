@@ -21,7 +21,7 @@ Use `shared/` only for cross-feature backend infrastructure:
 - `shared/db/`
 - `shared/http/`
 
-Use `libs/web/shared/` for cross-runtime utilities shared by API and server:
+Use `libs/shared/` for cross-runtime utilities shared by API and server:
 
 - env loading
 - session helpers
@@ -102,7 +102,7 @@ API runtime:
 Server runtime:
 
 - keep gateway and realtime concerns in `apps/web/server/src/`
-- use `web-shared` for common runtime facilities such as env, logger, sessions, and realtime bus
+- use `shared` for common runtime facilities such as env, logger, sessions, and realtime bus
 
 ## Do Not Do
 

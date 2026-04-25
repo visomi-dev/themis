@@ -80,7 +80,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/web/api-e2e/**/*", "apps/web/server-e2e/**/*"]
+      "exclude": ["apps/web/api-e2e/**/*", "apps/web/server-e2e/**/*", "apps/worker-e2e/**/*"]
     }
   ],
   "generators": {

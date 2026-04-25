@@ -1,3 +1,3 @@
-import { getEnv } from 'web-shared';
+import { getEnv } from 'shared';
 
 export const env = getEnv();

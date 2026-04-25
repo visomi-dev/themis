@@ -13,7 +13,7 @@ import { env } from './shared/env';
 import { createOpenApiDocument } from './shared/http/openapi';
 import { testRouter } from './testing/test-router';
 
-import { createSessionMiddleware, createSessionStore, errorHandler } from 'web-shared';
+import { createSessionMiddleware, createSessionStore, errorHandler } from 'shared';
 
 let appPromise: Promise<Express> | undefined;
 

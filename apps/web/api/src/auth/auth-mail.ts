@@ -5,7 +5,7 @@ import { env } from '../shared/env';
 
 import type { VerificationPurpose } from './auth-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 export type VerificationMessage = {
   challengeId: string;

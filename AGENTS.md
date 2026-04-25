@@ -61,7 +61,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Avoid `buildXRouter` / `createXService` factories for normal feature wiring.
 - Shared auth and authorization concerns must live in **reusable middleware modules**, not be redefined per feature.
 - Role/permission checks should be expressible through shared middleware options such as arrays of allowed roles or permissions.
-- Cross-cutting runtime pieces that are shared between API and server belong in `libs/web/shared` and are imported via `web-shared`.
+- Cross-cutting runtime pieces that are shared between API and server belong in `libs/web/shared` and are imported via `shared`.
 
 ### File Naming
 

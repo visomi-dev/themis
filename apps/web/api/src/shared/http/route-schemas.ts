@@ -4,7 +4,7 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import { ZodError } from 'zod/v4';
 import * as z from 'zod/v4';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 type RequestSchemas = {
   body?: z.ZodType;

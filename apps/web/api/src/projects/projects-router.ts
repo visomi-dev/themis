@@ -21,7 +21,7 @@ import {
 } from './projects-service';
 import type { ProjectDocumentStatus, ProjectDocumentType, ProjectSourceType, ProjectStatus } from './projects-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 const projectsRouter = Router();
 

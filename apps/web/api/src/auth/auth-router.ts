@@ -20,7 +20,7 @@ import {
   resendVerificationSchema,
 } from './auth-schemas';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 const router = Router();
 

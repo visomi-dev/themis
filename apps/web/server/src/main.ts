@@ -6,7 +6,7 @@ import type { Express, NextFunction, Request, Response } from 'express';
 import { createGatewayApp } from './gateway';
 import { createRealtimeServer } from './realtime/socket';
 
-import { logger } from 'web-shared';
+import { logger } from 'shared';
 
 type ApiModule = {
   appPromise?: Promise<Express>;

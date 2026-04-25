@@ -15,7 +15,7 @@ import type {
   ProjectWithDocuments,
 } from './projects-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 type ProjectsContext = {
   accountId: string;

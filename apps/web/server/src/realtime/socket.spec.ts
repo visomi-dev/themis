@@ -31,7 +31,7 @@ jest.mock('socket.io', () => ({
   })),
 }));
 
-jest.mock('web-shared', () => ({
+jest.mock('shared', () => ({
   createSessionMiddleware: jest.fn(() => (_req: unknown, _res: unknown, next: () => void) => next()),
   createSessionStore: jest.fn(() => ({ store: true })),
   env: {

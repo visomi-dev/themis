@@ -8,7 +8,7 @@ import { apiKeys, userActivationMilestones } from '../shared/db/schema';
 
 import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 type ActivationMilestoneMetadata = Record<string, string | null>;
 

@@ -10,7 +10,7 @@ import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto
 import { sendVerificationMessage } from './auth-mail';
 import type { AuthChallengePayload, AuthUser, VerificationPurpose } from './auth-types';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 const MAX_CHALLENGE_ATTEMPTS = 5;
 

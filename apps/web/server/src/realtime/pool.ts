@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-import { env } from 'web-shared';
+import { env } from 'shared';
 
 let pool: Pool | undefined;
 let cachedUrl: string | undefined;

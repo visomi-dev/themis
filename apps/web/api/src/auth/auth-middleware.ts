@@ -1,6 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 
-import { HttpError } from 'web-shared';
+import { HttpError } from 'shared';
 
 type AuthenticatedContext = {
   accountId: string;
