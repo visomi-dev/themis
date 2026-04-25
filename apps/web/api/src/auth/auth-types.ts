@@ -1,6 +1,6 @@
-type VerificationPurpose = 'sign_in' | 'sign_up';
+export type VerificationPurpose = 'sign_in' | 'sign_up';
 
-type AuthUser = {
+export type AuthUser = {
   accountId: string;
   email: string;
   emailVerifiedAt: string | null;
@@ -8,11 +8,9 @@ type AuthUser = {
   role: string;
 };
 
-type AuthChallengePayload = {
+export type AuthChallengePayload = {
   challengeId: string;
   email: string;
   expiresAt: string;
   purpose: VerificationPurpose;
 };
-
-export type { AuthChallengePayload, AuthUser, VerificationPurpose };

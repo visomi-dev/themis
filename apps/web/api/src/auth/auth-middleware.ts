@@ -16,59 +16,54 @@ type AuthenticatedOptions = {
   roles?: string[];
 };
 
-class AuthMiddleware {
-  authenticated(options?: AuthenticatedOptions): RequestHandler {
-    return (req: Request, _res: Response, next: NextFunction) => {
-      if (!req.isAuthenticated() || !req.user) {
-        next(
-          new HttpError({
-            code: 'authentication_required',
-            message: 'Sign in to access this resource.',
-            statusCode: 401,
-          }),
-        );
-        return;
-      }
-
-      if (options?.roles && !options.roles.includes(req.user.role)) {
-        next(
-          new HttpError({
-            code: 'forbidden',
-            message: 'You do not have access to this resource.',
-            statusCode: 403,
-          }),
-        );
-        return;
-      }
-
-      next();
-    };
-  }
-
-  request(req: Request): AuthenticatedRequest {
-    if (!req.user) {
-      throw new HttpError({
-        code: 'authentication_required',
-        message: 'Sign in to access this resource.',
-        statusCode: 401,
-      });
+export function authed(options?: AuthenticatedOptions): RequestHandler {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated() || !req.user) {
+      next(
+        new HttpError({
+          code: 'authentication_required',
+          message: 'Sign in to access this resource.',
+          statusCode: 401,
+        }),
+      );
+      return;
     }
 
-    return req as AuthenticatedRequest;
-  }
+    if (options?.roles && !options.roles.includes(req.user.role)) {
+      next(
+        new HttpError({
+          code: 'forbidden',
+          message: 'You do not have access to this resource.',
+          statusCode: 403,
+        }),
+      );
+      return;
+    }
 
-  context(req: Request): AuthenticatedContext {
-    const authenticatedRequest = this.request(req);
-
-    return {
-      accountId: authenticatedRequest.user.accountId,
-      role: authenticatedRequest.user.role,
-      userId: authenticatedRequest.user.id,
-    };
-  }
+    next();
+  };
 }
 
-const authMiddleware = new AuthMiddleware();
+export function authedRequest(req: Request): AuthenticatedRequest {
+  if (!req.user) {
+    throw new HttpError({
+      code: 'authentication_required',
+      message: 'Sign in to access this resource.',
+      statusCode: 401,
+    });
+  }
 
-export { authMiddleware };
+  return req as AuthenticatedRequest;
+}
+
+export function authedContext(req: Request): AuthenticatedContext {
+  const $req = authedRequest(req);
+
+  return {
+    accountId: $req.user.accountId,
+    role: $req.user.role,
+    userId: $req.user.id,
+  };
+}
+
 export type { AuthenticatedContext, AuthenticatedOptions, AuthenticatedRequest };

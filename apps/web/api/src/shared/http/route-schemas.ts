@@ -103,7 +103,7 @@ const validateRequest = <T extends RequestSchemas>(schemas: T): RequestHandler =
   };
 };
 
-const readValidated = <T extends RequestSchemas>(req: Request) => (req as RequestWithValidated<T>).validated;
+const getValidated = <T extends RequestSchemas>(req: Request) => (req as RequestWithValidated<T>).validated;
 
 export {
   apiKeyIdParamSchema,
@@ -112,7 +112,7 @@ export {
   passwordSchema,
   pinSchema,
   projectIdParamSchema,
-  readValidated,
+  getValidated,
   validate,
   validateRequest,
   z,

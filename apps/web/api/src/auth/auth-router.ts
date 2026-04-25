@@ -1,9 +1,9 @@
 import passport from 'passport';
 import { Router, type NextFunction, type Request, type Response } from 'express';
 
-import { readValidated, validateRequest } from '../shared/http/route-schemas';
+import { getValidated, validateRequest } from '../shared/http/route-schemas';
 
-import { authMiddleware } from './auth-middleware';
+import { authed, authedRequest } from './auth-middleware';
 import {
   signUp,
   verifyChallenge,
@@ -24,16 +24,19 @@ import { HttpError } from 'web-shared';
 
 const router = Router();
 
-router.get('/session', function sessionHandler(req, res) {
+router.get('/session', authed(), async function sessionHandler(req, res) {
+  const $req = authedRequest(req);
+
   res.send({
-    authenticated: req.isAuthenticated(),
-    user: req.user ?? null,
+    authenticated: true,
+    user: $req.user,
   });
 });
 
 router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
-  const { email, password } = readValidated<{ body: typeof credentialsSchema }>(req).body!;
+  const { email, password } = getValidated<{ body: typeof credentialsSchema }>(req).body!;
   const challenge = await signUp(email, password);
+
   res.status(201).send(challenge);
 });
 
@@ -41,7 +44,7 @@ router.post(
   '/sign-up/verify',
   validateRequest({ body: challengeVerificationSchema }),
   async function verifySignUpHandler(req, res) {
-    const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+    const { challengeId, pin } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
     const user = await verifyChallenge(challengeId, pin, 'sign_up');
 
     await new Promise<void>((resolve, reject) => {
@@ -63,7 +66,7 @@ router.post(
   '/sign-in/password',
   validateRequest({ body: credentialsSchema }),
   function signInPasswordHandler(req: Request, res: Response, next: NextFunction) {
-    const credentials = readValidated<{ body: typeof credentialsSchema }>(req).body!;
+    const credentials = getValidated<{ body: typeof credentialsSchema }>(req).body!;
     req.body = credentials;
 
     passport.authenticate(
@@ -111,7 +114,7 @@ router.post(
   '/sign-in/verify',
   validateRequest({ body: challengeVerificationSchema }),
   async function verifySignInHandler(req, res) {
-    const { challengeId, pin } = readValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+    const { challengeId, pin } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
     const user = await verifyChallenge(challengeId, pin, 'sign_in');
 
     await new Promise<void>((resolve, reject) => {
@@ -133,14 +136,14 @@ router.post(
   '/verification/resend',
   validateRequest({ body: resendVerificationSchema }),
   async function resendVerificationHandler(req, res) {
-    const { challengeId } = readValidated<{ body: typeof resendVerificationSchema }>(req).body!;
+    const { challengeId } = getValidated<{ body: typeof resendVerificationSchema }>(req).body!;
     const challenge = await resendChallenge(challengeId);
 
     res.send(challenge);
   },
 );
 
-router.post('/sign-out', authMiddleware.authenticated(), async function signOutHandler(req, res) {
+router.post('/sign-out', authed(), async function signOutHandler(req, res) {
   await new Promise<void>((resolve, reject) => {
     req.logout((error) => {
       if (error) {
@@ -161,7 +164,7 @@ router.post(
   '/password/forgotten',
   validateRequest({ body: forgottenPasswordSchema }),
   async function forgottenPasswordHandler(req, res) {
-    const { email } = readValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
+    const { email } = getValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
     await requestPasswordReset(email);
     res.status(200).send({ message: 'If an account exists for that email, a reset link has been sent.' });
   },

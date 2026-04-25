@@ -14,11 +14,11 @@ import { HttpError } from 'web-shared';
 
 const MAX_CHALLENGE_ATTEMPTS = 5;
 
-function normalizeEmail(email: string) {
+export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
-function normalizeAccountSlug(email: string) {
+export function normalizeAccountSlug(email: string) {
   return normalizeEmail(email)
     .split('@')[0]
     .replace(/[^a-z0-9]+/g, '-')
@@ -26,7 +26,7 @@ function normalizeAccountSlug(email: string) {
     .slice(0, 80);
 }
 
-async function findUserByEmail(email: string) {
+export async function findUserByEmail(email: string) {
   const [user] = await db
     .select()
     .from(users)
@@ -35,12 +35,12 @@ async function findUserByEmail(email: string) {
   return user;
 }
 
-async function findUserById(id: string) {
+export async function findUserById(id: string) {
   const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
   return user;
 }
 
-async function getLatestChallengeForUser(userId: string, purpose: VerificationPurpose) {
+export async function getLatestChallengeForUser(userId: string, purpose: VerificationPurpose) {
   const [challenge] = await db
     .select()
     .from(authVerificationChallenges)
@@ -58,7 +58,7 @@ async function getLatestChallengeForUser(userId: string, purpose: VerificationPu
   return challenge;
 }
 
-async function getPrimaryMembership(userId: string) {
+export async function getPrimaryMembership(userId: string) {
   const [membership] = await db
     .select()
     .from(accountMemberships)
@@ -69,7 +69,7 @@ async function getPrimaryMembership(userId: string) {
   return membership;
 }
 
-async function resolveAuthUser(user: typeof users.$inferSelect): Promise<AuthUser> {
+export async function resolveAuthUser(user: typeof users.$inferSelect): Promise<AuthUser> {
   const membership = await getPrimaryMembership(user.id);
 
   if (!membership) {
@@ -89,7 +89,7 @@ async function resolveAuthUser(user: typeof users.$inferSelect): Promise<AuthUse
   };
 }
 
-async function createChallenge(
+export async function createChallenge(
   user: typeof users.$inferSelect,
   purpose: VerificationPurpose,
 ): Promise<AuthChallengePayload> {
@@ -140,7 +140,7 @@ async function createChallenge(
   };
 }
 
-async function getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpose: VerificationPurpose) {
+export async function getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpose: VerificationPurpose) {
   const challenge = await getLatestChallengeForUser(user.id, purpose);
 
   if (challenge) {
@@ -155,7 +155,7 @@ async function getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpo
   return createChallenge(user, purpose);
 }
 
-async function beginSignIn(user: typeof users.$inferSelect) {
+export async function beginSignIn(user: typeof users.$inferSelect) {
   if (!user.emailVerifiedAt) {
     return getOrCreateActiveChallenge(user, 'sign_up');
   }
@@ -163,7 +163,7 @@ async function beginSignIn(user: typeof users.$inferSelect) {
   return createChallenge(user, 'sign_in');
 }
 
-async function signUp(email: string, password: string) {
+export async function signUp(email: string, password: string) {
   const normalizedEmail = normalizeEmail(email);
   const existingUser = await findUserByEmail(normalizedEmail);
 
@@ -213,7 +213,7 @@ async function signUp(email: string, password: string) {
   return createChallenge(user, 'sign_up');
 }
 
-async function resendChallenge(challengeId: string) {
+export async function resendChallenge(challengeId: string) {
   const [challenge] = await db
     .select()
     .from(authVerificationChallenges)
@@ -259,7 +259,7 @@ async function resendChallenge(challengeId: string) {
   return createChallenge(user, challenge.purpose as VerificationPurpose);
 }
 
-async function verifyChallenge(challengeId: string, pin: string, purpose: VerificationPurpose) {
+export async function verifyChallenge(challengeId: string, pin: string, purpose: VerificationPurpose) {
   const [challenge] = await db
     .select()
     .from(authVerificationChallenges)
@@ -354,7 +354,7 @@ async function verifyChallenge(challengeId: string, pin: string, purpose: Verifi
   return resolveAuthUser(nextUser);
 }
 
-async function verifyPassword(email: string, password: string) {
+export async function verifyPassword(email: string, password: string) {
   const user = await findUserByEmail(email);
 
   if (!user) {
@@ -365,7 +365,7 @@ async function verifyPassword(email: string, password: string) {
   return matches ? user : null;
 }
 
-async function requestPasswordReset(email: string) {
+export async function requestPasswordReset(email: string) {
   const user = await findUserByEmail(email);
 
   if (!user || !user.emailVerifiedAt) {
@@ -374,20 +374,3 @@ async function requestPasswordReset(email: string) {
 
   await createChallenge(user, 'sign_in');
 }
-
-export {
-  beginSignIn,
-  createChallenge,
-  findUserByEmail,
-  findUserById,
-  getLatestChallengeForUser,
-  getPrimaryMembership,
-  normalizeAccountSlug,
-  normalizeEmail,
-  requestPasswordReset,
-  resendChallenge,
-  resolveAuthUser,
-  signUp,
-  verifyChallenge,
-  verifyPassword,
-};

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { clearMailbox, listSentMessages } from '../auth/auth-mail';
-import { emailSchema, readValidated, validateRequest, z } from '../shared/http/route-schemas';
+import { emailSchema, getValidated, validateRequest, z } from '../shared/http/route-schemas';
 
 const mailboxQuerySchema = z
   .object({
@@ -45,7 +45,7 @@ testRouter.get(
   '/mailbox/latest',
   validateRequest({ query: mailboxQuerySchema }),
   function mailboxLatestHandler(req, res) {
-    const { email, purpose } = readValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
+    const { email, purpose } = getValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
     const messages = listSentMessages();
     const matchingMessages = messages.filter(
       (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),

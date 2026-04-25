@@ -77,7 +77,7 @@ Use the typed middleware from `shared/http/route-schemas.ts`:
 
 Read parsed values with:
 
-- `readValidated(req)`
+- `getValidated(req)`
 
 ## OpenAPI Pattern
 

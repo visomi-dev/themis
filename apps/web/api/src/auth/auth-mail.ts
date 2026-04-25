@@ -7,7 +7,7 @@ import type { VerificationPurpose } from './auth-types';
 
 import { HttpError } from 'web-shared';
 
-type VerificationMessage = {
+export type VerificationMessage = {
   challengeId: string;
   email: string;
   expiresAt: Date;
@@ -15,7 +15,7 @@ type VerificationMessage = {
   purpose: VerificationPurpose;
 };
 
-type SentVerificationMessage = VerificationMessage & {
+export type SentVerificationMessage = VerificationMessage & {
   sentAt: Date;
 };
 
@@ -23,7 +23,7 @@ const mailbox: SentVerificationMessage[] = [];
 
 let mailgunClient: ReturnType<InstanceType<typeof Mailgun>['client']> | undefined;
 
-function getMailgunClient() {
+export function getMailgunClient() {
   if (!env.MAILGUN_API_KEY || !env.MAILGUN_DOMAIN) {
     throw new HttpError({
       code: 'mailgun_not_configured',
@@ -44,7 +44,7 @@ function getMailgunClient() {
   return mailgunClient;
 }
 
-function createMessageBody(message: VerificationMessage) {
+export function createMessageBody(message: VerificationMessage) {
   const intent = message.purpose === 'sign_in' ? 'sign in' : 'finish creating your account';
 
   return {
@@ -54,7 +54,7 @@ function createMessageBody(message: VerificationMessage) {
   };
 }
 
-async function sendVerificationMessage(message: VerificationMessage) {
+export async function sendVerificationMessage(message: VerificationMessage) {
   const body = createMessageBody(message);
 
   if (env.MAIL_TRANSPORT === 'memory') {
@@ -77,13 +77,10 @@ async function sendVerificationMessage(message: VerificationMessage) {
   });
 }
 
-function listSentMessages() {
+export function listSentMessages() {
   return mailbox.map((message) => ({ ...message }));
 }
 
-function clearMailbox() {
+export function clearMailbox() {
   mailbox.length = 0;
 }
-
-export { clearMailbox, listSentMessages, sendVerificationMessage };
-export type { SentVerificationMessage };
