@@ -47,11 +47,13 @@ const waitForAuthenticatedSession = async (page: Page, email: string) => {
           }
 
           const payload = (await response.json()) as {
-            user: { accountId?: string; email?: string } | null;
+            data: {
+              user: { accountId?: string; email?: string } | null;
+            };
           };
 
-          return payload.user?.email && payload.user?.accountId
-            ? { accountId: payload.user.accountId, email: payload.user.email }
+          return payload.data?.user?.email && payload.data?.user?.accountId
+            ? { accountId: payload.data.user.accountId, email: payload.data.user.email }
             : null;
         });
       },

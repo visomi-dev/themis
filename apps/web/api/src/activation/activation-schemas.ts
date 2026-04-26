@@ -58,7 +58,10 @@ export const activationOpenApiPaths = {
   '/activation': {
     get: {
       responses: {
-        200: { content: { 'application/json': { schema: activationStateSchema } }, description: 'Activation state.' },
+        200: {
+          content: { 'application/json': { schema: activationStateSchema } },
+          description: 'Activation state.',
+        },
       },
     },
   },
@@ -66,7 +69,10 @@ export const activationOpenApiPaths = {
     post: {
       requestBody: { content: { 'application/json': { schema: createApiKeySchema } } },
       responses: {
-        201: { content: { 'application/json': { schema: createdApiKeySchema } }, description: 'API key created.' },
+        201: {
+          content: { 'application/json': { schema: createdApiKeySchema } },
+          description: 'API key created.',
+        },
       },
     },
   },

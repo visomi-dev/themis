@@ -6,19 +6,14 @@ import type {
   AsyncJobRecord,
   CreateDocumentPayload,
   CreateProjectPayload,
+  JobsListResponse,
   Project,
   ProjectDocument,
   ProjectWithDocuments,
+  ProjectsListResponse,
+  ResponseEnvelope,
   UpdateProjectPayload,
 } from './projects.models';
-
-type ProjectsListResponse = {
-  projects: Project[];
-};
-
-type JobsListResponse = {
-  jobs: AsyncJobRecord[];
-};
 
 @Injectable({
   providedIn: 'root',
@@ -27,19 +22,27 @@ export class ProjectsService {
   private readonly http = inject(HttpClient);
 
   async listProjects() {
-    return firstValueFrom(this.http.get<ProjectsListResponse>('/api/projects'));
+    const response = await firstValueFrom(this.http.get<ProjectsListResponse>('/api/projects'));
+    return response.data.projects;
   }
 
   async getProject(projectId: string) {
-    return firstValueFrom(this.http.get<ProjectWithDocuments>(`/api/projects/${projectId}`));
+    const response = await firstValueFrom(
+      this.http.get<ResponseEnvelope<ProjectWithDocuments>>(`/api/projects/${projectId}`),
+    );
+    return response.data;
   }
 
   async createProject(payload: CreateProjectPayload) {
-    return firstValueFrom(this.http.post<Project>('/api/projects', payload));
+    const response = await firstValueFrom(this.http.post<ResponseEnvelope<Project>>('/api/projects', payload));
+    return response.data;
   }
 
   async updateProject(projectId: string, payload: UpdateProjectPayload) {
-    return firstValueFrom(this.http.patch<Project>(`/api/projects/${projectId}`, payload));
+    const response = await firstValueFrom(
+      this.http.patch<ResponseEnvelope<Project>>(`/api/projects/${projectId}`, payload),
+    );
+    return response.data;
   }
 
   async deleteProject(projectId: string) {
@@ -47,14 +50,21 @@ export class ProjectsService {
   }
 
   async createDocument(projectId: string, payload: CreateDocumentPayload) {
-    return firstValueFrom(this.http.post<ProjectDocument>(`/api/projects/${projectId}/documents`, payload));
+    const response = await firstValueFrom(
+      this.http.post<ResponseEnvelope<ProjectDocument>>(`/api/projects/${projectId}/documents`, payload),
+    );
+    return response.data;
   }
 
   async listJobs(projectId: string) {
-    return firstValueFrom(this.http.get<JobsListResponse>(`/api/projects/${projectId}/jobs`));
+    const response = await firstValueFrom(this.http.get<JobsListResponse>(`/api/projects/${projectId}/jobs`));
+    return response.data.jobs;
   }
 
   async startSeed(projectId: string) {
-    return firstValueFrom(this.http.post<AsyncJobRecord>(`/api/projects/${projectId}/seed`, {}));
+    const response = await firstValueFrom(
+      this.http.post<ResponseEnvelope<AsyncJobRecord>>(`/api/projects/${projectId}/seed`, {}),
+    );
+    return response.data;
   }
 }

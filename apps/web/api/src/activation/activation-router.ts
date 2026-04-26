@@ -11,12 +11,16 @@ import {
 } from './activation-schemas';
 import { createApiKey, getActivationState, recordMilestone, revokeApiKey } from './activation-service';
 
+import { sendEnvelope, sendEnvelopeWithStatus } from 'shared';
+
 const activationRouter = Router();
 
 activationRouter.use(authed());
 
 activationRouter.get('/', async function activationStateHandler(req, res) {
-  res.send(await getActivationState(authedContext(req)));
+  const state = await getActivationState(authedContext(req));
+
+  sendEnvelope(res, state, 'Activation state retrieved.');
 });
 
 activationRouter.post(
@@ -26,7 +30,7 @@ activationRouter.post(
     const { label } = getValidated<{ body: typeof createApiKeySchema }>(req).body!;
     const key = await createApiKey(authedContext(req), label);
 
-    res.status(201).send(key);
+    sendEnvelopeWithStatus(res, key, 'API key created.', 201);
   },
 );
 

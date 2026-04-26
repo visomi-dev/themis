@@ -1,3 +1,9 @@
+export type ResponseEnvelope<T> = {
+  message: string;
+  data: T;
+  metadata?: Record<string, unknown>;
+};
+
 export type ActivationMilestone =
   | 'activation_completed'
   | 'activation_skipped'

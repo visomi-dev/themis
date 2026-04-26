@@ -1,5 +1,11 @@
 export type AuthMode = 'sign_in' | 'sign_up';
 
+export type ResponseEnvelope<T> = {
+  message: string;
+  data: T;
+  metadata?: Record<string, unknown>;
+};
+
 export type AuthUser = {
   accountId: string;
   email: string;
@@ -15,10 +21,19 @@ export type AuthChallenge = {
   purpose: AuthMode;
 };
 
-export type SessionResponse = {
+export type SessionResponse = ResponseEnvelope<{
   authenticated: boolean;
   user: AuthUser | null;
-};
+}>;
+
+export type AuthenticatedResponse = ResponseEnvelope<{
+  authenticated: true;
+  user: AuthUser;
+}>;
+
+export type ChallengeResponse = ResponseEnvelope<AuthChallenge>;
+
+export type MessageResponse = ResponseEnvelope<null>;
 
 export type CredentialsPayload = {
   email: string;

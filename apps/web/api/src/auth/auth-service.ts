@@ -7,10 +7,7 @@ import { env } from '../shared/env';
 
 import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
 import { sendVerificationMessage } from './auth-mail';
-import {
-  authUserSchema,
-  challengeSchema,
-} from './auth-schemas';
+import { authUserSchema, challengeSchema } from './auth-schemas';
 
 import { accountMemberships, accounts, authVerificationChallenges, db, HttpError, users } from 'shared';
 

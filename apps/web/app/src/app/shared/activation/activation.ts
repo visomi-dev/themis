@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import type { ActivationMilestone, ActivationState, CreateApiKeyPayload, CreatedApiKey } from './activation.models';
+import type {
+  ActivationMilestone,
+  ActivationState,
+  CreateApiKeyPayload,
+  CreatedApiKey,
+  ResponseEnvelope,
+} from './activation.models';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +17,15 @@ export class Activation {
   private readonly http = inject(HttpClient);
 
   async loadState() {
-    return firstValueFrom(this.http.get<ActivationState>('/api/activation'));
+    const response = await firstValueFrom(this.http.get<ResponseEnvelope<ActivationState>>('/api/activation'));
+    return response.data;
   }
 
   async createApiKey(payload: CreateApiKeyPayload) {
-    return firstValueFrom(this.http.post<CreatedApiKey>('/api/activation/api-keys', payload));
+    const response = await firstValueFrom(
+      this.http.post<ResponseEnvelope<CreatedApiKey>>('/api/activation/api-keys', payload),
+    );
+    return response.data;
   }
 
   async recordMilestone(milestone: ActivationMilestone, metadata?: Record<string, string | null>) {

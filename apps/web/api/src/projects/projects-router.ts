@@ -12,7 +12,7 @@ import {
 } from './projects-schemas';
 import { listProjectJobs, queueProjectSeed } from './project-seed-queue';
 
-import { HttpError } from 'shared';
+import { HttpError, sendEnvelope, sendEnvelopeWithStatus } from 'shared';
 import {
   createDocument,
   createProject,
@@ -31,7 +31,9 @@ const projectsRouter = Router();
 projectsRouter.use(authed());
 
 projectsRouter.get('/', async function listProjectsHandler(req, res) {
-  res.send({ projects: await listProjects(authedContext(req)) });
+  const projects = await listProjects(authedContext(req));
+
+  sendEnvelope(res, { projects }, 'Projects retrieved.');
 });
 
 projectsRouter.get(
@@ -45,7 +47,7 @@ projectsRouter.get(
       throw new HttpError({ code: 'project_not_found', message: 'The project could not be found.', statusCode: 404 });
     }
 
-    res.send(project);
+    sendEnvelope(res, project, 'Project retrieved.');
   },
 );
 
@@ -56,7 +58,7 @@ projectsRouter.post('/', validateRequest({ body: createProjectSchema }), async f
     body as { name: string; sourceType?: ProjectSourceType; summary?: string },
   );
 
-  res.status(201).send(project);
+  sendEnvelopeWithStatus(res, project, 'Project created.', 201);
 });
 
 projectsRouter.patch(
@@ -72,7 +74,7 @@ projectsRouter.patch(
       body as { name?: string; status?: ProjectStatus; summary?: string | null },
     );
 
-    res.send(project);
+    sendEnvelope(res, project, 'Project updated.');
   },
 );
 
@@ -105,7 +107,7 @@ projectsRouter.post(
       },
     );
 
-    res.status(201).send(document);
+    sendEnvelopeWithStatus(res, document, 'Document created.', 201);
   },
 );
 
@@ -114,7 +116,9 @@ projectsRouter.get(
   validateRequest({ params: projectParamsSchema }),
   async function projectJobsHandler(req, res) {
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    res.send({ jobs: await listProjectJobs(authedContext(req), projectId) });
+    const jobs = await listProjectJobs(authedContext(req), projectId);
+
+    sendEnvelope(res, { jobs }, 'Jobs retrieved.');
   },
 );
 
@@ -124,7 +128,8 @@ projectsRouter.post(
   async function seedProjectHandler(req, res) {
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
     const job = await queueProjectSeed(authedContext(req), projectId);
-    res.status(202).send(job);
+
+    sendEnvelopeWithStatus(res, job, 'Project seed queued.', 202);
   },
 );
 

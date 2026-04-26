@@ -1,3 +1,9 @@
+export type ResponseEnvelope<T> = {
+  message: string;
+  data: T;
+  metadata?: Record<string, unknown>;
+};
+
 import type {
   AsyncJobRecord,
   AsyncJobStatus,
@@ -43,3 +49,11 @@ export type CreateDocumentPayload = {
   status?: ProjectDocumentStatus;
   title: string;
 };
+
+export type ProjectsListResponse = ResponseEnvelope<{
+  projects: Project[];
+}>;
+
+export type JobsListResponse = ResponseEnvelope<{
+  jobs: AsyncJobRecord[];
+}>;

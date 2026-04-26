@@ -5,7 +5,15 @@ import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
 
-import type { AuthChallenge, AuthMode, AuthUser, CredentialsPayload, SessionResponse } from './auth.models';
+import type {
+  AuthChallenge,
+  AuthMode,
+  AuthUser,
+  AuthenticatedResponse,
+  ChallengeResponse,
+  CredentialsPayload,
+  SessionResponse,
+} from './auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +49,7 @@ export class Auth {
     try {
       const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
 
-      this.userState.set(response.user);
+      this.userState.set(response.data.user);
     } catch {
       this.userState.set(null);
     } finally {
@@ -53,11 +61,11 @@ export class Auth {
     this.submittingState.set(true);
 
     try {
-      const response = await firstValueFrom(this.http.post<AuthChallenge>('/api/auth/sign-in/password', payload));
+      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-in/password', payload));
 
-      this.setPendingChallenge(response);
+      this.setPendingChallenge(response.data);
 
-      return response;
+      return response.data;
     } catch (error) {
       console.error(error);
 
@@ -71,11 +79,11 @@ export class Auth {
     this.submittingState.set(true);
 
     try {
-      const response = await firstValueFrom(this.http.post<AuthChallenge>('/api/auth/sign-up', payload));
+      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-up', payload));
 
-      this.setPendingChallenge(response);
+      this.setPendingChallenge(response.data);
 
-      return response;
+      return response.data;
     } catch (error) {
       console.error(error);
 
@@ -90,11 +98,11 @@ export class Auth {
 
     try {
       const endpoint = mode === 'sign_in' ? '/api/auth/sign-in/password' : '/api/auth/sign-up';
-      const challenge = await firstValueFrom(this.http.post<AuthChallenge>(endpoint, payload));
+      const response = await firstValueFrom(this.http.post<ChallengeResponse>(endpoint, payload));
 
-      this.setPendingChallenge(challenge);
+      this.setPendingChallenge(response.data);
 
-      return challenge;
+      return response.data;
     } finally {
       this.submittingState.set(false);
     }
@@ -112,17 +120,17 @@ export class Auth {
     try {
       const endpoint = challenge.purpose === 'sign_in' ? '/api/auth/sign-in/verify' : '/api/auth/sign-up/verify';
       const response = await firstValueFrom(
-        this.http.post<{ authenticated: boolean; user: AuthUser }>(endpoint, {
+        this.http.post<AuthenticatedResponse>(endpoint, {
           challengeId: challenge.challengeId,
           pin,
         }),
       );
 
-      this.userState.set(response.user);
+      this.userState.set(response.data.user);
       this.sessionLoadedState.set(true);
       this.setPendingChallenge(null);
 
-      return response.user;
+      return response.data.user;
     } finally {
       this.verificationSubmittingState.set(false);
     }
@@ -135,15 +143,15 @@ export class Auth {
       throw new Error('No pending verification challenge is available.');
     }
 
-    const nextChallenge = await firstValueFrom(
-      this.http.post<AuthChallenge>('/api/auth/verification/resend', {
+    const response = await firstValueFrom(
+      this.http.post<ChallengeResponse>('/api/auth/verification/resend', {
         challengeId: challenge.challengeId,
       }),
     );
 
-    this.setPendingChallenge(nextChallenge);
+    this.setPendingChallenge(response.data);
 
-    return nextChallenge;
+    return response.data;
   }
 
   async signOut() {
