@@ -3,7 +3,7 @@ import Mailgun from 'mailgun.js';
 
 import { env } from '../shared/env';
 
-import type { VerificationPurpose } from './auth-types';
+import type { VerificationPurpose } from './auth-schemas';
 
 import { HttpError } from 'shared';
 

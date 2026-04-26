@@ -10,7 +10,6 @@ import {
   activationOpenApiPaths,
 } from './activation-schemas';
 import { createApiKey, getActivationState, recordMilestone, revokeApiKey } from './activation-service';
-import type { ActivationMilestone } from './activation-types';
 
 const activationRouter = Router();
 
@@ -37,7 +36,7 @@ activationRouter.post(
   async function milestoneHandler(req, res) {
     const { metadata, milestone } = getValidated<{ body: typeof milestoneBodySchema }>(req).body!;
 
-    await recordMilestone(authedContext(req), milestone as ActivationMilestone, metadata);
+    await recordMilestone(authedContext(req), milestone, metadata);
 
     res.status(204).send();
   },

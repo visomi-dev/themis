@@ -1,14 +1,22 @@
 import { randomUUID } from 'node:crypto';
 
 import { and, asc, desc, eq, gt, isNull } from 'drizzle-orm';
+import type { z } from 'zod';
 
 import { env } from '../shared/env';
 
 import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
 import { sendVerificationMessage } from './auth-mail';
-import type { AuthChallengePayload, AuthUser, VerificationPurpose } from './auth-types';
+import {
+  authUserSchema,
+  challengeSchema,
+} from './auth-schemas';
 
 import { accountMemberships, accounts, authVerificationChallenges, db, HttpError, users } from 'shared';
+
+type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
+type AuthUser = z.infer<typeof authUserSchema>;
+type AuthChallengePayload = z.infer<typeof challengeSchema>;
 
 const MAX_CHALLENGE_ATTEMPTS = 5;
 

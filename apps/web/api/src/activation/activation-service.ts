@@ -4,7 +4,13 @@ import { desc, eq } from 'drizzle-orm';
 
 import { hashSecret } from '../auth/auth-crypto';
 
-import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types';
+import {
+  type ActivationApiKey,
+  type ActivationMilestone,
+  type ActivationState,
+  type CreatedApiKey,
+  type CreateApiKey,
+} from './activation-schemas';
 
 import { apiKeys, HttpError, userActivationMilestones, withAccountContext } from 'shared';
 
@@ -93,7 +99,10 @@ async function recordMilestone(
   });
 }
 
-async function createApiKey({ accountId, userId }: ActivationContext, label: string): Promise<CreatedApiKey> {
+async function createApiKey(
+  { accountId, userId }: ActivationContext,
+  label: CreateApiKey['label'],
+): Promise<CreatedApiKey> {
   const normalizedLabel = label.trim();
 
   if (normalizedLabel.length === 0) {

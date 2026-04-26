@@ -83,3 +83,9 @@ export const activationOpenApiPaths = {
     },
   },
 };
+
+export type ActivationMilestone = z.infer<typeof activationMilestoneSchema>;
+export type ActivationState = z.infer<typeof activationStateSchema>;
+export type CreateApiKey = z.infer<typeof createApiKeySchema>;
+export type CreatedApiKey = z.infer<typeof createdApiKeySchema>;
+export type ActivationApiKey = z.infer<typeof activationStateSchema>['apiKeys'][number];

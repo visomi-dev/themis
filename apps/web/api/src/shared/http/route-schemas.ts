@@ -1,8 +1,8 @@
 import 'zod-openapi';
 
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
-import { ZodError } from 'zod/v4';
-import * as z from 'zod/v4';
+import { ZodError } from 'zod';
+import * as z from 'zod';
 
 import { HttpError } from 'shared';
 

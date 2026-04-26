@@ -25,6 +25,10 @@ export const challengeSchema = z
   })
   .meta({ id: 'AuthChallenge' });
 
+export type AuthUser = z.infer<typeof authUserSchema>;
+export type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
+export type AuthChallengePayload = z.infer<typeof challengeSchema>;
+
 export const credentialsSchema = z
   .object({
     email: emailSchema,
