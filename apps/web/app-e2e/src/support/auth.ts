@@ -5,7 +5,6 @@ import { expect, type APIRequestContext, type Page } from '@playwright/test';
 import { clearMailbox, readLatestPin } from './mailbox';
 import { fillOtp } from './otp';
 import {
-  appRoute,
   appUrlPattern,
   signInRoute,
   signInUrlPattern,
@@ -67,53 +66,16 @@ const waitForAuthenticatedSession = async (page: Page, email: string) => {
 export const authenticateViaApi = async (page: Page, request: APIRequestContext, email: string, password: string) => {
   await clearMailbox(request);
 
-  const signUpResponse = await request.post('/api/auth/sign-up', {
-    data: { email, password },
-  });
+  await page.goto(signUpRoute);
+  await expect(page).toHaveURL(signUpUrlPattern);
+  await fillCredentials(page, email, password);
+  await page.getByRole('button', { name: 'Create account' }).click();
+  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
 
-  if (!signUpResponse.ok()) {
-    throw new Error(`API sign-up failed with status ${signUpResponse.status()}.`);
-  }
-
-  const challenge = (await signUpResponse.json()) as { challengeId: string };
   const pin = await readLatestPin(request, email, 'sign_up');
-  const verifyResponse = await request.post('/api/auth/sign-up/verify', {
-    data: {
-      challengeId: challenge.challengeId,
-      pin,
-    },
-  });
+  await fillOtp(page, pin);
+  await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-  if (!verifyResponse.ok()) {
-    throw new Error(`API sign-up verification failed with status ${verifyResponse.status()}.`);
-  }
-
-  const setCookieHeader = verifyResponse
-    .headersArray()
-    .find((header) => header.name.toLowerCase() === 'set-cookie')?.value;
-
-  if (!setCookieHeader) {
-    throw new Error('Session cookie was not returned by the auth response.');
-  }
-
-  const cookiePair = setCookieHeader.split(';', 1)[0];
-  const separatorIndex = cookiePair.indexOf('=');
-  const name = cookiePair.slice(0, separatorIndex);
-  const value = cookiePair.slice(separatorIndex + 1);
-
-  await page.context().addCookies([
-    {
-      domain: '127.0.0.1',
-      httpOnly: true,
-      name,
-      path: '/',
-      sameSite: 'Lax',
-      secure: false,
-      value,
-    },
-  ]);
-
-  await page.goto(appRoute);
   await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
   await waitForAuthenticatedSession(page, email);
 };

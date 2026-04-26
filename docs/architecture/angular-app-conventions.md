@@ -8,11 +8,13 @@ They are derived from the stronger Angular patterns used in the reference applic
 
 ## Structure
 
-- Route pages live under `src/app/pages/`.
+- Route components live directly under their domain folder, such as `src/app/activation/`, `src/app/auth/`, and `src/app/projects/`.
 - Reusable cross-route state and UI live under `src/app/shared/`.
 - Shared layout controls live under `src/app/shared/layout/`.
 - Shared form primitives and helpers live under `src/app/shared/form/`.
 - Avoid `core/`, `features/`, and suffix-heavy naming when a simpler domain-first folder communicates ownership more clearly.
+- Generate new components with `pnpm nx g @nx/angular:component apps/web/app/src/app/<thing>` and then adjust generated files to match project conventions.
+- Do not create a generic `src/app/pages/` folder.
 
 ## Naming
 

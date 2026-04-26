@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
 import { authed, authedContext } from '../auth/auth-middleware';
-import { projectSeedService } from '../jobs/project-seed-service';
 import { getValidated, validateRequest } from '../shared/http/route-schemas';
 
 import {
@@ -11,17 +10,21 @@ import {
   projectsOpenApiPaths,
   updateProjectSchema,
 } from './projects-schemas';
+import { listProjectJobs, queueProjectSeed } from './project-seed-queue';
+
+import { HttpError } from 'shared';
 import {
   createDocument,
   createProject,
   deleteProject,
   getProject,
   listProjects,
+  type ProjectDocumentStatus,
+  type ProjectDocumentType,
+  type ProjectSourceType,
+  type ProjectStatus,
   updateProject,
-} from './projects-service';
-import type { ProjectDocumentStatus, ProjectDocumentType, ProjectSourceType, ProjectStatus } from './projects-types';
-
-import { HttpError } from 'shared';
+} from 'projects';
 
 const projectsRouter = Router();
 
@@ -111,7 +114,7 @@ projectsRouter.get(
   validateRequest({ params: projectParamsSchema }),
   async function projectJobsHandler(req, res) {
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    res.send({ jobs: await projectSeedService.listProjectJobs(authedContext(req), projectId) });
+    res.send({ jobs: await listProjectJobs(authedContext(req), projectId) });
   },
 );
 
@@ -120,7 +123,7 @@ projectsRouter.post(
   validateRequest({ params: projectParamsSchema }),
   async function seedProjectHandler(req, res) {
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
-    const job = await projectSeedService.queueProjectSeed(authedContext(req), projectId);
+    const job = await queueProjectSeed(authedContext(req), projectId);
     res.status(202).send(job);
   },
 );

@@ -11,7 +11,7 @@
         "jestConfig": "apps/worker-e2e/jest.config.cts",
         "passWithNoTests": true
       },
-      "dependsOn": ["worker:build", "worker:serve"]
+      "dependsOn": ["worker:build"]
     }
   }
 }

@@ -5,15 +5,12 @@ import passport from 'passport';
 import { activationRouter } from './activation/activation-router';
 import { authRouter } from './auth/auth-router';
 import './auth/passport';
-import { projectSeedService } from './jobs/project-seed-service';
 import { projectsRouter } from './projects/projects-router';
-import { runMigrationsIfEnabled } from './shared/db/migrate';
-import { getPool } from './shared/db/pool';
 import { env } from './shared/env';
 import { createOpenApiDocument } from './shared/http/openapi';
 import { testRouter } from './testing/test-router';
 
-import { createSessionMiddleware, createSessionStore, errorHandler } from 'shared';
+import { createSessionMiddleware, createSessionStore, errorHandler, getPool, runMigrationsIfEnabled } from 'shared';
 
 let appPromise: Promise<Express> | undefined;
 
@@ -21,7 +18,6 @@ const morganFormat = process.env['MORGAN_FORMAT'] ?? 'dev';
 
 async function buildApp() {
   await runMigrationsIfEnabled();
-  projectSeedService.ensureWorker();
 
   const app = express();
   const sessionConfig = {

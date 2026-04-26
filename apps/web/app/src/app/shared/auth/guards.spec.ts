@@ -36,19 +36,21 @@ describe('auth guards', () => {
     expect(result).toBe('/sign-in');
   });
 
-  it('redirects authenticated guests back to the app', async () => {
+  it('allows guest routes without probing the session during hydration', async () => {
     const router = createRouter();
+    const auth = createAuth(true);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: router },
-        { provide: Auth, useValue: createAuth(true) },
+        { provide: Auth, useValue: auth },
       ],
     });
 
     const result = await TestBed.runInInjectionContext(() => guestGuard());
 
-    expect(result).toBe('/');
+    expect(auth.ensureSessionLoaded).not.toHaveBeenCalled();
+    expect(result).toBe(true);
   });
 
   it('allows verification only when a challenge is active', async () => {

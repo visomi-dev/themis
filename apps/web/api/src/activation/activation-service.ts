@@ -3,12 +3,10 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { desc, eq } from 'drizzle-orm';
 
 import { hashSecret } from '../auth/auth-crypto';
-import { withAccountContext } from '../shared/db/account-context';
-import { apiKeys, userActivationMilestones } from '../shared/db/schema';
 
 import type { ActivationApiKey, ActivationMilestone, ActivationState, CreatedApiKey } from './activation-types';
 
-import { HttpError } from 'shared';
+import { apiKeys, HttpError, userActivationMilestones, withAccountContext } from 'shared';
 
 type ActivationMilestoneMetadata = Record<string, string | null>;
 

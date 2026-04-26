@@ -50,15 +50,15 @@ Recommended route additions inside `apps/web/app`:
 
 Recommended behavior:
 
-- authenticated users with incomplete activation may be redirected to `/app/activate` on first entry
+- authenticated users with incomplete activation may be redirected to `/app/activation` on first entry
 - users can skip activation and continue into the product
-- users can revisit `/app/activate` later from settings or workspace setup
+- users can revisit `/app/activation` later from settings or workspace setup
 
 ### Component Structure
 
 Recommended page ownership:
 
-- `pages/activate/` as the route component directory
+- `activation/activation.ts` as the route component directory under `apps/web/app/src/app/activation/`
 
 Recommended local child components if needed:
 

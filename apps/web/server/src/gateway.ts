@@ -1,5 +1,6 @@
 import express, {
   json,
+  type RequestHandler,
   static as serveStatic,
   type Express,
   type NextFunction,
@@ -10,13 +11,13 @@ import express, {
 type AstroRequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 
 type GatewayDeps = {
-  apiApp: Express;
+  apiHandler: RequestHandler;
   angularHandler: Express;
   astroClientFolder: string;
   astroRequestHandler: AstroRequestHandler;
 };
 
-const createGatewayApp = ({ angularHandler, apiApp, astroClientFolder, astroRequestHandler }: GatewayDeps) => {
+const createGatewayApp = ({ angularHandler, apiHandler, astroClientFolder, astroRequestHandler }: GatewayDeps) => {
   const app = express();
 
   app.use(json());
@@ -26,7 +27,7 @@ const createGatewayApp = ({ angularHandler, apiApp, astroClientFolder, astroRequ
   app.get('/', (_req, res) => {
     res.redirect(302, '/en/');
   });
-  app.use('/api', apiApp);
+  app.use('/api', apiHandler);
   app.use('/app', angularHandler);
   app.use(
     serveStatic(astroClientFolder, {

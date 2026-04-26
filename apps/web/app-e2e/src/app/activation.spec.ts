@@ -30,7 +30,7 @@ test.describe('/app (first-run activation)', () => {
 
     await page.getByRole('button', { name: /Generate key/i }).click();
 
-    await expect(page.locator('.activation-mask-panel p.font-mono').first()).toContainText('thm_');
+    await expect(page.locator('.activation-key-row p.font-mono').first()).toContainText('thm_');
   });
 
   test('shows workspace configuration section with copyable config', async ({ page, request }) => {

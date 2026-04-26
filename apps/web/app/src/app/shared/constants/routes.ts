@@ -1,4 +1,5 @@
 export const APP_PATH = '';
+export const ACTIVATION_PATH = 'activation';
 export const PROJECTS_PATH = 'projects';
 export const PROJECT_ID_PATH = ':projectId';
 export const PROJECT_NEW_PATH = 'new';
@@ -8,6 +9,7 @@ export const VERIFY_EMAIL_PATH = 'verify-email';
 export const FORGOTTEN_PASSWORD_PATH = 'forgotten-password';
 
 export const APP_URL = '/';
+export const ACTIVATION_URL = '/activation';
 export const PROJECTS_URL = '/projects';
 export const PROJECT_DETAIL_URL = '/projects/:projectId';
 export const PROJECT_NEW_URL = '/projects/new';

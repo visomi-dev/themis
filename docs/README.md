@@ -21,6 +21,8 @@ Documentation in this repository is organized around the Themis product itself.
 - `architecture/auth-architecture.md`
 - `architecture/adr-first-run-activation-frontend.md`
 - `architecture/adr-first-run-activation-backend.md`
+- `architecture/backend-feature-architecture.md`
+- `architecture/multi-tenant-architecture.md`
 - `architecture/project-foundation-model.md`
 - `architecture/backend-content-model.md`
 - `testing/auth-testing.md`

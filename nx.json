@@ -3,6 +3,7 @@
   "tui": {
     "enabled": false
   },
+  "useDaemonProcess": false,
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -80,7 +81,12 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/web/api-e2e/**/*", "apps/web/server-e2e/**/*", "apps/worker-e2e/**/*"]
+      "exclude": [
+        "apps/web/api-e2e/**/*",
+        "apps/web/server-e2e/**/*",
+        "apps/worker-e2e/**/*",
+        "apps/web/realtime-e2e/**/*"
+      ]
     }
   ],
   "generators": {

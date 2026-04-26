@@ -5,8 +5,8 @@ import { createGatewayApp } from './gateway';
 
 describe('createGatewayApp', () => {
   const createDeps = () => {
-    const apiApp = express();
-    apiApp.get('/hello', (_req, res) => {
+    const apiHandler = express();
+    apiHandler.get('/hello', (_req, res) => {
       res.send({ message: 'hello' });
     });
 
@@ -20,7 +20,7 @@ describe('createGatewayApp', () => {
     };
 
     return {
-      apiApp,
+      apiHandler,
       angularHandler,
       astroClientFolder: __dirname,
       astroRequestHandler,

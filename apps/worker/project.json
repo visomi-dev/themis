@@ -66,6 +66,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "worker:build",
+        "inspect": false,
         "runBuildTargetDependencies": false
       },
       "configurations": {

@@ -26,7 +26,7 @@ class PostgresSessionStore extends Store {
     this.ensureTablePromise = this.ensureTable();
   }
 
-  destroy(sid: string, callback: (error?: unknown) => void = () => undefined) {
+  override destroy(sid: string, callback: (error?: unknown) => void = () => undefined) {
     void this.ensureTablePromise
       .then(async () => {
         await this.pool.query(`DELETE FROM ${this.tableName} WHERE sid = $1`, [sid]);
@@ -35,7 +35,7 @@ class PostgresSessionStore extends Store {
       .catch((error) => callback(error));
   }
 
-  get(sid: string, callback: SessionCallback = () => undefined) {
+  override get(sid: string, callback: SessionCallback = () => undefined) {
     void this.ensureTablePromise
       .then(async () => {
         const result = await this.pool.query<SessionRow>(
@@ -55,7 +55,7 @@ class PostgresSessionStore extends Store {
       .catch((error) => callback(error));
   }
 
-  set(sid: string, sess: SessionData, callback: (error?: unknown) => void = () => undefined) {
+  override set(sid: string, sess: SessionData, callback: (error?: unknown) => void = () => undefined) {
     void this.ensureTablePromise
       .then(async () => {
         const expiresAt = this.resolveExpiry(sess);
@@ -73,7 +73,7 @@ class PostgresSessionStore extends Store {
       .catch((error) => callback(error));
   }
 
-  touch(sid: string, sess: SessionData, callback: (error?: unknown) => void = () => undefined) {
+  override touch(sid: string, sess: SessionData, callback: (error?: unknown) => void = () => undefined) {
     void this.ensureTablePromise
       .then(async () => {
         await this.pool.query(`UPDATE ${this.tableName} SET expires_at = $2, updated_at = NOW() WHERE sid = $1`, [
@@ -86,15 +86,7 @@ class PostgresSessionStore extends Store {
   }
 
   private async ensureTable() {
-    await this.pool.query(`
-      CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        sid text PRIMARY KEY,
-        sess jsonb NOT NULL,
-        expires_at timestamptz NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT NOW(),
-        updated_at timestamptz NOT NULL DEFAULT NOW()
-      )
-    `);
+    await this.pool.query(`SELECT sid, sess, expires_at, created_at, updated_at FROM ${this.tableName} LIMIT 0`);
   }
 
   private resolveExpiry(sess: SessionData) {

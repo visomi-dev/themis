@@ -38,10 +38,15 @@ export class Auth {
       return;
     }
 
-    const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
+    try {
+      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
 
-    this.userState.set(response.user);
-    this.sessionLoadedState.set(true);
+      this.userState.set(response.user);
+    } catch {
+      this.userState.set(null);
+    } finally {
+      this.sessionLoadedState.set(true);
+    }
   }
 
   async signInWithPassword(payload: CredentialsPayload) {

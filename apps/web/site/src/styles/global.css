@@ -317,6 +317,10 @@ html.dark ::selection {
 
 @utility light-footer {
   background: #f7f9fb;
+
+  @variant dark {
+    background: var(--color-surface-container-low);
+  }
 }
 
 @utility min-h-screen-nav {

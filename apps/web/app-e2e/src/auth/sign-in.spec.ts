@@ -18,7 +18,7 @@ test.describe('/app/sign-in', () => {
     await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByText(credentials.email)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
   });
 
   test('stays on the route when credentials are invalid', async ({ page }) => {
@@ -42,12 +42,13 @@ test.describe('/app/sign-in', () => {
     await expect(page.getByText('Use at least 8 characters.')).toBeVisible();
   });
 
-  test('redirects authenticated users back to the app', async ({ page, request }) => {
+  test('keeps the sign-in route available for authenticated users', async ({ page, request }) => {
     const credentials = createCredentials();
 
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
     await page.goto(signInRoute);
 
-    await expect(page).toHaveURL(appUrlPattern);
+    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
   });
 });
