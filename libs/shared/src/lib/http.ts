@@ -22,7 +22,15 @@ function createEnvelope(message: string, data: unknown, meta?: Record<string, un
 }
 
 const httpResponse = {
-  json(res: Response, { data, status, meta, message }: { data: unknown; status?: number; meta?: Record<string, unknown>; message: string }) {
+  json(
+    res: Response,
+    {
+      data,
+      status,
+      meta,
+      message,
+    }: { data: unknown; status?: number; meta?: Record<string, unknown>; message: string },
+  ) {
     return status !== undefined
       ? res.status(status).send(createEnvelope(message, data, meta))
       : res.send(createEnvelope(message, data, meta));
