@@ -11,7 +11,7 @@ import {
 } from './activation-schemas';
 import { createApiKey, getActivationState, recordMilestone, revokeApiKey } from './activation-service';
 
-import { jsonResponse } from 'shared';
+import { httpResponse } from 'shared';
 
 const activationRouter = Router();
 
@@ -20,7 +20,7 @@ activationRouter.use(authed());
 activationRouter.get('/', async function activationStateHandler(req, res) {
   const state = await getActivationState(authedContext(req));
 
-  jsonResponse(res, { data: state, message: 'Activation state retrieved.' });
+  httpResponse.json(res, { data: state, message: 'Activation state retrieved.' });
 });
 
 activationRouter.post(
@@ -30,7 +30,7 @@ activationRouter.post(
     const { label } = getValidated<{ body: typeof createApiKeySchema }>(req).body!;
     const key = await createApiKey(authedContext(req), label);
 
-    jsonResponse(res, { data: key, status: 201, message: 'API key created.' });
+    httpResponse.json(res, { data: key, status: 201, message: 'API key created.' });
   },
 );
 

@@ -21,14 +21,13 @@ function createEnvelope(message: string, data: unknown, meta?: Record<string, un
   return { message, data, meta };
 }
 
-function jsonResponse(
-  res: Response,
-  { data, status, meta, message }: { data: unknown; status?: number; meta?: Record<string, unknown>; message: string },
-) {
-  return status !== undefined
-    ? res.status(status).send(createEnvelope(message, data, meta))
-    : res.send(createEnvelope(message, data, meta));
-}
+const httpResponse = {
+  json(res: Response, { data, status, meta, message }: { data: unknown; status?: number; meta?: Record<string, unknown>; message: string }) {
+    return status !== undefined
+      ? res.status(status).send(createEnvelope(message, data, meta))
+      : res.send(createEnvelope(message, data, meta));
+  },
+};
 
 class HttpError extends Error {
   data: unknown;
@@ -73,4 +72,4 @@ export function errorHandler(error: unknown, _req: Request, res: Response, _next
   });
 }
 
-export { HttpError, createEnvelope, jsonResponse };
+export { HttpError, createEnvelope, httpResponse };
