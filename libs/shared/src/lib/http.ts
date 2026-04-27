@@ -25,7 +25,9 @@ function jsonResponse(
   res: Response,
   { data, status, meta, message }: { data: unknown; status?: number; meta?: Record<string, unknown>; message: string },
 ) {
-  return status !== undefined ? res.status(status).send(createEnvelope(message, data, meta)) : res.send(createEnvelope(message, data, meta));
+  return status !== undefined
+    ? res.status(status).send(createEnvelope(message, data, meta))
+    : res.send(createEnvelope(message, data, meta));
 }
 
 class HttpError extends Error {
