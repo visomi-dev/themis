@@ -27,14 +27,14 @@ const router = Router();
 router.get('/session', authed(), async function sessionHandler(req, res) {
   const $req = authedRequest(req);
 
-  jsonResponse(res, { authenticated: true, user: $req.user });
+  jsonResponse(res, { data: { authenticated: true, user: $req.user }, message: 'Session retrieved.' });
 });
 
 router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
   const { email, password } = getValidated<{ body: typeof credentialsSchema }>(req).body!;
   const challenge = await signUp(email, password);
 
-  jsonResponse(res, challenge, 201);
+  jsonResponse(res, { data: challenge, status: 201, message: 'Verification code sent.' });
 });
 
 router.post(
@@ -55,7 +55,7 @@ router.post(
       });
     });
 
-    jsonResponse(res, { authenticated: true, user });
+    jsonResponse(res, { data: { authenticated: true, user }, message: 'Sign-up complete.' });
   },
 );
 
@@ -98,7 +98,7 @@ router.post(
           }
 
           const challenge = await beginSignIn(fullUser);
-          jsonResponse(res, challenge);
+          jsonResponse(res, { data: challenge, message: 'Verification code sent.' });
         } catch (innerError) {
           next(innerError);
         }
@@ -125,7 +125,7 @@ router.post(
       });
     });
 
-    jsonResponse(res, { authenticated: true, user });
+    jsonResponse(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
   },
 );
 
@@ -136,7 +136,7 @@ router.post(
     const { challengeId } = getValidated<{ body: typeof resendVerificationSchema }>(req).body!;
     const challenge = await resendChallenge(challengeId);
 
-    jsonResponse(res, challenge);
+    jsonResponse(res, { data: challenge, message: 'Verification code resent.' });
   },
 );
 
@@ -163,7 +163,7 @@ router.post(
   async function forgottenPasswordHandler(req, res) {
     const { email } = getValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
     await requestPasswordReset(email);
-    jsonResponse(res, null);
+    jsonResponse(res, { data: null, message: 'If an account exists for that email, a reset link has been sent.' });
   },
 );
 

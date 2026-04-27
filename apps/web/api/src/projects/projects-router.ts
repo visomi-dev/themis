@@ -33,7 +33,7 @@ projectsRouter.use(authed());
 projectsRouter.get('/', async function listProjectsHandler(req, res) {
   const projects = await listProjects(authedContext(req));
 
-  jsonResponse(res, { projects });
+  jsonResponse(res, { data: { projects }, message: 'Projects retrieved.' });
 });
 
 projectsRouter.get(
@@ -47,7 +47,7 @@ projectsRouter.get(
       throw new HttpError({ code: 'project_not_found', message: 'The project could not be found.', statusCode: 404 });
     }
 
-    jsonResponse(res, project);
+    jsonResponse(res, { data: project, message: 'Project retrieved.' });
   },
 );
 
@@ -58,7 +58,7 @@ projectsRouter.post('/', validateRequest({ body: createProjectSchema }), async f
     body as { name: string; sourceType?: ProjectSourceType; summary?: string },
   );
 
-  jsonResponse(res, project, 201);
+  jsonResponse(res, { data: project, status: 201, message: 'Project created.' });
 });
 
 projectsRouter.patch(
@@ -74,7 +74,7 @@ projectsRouter.patch(
       body as { name?: string; status?: ProjectStatus; summary?: string | null },
     );
 
-    jsonResponse(res, project);
+    jsonResponse(res, { data: project, message: 'Project updated.' });
   },
 );
 
@@ -107,7 +107,7 @@ projectsRouter.post(
       },
     );
 
-    jsonResponse(res, document, 201);
+    jsonResponse(res, { data: document, status: 201, message: 'Document created.' });
   },
 );
 
@@ -118,7 +118,7 @@ projectsRouter.get(
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
     const jobs = await listProjectJobs(authedContext(req), projectId);
 
-    jsonResponse(res, { jobs });
+    jsonResponse(res, { data: { jobs }, message: 'Jobs retrieved.' });
   },
 );
 
@@ -129,7 +129,7 @@ projectsRouter.post(
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
     const job = await queueProjectSeed(authedContext(req), projectId);
 
-    jsonResponse(res, job, 202);
+    jsonResponse(res, { data: job, status: 202, message: 'Project seed queued.' });
   },
 );
 
