@@ -7,7 +7,7 @@ if (!URL) {
 }
 
 export default defineConfig({
-  schema: './apps/web/api/src/lib/db/schema.ts',
+  schema: './libs/shared/src/lib/db/schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   casing: 'snake_case',

@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
+ENV NX_DAEMON=false
 
 RUN corepack enable
 
@@ -19,7 +20,7 @@ WORKDIR /workspace
 
 COPY . .
 
-RUN pnpm nx run-many -t build --projects server --configuration production
+RUN pnpm nx run-many -t build --projects server,realtime,worker --configuration production
 
 FROM base AS runtime-base
 

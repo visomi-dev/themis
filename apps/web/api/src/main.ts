@@ -1,11 +1,12 @@
 import { pathToFileURL } from 'node:url';
 
-import { createApp } from './app.js';
+import { createApp } from './app';
 
 const host = process.env.HOST ?? 'localhost';
+
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-const isMainModule = () => {
+function isMainModule() {
   const entryFile = process.argv[1];
 
   if (!entryFile) {
@@ -13,7 +14,7 @@ const isMainModule = () => {
   }
 
   return import.meta.url === pathToFileURL(entryFile).href;
-};
+}
 
 const appPromise = createApp();
 

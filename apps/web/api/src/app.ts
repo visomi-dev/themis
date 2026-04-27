@@ -1,53 +1,40 @@
-import connectPgSimple from 'connect-pg-simple';
-import express, { json, type Express, type NextFunction, type Request, type Response } from 'express';
-import session, { MemoryStore } from 'express-session';
+import express, { json, type Express } from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
 
-import { getAuthConfig } from './lib/config/auth-config.js';
-import { buildAuthRouter } from './lib/auth/auth-router.js';
-import { configurePassport } from './lib/auth/passport.js';
-import { runMigrationsIfEnabled } from './lib/db/migrate.js';
-import { getPool } from './lib/db/pool.js';
-import { buildTestRouter } from './lib/testing/test-router.js';
+import { activationRouter } from './activation/activation-router';
+import { authRouter } from './auth/auth-router';
+import './auth/passport';
+import { projectsRouter } from './projects/projects-router';
+import { env } from './shared/env';
+import { createOpenApiDocument } from './shared/http/openapi';
+import { testRouter } from './testing/test-router';
+
+import { createSessionMiddleware, createSessionStore, errorHandler, getPool, runMigrationsIfEnabled } from 'shared';
 
 let appPromise: Promise<Express> | undefined;
 
 const morganFormat = process.env['MORGAN_FORMAT'] ?? 'dev';
 
-const buildApp = async () => {
-  const config = getAuthConfig();
-
-  await runMigrationsIfEnabled(config);
-  configurePassport();
+async function buildApp() {
+  await runMigrationsIfEnabled();
 
   const app = express();
-  const sessionStore =
-    config.databaseDriver === 'memory'
-      ? new MemoryStore()
-      : new (connectPgSimple(session))({
-          pool: getPool(config),
-          createTableIfMissing: true,
-          tableName: 'user_sessions',
-        });
+
+  const sessionConfig = {
+    cookieSecure: env.COOKIE_SECURE,
+    databaseDriver: env.DATABASE_DRIVER,
+    sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
+    sessionSecret: env.SESSION_SECRET,
+  };
+
+  const sessionStore = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getPool() : undefined);
+
+  const sessionMiddleware = createSessionMiddleware(sessionConfig, sessionStore);
 
   app.use(json());
   app.use(morgan(morganFormat));
-  app.use(
-    session({
-      cookie: {
-        httpOnly: true,
-        maxAge: config.sessionMaxAgeMs,
-        sameSite: 'lax',
-        secure: config.cookieSecure,
-      },
-      resave: false,
-      rolling: true,
-      saveUninitialized: false,
-      secret: config.sessionSecret,
-      store: sessionStore,
-    }),
-  );
+  app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -59,37 +46,26 @@ const buildApp = async () => {
     res.send({ status: 'ok' });
   });
 
-  app.use('/auth', buildAuthRouter(config));
-
-  if (config.enableTestApi) {
-    app.use('/test', buildTestRouter());
-  }
-
-  app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error('[ error ] API request failed', error);
-
-    if (typeof error === 'object' && error && 'statusCode' in error) {
-      const payload = error as { code?: string; message?: string; statusCode: number };
-      res.status(payload.statusCode).send({
-        error: payload.code ?? 'request_failed',
-        message: payload.message ?? 'The request could not be completed.',
-      });
-      return;
-    }
-
-    res.status(500).send({
-      error: 'internal_server_error',
-      message: 'The request could not be completed.',
-    });
+  app.get('/openapi.json', (_req, res) => {
+    res.send(createOpenApiDocument());
   });
 
+  app.use('/auth', authRouter);
+  app.use('/activation', activationRouter);
+  app.use('/projects', projectsRouter);
+
+  if (env.ENABLE_TEST_API) {
+    app.use('/test', testRouter);
+  }
+
+  app.use(errorHandler);
+
   return app;
-};
+}
 
-const createApp = () => {
+function createApp() {
   appPromise ??= buildApp();
-
   return appPromise;
-};
+}
 
 export { createApp };

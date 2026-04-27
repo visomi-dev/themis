@@ -5,11 +5,14 @@ import { resolve } from 'node:path';
 import { waitForPortOpen } from '@nx/node/utils';
 
 const SERVER_PID_PATH = resolve(__dirname, '../../.server-e2e-server.pid');
+
 const SERVER_ENTRYPOINT = resolve(__dirname, '../../../../../dist/apps/web/server/main.js');
+
 const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?: string };
 
 module.exports = async function () {
   const host = process.env.HOST ?? '127.0.0.1';
+
   const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
   const serverProcess = spawn(process.execPath, [SERVER_ENTRYPOINT], {

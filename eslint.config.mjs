@@ -80,6 +80,11 @@ export default [
         },
       ],
       'unicorn/no-null': 'off',
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] },
+        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+      ],
     },
   },
   {

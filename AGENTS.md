@@ -51,6 +51,36 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer **type inference** when the type is obvious from the right-hand side.
 - Use `type` (not `interface`) for type definitions. ESLint enforces `@typescript-eslint/consistent-type-definitions: ['error', 'type']`.
 - Prefix unused variables/parameters with `_` (e.g., `_event`).
+- Use **function declarations or class methods** for application logic. Do not use arrow functions for service methods, router handlers stored as class members, reusable module logic, or other named helpers that can be written as normal functions.
+- Arrow functions are allowed for **short inline callbacks passed directly to an API** when that shape is natural or required. Examples: array helpers like `map`/`filter`, Promise constructors, event listeners, or inline router/middleware callbacks passed directly into framework APIs.
+
+### Backend Module Pattern
+
+- Organize backend source using **feature-first folders** at `src/<feature>` and shared infrastructure at `src/shared/<area>`.
+- Prefer **plain module exports** for backend features: feature-local schemas, service functions, and a `router` constant exported directly from the feature.
+- Avoid `buildXRouter` / `createXService` factories for normal feature wiring.
+- Shared auth and authorization concerns must live in **reusable middleware modules**, not be redefined per feature.
+- Role/permission checks should be expressible through shared middleware options such as arrays of allowed roles or permissions.
+- Cross-cutting runtime and platform code shared across backend runtimes belongs in `libs/shared`.
+- `libs/shared` is only for cross-cutting runtime concerns such as env loading, logger, database access, Redis connections, sessions, and generic transport primitives.
+- Feature-shared domain code must live in a dedicated feature library such as `libs/projects`, not in `libs/shared`.
+- API, worker, and realtime apps must stay narrow: `apps/web/api` owns HTTP, `apps/worker` owns BullMQ workers, `apps/web/realtime` owns websocket delivery, and `apps/web/server` owns gateway/proxy wiring.
+- Backend features should prefer top-level folders such as `src/auth`, `src/activation`, and `src/projects`. Avoid global catch-all folders like `src/jobs` or `src/realtime` when the behavior belongs to a specific feature domain.
+- For async and realtime feature work, prefer these file roles: `queue.ts` for queue configuration/producer helpers, `processor.ts` for job logic, `worker.ts` for BullMQ worker bootstrap, `subscriber.ts` for realtime fanout subscriptions, and `contract.ts` for shared feature contracts.
+
+### Backend Validation And Contracts
+
+- Use **Zod v4** for all backend request and data validation.
+- Route validation should go through the shared typed middleware in `src/shared/http/route-schemas.ts` so `body`, `query`, `params`, and `headers` are parsed consistently.
+- Use **zod-openapi** for route documentation. Feature-local schema files should export the OpenAPI path objects used by the shared document builder.
+
+### Backend Tenancy
+
+- Themis uses a **hybrid multi-tenant architecture** with **shared-schema by default** and a path to stronger isolation later.
+- Treat `account_id` as the primary tenant boundary for tenant-owned data. Do not rely on `user_id` alone for isolation.
+- Keep `users` global, and model tenant access through `accounts` and `account_memberships`.
+- Tenant-owned backend tables should be scoped by `account_id` and protected with **Postgres RLS** plus app-layer authorization checks.
+- Async jobs, realtime events, API keys, projects, and documents must all carry explicit account context.
 
 ### File Naming
 
@@ -225,7 +255,7 @@ This convention applies to **all** uses of `effect()` in both services and compo
   export const appRoutes: Route[] = [
     {
       path: '',
-      loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+      loadComponent: () => import('./activation/activation').then((m) => m.Activation),
     },
   ];
   ```
@@ -252,12 +282,12 @@ This convention applies to **all** uses of `effect()` in both services and compo
   ```
 
 - **File naming:** resolver files follow the `name.resolver.ts` pattern (e.g., `user.resolver.ts`).
-- **Location:** place resolver files alongside the route that uses them (inside the page feature directory).
+- **Location:** place resolver files alongside the route that uses them (inside the domain route directory).
 - Configure resolvers in the `resolve` property of the route definition:
   ```ts
   {
     path: 'user/:id',
-    loadComponent: () => import('./pages/user/user').then((m) => m.User),
+    loadComponent: () => import('./users/user/user').then((m) => m.User),
     resolve: {
       user: userResolver,
     },
@@ -292,7 +322,7 @@ This convention applies to **all** uses of `effect()` in both services and compo
   ```ts
   {
     path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+    loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
     canActivate: [authGuard],
   }
   ```
@@ -418,7 +448,15 @@ describe('Deps', () => {
 ## Code Generation
 
 ```bash
-pnpm nx g @nx/angular:component apps/website/src/app/pages/some-page/some-page
+pnpm nx g @nx/angular:component apps/web/app/src/app/<thing>
+```
+
+For Angular web app route components, generate directly into the domain folder, for example `apps/web/app/src/app/activation/activation`, `apps/web/app/src/app/auth/sign-in/sign-in`, or `apps/web/app/src/app/projects/project-detail/project-detail`. Do not create `pages/` route folders in the web app.
+
+Backend and shared Node libraries must be generated with:
+
+```bash
+pnpm nx g @nx/node:lib libs/<thing> --linter=eslint --unitTestRunner=jest
 ```
 
 Generated components must be adjusted to follow **all** the conventions above (e.g., remove `Component` suffix, remove `standalone: true`, adjust file names, etc.).
@@ -559,35 +597,37 @@ Stitch does not define explicit mobile breakpoints. Use responsive Tailwind clas
 Follow **Screaming Architecture** — folder names reveal what the app does, not what framework concepts it uses:
 
 ```
-apps/website/src/app/
+apps/web/app/src/app/
 ├── app.ts                     # Root component
 ├── app.html / app.css         # Root template & styles
 ├── app.config.ts              # Client providers
 ├── app.config.server.ts       # Server providers
 ├── app.routes.ts              # Client routes
 ├── app.routes.server.ts       # Server routes (SSR)
-├── pages/                     # Route-level "smart" components
-│   └── home/
-│       ├── home.ts / .html / .css / .spec.ts
-│       ├── background/        # Page-specific child components
-│       └── hero/
+├── activation/                # Activation route and local activation UI
+│   └── activation.ts / .html / .css / .spec.ts
+├── auth/                      # Auth route components
+│   ├── sign-in/
+│   ├── sign-up/
+│   ├── verify-email/
+│   └── forgotten-password/
+├── projects/                  # Projects route components
+│   ├── projects.ts / .html / .css
+│   ├── project-new/
+│   └── project-detail/
 └── shared/                    # Cross-cutting concerns
-    ├── deps.ts                # Lazy-loaded external dependencies
     ├── settings.ts            # Theme, locale, device preferences
-    ├── ui.ts                  # UI state (loading, sidebar, navigation)
-    ├── seo.ts                 # SEO/meta tag management
     ├── constants/             # Constant values
     │   └── storage.ts
     └── layout/                # Layout components
-        ├── navbar/
         ├── theme-switcher/
-        └── page-navigation-loader/
+        └── language-switcher/
 ```
 
 ### Rules
 
 1. **Never** create top-level `services/`, `models/`, or `components/` directories that mix multiple domains.
-2. Route pages live under `pages/`. Each page is a feature directory.
+2. Route components live directly under their domain folder, such as `activation/`, `auth/`, or `projects/`. Do not use a generic `pages/` folder in `apps/web/app`.
 3. Reusable layout components live under `shared/layout/`.
 4. Shared services live directly in `shared/`.
 5. Constants live under `shared/constants/`.

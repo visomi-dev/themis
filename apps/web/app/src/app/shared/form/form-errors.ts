@@ -1,6 +1,6 @@
 import type { AbstractControl } from '@angular/forms';
 
-export const controlError = (control: AbstractControl | null, messages: Record<string, string>) => {
+export function controlError(control: AbstractControl | null, messages: Record<string, string>) {
   if (!control || !control.touched || !control.invalid) {
     return '';
   }
@@ -12,4 +12,4 @@ export const controlError = (control: AbstractControl | null, messages: Record<s
   }
 
   return 'This field is invalid.';
-};
+}

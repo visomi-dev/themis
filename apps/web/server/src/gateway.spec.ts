@@ -5,12 +5,14 @@ import { createGatewayApp } from './gateway';
 
 describe('createGatewayApp', () => {
   const createDeps = () => {
-    const apiApp = express();
-    apiApp.get('/hello', (_req, res) => {
+    const apiHandler = express();
+
+    apiHandler.get('/hello', (_req, res) => {
       res.send({ message: 'hello' });
     });
 
     const angularHandler = express();
+
     angularHandler.get('/sign-in', (_req, res) => {
       res.type('html').send('<base href="/app/en/" /><app-root></app-root>');
     });
@@ -20,7 +22,7 @@ describe('createGatewayApp', () => {
     };
 
     return {
-      apiApp,
+      apiHandler,
       angularHandler,
       astroClientFolder: __dirname,
       astroRequestHandler,
@@ -29,6 +31,7 @@ describe('createGatewayApp', () => {
 
   it('exposes the health endpoint', async () => {
     const app = createGatewayApp(createDeps());
+
     const response = await request(app).get('/healthz');
 
     expect(response.status).toBe(200);
@@ -37,6 +40,7 @@ describe('createGatewayApp', () => {
 
   it('redirects the root path to the english site', async () => {
     const app = createGatewayApp(createDeps());
+
     const response = await request(app).get('/');
 
     expect(response.status).toBe(302);
@@ -45,7 +49,9 @@ describe('createGatewayApp', () => {
 
   it('mounts the api and angular handlers on their prefixes', async () => {
     const app = createGatewayApp(createDeps());
+
     const apiResponse = await request(app).get('/api/hello');
+
     const angularResponse = await request(app).get('/app/sign-in');
 
     expect(apiResponse.status).toBe(200);

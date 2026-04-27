@@ -7,7 +7,9 @@ This workspace combines:
 - `apps/web/site` - Astro public landing site
 - `apps/web/app` - Angular web application scaffold
 - `apps/web/api` - Express API for domain endpoints
-- `apps/web/server` - Node composition server that mounts the site and API behind one runtime
+- `apps/worker` - BullMQ worker runtime for background feature processing
+- `apps/web/realtime` - Socket.IO realtime runtime
+- `apps/web/server` - public web server that mounts API, app, site, realtime, and worker startup
 - `apps/web/site-e2e` - Playwright smoke coverage for the Astro site
 - `apps/web/app-e2e` - Playwright smoke coverage for the Angular app
 - `apps/web/api-e2e` - Jest-based API end-to-end coverage
@@ -15,24 +17,29 @@ This workspace combines:
 
 ## Architecture
 
-The current repository direction is a monolith-style deployment with modular Nx apps:
+The current repository direction is a gateway-led deployment with modular Nx apps:
 
 - Astro handles the public marketing surface
 - Angular is the richer application surface for the product UI
 - Express owns backend endpoints under `/api`
-- `apps/web/server` is the single Node entry point used to compose the site and API
+- `apps/worker` owns BullMQ background processing
+- `apps/web/realtime` owns Socket.IO feature code behind `/socket.io`
+- `apps/web/server` is the public Node web server used to mount API, site, app, and realtime on one HTTP server
 
-This keeps the repo ready for future expansion into additional clients while preserving a single deployable runtime today.
+This keeps the repo ready for future expansion into additional clients while preserving a single public entry point.
 
 ## Workspace Projects
 
 ```text
+apps/
+├── worker/     BullMQ worker runtime
 apps/web/
 ├── api/        Express API
 ├── api-e2e/    API end-to-end tests
 ├── app/        Angular application
 ├── app-e2e/    App end-to-end tests
-├── server/     Node gateway/composition server
+├── realtime/   Socket.IO realtime runtime
+├── server/     Node gateway/proxy server
 ├── server-e2e/ Server composition end-to-end tests
 ├── site/       Astro landing site
 └── site-e2e/   Playwright smoke tests for the site
@@ -69,11 +76,32 @@ pnpm nx run app:serve
 pnpm nx run api:serve
 ```
 
-### Full composed server
+### Worker only
+
+```bash
+pnpm nx run worker:serve
+```
+
+### Realtime only
+
+```bash
+pnpm nx run realtime:serve
+```
+
+### Full backend stack via gateway
 
 ```bash
 pnpm nx run server:serve
 ```
+
+This starts `apps/web/server`, which manages the backend stack for local development:
+
+- `api`
+- `worker` as a managed child process
+- `realtime`
+- `server` gateway
+
+The server preserves `/socket.io` as the public websocket path on the same HTTP server used by `/api`, `/app`, and `/`.
 
 ## Docker
 
@@ -83,13 +111,25 @@ Build the production image:
 docker build -t themis .
 ```
 
-Run the composed server container:
+Run the monolith container:
 
 ```bash
 docker run --rm -p 8080:8080 themis
 ```
 
-The container starts `dist/apps/web/server/main.js`, which mounts the built Astro site and the API behind the single Node runtime.
+The container starts `dist/apps/web/server/main.js`, which manages the full backend stack inside one image:
+
+- `api`
+- `worker` as a managed child process
+- `realtime`
+- `server` gateway
+
+The public surface remains monolithic:
+
+- website via `/`
+- web app via `/app`
+- API via `/api`
+- websocket traffic via `/socket.io`
 
 Health endpoint:
 

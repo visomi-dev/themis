@@ -1,26 +1,55 @@
 # Deployment Model
 
-## Initial Deployment Direction
+## Deployment Direction
 
-Themis starts as a single deployable Node runtime.
+Themis uses one public gateway with multiple internal runtimes.
 
-That runtime composes:
+The deployed topology composes:
 
 - the Astro site build from `apps/web/site`
-- the Express API build from `apps/web/api`
-- the gateway runtime in `apps/web/server`
+- the Angular app build from `apps/web/app`
+- the Express API runtime from `apps/web/api`
+- the BullMQ worker runtime from `apps/worker`
+- the Socket.IO realtime feature code from `apps/web/realtime`
+- the public gateway runtime in `apps/web/server`
 
 ## Benefits
 
-- one deployment unit for early product stages
-- simpler local development and staging environments
-- clear separation inside the repo without early operational fragmentation
+- one public entry point while keeping backend responsibilities separated
+- simpler reasoning about scaling, ownership, and failures per runtime
+- clear separation inside the repo without collapsing all behavior into one process
+
+## Gateway Responsibilities
+
+The gateway is the public-facing runtime.
+
+It is responsible for:
+
+- serving or mounting the public site and app
+- mounting `/api` traffic on the same HTTP server
+- attaching `/socket.io` websocket traffic to the same HTTP server
+
+It owns monolith startup for local and container deployments while preserving feature boundaries internally. API and realtime share the public HTTP server; BullMQ worker execution runs in a managed child process so background work does not compete with the web event loop.
+
+## Local Development
+
+For local backend development, `pnpm nx run server:serve` starts `apps/web/server` as the orchestration entrypoint.
+
+It starts:
+
+- API runtime
+- worker runtime as a managed child process
+- realtime feature code
+- server gateway
+
+The frontend can then be run separately with `pnpm nx run app:serve`.
 
 ## Future Extraction Path
 
 Split only when there is real operational pressure, for example:
 
 - the API needs independent scaling
-- the web app needs a distinct deployment topology
 - background jobs require a dedicated worker runtime
+- realtime delivery requires independent scaling or isolation
+- the web app needs a distinct deployment topology
 - native or hybrid clients need separate release lifecycles

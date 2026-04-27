@@ -37,12 +37,20 @@ This keeps the product architecture aligned with the original Themis direction w
 
 ## Angular App Structure
 
-`apps/web/app` now follows a domain-first Angular structure:
+`apps/web/app` follows a domain-first Angular structure:
 
-- `pages/` for route components
+- `activation/`, `auth/`, `projects/`, and future product-domain folders for route components
 - `shared/` for cross-route state, guards, constants, layout, and form primitives
 - noun-based state holders such as `Auth` and `Settings`
 - dedicated functional guard files for each routing concern
 - route-local Playwright coverage split by surface rather than one large auth spec
+
+Generate new Angular web app components directly into their domain folder:
+
+```bash
+pnpm nx g @nx/angular:component apps/web/app/src/app/<thing>
+```
+
+Do not introduce `src/app/pages/` for route components.
 
 See `architecture/angular-app-conventions.md` for the working rules.

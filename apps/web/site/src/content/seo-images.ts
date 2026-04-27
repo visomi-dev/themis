@@ -24,6 +24,7 @@ const seoImagesByPage: Record<string, Record<Locale, SeoImage>> = {
 
 const getSeoImage = (page: string, locale: Locale): SeoImage => {
   const pageImages = seoImagesByPage[page];
+
   if (!pageImages) {
     throw new Error(`SEO images not defined for page: ${page}`);
   }

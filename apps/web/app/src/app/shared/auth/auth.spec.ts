@@ -15,6 +15,7 @@ describe('Auth', () => {
 
   it('stores the pending challenge after credential submission', async () => {
     const auth = TestBed.inject(Auth);
+
     const http = TestBed.inject(HttpTestingController);
 
     const submitPromise = auth.submitCredentials('sign_up', {
@@ -23,10 +24,12 @@ describe('Auth', () => {
     });
 
     http.expectOne('/api/auth/sign-up').flush({
-      challengeId: 'challenge-1',
-      email: 'engineer@themis.dev',
-      expiresAt: '2026-01-01T00:00:00.000Z',
-      purpose: 'sign_up',
+      data: {
+        challengeId: 'challenge-1',
+        email: 'engineer@themis.dev',
+        expiresAt: '2026-01-01T00:00:00.000Z',
+        purpose: 'sign_up',
+      },
     });
 
     await submitPromise;

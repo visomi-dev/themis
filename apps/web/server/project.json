@@ -11,7 +11,7 @@
       "dependsOn": [
         "^build",
         {
-          "projects": ["api", "app", "site"],
+          "projects": ["api", "app", "site", "worker", "realtime"],
           "target": "build",
           "params": "forward"
         }
@@ -20,7 +20,7 @@
         "platform": "node",
         "outputPath": "dist/apps/web/server",
         "format": ["esm"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/web/server/src/main.ts",
         "tsConfig": "apps/web/server/tsconfig.app.json",
         "assets": ["apps/web/server/src/assets"],
@@ -76,6 +76,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "server:build",
+        "inspect": false,
         "runBuildTargetDependencies": false
       },
       "configurations": {

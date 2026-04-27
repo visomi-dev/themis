@@ -1,7 +1,10 @@
 const initThemeSwitcher = () => {
   const html = document.documentElement;
+
   const labels = document.querySelectorAll<HTMLElement>('.theme-switch-label');
+
   const savedTheme = localStorage.getItem('theme');
+
   const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 
   let isDark = false;
@@ -16,7 +19,9 @@ const initThemeSwitcher = () => {
 
   labels.forEach((label) => {
     const input = label.querySelector<HTMLInputElement>('.theme-switch-input');
+
     const iconLight = label.querySelector<HTMLElement>('.theme-icon-light');
+
     const iconDark = label.querySelector<HTMLElement>('.theme-icon-dark');
 
     if (!input || !iconLight || !iconDark) {
@@ -44,7 +49,9 @@ const initThemeSwitcher = () => {
 
       labels.forEach((currentLabel) => {
         const currentInput = currentLabel.querySelector<HTMLInputElement>('.theme-switch-input');
+
         const currentLightIcon = currentLabel.querySelector<HTMLElement>('.theme-icon-light');
+
         const currentDarkIcon = currentLabel.querySelector<HTMLElement>('.theme-icon-dark');
 
         if (!currentInput || !currentLightIcon || !currentDarkIcon) {

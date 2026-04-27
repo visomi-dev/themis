@@ -7,15 +7,19 @@ import { guestGuard } from './guest.guard';
 import { verificationGuard } from './verification.guard';
 
 describe('auth guards', () => {
-  const createRouter = () => ({
-    createUrlTree: (segments: string[]) => segments.join('/'),
-  });
+  function createRouter() {
+    return {
+      createUrlTree: (segments: string[]) => segments.join('/'),
+    };
+  }
 
-  const createAuth = (authenticated: boolean, hasChallenge = false) => ({
-    ensureSessionLoaded: vi.fn().mockResolvedValue(undefined),
-    isAuthenticated: () => authenticated,
-    pendingChallenge: () => (hasChallenge ? { challengeId: 'challenge-1' } : null),
-  });
+  function createAuth(authenticated: boolean, hasChallenge = false) {
+    return {
+      ensureSessionLoaded: vi.fn().mockResolvedValue(undefined),
+      isAuthenticated: () => authenticated,
+      pendingChallenge: () => (hasChallenge ? { challengeId: 'challenge-1' } : null),
+    };
+  }
 
   it('redirects unauthenticated users away from protected routes', async () => {
     const router = createRouter();
@@ -32,19 +36,22 @@ describe('auth guards', () => {
     expect(result).toBe('/sign-in');
   });
 
-  it('redirects authenticated guests back to the app', async () => {
+  it('allows guest routes without probing the session during hydration', async () => {
     const router = createRouter();
+
+    const auth = createAuth(true);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: router },
-        { provide: Auth, useValue: createAuth(true) },
+        { provide: Auth, useValue: auth },
       ],
     });
 
     const result = await TestBed.runInInjectionContext(() => guestGuard());
 
-    expect(result).toBe('/');
+    expect(auth.ensureSessionLoaded).not.toHaveBeenCalled();
+    expect(result).toBe(true);
   });
 
   it('allows verification only when a challenge is active', async () => {

@@ -1,9 +1,11 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
+    "strict": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -14,7 +16,12 @@
     "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "."
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "shared": ["libs/shared/src/index.ts"],
+      "projects": ["libs/projects/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

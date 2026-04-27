@@ -31,8 +31,11 @@ const ogImageUrl = new URL(seoImage.image, Astro.site ?? 'https://themis.visomi.
     <script is:inline>
       (() => {
         const html = document.documentElement;
+
         const savedTheme = window.localStorage.getItem('theme');
+
         const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+
         const isDark = savedTheme === 'dark' || (!savedTheme && systemDark);
 
         html.classList.toggle('dark', isDark);

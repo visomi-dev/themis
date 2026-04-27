@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
-import { readLatestPin } from './mailbox';
+import { clearMailbox, readLatestPin } from './mailbox';
 import { fillOtp } from './otp';
 import {
   appUrlPattern,
@@ -20,6 +20,7 @@ export const createCredentials = () => ({
 
 const fillCredentials = async (page: Page, email: string, password: string) => {
   const emailField = page.getByLabel('Email');
+
   const passwordField = page.getByLabel('Password');
 
   await expect(emailField).toBeVisible();
@@ -35,22 +36,52 @@ const fillCredentials = async (page: Page, email: string, password: string) => {
 
 const waitForAuthenticatedSession = async (page: Page, email: string) => {
   await expect
-    .poll(async () => {
-      return page.evaluate(async () => {
-        const response = await fetch('/api/auth/session', {
-          credentials: 'include',
+    .poll(
+      async () => {
+        return page.evaluate(async () => {
+          const response = await fetch('/api/auth/session', {
+            credentials: 'include',
+          });
+
+          if (!response.ok) {
+            return null;
+          }
+
+          const payload = (await response.json()) as {
+            data: {
+              user: { accountId?: string; email?: string } | null;
+            };
+          };
+
+          return payload.data?.user?.email && payload.data?.user?.accountId
+            ? { accountId: payload.data.user.accountId, email: payload.data.user.email }
+            : null;
         });
+      },
+      { timeout: 15000 },
+    )
+    .toEqual({
+      accountId: expect.any(String),
+      email,
+    });
+};
 
-        if (!response.ok) {
-          return null;
-        }
+export const authenticateViaApi = async (page: Page, request: APIRequestContext, email: string, password: string) => {
+  await clearMailbox(request);
 
-        const payload = (await response.json()) as { user: { email?: string } | null };
+  await page.goto(signUpRoute);
+  await expect(page).toHaveURL(signUpUrlPattern);
+  await fillCredentials(page, email, password);
+  await page.getByRole('button', { name: 'Create account' }).click();
+  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
 
-        return payload.user?.email ?? null;
-      });
-    })
-    .toBe(email);
+  const pin = await readLatestPin(request, email, 'sign_up');
+
+  await fillOtp(page, pin);
+  await page.getByRole('button', { name: 'Verify and continue' }).click();
+
+  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await waitForAuthenticatedSession(page, email);
 };
 
 export const signUp = async (page: Page, email: string, password: string) => {
@@ -60,7 +91,7 @@ export const signUp = async (page: Page, email: string, password: string) => {
   await fillCredentials(page, email, password);
   await page.getByRole('button', { name: 'Create account' }).click();
 
-  await expect(page).toHaveURL(verifyEmailUrlPattern);
+  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 };
 
@@ -71,7 +102,7 @@ export const signIn = async (page: Page, email: string, password: string) => {
   await fillCredentials(page, email, password);
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await expect(page).toHaveURL(verifyEmailUrlPattern);
+  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 };
 
@@ -86,8 +117,8 @@ export const verifyLatestCode = async (
   await fillOtp(page, pin);
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-  await expect(page).toHaveURL(appUrlPattern);
-  await expect(page.getByRole('heading', { name: /Workspace access confirmed/ })).toBeVisible();
+  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
   await waitForAuthenticatedSession(page, email);
 };
 

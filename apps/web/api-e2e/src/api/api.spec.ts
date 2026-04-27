@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const email = 'engineer@themis.dev';
+
 const password = 'S3cureAuth!';
 
 const toCookieHeader = (setCookie: string[] | undefined) =>
@@ -18,6 +19,16 @@ describe('auth API', () => {
     expect(res.data).toEqual({ message: 'Hello Themis API' });
   });
 
+  it('serves the OpenAPI document', async () => {
+    const res = await axios.get('/openapi.json');
+
+    expect(res.status).toBe(200);
+    expect(res.data.openapi).toBe('3.1.0');
+    expect(res.data.info.title).toBe('Themis API');
+    expect(res.data.paths['/auth/session']).toBeDefined();
+    expect(res.data.paths['/projects/{projectId}/seed']).toBeDefined();
+  });
+
   it('completes sign-up, verification, session restore, sign-out, and sign-in verification', async () => {
     const signUpResponse = await axios.post('/auth/sign-up', {
       email,
@@ -25,8 +36,8 @@ describe('auth API', () => {
     });
 
     expect(signUpResponse.status).toBe(201);
-    expect(signUpResponse.data.email).toBe(email);
-    expect(signUpResponse.data.purpose).toBe('sign_up');
+    expect(signUpResponse.data.data.email).toBe(email);
+    expect(signUpResponse.data.data.purpose).toBe('sign_up');
 
     const signUpMail = await axios.get('/test/mailbox/latest', {
       params: {
@@ -38,7 +49,7 @@ describe('auth API', () => {
     const signUpVerifyResponse = await axios.post(
       '/auth/sign-up/verify',
       {
-        challengeId: signUpResponse.data.challengeId,
+        challengeId: signUpResponse.data.data.challengeId,
         pin: signUpMail.data.pin,
       },
       {
@@ -47,18 +58,21 @@ describe('auth API', () => {
     );
 
     expect(signUpVerifyResponse.status).toBe(200);
-    expect(signUpVerifyResponse.data.user.email).toBe(email);
-    expect(signUpVerifyResponse.data.user.emailVerifiedAt).not.toBeNull();
+    expect(signUpVerifyResponse.data.data.user.email).toBe(email);
+    expect(signUpVerifyResponse.data.data.user.accountId).toBeTruthy();
+    expect(signUpVerifyResponse.data.data.user.emailVerifiedAt).not.toBeNull();
 
     const sessionCookie = toCookieHeader(signUpVerifyResponse.headers['set-cookie']);
+
     const sessionResponse = await axios.get('/auth/session', {
       headers: {
         Cookie: sessionCookie,
       },
     });
 
-    expect(sessionResponse.data.authenticated).toBe(true);
-    expect(sessionResponse.data.user.email).toBe(email);
+    expect(sessionResponse.data.data.authenticated).toBe(true);
+    expect(sessionResponse.data.data.user.email).toBe(email);
+    expect(sessionResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
 
     const signOutResponse = await axios.post(
       '/auth/sign-out',
@@ -81,7 +95,7 @@ describe('auth API', () => {
     });
 
     expect(signInPasswordResponse.status).toBe(200);
-    expect(signInPasswordResponse.data.purpose).toBe('sign_in');
+    expect(signInPasswordResponse.data.data.purpose).toBe('sign_in');
 
     const signInMail = await axios.get('/test/mailbox/latest', {
       params: {
@@ -93,7 +107,7 @@ describe('auth API', () => {
     const invalidVerifyResponse = await axios.post(
       '/auth/sign-in/verify',
       {
-        challengeId: signInPasswordResponse.data.challengeId,
+        challengeId: signInPasswordResponse.data.data.challengeId,
         pin: '000000',
       },
       {
@@ -104,11 +118,12 @@ describe('auth API', () => {
     expect(invalidVerifyResponse.status).toBe(401);
 
     const signInVerifyResponse = await axios.post('/auth/sign-in/verify', {
-      challengeId: signInPasswordResponse.data.challengeId,
+      challengeId: signInPasswordResponse.data.data.challengeId,
       pin: signInMail.data.pin,
     });
 
     expect(signInVerifyResponse.status).toBe(200);
-    expect(signInVerifyResponse.data.user.email).toBe(email);
+    expect(signInVerifyResponse.data.data.user.email).toBe(email);
+    expect(signInVerifyResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
   });
 });

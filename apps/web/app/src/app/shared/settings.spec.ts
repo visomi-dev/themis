@@ -14,6 +14,7 @@ describe('Settings', () => {
 
   it('toggles theme and persists it', () => {
     const settings = TestBed.inject(Settings);
+
     const initialDark = settings.isDark();
 
     settings.toggleTheme();

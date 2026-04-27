@@ -10,12 +10,13 @@ test.describe('/app', () => {
     await expect(page).toHaveURL(signInUrlPattern);
   });
 
-  test('shows the authenticated app surface and supports sign out', async ({ page, request }) => {
+  test('shows the authenticated activation surface and supports sign out', async ({ page, request }) => {
     const credentials = createCredentials();
 
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
 
-    await expect(page.getByText(credentials.email)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /System activation/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Sign out' }).click();
 
