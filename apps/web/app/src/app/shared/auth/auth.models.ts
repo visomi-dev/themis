@@ -1,9 +1,9 @@
 export type AuthMode = 'sign_in' | 'sign_up';
 
 export type ResponseEnvelope<T> = {
-  message: string;
+  status?: number;
   data: T;
-  metadata?: Record<string, unknown>;
+  meta?: Record<string, unknown>;
 };
 
 export type AuthUser = {

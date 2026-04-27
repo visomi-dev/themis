@@ -8,30 +8,20 @@ export const errorEnvelopeSchema = z.object({
 });
 
 export const responseEnvelopeSchema = z.object({
-  message: z.string(),
+  status: z.number().optional(),
   data: z.unknown(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  meta: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ResponseEnvelope = z.infer<typeof responseEnvelopeSchema>;
 export type ErrorEnvelope = z.infer<typeof errorEnvelopeSchema>;
 
-function createEnvelope(message: string, data: unknown, metadata?: Record<string, unknown>): ResponseEnvelope {
-  return { message, data, metadata };
+function createEnvelope(status: number | undefined, data: unknown, meta?: Record<string, unknown>): ResponseEnvelope {
+  return { status, data, meta };
 }
 
-function sendEnvelope(res: Response, data: unknown, message: string, metadata?: Record<string, unknown>) {
-  return res.send(createEnvelope(message, data, metadata));
-}
-
-function sendEnvelopeWithStatus(
-  res: Response,
-  data: unknown,
-  message: string,
-  status: number,
-  metadata?: Record<string, unknown>,
-) {
-  return res.status(status).send(createEnvelope(message, data, metadata));
+function jsonResponse(res: Response, data: unknown, status?: number, meta?: Record<string, unknown>) {
+  return status !== undefined ? res.status(status).send(createEnvelope(status, data, meta)) : res.send(createEnvelope(undefined, data, meta));
 }
 
 class HttpError extends Error {
@@ -77,4 +67,4 @@ export function errorHandler(error: unknown, _req: Request, res: Response, _next
   });
 }
 
-export { HttpError, createEnvelope, sendEnvelope, sendEnvelopeWithStatus };
+export { HttpError, createEnvelope, jsonResponse };

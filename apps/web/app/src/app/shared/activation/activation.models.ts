@@ -1,7 +1,7 @@
 export type ResponseEnvelope<T> = {
-  message: string;
+  status?: number;
   data: T;
-  metadata?: Record<string, unknown>;
+  meta?: Record<string, unknown>;
 };
 
 export type ActivationMilestone =

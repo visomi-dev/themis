@@ -20,21 +20,21 @@ import {
   resendVerificationSchema,
 } from './auth-schemas';
 
-import { HttpError, sendEnvelope, sendEnvelopeWithStatus } from 'shared';
+import { HttpError, jsonResponse } from 'shared';
 
 const router = Router();
 
 router.get('/session', authed(), async function sessionHandler(req, res) {
   const $req = authedRequest(req);
 
-  sendEnvelope(res, { authenticated: true, user: $req.user }, 'Session retrieved.');
+  jsonResponse(res, { authenticated: true, user: $req.user });
 });
 
 router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
   const { email, password } = getValidated<{ body: typeof credentialsSchema }>(req).body!;
   const challenge = await signUp(email, password);
 
-  sendEnvelopeWithStatus(res, challenge, 'Verification code sent.', 201);
+  jsonResponse(res, challenge, 201);
 });
 
 router.post(
@@ -55,7 +55,7 @@ router.post(
       });
     });
 
-    sendEnvelope(res, { authenticated: true, user }, 'Sign-up complete.');
+    jsonResponse(res, { authenticated: true, user });
   },
 );
 
@@ -98,7 +98,7 @@ router.post(
           }
 
           const challenge = await beginSignIn(fullUser);
-          sendEnvelope(res, challenge, 'Verification code sent.');
+          jsonResponse(res, challenge);
         } catch (innerError) {
           next(innerError);
         }
@@ -125,7 +125,7 @@ router.post(
       });
     });
 
-    sendEnvelope(res, { authenticated: true, user }, 'Sign-in complete.');
+    jsonResponse(res, { authenticated: true, user });
   },
 );
 
@@ -136,7 +136,7 @@ router.post(
     const { challengeId } = getValidated<{ body: typeof resendVerificationSchema }>(req).body!;
     const challenge = await resendChallenge(challengeId);
 
-    sendEnvelope(res, challenge, 'Verification code resent.');
+    jsonResponse(res, challenge);
   },
 );
 
@@ -163,7 +163,7 @@ router.post(
   async function forgottenPasswordHandler(req, res) {
     const { email } = getValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
     await requestPasswordReset(email);
-    sendEnvelope(res, null, 'If an account exists for that email, a reset link has been sent.');
+    jsonResponse(res, null);
   },
 );
 

@@ -12,7 +12,7 @@ import {
 } from './projects-schemas';
 import { listProjectJobs, queueProjectSeed } from './project-seed-queue';
 
-import { HttpError, sendEnvelope, sendEnvelopeWithStatus } from 'shared';
+import { HttpError, jsonResponse } from 'shared';
 import {
   createDocument,
   createProject,
@@ -33,7 +33,7 @@ projectsRouter.use(authed());
 projectsRouter.get('/', async function listProjectsHandler(req, res) {
   const projects = await listProjects(authedContext(req));
 
-  sendEnvelope(res, { projects }, 'Projects retrieved.');
+  jsonResponse(res, { projects });
 });
 
 projectsRouter.get(
@@ -47,7 +47,7 @@ projectsRouter.get(
       throw new HttpError({ code: 'project_not_found', message: 'The project could not be found.', statusCode: 404 });
     }
 
-    sendEnvelope(res, project, 'Project retrieved.');
+    jsonResponse(res, project);
   },
 );
 
@@ -58,7 +58,7 @@ projectsRouter.post('/', validateRequest({ body: createProjectSchema }), async f
     body as { name: string; sourceType?: ProjectSourceType; summary?: string },
   );
 
-  sendEnvelopeWithStatus(res, project, 'Project created.', 201);
+  jsonResponse(res, project, 201);
 });
 
 projectsRouter.patch(
@@ -74,7 +74,7 @@ projectsRouter.patch(
       body as { name?: string; status?: ProjectStatus; summary?: string | null },
     );
 
-    sendEnvelope(res, project, 'Project updated.');
+    jsonResponse(res, project);
   },
 );
 
@@ -107,7 +107,7 @@ projectsRouter.post(
       },
     );
 
-    sendEnvelopeWithStatus(res, document, 'Document created.', 201);
+    jsonResponse(res, document, 201);
   },
 );
 
@@ -118,7 +118,7 @@ projectsRouter.get(
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
     const jobs = await listProjectJobs(authedContext(req), projectId);
 
-    sendEnvelope(res, { jobs }, 'Jobs retrieved.');
+    jsonResponse(res, { jobs });
   },
 );
 
@@ -129,7 +129,7 @@ projectsRouter.post(
     const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
     const job = await queueProjectSeed(authedContext(req), projectId);
 
-    sendEnvelopeWithStatus(res, job, 'Project seed queued.', 202);
+    jsonResponse(res, job, 202);
   },
 );
 
