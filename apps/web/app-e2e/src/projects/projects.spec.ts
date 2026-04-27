@@ -8,6 +8,7 @@ test.describe.configure({ timeout: 60000 });
 test.describe('/app/projects', () => {
   test.beforeEach(async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
 
     await page.getByRole('button', { name: /Continue to projects/i }).click();
@@ -24,6 +25,7 @@ test.describe('/app/projects', () => {
 
   test('has a new project button that navigates to the create form', async ({ page }) => {
     const newProjectButton = page.getByRole('link', { name: /New project/i });
+
     await expect(newProjectButton).toBeVisible();
 
     await newProjectButton.click();
@@ -36,6 +38,7 @@ test.describe('/app/projects', () => {
     await page.getByRole('link', { name: /New project/i }).click();
 
     const nameInput = page.getByLabel(/Project name/i);
+
     await expect(nameInput).toBeVisible();
 
     await nameInput.fill('Test Web App');

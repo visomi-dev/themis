@@ -66,6 +66,7 @@ const validate = <T>(schema: z.ZodType<T>, input: unknown): T => {
   } catch (error) {
     if (error instanceof ZodError) {
       const issue = error.issues[0];
+
       throw new HttpError({
         data: issue,
         code: 'invalid_request',

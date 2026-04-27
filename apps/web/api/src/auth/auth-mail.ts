@@ -34,6 +34,7 @@ export function getMailgunClient() {
 
   if (!mailgunClient) {
     const mailgun = new Mailgun(FormData);
+
     mailgunClient = mailgun.client({
       key: env.MAILGUN_API_KEY,
       url: env.MAILGUN_URL,

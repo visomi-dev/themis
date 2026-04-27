@@ -46,10 +46,13 @@ testRouter.get(
   validateRequest({ query: mailboxQuerySchema }),
   function mailboxLatestHandler(req, res) {
     const { email, purpose } = getValidated<{ query: typeof mailboxQuerySchema }>(req).query!;
+
     const messages = listSentMessages();
+
     const matchingMessages = messages.filter(
       (message) => (!email || message.email === email) && (!purpose || message.purpose === purpose),
     );
+
     const match = matchingMessages[matchingMessages.length - 1];
 
     if (!match) {

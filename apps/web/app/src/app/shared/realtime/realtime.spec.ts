@@ -5,7 +5,9 @@ import { Auth } from '../auth/auth';
 
 const socketMocks = vi.hoisted(() => {
   const disconnectSocket = vi.fn();
+
   const on = vi.fn();
+
   const socketFactory = vi.fn(() => ({
     connected: true,
     disconnect: disconnectSocket,

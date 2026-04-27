@@ -8,6 +8,7 @@ test.describe.configure({ timeout: 60000 });
 test.describe('/app/projects/:projectId', () => {
   test('can navigate to project detail after creating a project', async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.getByRole('button', { name: /Continue to projects/i }).click();
 
@@ -21,6 +22,7 @@ test.describe('/app/projects/:projectId', () => {
 
   test('shows project status and source type', async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.getByRole('button', { name: /Continue to projects/i }).click();
 
@@ -34,6 +36,7 @@ test.describe('/app/projects/:projectId', () => {
 
   test('shows documents section', async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.getByRole('button', { name: /Continue to projects/i }).click();
 
@@ -46,6 +49,7 @@ test.describe('/app/projects/:projectId', () => {
 
   test('shows empty documents state when no documents exist', async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.getByRole('button', { name: /Continue to projects/i }).click();
 
@@ -58,6 +62,7 @@ test.describe('/app/projects/:projectId', () => {
 
   test('sign out returns to sign-in', async ({ page, request }) => {
     const credentials = createCredentials();
+
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.getByRole('button', { name: /Continue to projects/i }).click();
 

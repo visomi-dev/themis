@@ -9,6 +9,7 @@ function createRealtimeSessionMiddleware() {
     sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
     sessionSecret: env.SESSION_SECRET,
   };
+
   const store = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getPool() : undefined);
 
   return createSessionMiddleware(sessionConfig, store);

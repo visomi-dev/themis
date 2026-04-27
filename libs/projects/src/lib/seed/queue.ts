@@ -4,6 +4,7 @@ import { getRedis } from 'shared';
 import type { ProjectSeedJobInput } from '../contracts/project-seed';
 
 const projectSeedQueueName = 'project-seed';
+
 const queueKey = '__themisProjectSeedQueue';
 
 const globalState = globalThis as typeof globalThis & {

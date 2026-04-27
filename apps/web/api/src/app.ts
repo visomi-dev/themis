@@ -20,13 +20,16 @@ async function buildApp() {
   await runMigrationsIfEnabled();
 
   const app = express();
+
   const sessionConfig = {
     cookieSecure: env.COOKIE_SECURE,
     databaseDriver: env.DATABASE_DRIVER,
     sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
     sessionSecret: env.SESSION_SECRET,
   };
+
   const sessionStore = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getPool() : undefined);
+
   const sessionMiddleware = createSessionMiddleware(sessionConfig, sessionStore);
 
   app.use(json());

@@ -3,6 +3,7 @@ import IORedis from 'ioredis';
 import { env } from '../env';
 
 const connectionKey = '__themisRedisConnection';
+
 const subscriberKey = '__themisRedisSubscriberConnection';
 
 const globalState = globalThis as typeof globalThis & {

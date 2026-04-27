@@ -76,6 +76,7 @@ export class Projects implements OnInit {
 
     try {
       const projects = await this.projectsService.listProjects();
+
       this.projects.set(projects);
     } catch {
       this.errorMessage.set('Projects could not be loaded.');

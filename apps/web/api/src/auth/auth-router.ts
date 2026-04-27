@@ -32,6 +32,7 @@ router.get('/session', authed(), async function sessionHandler(req, res) {
 
 router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
   const { email, password } = getValidated<{ body: typeof credentialsSchema }>(req).body!;
+
   const challenge = await signUp(email, password);
 
   httpResponse.json(res, { data: challenge, status: 201, message: 'Verification code sent.' });
@@ -42,6 +43,7 @@ router.post(
   validateRequest({ body: challengeVerificationSchema }),
   async function verifySignUpHandler(req, res) {
     const { challengeId, pin } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+
     const user = await verifyChallenge(challengeId, pin, 'sign_up');
 
     await new Promise<void>((resolve, reject) => {
@@ -64,6 +66,7 @@ router.post(
   validateRequest({ body: credentialsSchema }),
   function signInPasswordHandler(req: Request, res: Response, next: NextFunction) {
     const credentials = getValidated<{ body: typeof credentialsSchema }>(req).body!;
+
     req.body = credentials;
 
     passport.authenticate(
@@ -98,6 +101,7 @@ router.post(
           }
 
           const challenge = await beginSignIn(fullUser);
+
           httpResponse.json(res, { data: challenge, message: 'Verification code sent.' });
         } catch (innerError) {
           next(innerError);
@@ -112,6 +116,7 @@ router.post(
   validateRequest({ body: challengeVerificationSchema }),
   async function verifySignInHandler(req, res) {
     const { challengeId, pin } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+
     const user = await verifyChallenge(challengeId, pin, 'sign_in');
 
     await new Promise<void>((resolve, reject) => {
@@ -134,6 +139,7 @@ router.post(
   validateRequest({ body: resendVerificationSchema }),
   async function resendVerificationHandler(req, res) {
     const { challengeId } = getValidated<{ body: typeof resendVerificationSchema }>(req).body!;
+
     const challenge = await resendChallenge(challengeId);
 
     httpResponse.json(res, { data: challenge, message: 'Verification code resent.' });
@@ -162,6 +168,7 @@ router.post(
   validateRequest({ body: forgottenPasswordSchema }),
   async function forgottenPasswordHandler(req, res) {
     const { email } = getValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
+
     await requestPasswordReset(email);
     httpResponse.json(res, { data: null, message: 'If an account exists for that email, a reset link has been sent.' });
   },

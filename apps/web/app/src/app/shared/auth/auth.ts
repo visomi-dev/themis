@@ -98,6 +98,7 @@ export class Auth {
 
     try {
       const endpoint = mode === 'sign_in' ? '/api/auth/sign-in/password' : '/api/auth/sign-up';
+
       const response = await firstValueFrom(this.http.post<ChallengeResponse>(endpoint, payload));
 
       this.setPendingChallenge(response.data);
@@ -119,6 +120,7 @@ export class Auth {
 
     try {
       const endpoint = challenge.purpose === 'sign_in' ? '/api/auth/sign-in/verify' : '/api/auth/sign-up/verify';
+
       const response = await firstValueFrom(
         this.http.post<AuthenticatedResponse>(endpoint, {
           challengeId: challenge.challengeId,

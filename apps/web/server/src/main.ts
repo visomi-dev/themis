@@ -25,17 +25,25 @@ type AstroMiddlewareModule = {
 };
 
 const host = process.env.HOST ?? '0.0.0.0';
+
 const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
+
 const apiEntryFile = resolve(serverDistFolder, '..', 'api', 'main.js');
+
 const angularEntryFile = resolve(serverDistFolder, '..', 'app', 'server', 'server.mjs');
+
 const astroClientFolder = resolve(serverDistFolder, '..', 'site', 'client');
+
 const astroEntryFile = resolve(serverDistFolder, '..', 'site', 'server', 'entry.mjs');
+
 const realtimeEntryFile = resolve(serverDistFolder, '..', 'realtime', 'main.js');
+
 const workerEntryFile = resolve(serverDistFolder, '..', '..', 'worker', 'main.js');
 
 let workerProcess: ChildProcess | undefined;
+
 let shuttingDown = false;
 
 function startWorkerRuntime() {

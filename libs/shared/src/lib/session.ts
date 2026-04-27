@@ -42,6 +42,7 @@ class PostgresSessionStore extends Store {
           `SELECT sess, expires_at FROM ${this.tableName} WHERE sid = $1 AND expires_at > NOW() LIMIT 1`,
           [sid],
         );
+
         const row = result.rows[0];
 
         if (!row) {
@@ -50,6 +51,7 @@ class PostgresSessionStore extends Store {
         }
 
         const payload = typeof row.sess === 'string' ? (JSON.parse(row.sess) as SessionData) : row.sess;
+
         callback(undefined, payload);
       })
       .catch((error) => callback(error));
@@ -59,6 +61,7 @@ class PostgresSessionStore extends Store {
     void this.ensureTablePromise
       .then(async () => {
         const expiresAt = this.resolveExpiry(sess);
+
         await this.pool.query(
           `
             INSERT INTO ${this.tableName} (sid, sess, expires_at)
@@ -101,6 +104,7 @@ class PostgresSessionStore extends Store {
 }
 
 const globalKey = '__themisSessionStore';
+
 const globalState = globalThis as typeof globalThis & {
   [globalKey]?: session.Store;
 };

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 type Locale = 'en' | 'es';
 
 const APP_BASE_URL = '/app';
+
 const ENGLISH_LOCALE_SEGMENT = 'en';
 
 @Component({

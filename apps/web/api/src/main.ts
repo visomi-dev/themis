@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { createApp } from './app';
 
 const host = process.env.HOST ?? 'localhost';
+
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 function isMainModule() {

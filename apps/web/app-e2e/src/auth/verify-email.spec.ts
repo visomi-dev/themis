@@ -43,6 +43,7 @@ test.describe('/app/verify-email', () => {
 
     await signUp(page, credentials.email, credentials.password);
     const signUpPin = await readLatestPin(request, credentials.email, 'sign_up');
+
     await fillOtp(page, signUpPin);
     await page.getByRole('button', { name: 'Verify and continue' }).click();
     await page.getByRole('button', { name: 'Sign out' }).click();
@@ -50,6 +51,7 @@ test.describe('/app/verify-email', () => {
     await signIn(page, credentials.email, credentials.password);
 
     const signInPin = await readLatestPin(request, credentials.email, 'sign_in');
+
     await fillOtp(page, signInPin);
     await page.getByRole('button', { name: 'Verify and continue' }).click();
 

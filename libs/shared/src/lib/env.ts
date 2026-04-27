@@ -36,6 +36,7 @@ const environmentSchema = z
   })
   .transform((data) => {
     const hasMailgunCredentials = Boolean(data.MAILGUN_API_KEY && data.MAILGUN_DOMAIN && data.MAILGUN_FROM);
+
     const mailTransport = data.MAIL_TRANSPORT ?? (hasMailgunCredentials ? 'mailgun' : 'memory');
 
     return {

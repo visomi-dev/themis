@@ -55,6 +55,7 @@ export class ProjectNew {
 
     try {
       const project = await this.projectsService.createProject(this.form.getRawValue());
+
       await this.router.navigate(['/projects', project.id]);
     } catch {
       this.errorMessage.set('The project could not be created.');

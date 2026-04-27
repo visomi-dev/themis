@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import { env } from '../env';
 
 let pool: Pool | undefined;
+
 let cachedUrl: string | undefined;
 
 function getPool() {

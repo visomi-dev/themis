@@ -46,6 +46,7 @@ export class ProjectDetail implements OnInit {
 
   currentSeedJob() {
     const project = this.project();
+
     return project ? (this.projectSeed.currentJob(project.id) ?? project.jobs[0] ?? null) : null;
   }
 
@@ -68,6 +69,7 @@ export class ProjectDetail implements OnInit {
 
   async runSeed() {
     const project = this.project();
+
     if (!project) {
       return;
     }

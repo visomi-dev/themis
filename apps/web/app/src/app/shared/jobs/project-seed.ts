@@ -27,6 +27,7 @@ export class ProjectSeed {
 
   async start(projectId: string) {
     const job = await this.projects.startSeed(projectId);
+
     this.jobsState.update((jobs) => ({
       ...jobs,
       [projectId]: job,

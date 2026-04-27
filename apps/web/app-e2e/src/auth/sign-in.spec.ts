@@ -24,6 +24,7 @@ test.describe('/app/sign-in', () => {
   test('stays on the route when credentials are invalid', async ({ page }) => {
     await page.goto(signInRoute);
     const emailField = page.getByLabel('Email');
+
     const passwordField = page.getByLabel('Password');
 
     await expect(page).toHaveURL(signInUrlPattern);

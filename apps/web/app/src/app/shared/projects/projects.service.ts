@@ -23,6 +23,7 @@ export class ProjectsService {
 
   async listProjects() {
     const response = await firstValueFrom(this.http.get<ProjectsListResponse>('/api/projects'));
+
     return response.data.projects;
   }
 
@@ -30,11 +31,13 @@ export class ProjectsService {
     const response = await firstValueFrom(
       this.http.get<ResponseEnvelope<ProjectWithDocuments>>(`/api/projects/${projectId}`),
     );
+
     return response.data;
   }
 
   async createProject(payload: CreateProjectPayload) {
     const response = await firstValueFrom(this.http.post<ResponseEnvelope<Project>>('/api/projects', payload));
+
     return response.data;
   }
 
@@ -42,6 +45,7 @@ export class ProjectsService {
     const response = await firstValueFrom(
       this.http.patch<ResponseEnvelope<Project>>(`/api/projects/${projectId}`, payload),
     );
+
     return response.data;
   }
 
@@ -53,11 +57,13 @@ export class ProjectsService {
     const response = await firstValueFrom(
       this.http.post<ResponseEnvelope<ProjectDocument>>(`/api/projects/${projectId}/documents`, payload),
     );
+
     return response.data;
   }
 
   async listJobs(projectId: string) {
     const response = await firstValueFrom(this.http.get<JobsListResponse>(`/api/projects/${projectId}/jobs`));
+
     return response.data.jobs;
   }
 
@@ -65,6 +71,7 @@ export class ProjectsService {
     const response = await firstValueFrom(
       this.http.post<ResponseEnvelope<AsyncJobRecord>>(`/api/projects/${projectId}/seed`, {}),
     );
+
     return response.data;
   }
 }

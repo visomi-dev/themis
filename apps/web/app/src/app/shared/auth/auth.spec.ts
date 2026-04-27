@@ -15,6 +15,7 @@ describe('Auth', () => {
 
   it('stores the pending challenge after credential submission', async () => {
     const auth = TestBed.inject(Auth);
+
     const http = TestBed.inject(HttpTestingController);
 
     const submitPromise = auth.submitCredentials('sign_up', {

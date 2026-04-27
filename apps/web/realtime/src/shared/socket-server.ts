@@ -3,8 +3,6 @@ import { createServer, type Server as HttpServer } from 'node:http';
 import express from 'express';
 import { Server } from 'socket.io';
 
-import { subscribeToProjectSeedEvents } from '../projects/project-seed/subscriber';
-
 import { bindSocketSession } from './socket-auth';
 
 import { env, logger } from 'shared';
@@ -24,6 +22,7 @@ async function attachRealtimeServer(server: HttpServer) {
     const request = socket.request as typeof socket.request & {
       session?: { passport?: { user?: { id?: string } } };
     };
+
     const userId = request.session?.passport?.user?.id;
 
     if (!userId) {
@@ -39,7 +38,6 @@ async function attachRealtimeServer(server: HttpServer) {
     socket.join(`user:${socket.data.userId}`);
   });
 
-  await subscribeToProjectSeedEvents(io);
   logger.info({ path: env.REALTIME_PATH }, 'Realtime runtime ready');
 
   return io;
@@ -47,7 +45,9 @@ async function attachRealtimeServer(server: HttpServer) {
 
 async function createRealtimeServer() {
   const app = express();
+
   const server = createServer(app);
+
   const io = await attachRealtimeServer(server);
 
   app.get('/health', (_req, res) => {

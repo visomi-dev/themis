@@ -20,6 +20,7 @@ export const createCredentials = () => ({
 
 const fillCredentials = async (page: Page, email: string, password: string) => {
   const emailField = page.getByLabel('Email');
+
   const passwordField = page.getByLabel('Password');
 
   await expect(emailField).toBeVisible();
@@ -75,6 +76,7 @@ export const authenticateViaApi = async (page: Page, request: APIRequestContext,
   await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
 
   const pin = await readLatestPin(request, email, 'sign_up');
+
   await fillOtp(page, pin);
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 

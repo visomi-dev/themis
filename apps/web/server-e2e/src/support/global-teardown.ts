@@ -2,6 +2,7 @@ import { readFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const SERVER_PID_PATH = resolve(__dirname, '../../.server-e2e-server.pid');
+
 const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?: string };
 
 module.exports = async function () {

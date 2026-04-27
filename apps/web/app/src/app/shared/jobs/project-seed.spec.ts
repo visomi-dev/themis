@@ -25,6 +25,7 @@ describe('ProjectSeed', () => {
     message: string;
     timestamp: string;
   } | null>(null);
+
   const startSeed = vi.fn();
 
   beforeEach(() => {
@@ -64,9 +65,11 @@ describe('ProjectSeed', () => {
       updatedAt: '2026-01-01T00:00:00.000Z',
       userId: 'user-1',
     };
+
     startSeed.mockResolvedValue(job);
 
     const service = TestBed.inject(ProjectSeed);
+
     await service.start('project-1');
 
     expect(service.currentJob('project-1')).toEqual(job);

@@ -28,6 +28,7 @@ activationRouter.post(
   validateRequest({ body: createApiKeySchema }),
   async function createApiKeyHandler(req, res) {
     const { label } = getValidated<{ body: typeof createApiKeySchema }>(req).body!;
+
     const key = await createApiKey(authedContext(req), label);
 
     httpResponse.json(res, { data: key, status: 201, message: 'API key created.' });
@@ -51,6 +52,7 @@ activationRouter.post(
   validateRequest({ params: apiKeyParamsSchema }),
   async function revokeApiKeyHandler(req, res) {
     const { apiKeyId } = getValidated<{ params: typeof apiKeyParamsSchema }>(req).params!;
+
     await revokeApiKey(authedContext(req), apiKeyId);
     res.status(204).send();
   },

@@ -18,6 +18,7 @@ export class Activation {
 
   async loadState() {
     const response = await firstValueFrom(this.http.get<ResponseEnvelope<ActivationState>>('/api/activation'));
+
     return response.data;
   }
 
@@ -25,6 +26,7 @@ export class Activation {
     const response = await firstValueFrom(
       this.http.post<ResponseEnvelope<CreatedApiKey>>('/api/activation/api-keys', payload),
     );
+
     return response.data;
   }
 

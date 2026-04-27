@@ -9,8 +9,11 @@ import { ProjectDetail } from './project-detail';
 
 describe('ProjectDetail', () => {
   const getProject = vi.fn();
+
   const seedStart = vi.fn();
+
   const signOut = vi.fn();
+
   const navigate = vi.fn();
 
   beforeEach(async () => {
@@ -75,6 +78,7 @@ describe('ProjectDetail', () => {
 
   it('loads the current project on init', async () => {
     const fixture = TestBed.createComponent(ProjectDetail);
+
     await fixture.componentInstance.ngOnInit();
 
     expect(getProject).toHaveBeenCalledWith('project-1');
@@ -83,6 +87,7 @@ describe('ProjectDetail', () => {
 
   it('starts the seed job for the current project', async () => {
     const fixture = TestBed.createComponent(ProjectDetail);
+
     await fixture.componentInstance.ngOnInit();
 
     await fixture.componentInstance.runSeed();
@@ -93,6 +98,7 @@ describe('ProjectDetail', () => {
   it('surfaces an error if the seed job cannot start', async () => {
     seedStart.mockRejectedValue(new Error('boom'));
     const fixture = TestBed.createComponent(ProjectDetail);
+
     await fixture.componentInstance.ngOnInit();
 
     await fixture.componentInstance.runSeed();

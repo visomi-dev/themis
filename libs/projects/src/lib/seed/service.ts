@@ -25,6 +25,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
     accountId: bullJob.data.accountId,
     userId: bullJob.data.userId,
   };
+
   const existing = await findAsyncJobById(context, bullJob.data.jobId);
 
   if (!existing) {
@@ -35,6 +36,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
     progress: 10,
     status: 'running',
   });
+
   await publishProjectAsyncJobEvent('job:started', startJob, 'Project seed started.');
 
   await wait(600);
@@ -42,6 +44,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
     progress: 45,
     status: 'running',
   });
+
   await publishProjectAsyncJobEvent('job:progress', scanJob, 'Repository structure scanned.');
 
   await wait(600);
@@ -49,6 +52,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
     progress: 80,
     status: 'running',
   });
+
   await publishProjectAsyncJobEvent('job:progress', contextJob, 'Project context draft prepared.');
 
   await createDocument(context, existing.projectId!, {
@@ -70,12 +74,14 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
   const result: ProjectSeedJobResult = {
     summary: 'Initial project overview generated.',
   };
+
   const completedJob = await updateAsyncJob(context, existing.id, {
     completedAt: new Date(),
     progress: 100,
     resultJson: JSON.stringify(result),
     status: 'completed',
   });
+
   await publishProjectAsyncJobEvent('job:completed', completedJob, 'Project seed completed.');
 
   return result;
@@ -86,6 +92,7 @@ async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, error:
     accountId: bullJob.data.accountId,
     userId: bullJob.data.userId,
   };
+
   const failedJob = await updateAsyncJob(context, bullJob.data.jobId, {
     completedAt: new Date(),
     errorMessage: error.message,

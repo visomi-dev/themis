@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const email = 'engineer@themis.dev';
+
 const password = 'S3cureAuth!';
 
 const toCookieHeader = (setCookie: string[] | undefined) =>
@@ -62,6 +63,7 @@ describe('auth API', () => {
     expect(signUpVerifyResponse.data.data.user.emailVerifiedAt).not.toBeNull();
 
     const sessionCookie = toCookieHeader(signUpVerifyResponse.headers['set-cookie']);
+
     const sessionResponse = await axios.get('/auth/session', {
       headers: {
         Cookie: sessionCookie,

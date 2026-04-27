@@ -38,6 +38,7 @@ describe('auth guards', () => {
 
   it('allows guest routes without probing the session during hydration', async () => {
     const router = createRouter();
+
     const auth = createAuth(true);
 
     TestBed.configureTestingModule({

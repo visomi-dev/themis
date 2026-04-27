@@ -60,6 +60,7 @@ async function getActivationState({ accountId, userId }: ActivationContext): Pro
       .from(apiKeys)
       .where(eq(apiKeys.accountId, accountId))
       .orderBy(desc(apiKeys.createdAt));
+
     const milestoneRows = await db
       .select({ milestone: userActivationMilestones.milestone })
       .from(userActivationMilestones)
@@ -118,7 +119,9 @@ async function createApiKey(
   }
 
   const plaintextToken = `thm_${randomBytes(24).toString('base64url')}`;
+
   const now = new Date();
+
   const createdKey = await withAccountContext({ accountId, userId }, async (db) => {
     const [row] = await db
       .insert(apiKeys)

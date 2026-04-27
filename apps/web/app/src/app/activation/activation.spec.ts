@@ -8,6 +8,7 @@ import { Activation } from './activation';
 
 describe('Activation', () => {
   let component: Activation;
+
   let fixture: ComponentFixture<Activation>;
 
   beforeEach(async () => {

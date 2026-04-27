@@ -20,8 +20,11 @@ type ProjectsContext = {
 };
 
 const PROJECT_STATUSES = new Set<ProjectStatus>(['active', 'archived', 'draft']);
+
 const PROJECT_SOURCE_TYPES = new Set<ProjectSourceType>(['imported', 'manual', 'seeded']);
+
 const DOCUMENT_STATUSES = new Set<ProjectDocumentStatus>(['active', 'archived', 'draft']);
+
 const DOCUMENT_TYPES = new Set<ProjectDocumentType>([
   'architecture',
   'brief',
@@ -76,6 +79,7 @@ async function listProjects(context: ProjectsContext): Promise<Project[]> {
       .from(projects)
       .where(eq(projects.accountId, context.accountId))
       .orderBy(asc(projects.createdAt));
+
     return rows.map(mapProject);
   });
 }
@@ -139,8 +143,11 @@ async function createProject(
 
   return withAccountContext(context, async (db) => {
     const now = new Date();
+
     const baseSlug = normalizeSlug(name);
+
     let slug = baseSlug;
+
     const [existing] = await db
       .select({ slug: projects.slug })
       .from(projects)
@@ -191,6 +198,7 @@ async function updateProject(
 
     if (data.name !== undefined) {
       const trimmedName = data.name.trim();
+
       if (!trimmedName) {
         throw new HttpError({ code: 'invalid_name', message: 'Project name is required.', statusCode: 400 });
       }
@@ -265,6 +273,7 @@ async function createDocument(
     }
 
     const status = data.status ?? 'active';
+
     if (!DOCUMENT_STATUSES.has(status)) {
       throw new HttpError({
         code: 'invalid_document_status',
@@ -274,6 +283,7 @@ async function createDocument(
     }
 
     const now = new Date();
+
     const [created] = await db
       .insert(projectDocuments)
       .values({

@@ -35,11 +35,13 @@ export async function findUserByEmail(email: string) {
     .from(users)
     .where(eq(users.email, normalizeEmail(email)))
     .limit(1);
+
   return user;
 }
 
 export async function findUserById(id: string) {
   const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+
   return user;
 }
 
@@ -97,8 +99,11 @@ export async function createChallenge(
   purpose: VerificationPurpose,
 ): Promise<AuthChallengePayload> {
   const pin = generateVerificationPin();
+
   const now = new Date();
+
   const expiresAt = new Date(now.getTime() + env.PIN_EXPIRY_MINUTES * 60 * 1000);
+
   const challengeId = randomUUID();
 
   await db
@@ -168,6 +173,7 @@ export async function beginSignIn(user: typeof users.$inferSelect) {
 
 export async function signUp(email: string, password: string) {
   const normalizedEmail = normalizeEmail(email);
+
   const existingUser = await findUserByEmail(normalizedEmail);
 
   if (existingUser) {
@@ -179,6 +185,7 @@ export async function signUp(email: string, password: string) {
   }
 
   const now = new Date();
+
   const [user] = await db
     .insert(users)
     .values({
@@ -191,8 +198,11 @@ export async function signUp(email: string, password: string) {
     .returning();
 
   const accountId = randomUUID();
+
   const baseSlug = normalizeAccountSlug(normalizedEmail);
+
   const [existingAccount] = await db.select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
+
   const accountSlug = existingAccount ? `${baseSlug}-${user.id.slice(0, 8)}` : baseSlug;
 
   await db.insert(accounts).values({
@@ -365,6 +375,7 @@ export async function verifyPassword(email: string, password: string) {
   }
 
   const matches = await verifySecret(password, user.passwordHash);
+
   return matches ? user : null;
 }
 

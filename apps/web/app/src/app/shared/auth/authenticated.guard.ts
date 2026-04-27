@@ -7,6 +7,7 @@ import { Auth } from './auth';
 
 export async function authenticatedGuard() {
   const auth = inject(Auth);
+
   const router = inject(Router);
 
   await auth.ensureSessionLoaded();
