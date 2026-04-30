@@ -11,6 +11,7 @@ import {
   beginSignIn,
   resendChallenge,
   requestPasswordReset,
+  resolveAuthUser,
 } from './auth-service';
 import {
   authOpenApiPaths,
@@ -101,6 +102,24 @@ router.post(
           }
 
           const challenge = await beginSignIn(fullUser);
+
+          if (!challenge) {
+            const user = await resolveAuthUser(fullUser);
+
+            await new Promise<void>((resolve, reject) => {
+              req.login(user, (error) => {
+                if (error) {
+                  reject(error);
+                  return;
+                }
+
+                resolve();
+              });
+            });
+
+            httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
+            return;
+          }
 
           httpResponse.json(res, { data: challenge, message: 'Verification code sent.' });
         } catch (innerError) {

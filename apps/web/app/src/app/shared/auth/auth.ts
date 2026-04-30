@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, computed, inject, Injectable, signal } from '@angular/core';
+import { PLATFORM_ID, REQUEST, computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
@@ -14,6 +14,13 @@ import type {
   CredentialsPayload,
   SessionResponse,
 } from './auth.models';
+
+import type { Request } from 'express';
+
+type AuthenticatedRequest = Request & {
+  isAuthenticated(): boolean;
+  user: AuthUser;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -41,8 +48,16 @@ export class Auth {
     }
 
     if (!isPlatformBrowser(this.platformId)) {
-      this.userState.set(null);
+      const req = inject(REQUEST, { optional: true }) as AuthenticatedRequest | null;
+
+      console.log(req);
+
+      if (req?.isAuthenticated?.()) {
+        this.userState.set(req.user);
+      }
+
       this.sessionLoadedState.set(true);
+
       return;
     }
 

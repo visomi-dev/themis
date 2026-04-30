@@ -43,7 +43,7 @@
 
           <section class="auth-panel rounded-xl p-6 md:p-8">
             <label
-              class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-[0.2em] uppercase"
+              class="text-on-surface-variant mb-4 block font-semibold tracking-[0.2em] uppercase"
               for="activation-api-key-label"
             >
               Named API access keys
@@ -62,15 +62,6 @@
 
                 <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
               </form>
-
-              <div class="activation-warning rounded-lg px-4 py-3">
-                <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-                  <p class="text-on-surface shrink-0 text-xs font-black tracking-[0.18em] uppercase">Caution</p>
-                  <p class="text-on-surface-variant text-sm leading-relaxed">
-                    Each key is displayed only once. Copy it immediately before leaving this screen.
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div class="mt-5 grid gap-3">
@@ -117,6 +108,15 @@
                   </div>
                 </article>
               }
+
+              <div class="activation-warning rounded-lg px-4 py-3">
+                <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+                  <p class="text-on-surface shrink-0 text-xs font-black tracking-[0.18em] uppercase">Caution</p>
+                  <p class="text-on-surface-variant text-sm leading-relaxed">
+                    Each key is displayed only once. Copy it immediately before leaving this screen.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
         </section>
@@ -167,7 +167,7 @@
             </div>
           </section>
 
-          <p class="text-on-surface-variant mt-4 text-right text-[11px] italic">
+          <p class="text-on-surface-variant mt-4 text-right italic">
             Local workspace setup is ready now. Transport-level MCP wiring can be added as a later backend slice.
           </p>
         </section>
@@ -181,21 +181,24 @@
           <section class="auth-panel rounded-xl p-6 md:p-8">
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p class="text-on-surface-variant text-[11px] font-semibold tracking-[0.2em] uppercase">
+                <p class="text-on-surface-variant font-semibold tracking-[0.2em] uppercase">
                   System seed prompt
                 </p>
+                
                 <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
                   Use this prompt inside OpenCode to analyze the repository and seed the first project context into
                   Themis.
                 </p>
               </div>
+            </div>
 
+            <pre class="activation-prompt mt-5">{{ activationState()?.seedPrompt }}</pre>
+
+            <div class="flex justify-end">
               <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySeedPrompt()">
                 Copy prompt
               </button>
             </div>
-
-            <pre class="activation-prompt mt-5">{{ activationState()?.seedPrompt }}</pre>
           </section>
         </section>
 

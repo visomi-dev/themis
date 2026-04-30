@@ -168,7 +168,7 @@ export async function beginSignIn(user: typeof users.$inferSelect) {
     return getOrCreateActiveChallenge(user, 'sign_up');
   }
 
-  return createChallenge(user, 'sign_in');
+  return null;
 }
 
 export async function signUp(email: string, password: string) {
