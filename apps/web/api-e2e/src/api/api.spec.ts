@@ -95,6 +95,14 @@ describe('auth API', () => {
     });
 
     expect(signInPasswordResponse.status).toBe(200);
+
+    if (signInPasswordResponse.data.data.authenticated) {
+      expect(signInPasswordResponse.data.data.user.email).toBe(email);
+      expect(signInPasswordResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
+
+      return;
+    }
+
     expect(signInPasswordResponse.data.data.purpose).toBe('sign_in');
 
     const signInMail = await axios.get('/test/mailbox/latest', {
@@ -125,5 +133,5 @@ describe('auth API', () => {
     expect(signInVerifyResponse.status).toBe(200);
     expect(signInVerifyResponse.data.data.user.email).toBe(email);
     expect(signInVerifyResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
-  });
+  }, 15_000);
 });

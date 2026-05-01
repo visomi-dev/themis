@@ -15,7 +15,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Debug Site",
-      "url": "http://localhost:8080",
+      "url": "http://localhost:8000",
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.(m|c|)js", "!**/node_modules/**"],

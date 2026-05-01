@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, REQUEST, computed, inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { PLATFORM_ID, REQUEST, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
@@ -15,11 +15,8 @@ import type {
   SessionResponse,
 } from './auth.models';
 
-import type { Request } from 'express';
-
-type AuthenticatedRequest = Request & {
-  isAuthenticated(): boolean;
-  user: AuthUser;
+type AuthRequestContext = {
+  user?: AuthUser;
 };
 
 @Injectable({
@@ -28,6 +25,8 @@ type AuthenticatedRequest = Request & {
 export class Auth {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly request = inject(REQUEST, { optional: true });
+  private readonly requestContext = inject<AuthRequestContext | null>(REQUEST_CONTEXT, { optional: true });
 
   private readonly pendingChallengeState = signal<AuthChallenge | null>(this.readStoredChallenge());
   private readonly sessionLoadedState = signal(false);
@@ -47,22 +46,24 @@ export class Auth {
       return;
     }
 
-    if (!isPlatformBrowser(this.platformId)) {
-      const req = inject(REQUEST, { optional: true }) as AuthenticatedRequest | null;
+    if (isPlatformServer(this.platformId) && this.requestContext?.user) {
+      this.userState.set(this.requestContext.user);
+      this.sessionLoadedState.set(true);
 
-      console.log(req);
+      return;
+    }
 
-      if (req?.isAuthenticated?.()) {
-        this.userState.set(req.user);
-      }
+    const sessionRequestOptions = this.createSessionRequestOptions();
 
+    if (isPlatformServer(this.platformId) && !sessionRequestOptions) {
+      this.userState.set(null);
       this.sessionLoadedState.set(true);
 
       return;
     }
 
     try {
-      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
+      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session', sessionRequestOptions));
 
       this.userState.set(response.data.user);
     } catch {
@@ -70,6 +71,25 @@ export class Auth {
     } finally {
       this.sessionLoadedState.set(true);
     }
+  }
+
+  private createSessionRequestOptions() {
+    if (isPlatformBrowser(this.platformId)) {
+      return undefined;
+    }
+
+    const cookie = this.request?.headers.get('cookie');
+
+    if (!cookie) {
+      return undefined;
+    }
+
+    return {
+      headers: {
+        cookie,
+      },
+      transferCache: false,
+    };
   }
 
   async signInWithPassword(payload: CredentialsPayload) {

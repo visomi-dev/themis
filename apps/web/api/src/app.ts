@@ -1,6 +1,5 @@
 import express, { json, type Express } from 'express';
 import morgan from 'morgan';
-import passport from 'passport';
 
 import { activationRouter } from './activation/activation-router';
 import { authRouter } from './auth/auth-router';
@@ -10,33 +9,29 @@ import { env } from './shared/env';
 import { createOpenApiDocument } from './shared/http/openapi';
 import { testRouter } from './testing/test-router';
 
-import { createSessionMiddleware, createSessionStore, errorHandler, getPool, runMigrationsIfEnabled } from 'shared';
+import { createAuthRuntimeMiddleware, errorHandler, runMigrationsIfEnabled } from 'shared';
 
-let appPromise: Promise<Express> | undefined;
+let embeddedAppPromise: Promise<Express> | undefined;
+
+let standaloneAppPromise: Promise<Express> | undefined;
+
+type CreateAppOptions = {
+  mountAuthRuntime?: boolean;
+};
 
 const morganFormat = process.env['MORGAN_FORMAT'] ?? 'dev';
 
-async function buildApp() {
+async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
   await runMigrationsIfEnabled();
 
   const app = express();
 
-  const sessionConfig = {
-    cookieSecure: env.COOKIE_SECURE,
-    databaseDriver: env.DATABASE_DRIVER,
-    sessionMaxAgeMs: env.SESSION_MAX_AGE_MS,
-    sessionSecret: env.SESSION_SECRET,
-  };
-
-  const sessionStore = createSessionStore(sessionConfig, env.DATABASE_DRIVER === 'pg' ? getPool() : undefined);
-
-  const sessionMiddleware = createSessionMiddleware(sessionConfig, sessionStore);
-
   app.use(json());
   app.use(morgan(morganFormat));
-  app.use(sessionMiddleware);
-  app.use(passport.initialize());
-  app.use(passport.session());
+
+  if (mountAuthRuntime) {
+    app.use(...createAuthRuntimeMiddleware());
+  }
 
   app.get('/', (_req, res) => {
     res.send({ message: 'Hello Themis API' });
@@ -63,9 +58,14 @@ async function buildApp() {
   return app;
 }
 
-function createApp() {
-  appPromise ??= buildApp();
-  return appPromise;
+function createApp(options?: CreateAppOptions) {
+  if (options?.mountAuthRuntime === false) {
+    embeddedAppPromise ??= buildApp(options);
+    return embeddedAppPromise;
+  }
+
+  standaloneAppPromise ??= buildApp(options);
+  return standaloneAppPromise;
 }
 
 export { createApp };

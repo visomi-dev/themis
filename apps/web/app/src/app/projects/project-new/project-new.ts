@@ -8,7 +8,7 @@ import { MessageModule } from 'primeng/message';
 import { Auth } from '../../shared/auth/auth';
 import { PROJECTS_URL, SIGN_IN_URL } from '../../shared/constants/routes';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../../shared/projects/projects.service';
+import { ProjectsService } from '../../shared/projects/projects';
 
 type NewProjectForm = FormGroup<{
   name: FormControl<string>;

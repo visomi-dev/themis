@@ -10,7 +10,7 @@ module.exports = async function () {
     const pid = Number((await readFile(SERVER_PID_PATH, 'utf8')).trim());
 
     if (!Number.isNaN(pid)) {
-      process.kill(pid, 'SIGTERM');
+      process.kill(-pid, 'SIGTERM');
     }
   } catch (error) {
     const nodeError = error as NodeJS.ErrnoException;

@@ -1,5 +1,6 @@
 import express from 'express';
 import request from 'supertest';
+import type { RequestHandler } from 'express';
 
 import { createGatewayApp } from './gateway';
 
@@ -26,6 +27,7 @@ describe('createGatewayApp', () => {
       angularHandler,
       astroClientFolder: __dirname,
       astroRequestHandler,
+      authRuntimeHandlers: [((_req, _res, next) => next()) satisfies RequestHandler],
     };
   };
 

@@ -16,9 +16,15 @@ function isMainModule() {
   return import.meta.url === pathToFileURL(entryFile).href;
 }
 
-const appPromise = createApp();
+const runningAsMainModule = isMainModule();
 
-if (isMainModule()) {
+const appPromise = runningAsMainModule ? createApp() : undefined;
+
+function createEmbeddedApp() {
+  return createApp({ mountAuthRuntime: false });
+}
+
+if (runningAsMainModule && appPromise) {
   appPromise
     .then((app) => {
       app.listen(port, host, () => {
@@ -31,4 +37,4 @@ if (isMainModule()) {
     });
 }
 
-export { appPromise };
+export { appPromise, createEmbeddedApp };

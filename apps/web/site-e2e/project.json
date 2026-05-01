@@ -3,13 +3,13 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web/site-e2e/src",
-  "implicitDependencies": ["site"],
+  "implicitDependencies": ["server"],
   "targets": {
     "e2e": {
-      "dependsOn": ["site:build"]
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     },
     "e2e-ci": {
-      "dependsOn": ["site:build"]
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     }
   }
 }

@@ -6,7 +6,7 @@ import { MessageModule } from 'primeng/message';
 import { Auth } from '../shared/auth/auth';
 import { APP_URL, PROJECT_NEW_URL, SIGN_IN_URL } from '../shared/constants/routes';
 import { ThemeSwitcher } from '../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../shared/projects/projects.service';
+import { ProjectsService } from '../shared/projects/projects';
 import type { Project } from '../shared/projects/projects.models';
 
 @Component({

@@ -1,5 +1,4 @@
 import express, {
-  json,
   type RequestHandler,
   static as serveStatic,
   type Express,
@@ -15,12 +14,19 @@ type GatewayDeps = {
   angularHandler: Express;
   astroClientFolder: string;
   astroRequestHandler: AstroRequestHandler;
+  authRuntimeHandlers: RequestHandler[];
 };
 
-const createGatewayApp = ({ angularHandler, apiHandler, astroClientFolder, astroRequestHandler }: GatewayDeps) => {
+function createGatewayApp({
+  angularHandler,
+  apiHandler,
+  astroClientFolder,
+  astroRequestHandler,
+  authRuntimeHandlers,
+}: GatewayDeps) {
   const app = express();
 
-  app.use(json());
+  app.use(...authRuntimeHandlers);
   app.get('/healthz', (_req, res) => {
     res.send({ status: 'ok' });
   });
@@ -39,7 +45,7 @@ const createGatewayApp = ({ angularHandler, apiHandler, astroClientFolder, astro
   app.use((req, res, next) => astroRequestHandler(req, res, next));
 
   return app;
-};
+}
 
 export { createGatewayApp };
 export type { GatewayDeps };

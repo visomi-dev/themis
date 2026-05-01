@@ -7,7 +7,13 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import express, { static as serveStatic } from 'express';
+import express, { static as serveStatic, type Request } from 'express';
+
+import type { AuthUser } from './app/shared/auth/auth.models';
+
+type AuthenticatedRequest = Request & {
+  user?: AuthUser;
+};
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
@@ -26,8 +32,10 @@ app.use(
 );
 
 app.use((req, res, next) => {
+  const request = req as AuthenticatedRequest;
+
   angularApp
-    .handle(req)
+    .handle(req, { user: request.user })
     .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });

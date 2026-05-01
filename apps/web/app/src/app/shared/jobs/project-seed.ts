@@ -1,6 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 
-import { ProjectsService } from '../projects/projects.service';
+import { ProjectsService } from '../projects/projects';
 import type { AsyncJobRecord } from '../projects/projects.models';
 import { Realtime } from '../realtime/realtime';
 

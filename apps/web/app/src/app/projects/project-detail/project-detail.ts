@@ -7,7 +7,7 @@ import { Auth } from '../../shared/auth/auth';
 import { ProjectSeed } from '../../shared/jobs/project-seed';
 import { PROJECTS_URL, SIGN_IN_URL } from '../../shared/constants/routes';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../../shared/projects/projects.service';
+import { ProjectsService } from '../../shared/projects/projects';
 import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '../../shared/projects/projects.models';
 
 @Component({
