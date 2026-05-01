@@ -50,6 +50,9 @@ importers:
       '@fontsource/manrope':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/material-symbols-outlined':
+        specifier: ^5.2.43
+        version: 5.2.43
       '@primeuix/themes':
         specifier: ^2.0.3
         version: 2.0.3
@@ -74,6 +77,9 @@ importers:
       form-data:
         specifier: ^4.0.5
         version: 4.0.5
+      helmet:
+        specifier: ^8.1.0
+        version: 8.1.0
       ioredis:
         specifier: ^5.10.1
         version: 5.10.1
@@ -402,6 +408,9 @@ importers:
       ioredis:
         specifier: ^5.8.2
         version: 5.10.1
+      passport:
+        specifier: ^0.7.0
+        version: 0.7.0
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -2432,6 +2441,9 @@ packages:
 
   '@fontsource/manrope@5.2.8':
     resolution: {integrity: sha512-gJHJmcuUk7qWcNCfcAri/DJQtXtBYqi9yKratr4jXhSo0I3xUtNNKI+igQIcw5c+m95g0vounk8ZnX/kb8o0TA==}
+
+  '@fontsource/material-symbols-outlined@5.2.43':
+    resolution: {integrity: sha512-emBkCU4p7QjT/D3X0Jv0ZvL50ZwQpKqZichrXRdpcP9FJxqSFHnD/E8c4FJilazFEGtvJPx4mCZn8TiGA4AAag==}
 
   '@gar/promise-retry@1.0.3':
     resolution: {integrity: sha512-GmzA9ckNokPypTg10pgpeHNQe7ph+iIKKmhKu3Ob9ANkswreCx7R3cKmY781K8QK3AqVL3xVh9A42JvIAbkkSA==}
@@ -7221,6 +7233,10 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  helmet@8.1.0:
+    resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
+    engines: {node: '>=18.0.0'}
 
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -13585,6 +13601,8 @@ snapshots:
 
   '@fontsource/manrope@5.2.8': {}
 
+  '@fontsource/material-symbols-outlined@5.2.43': {}
+
   '@gar/promise-retry@1.0.3': {}
 
   '@harperfast/extended-iterable@1.0.3':
@@ -19244,6 +19262,8 @@ snapshots:
       space-separated-tokens: 2.0.2
 
   he@1.2.0: {}
+
+  helmet@8.1.0: {}
 
   homedir-polyfill@1.0.3:
     dependencies:

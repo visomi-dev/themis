@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
 import { readLatestPin } from '../support/mailbox';
-import { createCredentials, signIn, signUp } from '../support/auth';
+import { createCredentials, signIn, signOutViaApi, signUp } from '../support/auth';
 import { fillOtp } from '../support/otp';
-import { signInUrlPattern, verifyEmailRoute, verifyEmailUrlPattern } from '../support/routes';
+import { appUrlPattern, signInUrlPattern, verifyEmailRoute, verifyEmailUrlPattern } from '../support/routes';
 
 test.describe('/app/verify-email', () => {
   test('redirects to sign-in when no challenge is active', async ({ page }) => {
@@ -46,7 +46,7 @@ test.describe('/app/verify-email', () => {
 
     await fillOtp(page, signUpPin);
     await page.getByRole('button', { name: 'Verify and continue' }).click();
-    await page.getByRole('button', { name: 'Sign out' }).click();
+    await signOutViaApi(page);
 
     await signIn(page, credentials.email, credentials.password);
 
@@ -55,6 +55,7 @@ test.describe('/app/verify-email', () => {
     await fillOtp(page, signInPin);
     await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-    await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
+    await expect(page).toHaveURL(appUrlPattern);
+    await expect(page.getByText('dashboard works!')).toBeVisible();
   });
 });

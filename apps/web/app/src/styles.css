@@ -1,5 +1,7 @@
+@import '@fontsource/jetbrains-mono';
 @import '@fontsource/inter';
 @import '@fontsource/manrope';
+@import '@fontsource/material-symbols-outlined';
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css' layer(utilities);
@@ -9,6 +11,7 @@
 @theme {
   --font-family: 'Inter', sans-serif;
   --font-family-display: 'Manrope', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
 
   --color-primary: #385ca9;
   --color-on-primary: #f9f8ff;
@@ -33,7 +36,7 @@
   --color-surface-container-highest: #d9e2ff;
   --color-error: #ac3434;
   --color-on-error: #fff7f6;
-  --color-error-container: #f56965;
+  --color-error-container: #ffdad6;
   --color-on-error-container: #65000b;
   --color-success: #34d399;
   --color-switch-muted: #717c82;
@@ -100,6 +103,16 @@ textarea {
 
 a {
   color: inherit;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+  vertical-align: middle;
 }
 
 @utility font-display {

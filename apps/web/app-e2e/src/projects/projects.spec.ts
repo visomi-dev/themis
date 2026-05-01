@@ -10,8 +10,7 @@ test.describe('/app/projects', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto('/app/en/projects');
     await expect(page).toHaveURL(projectsUrlPattern);
   });
 

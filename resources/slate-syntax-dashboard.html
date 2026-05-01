@@ -1,55 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script>
-      (function () {
-        function makeStore() {
-          var data = {};
-          var api = {
-            getItem: function (k) {
-              return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null;
-            },
-            setItem: function (k, v) {
-              data[k] = String(v);
-            },
-            removeItem: function (k) {
-              delete data[k];
-            },
-            clear: function () {
-              data = {};
-            },
-            key: function (i) {
-              return Object.keys(data)[i] || null;
-            },
-          };
-          Object.defineProperty(api, 'length', {
-            get: function () {
-              return Object.keys(data).length;
-            },
-          });
-          return api;
-        }
-        function tryShim(name) {
-          var works = false;
-          try {
-            works = !!window[name] && typeof window[name].getItem === 'function';
-            void window[name].length;
-          } catch (_) {
-            works = false;
-          }
-          if (works) return;
-          try {
-            Object.defineProperty(window, name, { configurable: true, value: makeStore() });
-          } catch (_) {
-            try {
-              window[name] = makeStore();
-            } catch (__) {}
-          }
-        }
-        tryShim('localStorage');
-        tryShim('sessionStorage');
-      })();
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Themis — Dashboard</title>
@@ -64,6 +15,7 @@
         --surface-container-lowest: #ffffff;
         --surface-container-low: #f7f2fb;
         --surface-container: #f1ecf6;
+        --surface-bright: #ede8f4;
         --primary: #5275c3;
         --primary-hover: #4462ad;
         --on-primary: #f1f9ff;
@@ -80,6 +32,25 @@
 
         --font-display: 'Manrope', -apple-system, sans-serif;
         --font-body: 'Inter', -apple-system, sans-serif;
+      }
+
+      [data-theme='dark'] {
+        --surface: #070d1f;
+        --surface-container-lowest: #000000;
+        --surface-container-low: #09122b;
+        --surface-container: #0a1839;
+        --surface-bright: #0b1d48;
+        --primary: #7bd0ff;
+        --primary-hover: #5bc4f5;
+        --on-primary: #001827;
+        --on-surface: #dfe4ff;
+        --on-surface-variant: #96a9e6;
+        --outline: #32457c;
+        --outline-variant: #32457c;
+        --tertiary: #c6fff3;
+        --error: #ff6b6b;
+        --error-container: #2a0f0f;
+        --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.4);
       }
 
       *,
@@ -243,7 +214,8 @@
       /* ── TOPBAR ──────────────────────────────── */
       .topbar {
         background: var(--surface-container-lowest);
-        border-bottom: 1px solid rgba(196, 198, 208, 0.1);
+        border-bottom: 1px solid var(--outline-variant);
+        border-bottom-opacity: 0.15;
         padding: 0 32px;
         height: 64px;
         display: flex;
@@ -391,6 +363,7 @@
       .metric-delta.up {
         color: var(--tertiary);
       }
+
       .metric-delta.down {
         color: var(--error);
       }
@@ -545,6 +518,7 @@
       .activity-dot.primary {
         background: var(--primary);
       }
+
       .activity-dot.tertiary {
         background: var(--tertiary);
       }
@@ -600,11 +574,45 @@
       .status-dot.live {
         background: var(--tertiary);
       }
+
       .status-dot.idle {
         background: var(--outline-variant);
       }
+
+      /* ── THEME TOGGLE ─────────────────────────── */
+      .icon-btn.theme-toggle {
+        transition:
+          background 0.12s,
+          color 0.12s;
+      }
+
+      .icon-btn.theme-toggle:hover {
+        background: rgba(26, 28, 34, 0.04);
+      }
+
+      [data-theme='dark'] .icon-btn.theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .sun-icon,
+      .moon-icon {
+        transition: opacity 0.15s;
+      }
+
+      [data-theme='dark'] .sun-icon {
+        display: none;
+      }
+
+      [data-theme='dark'] .moon-icon {
+        display: block;
+      }
+
+      [data-theme='dark'] .icon-btn.theme-toggle {
+        color: var(--on-surface-variant);
+      }
     </style>
   </head>
+
   <body>
     <!-- SIDEBAR -->
     <aside class="sidebar">
@@ -798,6 +806,43 @@
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </button>
+          <button class="icon-btn theme-toggle" id="themeToggle" title="Toggle theme">
+            <svg
+              class="sun-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+            <svg
+              class="moon-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="display: none"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -965,5 +1010,22 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const toggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      toggle.addEventListener('click', () => {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      });
+
+      const saved = localStorage.getItem('theme');
+      if (saved) html.setAttribute('data-theme', saved);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        html.setAttribute('data-theme', 'dark');
+      }
+    </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 @import '@fontsource/jetbrains-mono';
 @import '@fontsource/inter';
 @import '@fontsource/manrope';
+@import '@fontsource/material-symbols-outlined';
 @import 'tailwindcss';
 @import 'primeicons/primeicons.css' layer(utilities);
 
@@ -114,6 +115,7 @@ html.dark ::selection {
 }
 
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-variation-settings:
     'FILL' 0,
     'wght' 300,

@@ -286,6 +286,66 @@
         <source>Toggle theme</source>
         <target>Cambiar tema</target>
       </trans-unit>
+      <trans-unit id="layoutMenuDashboard" datatype="html">
+        <source>Overview</source>
+        <target>Resumen</target>
+      </trans-unit>
+      <trans-unit id="layoutMenuProjects" datatype="html">
+        <source>Projects</source>
+        <target>Proyectos</target>
+      </trans-unit>
+      <trans-unit id="layoutMenuNewProject" datatype="html">
+        <source>New project</source>
+        <target>Nuevo proyecto</target>
+      </trans-unit>
+      <trans-unit id="layoutSidebarAriaLabel" datatype="html">
+        <source>Primary navigation</source>
+        <target>Navegación principal</target>
+      </trans-unit>
+      <trans-unit id="layoutSignedInStatus" datatype="html">
+        <source>Signed in</source>
+        <target>Sesión iniciada</target>
+      </trans-unit>
+      <trans-unit id="layoutOpenNavigation" datatype="html">
+        <source>Open navigation</source>
+        <target>Abrir navegación</target>
+      </trans-unit>
+      <trans-unit id="layoutWorkspaceTitle" datatype="html">
+        <source>Workspace</source>
+        <target>Espacio de trabajo</target>
+      </trans-unit>
+      <trans-unit id="layoutSignOut" datatype="html">
+        <source>Sign out</source>
+        <target>Cerrar sesión</target>
+      </trans-unit>
+      <trans-unit id="layoutMobileNavigationTitle" datatype="html">
+        <source>Navigation</source>
+        <target>Navegación</target>
+      </trans-unit>
+      <trans-unit id="layoutSignOutLabel" datatype="html">
+        <source>Sign out</source>
+        <target>Cerrar sesión</target>
+      </trans-unit>
+      <trans-unit id="layoutOverviewTitle" datatype="html">
+        <source>Overview</source>
+        <target>Resumen</target>
+      </trans-unit>
+      <trans-unit id="layoutSearchPlaceholder" datatype="html">
+        <source>Search projects, tasks...</source>
+        <target>Buscar proyectos, tareas...</target>
+      </trans-unit>
+      <trans-unit id="layoutNotifications" datatype="html">
+        <source>Notifications</source>
+        <target>Notificaciones</target>
+      </trans-unit>
+      <trans-unit id="layoutHelp" datatype="html">
+        <source>Help</source>
+        <target>Ayuda</target>
+      </trans-unit>
+      <trans-unit id="layoutCloseNavigation" datatype="html">
+        <source>Close navigation</source>
+        <target>Cerrar navegación</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -118,7 +118,6 @@ export const verifyLatestCode = async (
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 
   await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
-  await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
   await waitForAuthenticatedSession(page, email);
 };
 
@@ -132,8 +131,18 @@ export const registerAndAuthenticate = async (
   await verifyLatestCode(page, request, email, 'sign_up');
 };
 
+export const signOutViaApi = async (page: Page) => {
+  await page.evaluate(async () => {
+    await fetch('/api/auth/sign-out', {
+      credentials: 'include',
+      method: 'POST',
+    });
+  });
+};
+
 export const registerAndSignOut = async (page: Page, request: APIRequestContext, email: string, password: string) => {
   await registerAndAuthenticate(page, request, email, password);
-  await page.getByRole('button', { name: 'Sign out' }).click();
+  await signOutViaApi(page);
+  await page.goto(signInRoute);
   await expect(page).toHaveURL(/\/app\/en\/sign-in$/);
 };
