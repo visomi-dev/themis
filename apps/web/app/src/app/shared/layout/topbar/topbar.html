@@ -1,0 +1,60 @@
+<header
+  class="border-outline-variant/20 bg-surface-container-lowest dark:bg-surface-container-low flex h-16 shrink-0 items-center gap-6 border-b px-4 lg:px-8"
+>
+  <div
+    class="font-display text-on-surface hidden flex-1 text-lg font-semibold lg:block"
+    i18n="@@layoutOverviewTitle"
+  >
+    Overview
+  </div>
+
+  <button
+    type="button"
+    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm transition-colors lg:hidden"
+    aria-label="Open navigation"
+    i18n-aria-label="@@layoutOpenNavigation"
+    (click)="openMobileMenu.emit()"
+  >
+    <i class="pi pi-bars text-lg"></i>
+  </button>
+
+  <div class="relative ml-auto hidden w-70 md:block">
+    <i class="pi pi-search text-on-surface-variant absolute top-1/2 left-2 -translate-y-1/2 text-sm"></i>
+    <input
+      class="border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant focus:border-primary h-9 w-full border-0 border-b bg-transparent pr-3 pl-9 text-[0.8125rem] transition-colors outline-none"
+      type="search"
+      placeholder="Search projects, tasks..."
+      i18n-placeholder="@@layoutSearchPlaceholder"
+    />
+  </div>
+
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high relative flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
+      aria-label="Notifications"
+      i18n-aria-label="@@layoutNotifications"
+    >
+      <i class="pi pi-bell text-base"></i>
+      <span
+        class="border-surface-container-lowest bg-tertiary absolute top-1.5 right-1.5 h-2 w-2 rounded-full border"
+      ></span>
+    </button>
+    <button
+      type="button"
+      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
+      aria-label="Help"
+      i18n-aria-label="@@layoutHelp"
+    >
+      <i class="pi pi-question-circle text-base"></i>
+    </button>
+    <button
+      type="button"
+      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
+      (click)="toggleTheme()"
+    >
+      <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
+      <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
+    </button>
+  </div>
+</header>

@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 import { PLATFORM_ID, effect, inject, Injectable, signal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 
@@ -21,12 +21,13 @@ export class Realtime {
   readonly authEffect = effect(() => {
     const user = this.auth.user();
 
-    if (!isPlatformBrowser(this.platformId)) {
+    if (isPlatformServer(this.platformId)) {
       return;
     }
 
     if (!user) {
       this.disconnect();
+      
       return;
     }
 
