@@ -34,6 +34,23 @@ const fillCredentials = async (page: Page, email: string, password: string) => {
   await expect(passwordField).toHaveValue(password);
 };
 
+const submitSignUpCredentials = async (page: Page, email: string, password: string) => {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    await fillCredentials(page, email, password);
+    await page.getByRole('button', { name: 'Create account' }).click();
+
+    try {
+      await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
+
+      return;
+    } catch (error) {
+      if (attempt === 1 || !signUpUrlPattern.test(page.url())) {
+        throw error;
+      }
+    }
+  }
+};
+
 const waitForAuthenticatedSession = async (page: Page, email: string) => {
   await expect
     .poll(
@@ -71,9 +88,7 @@ export const authenticateViaApi = async (page: Page, request: APIRequestContext,
 
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);
-  await fillCredentials(page, email, password);
-  await page.getByRole('button', { name: 'Create account' }).click();
-  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
+  await submitSignUpCredentials(page, email, password);
 
   const pin = await readLatestPin(request, email, 'sign_up');
 
@@ -88,10 +103,7 @@ export const signUp = async (page: Page, email: string, password: string) => {
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);
   await expect(page.getByRole('heading', { name: 'Create account' })).toBeVisible();
-  await fillCredentials(page, email, password);
-  await page.getByRole('button', { name: 'Create account' }).click();
-
-  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
+  await submitSignUpCredentials(page, email, password);
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 };
 

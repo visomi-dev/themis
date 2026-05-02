@@ -76,13 +76,14 @@ export class SignUp {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 
     this.errorMessage.set('');
 
     try {
-      await this.auth.submitCredentials('sign_up', this.form.getRawValue());
+      await this.auth.signUp(this.form.getRawValue());
       await this.router.navigate([VERIFY_EMAIL_URL]);
     } catch (error) {
       this.errorMessage.set(

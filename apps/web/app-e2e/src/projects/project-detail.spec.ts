@@ -12,7 +12,10 @@ test.describe('/app/projects/:projectId', () => {
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Detail Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -26,7 +29,10 @@ test.describe('/app/projects/:projectId', () => {
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Metadata Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -40,7 +46,10 @@ test.describe('/app/projects/:projectId', () => {
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Doc Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -53,7 +62,10 @@ test.describe('/app/projects/:projectId', () => {
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('No Docs Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -66,7 +78,10 @@ test.describe('/app/projects/:projectId', () => {
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Sign Out Detail Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 

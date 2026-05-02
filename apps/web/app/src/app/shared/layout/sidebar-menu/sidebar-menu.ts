@@ -1,8 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Auth } from '../../auth/auth';
-import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL } from '../../constants/routes';
+import { APP_URL, DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL } from '../../constants/routes';
+import { Settings } from '../../settings';
 
 type LayoutNavItem = {
   exact: boolean;
@@ -24,9 +25,16 @@ type LayoutNavSection = {
 })
 export class SidebarMenu {
   private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
+  private readonly settings = inject(Settings);
 
   readonly DASHBOARD_URL = DASHBOARD_URL;
-
+  readonly collapsed = input(false);
+  readonly mobileMenuOpen = input(false);
+  readonly closed = output<void>();
+  readonly toggleCollapsed = output<void>();
+  readonly signingOut = signal(false);
+  readonly isDark = this.settings.isDark;
   readonly user = this.auth.user;
 
   readonly userInitials = computed(() => {
@@ -34,8 +42,6 @@ export class SidebarMenu {
 
     return email.slice(0, 2).toUpperCase();
   });
-
-
   readonly navSections: LayoutNavSection[] = [
     {
       label: $localize`:@@layoutWorkspaceTitle:Workspace`,
@@ -61,4 +67,24 @@ export class SidebarMenu {
       ],
     },
   ];
+
+  closeMenu() {
+    this.closed.emit();
+  }
+
+  toggleTheme() {
+    this.settings.toggleTheme();
+  }
+
+  async signOut() {
+    this.signingOut.set(true);
+
+    try {
+      await this.auth.signOut();
+      await this.router.navigateByUrl(APP_URL);
+    } finally {
+      this.signingOut.set(false);
+      this.closeMenu();
+    }
+  }
 }

@@ -48,6 +48,7 @@ const environmentSchema = z
 
 function getEnv({ filePath }: { filePath?: string } = {}) {
   config({ path: filePath });
+
   return environmentSchema.parse(process.env);
 }
 

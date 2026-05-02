@@ -1,13 +1,12 @@
-<div
-  class="dark:font-display flex items-center gap-4 font-[Inter] text-[10px] font-black tracking-[0.2em] text-(--color-switch-muted) uppercase"
->
+<div class="text-on-surface-variant flex items-center gap-4 font-sans text-xs font-black tracking-widest uppercase">
   <a
     [href]="localeUrl('en')"
     hreflang="en"
     [attr.aria-current]="currentLocale() === 'en' ? 'page' : null"
     [attr.aria-label]="localeLabel('en')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'en'"
+    class="hover:text-primary no-underline"
+    [class.text-on-surface]="currentLocale() === 'en'"
+    [class.font-extrabold]="currentLocale() === 'en'"
     >EN</a
   >
   <span class="opacity-30">/</span>
@@ -16,8 +15,9 @@
     hreflang="es"
     [attr.aria-current]="currentLocale() === 'es' ? 'page' : null"
     [attr.aria-label]="localeLabel('es')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'es'"
+    class="hover:text-primary no-underline"
+    [class.text-on-surface]="currentLocale() === 'es'"
+    [class.font-extrabold]="currentLocale() === 'es'"
     >ES</a
   >
 </div>

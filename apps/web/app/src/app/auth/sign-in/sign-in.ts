@@ -76,6 +76,7 @@ export class SignIn {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 

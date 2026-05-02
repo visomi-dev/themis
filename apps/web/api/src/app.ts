@@ -61,10 +61,12 @@ async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
 function createApp(options?: CreateAppOptions) {
   if (options?.mountAuthRuntime === false) {
     embeddedAppPromise ??= buildApp(options);
+
     return embeddedAppPromise;
   }
 
   standaloneAppPromise ??= buildApp(options);
+
   return standaloneAppPromise;
 }
 

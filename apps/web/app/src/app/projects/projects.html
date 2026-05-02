@@ -1,8 +1,8 @@
 <section class="mx-auto flex max-w-6xl flex-col gap-8">
   <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
     <div>
-      <p class="text-primary font-mono text-xs font-semibold tracking-[0.18em] uppercase">Themis</p>
-      <h1 class="font-display text-on-surface mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">Projects</h1>
+      <p class="text-primary font-mono text-xs font-semibold tracking-widest uppercase">Themis</p>
+      <h1 class="text-on-surface font-heading mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">Projects</h1>
       <p class="text-on-surface-variant mt-3 max-w-xl text-sm leading-relaxed">
         Software projects registered in Themis.
       </p>
@@ -25,17 +25,15 @@
     </section>
   } @else {
     <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
-      <div class="bg-surface-container-low hidden grid-cols-[1fr_8rem_9rem_7rem] gap-3 px-6 py-3 md:grid">
-        <span class="text-on-surface-variant text-[0.6875rem] font-semibold tracking-[0.05em] uppercase">Project</span>
-        <span class="text-on-surface-variant text-[0.6875rem] font-semibold tracking-[0.05em] uppercase">Status</span>
-        <span class="text-on-surface-variant text-[0.6875rem] font-semibold tracking-[0.05em] uppercase">Created</span>
-        <span class="text-on-surface-variant text-[0.6875rem] font-semibold tracking-[0.05em] uppercase">Actions</span>
+      <div class="bg-surface-container-low hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
+        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Project</span>
+        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Status</span>
+        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Created</span>
+        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Actions</span>
       </div>
 
       @for (project of projects(); track project.id) {
-        <article
-          class="border-outline-variant/10 grid gap-3 border-t px-6 py-4 md:grid-cols-[1fr_8rem_9rem_7rem] md:items-center"
-        >
+        <article class="border-outline-variant/10 grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
           <div class="min-w-0">
             <a
               class="text-on-surface hover:text-primary font-medium no-underline"
@@ -49,7 +47,7 @@
           </div>
 
           <span
-            class="bg-tertiary-container text-on-tertiary-container w-fit rounded-sm px-2 py-1 text-[0.6875rem] font-semibold"
+            class="bg-tertiary-container text-on-tertiary-container w-fit rounded-sm px-2 py-1 text-xs font-semibold"
           >
             {{ statusLabel(project.status) }}
           </span>

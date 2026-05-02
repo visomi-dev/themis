@@ -4,15 +4,12 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 
 import { Auth } from '../auth/auth';
-import { APP_URL } from '../constants/routes';
-import { Settings } from '../settings';
 
-import { MobileMenu } from './mobile-menu/mobile-menu';
 import { SidebarMenu } from './sidebar-menu/sidebar-menu';
 import { Topbar } from './topbar/topbar';
 
 @Component({
-  imports: [RouterOutlet, SidebarMenu, Topbar, MobileMenu],
+  imports: [RouterOutlet, SidebarMenu, Topbar],
   selector: 'app-layout',
   templateUrl: './layout.html',
   styleUrl: './layout.css',
@@ -20,7 +17,6 @@ import { Topbar } from './topbar/topbar';
 export class Layout {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
-  private readonly settings = inject(Settings);
 
   private readonly navigationEnd = toSignal(
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)),
@@ -30,6 +26,7 @@ export class Layout {
   );
 
   readonly mobileMenuOpen = signal(false);
+  readonly sidebarCollapsed = signal(false);
 
   readonly hideAppShell = computed(() => {
     this.navigationEnd();
@@ -44,8 +41,6 @@ export class Layout {
   });
 
   readonly showAppShell = computed(() => this.auth.isAuthenticated() && !this.hideAppShell());
-  readonly isDark = this.settings.isDark;
-  readonly user = this.auth.user;
 
   openMobileMenu() {
     this.mobileMenuOpen.set(true);
@@ -55,16 +50,7 @@ export class Layout {
     this.mobileMenuOpen.set(false);
   }
 
-  toggleTheme() {
-    this.settings.toggleTheme();
-  }
-
-  async signOut() {
-    try {
-      await this.auth.signOut();
-      await this.router.navigateByUrl(APP_URL);
-    } finally {
-      this.closeMobileMenu();
-    }
+  toggleSidebarCollapsed() {
+    this.sidebarCollapsed.update((collapsed) => !collapsed);
   }
 }

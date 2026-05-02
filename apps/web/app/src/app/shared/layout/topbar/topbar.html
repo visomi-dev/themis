@@ -1,10 +1,7 @@
 <header
   class="border-outline-variant/20 bg-surface-container-lowest dark:bg-surface-container-low flex h-16 shrink-0 items-center gap-6 border-b px-4 lg:px-8"
 >
-  <div
-    class="font-display text-on-surface hidden flex-1 text-lg font-semibold lg:block"
-    i18n="@@layoutOverviewTitle"
-  >
+  <div class="text-on-surface hidden flex-1 font-sans text-lg font-semibold lg:block" i18n="@@layoutOverviewTitle">
     Overview
   </div>
 
@@ -21,7 +18,7 @@
   <div class="relative ml-auto hidden w-70 md:block">
     <i class="pi pi-search text-on-surface-variant absolute top-1/2 left-2 -translate-y-1/2 text-sm"></i>
     <input
-      class="border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant focus:border-primary h-9 w-full border-0 border-b bg-transparent pr-3 pl-9 text-[0.8125rem] transition-colors outline-none"
+      class="border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant focus:border-primary h-9 w-full border-0 border-b bg-transparent pr-3 pl-9 text-sm transition-colors outline-none"
       type="search"
       placeholder="Search projects, tasks..."
       i18n-placeholder="@@layoutSearchPlaceholder"
@@ -55,6 +52,14 @@
     >
       <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
       <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
+    </button>
+    <button
+      type="button"
+      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-sm font-semibold transition-colors"
+      (click)="signOut()"
+    >
+      <i class="pi pi-sign-out text-base"></i>
+      <span i18n="@@layoutSignOutLabel">Sign out</span>
     </button>
   </div>
 </header>

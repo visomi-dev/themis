@@ -60,6 +60,7 @@ export class Activation implements OnInit {
   async createApiKey() {
     if (this.apiKeyForm.invalid) {
       this.apiKeyForm.markAllAsTouched();
+
       return;
     }
 
@@ -240,11 +241,13 @@ export class Activation implements OnInit {
   private async copyText(value: string, message: string) {
     if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
       this.copyMessage.set('Clipboard access is not available in this browser.');
+
       return false;
     }
 
     await navigator.clipboard.writeText(value);
     this.copyMessage.set(message);
+
     return true;
   }
 

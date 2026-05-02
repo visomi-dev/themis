@@ -26,6 +26,7 @@ export function authed(options?: AuthenticatedOptions): RequestHandler {
           statusCode: 401,
         }),
       );
+
       return;
     }
 
@@ -37,6 +38,7 @@ export function authed(options?: AuthenticatedOptions): RequestHandler {
           statusCode: 403,
         }),
       );
+
       return;
     }
 

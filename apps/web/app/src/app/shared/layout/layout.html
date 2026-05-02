@@ -1,21 +1,20 @@
 @if (showAppShell()) {
-  <div class="flex min-h-dvh bg-surface text-on-surface">
-    <app-sidebar-menu />
+  <div class="bg-surface text-on-surface flex min-h-dvh">
+    <app-sidebar-menu
+      [collapsed]="sidebarCollapsed()"
+      [mobileMenuOpen]="mobileMenuOpen()"
+      (closed)="closeMobileMenu()"
+      (toggleCollapsed)="toggleSidebarCollapsed()"
+    />
 
     <section class="flex min-w-0 flex-1 flex-col">
       <app-topbar (openMobileMenu)="openMobileMenu()" />
 
-      <main
-        class="min-w-0 max-h-[calc(100dvh-4rem)] flex-1 overflow-y-auto bg-surface p-8 dark:bg-surface-container-low"
-      >
+      <main class="bg-surface dark:bg-surface-container-low max-h-dvh min-w-0 flex-1 overflow-y-auto p-8">
         <router-outlet />
       </main>
     </section>
   </div>
-
-  @if (mobileMenuOpen()) {
-    <app-mobile-menu (closed)="closeMobileMenu()" />
-  }
 } @else {
   <router-outlet />
 }

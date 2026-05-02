@@ -18,7 +18,7 @@ describe('Auth', () => {
 
     const http = TestBed.inject(HttpTestingController);
 
-    const submitPromise = auth.submitCredentials('sign_up', {
+    const submitPromise = auth.signUp({
       email: 'engineer@themis.dev',
       password: 'S3cureAuth!',
     });

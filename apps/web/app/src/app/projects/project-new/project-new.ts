@@ -44,6 +44,7 @@ export class ProjectNew {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 

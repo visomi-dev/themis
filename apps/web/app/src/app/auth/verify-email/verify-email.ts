@@ -64,6 +64,7 @@ export class VerifyEmail {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 

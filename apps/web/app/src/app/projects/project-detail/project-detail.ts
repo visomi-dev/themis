@@ -34,6 +34,7 @@ export class ProjectDetail implements OnInit {
 
     if (!projectId) {
       await this.router.navigate([PROJECTS_URL]);
+
       return;
     }
 

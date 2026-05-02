@@ -31,9 +31,10 @@ test.describe('/app (first-run activation)', () => {
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
     await page.goto(activationRoute);
 
+    await page.getByLabel(/Named API access keys/i).fill('E2E workspace key');
     await page.getByRole('button', { name: /Generate key/i }).click();
 
-    await expect(page.locator('.activation-key-row p.font-mono').first()).toContainText('thm_');
+    await expect(page.locator('p.font-mono').filter({ hasText: 'thm_' }).first()).toBeVisible();
   });
 
   test('shows workspace configuration section with copyable config', async ({ page, request }) => {

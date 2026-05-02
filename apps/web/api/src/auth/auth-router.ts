@@ -51,6 +51,7 @@ router.post(
       req.login(user, (error) => {
         if (error) {
           reject(error);
+
           return;
         }
 
@@ -76,6 +77,7 @@ router.post(
       async function passportCallback(error: unknown, user?: Express.User, info?: { message?: string }) {
         if (error) {
           next(error);
+
           return;
         }
 
@@ -87,6 +89,7 @@ router.post(
               statusCode: 401,
             }),
           );
+
           return;
         }
 
@@ -110,6 +113,7 @@ router.post(
               req.login(user, (error) => {
                 if (error) {
                   reject(error);
+
                   return;
                 }
 
@@ -118,6 +122,7 @@ router.post(
             });
 
             httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
+
             return;
           }
 
@@ -142,6 +147,7 @@ router.post(
       req.login(user, (error) => {
         if (error) {
           reject(error);
+
           return;
         }
 
@@ -170,6 +176,7 @@ router.post('/sign-out', authed(), async function signOutHandler(req, res) {
     req.logout((error) => {
       if (error) {
         reject(error);
+
         return;
       }
 

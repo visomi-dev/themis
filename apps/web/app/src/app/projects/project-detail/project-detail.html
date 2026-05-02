@@ -11,15 +11,13 @@
     <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div>
         <div class="flex flex-wrap items-center gap-2">
-          <span
-            class="bg-tertiary-container text-on-tertiary-container rounded-sm px-2 py-1 text-[0.6875rem] font-semibold"
-          >
+          <span class="bg-tertiary-container text-on-tertiary-container rounded-sm px-2 py-1 text-xs font-semibold">
             {{ statusLabel(project()!.status) }}
           </span>
           <span class="text-on-surface-variant text-xs">{{ project()!.sourceType }}</span>
         </div>
 
-        <h1 class="font-display text-on-surface mt-3 text-4xl font-extrabold tracking-tight md:text-5xl">
+        <h1 class="text-on-surface font-heading mt-3 text-4xl font-extrabold tracking-tight md:text-5xl">
           {{ project()!.name }}
         </h1>
 
@@ -36,7 +34,7 @@
     <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Project seed</h2>
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Project seed</h2>
           <p class="text-on-surface-variant mt-2 text-sm leading-relaxed">
             Start the base seed job to create the initial project context and overview document.
           </p>
@@ -59,7 +57,7 @@
     </section>
 
     <section class="flex flex-col gap-4">
-      <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Documents</h2>
+      <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Documents</h2>
 
       @if (project()!.documents.length === 0) {
         <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
@@ -75,7 +73,7 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <h3 class="text-on-surface text-base font-semibold">{{ doc.title }}</h3>
                   <span
-                    class="border-outline-variant/40 text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase"
+                    class="border-outline-variant/40 text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-xs font-medium tracking-wide uppercase"
                   >
                     {{ documentTypeLabel(doc.documentType) }}
                   </span>

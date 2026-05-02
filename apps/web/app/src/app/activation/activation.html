@@ -1,9 +1,9 @@
 <section class="mx-auto flex max-w-6xl flex-col gap-8">
   <header class="flex flex-col gap-3">
-    <p class="text-primary font-mono text-xs font-semibold tracking-[0.18em] uppercase">v1.0.2_stable</p>
+    <p class="text-primary font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
-        <h1 class="font-display text-on-surface text-4xl font-extrabold tracking-tight md:text-5xl">
+        <h1 class="text-on-surface font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
           System activation
         </h1>
         <p class="text-on-surface-variant mt-3 max-w-2xl text-sm leading-relaxed md:text-base">
@@ -33,25 +33,25 @@
           <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
             >01</span
           >
-          <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">API infrastructure</h2>
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">API infrastructure</h2>
         </div>
 
         <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
           <label
-            class="text-on-surface-variant mb-4 block text-sm font-semibold tracking-[0.18em] uppercase"
+            class="text-on-surface-variant mb-4 block text-sm font-semibold tracking-widest uppercase"
             for="activation-api-key-label"
           >
             Named API access keys
           </label>
 
-          <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="grid gap-3 md:grid-cols-[1fr_auto]">
+          <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="flex flex-col gap-3 md:flex-row">
             <input
               id="activation-api-key-label"
               pInputText
               type="text"
               formControlName="label"
               placeholder="Production workspace key"
-              class="w-full"
+              class="w-full md:flex-1"
             />
 
             <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
@@ -108,7 +108,7 @@
 
             <div class="border-error bg-error-container/20 border-l-2 px-4 py-3">
               <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-                <p class="text-on-surface shrink-0 text-xs font-black tracking-[0.18em] uppercase">Caution</p>
+                <p class="text-on-surface shrink-0 text-xs font-black tracking-widest uppercase">Caution</p>
                 <p class="text-on-surface-variant text-sm leading-relaxed">
                   Each key is displayed only once. Copy it immediately before leaving this screen.
                 </p>
@@ -123,7 +123,7 @@
           <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
             >02</span
           >
-          <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Workspace configuration</h2>
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Workspace configuration</h2>
         </div>
 
         <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
@@ -178,11 +178,11 @@
           <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
             >03</span
           >
-          <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Seed configuration</h2>
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Seed configuration</h2>
         </div>
 
         <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-          <p class="text-on-surface-variant font-semibold tracking-[0.18em] uppercase">System seed prompt</p>
+          <p class="text-on-surface-variant font-semibold tracking-widest uppercase">System seed prompt</p>
           <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
             Use this prompt inside OpenCode to analyze the repository and seed the first project context into Themis.
           </p>
@@ -205,7 +205,7 @@
       >
         <div class="flex items-center gap-3">
           <span class="bg-tertiary h-2 w-2 rounded-full"></span>
-          <span class="text-on-surface-variant font-mono text-[10px] tracking-[0.15em] uppercase">
+          <span class="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
             @if (hasMilestone('activation_completed')) {
               Activation completed
             } @else if (hasMilestone('activation_skipped')) {

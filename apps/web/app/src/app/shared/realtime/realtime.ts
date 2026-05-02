@@ -27,7 +27,7 @@ export class Realtime {
 
     if (!user) {
       this.disconnect();
-      
+
       return;
     }
 
@@ -47,8 +47,17 @@ export class Realtime {
       withCredentials: true,
     });
 
-    this.socket.on('connect', () => this.connectedState.set(true));
-    this.socket.on('disconnect', () => this.connectedState.set(false));
+    this.socket.on('connect', () => {
+      this.connectedState.set(true);
+
+      console.log({
+        connected: true,
+      });
+    });
+
+    this.socket.on('disconnect', () => {
+      this.connectedState.set(false);
+    });
 
     for (const name of ['job:queued', 'job:started', 'job:progress', 'job:completed', 'job:failed'] as const) {
       this.socket.on(name, (event: AsyncJobEvent) => this.lastEventState.set(event));

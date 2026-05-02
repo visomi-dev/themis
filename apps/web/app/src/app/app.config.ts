@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   inject,
@@ -14,12 +14,13 @@ import { appRoutes } from './app.routes';
 import { ThemisPreset } from './app.theme';
 import { Auth } from './shared/auth/auth';
 import { Settings } from './shared/settings';
+import { httpInterceptor } from './shared/http-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([httpInterceptor])),
     provideClientHydration(withI18nSupport(), withEventReplay()),
     providePrimeNG({
       ripple: false,

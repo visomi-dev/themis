@@ -1,0 +1,288 @@
+<!doctype html>
+
+<html class="light dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Themis - System Activation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'tertiary-fixed': '#8cfecf',
+              'surface-container-lowest': '#000000',
+              'primary-dim': '#9cb2ec',
+              'outline-variant': '#3c4863',
+              secondary: '#b3ccc1',
+              'on-primary-fixed-variant': '#2d4476',
+              error: '#ff716c',
+              'on-background': '#dde5ff',
+              outline: '#697593',
+              'on-error-container': '#ff9993',
+              'tertiary-dim': '#7eefc2',
+              'on-surface-variant': '#9eabcb',
+              'surface-bright': '#1d2c49',
+              'surface-variant': '#19253f',
+              'on-tertiary-fixed-variant': '#006d4f',
+              'on-surface': '#dde5ff',
+              'on-secondary': '#2e453c',
+              'surface-container-highest': '#19253f',
+              primary: '#bdceff',
+              'surface-container-low': '#0b1323',
+              'on-tertiary-container': '#006146',
+              background: '#080e1b',
+              'inverse-on-surface': '#4f5565',
+              'on-error': '#490006',
+              'tertiary-container': '#8cfecf',
+              'inverse-primary': '#485e92',
+              tertiary: '#daffeb',
+              'surface-container': '#10192c',
+              'secondary-fixed-dim': '#cee8dc',
+              'on-secondary-fixed': '#364d44',
+              'secondary-dim': '#a5beb3',
+              'secondary-container': '#132a22',
+              'primary-container': '#aac0fb',
+              'surface-container-high': '#141f35',
+              'inverse-surface': '#f9f9ff',
+              'on-secondary-fixed-variant': '#526960',
+              'on-primary': '#2d4477',
+              'on-secondary-container': '#90a99e',
+              'tertiary-fixed-dim': '#7eefc2',
+              'on-tertiary': '#006b4d',
+              'on-primary-container': '#233b6d',
+              'primary-fixed-dim': '#9cb2ec',
+              'surface-tint': '#bdceff',
+              'on-primary-fixed': '#092557',
+              'surface-dim': '#080e1b',
+              surface: '#080e1b',
+              'error-dim': '#c94947',
+              'on-tertiary-fixed': '#004d37',
+              'error-container': '#8a1a1e',
+              'secondary-fixed': '#dcf7ea',
+              'primary-fixed': '#aac0fb',
+            },
+            borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' },
+            fontFamily: {
+              headline: ['Manrope'],
+              body: ['Manrope'],
+              label: ['Manrope'],
+              mono: ['JetBrains Mono'],
+              display: ['Manrope'],
+              'headline-sm': ['Manrope'],
+              'body-md': ['Manrope'],
+              'label-sm': ['Manrope'],
+              'display-lg': ['Manrope'],
+            },
+            fontSize: {
+              'headline-sm': ['1.5rem', { lineHeight: '1.3', fontWeight: '600' }],
+              'body-md': ['0.875rem', { lineHeight: '1.6', fontWeight: '400' }],
+              'label-sm': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.05em', fontWeight: '600' }],
+              'display-lg': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+            },
+            spacing: { margin: '1.5rem', gutter: '1rem', unit: '0.5rem', base: '2' },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+        vertical-align: middle;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-surface text-on-surface flex min-h-screen flex-col items-center justify-center">
+    <main class="w-full max-w-4xl px-8 py-20">
+      <!-- Headline -->
+      <header class="mb-12 text-center">
+        <div class="mb-6 inline-flex items-center gap-2">
+          <span class="font-['Manrope'] text-2xl font-bold tracking-tighter text-blue-900">Themis</span>
+          <div class="bg-outline-variant/30 h-4 w-px"></div>
+          <p class="font-['Inter'] text-[12px] leading-tight tracking-[0.2em] text-slate-500 uppercase">
+            v1.0.2_STABLE
+          </p>
+        </div>
+        <h1 class="font-headline text-on-surface text-4xl font-extrabold tracking-tighter">System Activation</h1>
+        <p class="text-on-surface-variant font-body mx-auto mt-3 max-w-xl text-sm">
+          Configure core environment variables and HTTP streamable protocol hooks to initialize the Themis orchestration
+          engine.
+        </p>
+      </header>
+      <div class="space-y-12">
+        <!-- Section 1: API Infrastructure -->
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="text-primary bg-primary-container rounded-sm px-2 py-0.5 font-mono text-xs">01</span>
+            <h2 class="font-headline text-on-surface text-lg font-bold tracking-tight">API Infrastructure</h2>
+          </div>
+          <div class="bg-surface-container-lowest border-outline-variant/10 border p-8 shadow-sm">
+            <label class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-widest uppercase"
+              >Master API Access Key</label
+            >
+            <div class="flex flex-col gap-4">
+              <div class="flex gap-2">
+                <div
+                  class="bg-surface-container-low border-outline-variant/20 text-on-surface-variant flex flex-1 items-center border-b px-4 py-4 font-mono text-sm italic"
+                >
+                  ••••••••••••••••••••••••••••••••••••
+                </div>
+                <button
+                  class="bg-primary text-on-primary flex items-center gap-2 px-8 py-2 text-xs font-bold transition-all hover:opacity-90"
+                >
+                  GENERATE KEY
+                </button>
+              </div>
+              <div class="bg-error-container/10 border-error flex items-start gap-3 border-l-2 p-4">
+                <span class="material-symbols-outlined text-error text-[20px]" data-icon="warning">warning</span>
+                <p class="text-on-surface-variant text-[12px] leading-relaxed">
+                  <span class="text-on-surface font-bold tracking-tight uppercase">Caution:</span> This key will only be
+                  displayed once. Copy and store it securely in your environment vault.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Section 2: OpenCode MCP Configuration -->
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="text-primary bg-primary-container rounded-sm px-2 py-0.5 font-mono text-xs">02</span>
+            <h2 class="font-headline text-on-surface text-lg font-bold tracking-tight">
+              OpenCode MCP Configuration
+              <span class="text-on-surface-variant ml-2 font-mono text-xs font-normal opacity-60"
+                >(HTTP Streamable)</span
+              >
+            </h2>
+          </div>
+          <div class="bg-surface-container-lowest border-outline-variant/10 overflow-hidden border">
+            <!-- Tab Header -->
+            <div class="border-outline-variant/10 bg-surface-container-low flex border-b">
+              <button
+                class="border-outline-variant/10 text-primary flex items-center gap-2 border-r bg-white px-6 py-3 font-mono text-[11px] font-medium"
+              >
+                <span class="bg-primary h-1.5 w-1.5 rounded-full"></span>
+                ~/.config/themis/mcp.json
+              </button>
+              <button
+                class="border-outline-variant/10 text-on-surface-variant border-r px-6 py-3 font-mono text-[11px] font-medium transition-colors hover:bg-white/50"
+              >
+                ~/.config/opencode/opencode.json
+              </button>
+              <button
+                class="border-outline-variant/10 text-on-surface-variant border-r px-6 py-3 font-mono text-[11px] font-medium transition-colors hover:bg-white/50"
+              >
+                .env.production
+              </button>
+            </div>
+            <!-- Tab Content -->
+            <div class="bg-[#0a0c12] p-0">
+              <div class="p-6 font-mono text-[13px] leading-relaxed text-[#d1d5db]">
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">1</span>
+                  <span class="text-[#89ddff]">&#123;</span>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">2</span>
+                  <span class="pl-4"
+                    >"<span class="text-tertiary-fixed">version</span>":
+                    <span class="text-secondary-fixed-dim">"2.0.0"</span>,</span
+                  >
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">3</span>
+                  <span class="pl-4"
+                    >"<span class="text-tertiary-fixed">protocol</span>":
+                    <span class="text-secondary-fixed-dim">"http-streamable"</span>,</span
+                  >
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">4</span>
+                  <span class="pl-4"
+                    >"<span class="text-tertiary-fixed">endpoint</span>":
+                    <span class="text-secondary-fixed-dim">"https://api.themis.io/v1/stream"</span>,</span
+                  >
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">5</span>
+                  <span class="pl-4"
+                    >"<span class="text-tertiary-fixed">auth_mode</span>":
+                    <span class="text-secondary-fixed-dim">"bearer_jwt"</span></span
+                  >
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-slate-600 select-none">6</span>
+                  <span class="text-[#89ddff]">&#125;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-on-surface-variant mt-4 text-right text-[11px] italic">
+            Run `themis pull-config` to synchronize local files with the cloud orchestration layer.
+          </p>
+        </section>
+        <!-- Section 3: Seed Configuration -->
+        <section>
+          <div class="mb-6 flex items-center gap-3">
+            <span class="text-primary bg-primary-container rounded-sm px-2 py-0.5 font-mono text-xs">03</span>
+            <h2 class="font-headline text-on-surface text-lg font-bold tracking-tight">Seed Configuration</h2>
+          </div>
+          <div class="bg-surface-container-lowest border-outline-variant/10 border p-8">
+            <div class="mb-4 flex items-end justify-between">
+              <label class="text-on-surface-variant text-[11px] font-semibold tracking-widest uppercase"
+                >System Seed Prompt</label
+              >
+              <button class="text-primary flex items-center gap-1 text-[10px] font-bold hover:underline">
+                <span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span>
+                COPY PROMPT
+              </button>
+            </div>
+            <div class="relative">
+              <textarea
+                class="bg-surface-container-low text-on-surface/70 h-32 w-full resize-none border-none p-6 font-mono text-xs leading-relaxed focus:ring-0"
+                readonly=""
+              >
+IDENTIFIER: THEMIS_ORCHESTRATOR
+ROLE: SYSTEM_LEVEL_GOVERNANCE
+CONTEXT: Model Context Protocol v2.0
+DIRECTIVE: Maintain strict technical precision. Prioritize efficiency in execution paths. All output must adhere to YAML schema defined in core_specs.md. Do not inject conversational filler.</textarea
+              >
+            </div>
+          </div>
+        </section>
+        <!-- Action Footer -->
+        <div class="border-outline-variant/10 flex items-center justify-between border-t pt-12">
+          <div class="flex items-center gap-3">
+            <span class="bg-tertiary h-2 w-2 animate-pulse rounded-full"></span>
+            <span class="text-on-surface-variant font-mono text-[10px] tracking-[0.15em] uppercase"
+              >Pending secure initialization...</span
+            >
+          </div>
+          <div class="flex gap-6">
+            <button class="text-on-surface-variant hover:text-primary px-6 py-3 text-xs font-bold transition-colors">
+              Skip for now
+            </button>
+            <button
+              class="bg-primary text-on-primary hover:bg-primary-dim px-10 py-3 text-xs font-bold tracking-wide shadow-lg transition-all"
+            >
+              CONTINUE TO PROJECTS
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

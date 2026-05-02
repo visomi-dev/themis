@@ -7,7 +7,6 @@ import { PENDING_CHALLENGE_KEY } from '../constants/storage';
 
 import type {
   AuthChallenge,
-  AuthMode,
   AuthUser,
   AuthenticatedResponse,
   ChallengeResponse,
@@ -53,9 +52,7 @@ export class Auth {
       return;
     }
 
-    const sessionRequestOptions = this.createSessionRequestOptions();
-
-    if (isPlatformServer(this.platformId) && !sessionRequestOptions) {
+    if (isPlatformServer(this.platformId) && !this.requestContext?.user) {
       this.userState.set(null);
       this.sessionLoadedState.set(true);
 
@@ -63,7 +60,7 @@ export class Auth {
     }
 
     try {
-      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session', sessionRequestOptions));
+      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
 
       this.userState.set(response.data.user);
     } catch {
@@ -71,25 +68,6 @@ export class Auth {
     } finally {
       this.sessionLoadedState.set(true);
     }
-  }
-
-  private createSessionRequestOptions() {
-    if (isPlatformBrowser(this.platformId)) {
-      return undefined;
-    }
-
-    const cookie = this.request?.headers.get('cookie');
-
-    if (!cookie) {
-      return undefined;
-    }
-
-    return {
-      headers: {
-        cookie,
-      },
-      transferCache: false,
-    };
   }
 
   async signInWithPassword(payload: CredentialsPayload) {
@@ -123,22 +101,6 @@ export class Auth {
       console.error(error);
 
       throw error;
-    } finally {
-      this.submittingState.set(false);
-    }
-  }
-
-  async submitCredentials(mode: AuthMode, payload: CredentialsPayload) {
-    this.submittingState.set(true);
-
-    try {
-      const endpoint = mode === 'sign_in' ? '/api/auth/sign-in/password' : '/api/auth/sign-up';
-
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>(endpoint, payload));
-
-      this.setPendingChallenge(response.data);
-
-      return response.data;
     } finally {
       this.submittingState.set(false);
     }
@@ -232,6 +194,7 @@ export class Auth {
 
     if (!challenge) {
       window.sessionStorage.removeItem(PENDING_CHALLENGE_KEY);
+
       return;
     }
 
