@@ -1,5 +1,11 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 import { provideClientHydration, withEventReplay, withI18nSupport } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
@@ -8,14 +14,13 @@ import { appRoutes } from './app.routes';
 import { ThemisPreset } from './app.theme';
 import { Auth } from './shared/auth/auth';
 import { Settings } from './shared/settings';
+import { httpInterceptor } from './shared/http-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    Auth,
-    Settings,
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([httpInterceptor])),
     provideClientHydration(withI18nSupport(), withEventReplay()),
     providePrimeNG({
       ripple: false,
@@ -27,5 +32,9 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideRouter(appRoutes),
+    provideAppInitializer(() => inject(Auth).ensureSessionLoaded()),
+
+    Auth,
+    Settings,
   ],
 };

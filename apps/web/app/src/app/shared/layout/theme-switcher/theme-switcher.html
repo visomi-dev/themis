@@ -1,4 +1,8 @@
-<button class="auth-theme-toggle" type="button" (click)="settings.toggleTheme()">
+<button
+  class="border-outline/20 bg-surface text-on-surface-variant hover:bg-surface-container-low hover:text-primary inline-flex h-10 w-10 items-center justify-center rounded-md border transition-colors"
+  type="button"
+  (click)="settings.toggleTheme()"
+>
   <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
   <i class="pi" [class.pi-moon]="!settings.isDark()" [class.pi-sun]="settings.isDark()"></i>
 </button>

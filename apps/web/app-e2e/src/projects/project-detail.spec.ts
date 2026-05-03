@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, authenticateViaApi } from '../support/auth';
-import { signInUrlPattern } from '../support/routes';
+import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
+import { projectsRoute, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
 
@@ -10,9 +10,12 @@ test.describe('/app/projects/:projectId', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Detail Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -24,9 +27,12 @@ test.describe('/app/projects/:projectId', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Metadata Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -38,9 +44,12 @@ test.describe('/app/projects/:projectId', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Doc Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -51,9 +60,12 @@ test.describe('/app/projects/:projectId', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('No Docs Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
@@ -64,13 +76,16 @@ test.describe('/app/projects/:projectId', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto(projectsRoute);
 
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Sign Out Detail Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await page.getByRole('button', { name: /Sign out/i }).click();
+    await signOutViaMenu(page);
 
     await expect(page).toHaveURL(signInUrlPattern);
   });

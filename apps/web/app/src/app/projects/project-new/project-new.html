@@ -1,65 +1,50 @@
-<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
-  <section class="mx-auto max-w-3xl py-6 md:py-10">
-    <header class="mb-8">
-      <div class="flex items-center gap-4">
-        <a [routerLink]="projectsUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline">
-          Projects
-        </a>
+<section class="mx-auto flex max-w-3xl flex-col gap-8">
+  <header>
+    <div class="flex items-center gap-3 text-sm">
+      <a [routerLink]="projectsUrl" class="text-primary font-semibold no-underline hover:underline">Projects</a>
+      <span class="text-outline-variant">/</span>
+      <span class="text-on-surface-variant">New project</span>
+    </div>
 
-        <span class="text-outline-variant text-sm">/</span>
+    <h1 class="text-on-surface font-heading mt-6 text-4xl font-extrabold tracking-tight">New project</h1>
+  </header>
 
-        <span class="text-on-surface-variant text-sm">New project</span>
+  @if (errorMessage()) {
+    <p-message severity="error">{{ errorMessage() }}</p-message>
+  }
 
-        <div class="ml-auto">
-          <app-theme-switcher />
-        </div>
+  <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
+      <div>
+        <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-name">Project name</label>
+        <input
+          id="project-name"
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="My application"
+          class="w-full"
+        />
       </div>
 
-      <h1 class="font-display text-on-surface mt-6 text-4xl font-extrabold tracking-tighter">New project</h1>
-    </header>
+      <div>
+        <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-summary">
+          Summary <span class="text-on-surface-variant font-normal">(optional)</span>
+        </label>
+        <textarea
+          id="project-summary"
+          pInputText
+          formControlName="summary"
+          placeholder="A short description of the project"
+          class="w-full"
+          rows="3"
+        ></textarea>
+      </div>
 
-    @if (errorMessage()) {
-      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
-    }
-
-    <section class="auth-panel rounded-xl p-6 md:p-8">
-      <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
-        <div>
-          <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-name">
-            Project name
-          </label>
-
-          <input
-            id="project-name"
-            pInputText
-            type="text"
-            formControlName="name"
-            placeholder="My application"
-            class="w-full"
-          />
-        </div>
-
-        <div>
-          <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-summary">
-            Summary <span class="text-on-surface-variant font-normal">(optional)</span>
-          </label>
-
-          <textarea
-            id="project-summary"
-            pInputText
-            formControlName="summary"
-            placeholder="A short description of the project"
-            class="w-full"
-            rows="3"
-          ></textarea>
-        </div>
-
-        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <a [routerLink]="projectsUrl" pButton type="button" severity="secondary" [outlined]="true"> Cancel </a>
-
-          <button pButton type="submit" [disabled]="submitting()">Create project</button>
-        </div>
-      </form>
-    </section>
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <a [routerLink]="projectsUrl" pButton type="button" severity="secondary" [outlined]="true">Cancel</a>
+        <button pButton type="submit" [disabled]="submitting()">Create project</button>
+      </div>
+    </form>
   </section>
-</main>
+</section>

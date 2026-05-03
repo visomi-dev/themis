@@ -40,6 +40,7 @@ export const challengeVerificationSchema = z
   .object({
     challengeId: challengeIdSchema,
     pin: pinSchema,
+    rememberDevice: z.boolean().optional().default(false),
   })
   .meta({ id: 'AuthChallengeVerification' });
 
@@ -74,6 +75,14 @@ export const messageResponseSchema = z
     message: z.string(),
   })
   .meta({ id: 'MessageResponse' });
+
+export const challengeOrAuthSchema = z
+  .object({
+    authenticated: z.literal(true),
+    user: authUserSchema,
+  })
+  .or(challengeSchema)
+  .meta({ id: 'AuthChallengeOrAuthenticated' });
 
 export const authOpenApiPaths = {
   '/auth/session': {
@@ -113,8 +122,8 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: credentialsSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: challengeSchema } },
-          description: 'Sign-in challenge created.',
+          content: { 'application/json': { schema: challengeOrAuthSchema } },
+          description: 'Sign-in challenge created or already verified.',
         },
       },
     },

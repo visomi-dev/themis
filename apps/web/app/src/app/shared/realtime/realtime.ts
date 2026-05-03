@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 import { PLATFORM_ID, effect, inject, Injectable, signal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 
@@ -21,12 +21,13 @@ export class Realtime {
   readonly authEffect = effect(() => {
     const user = this.auth.user();
 
-    if (!isPlatformBrowser(this.platformId)) {
+    if (isPlatformServer(this.platformId)) {
       return;
     }
 
     if (!user) {
       this.disconnect();
+
       return;
     }
 
@@ -46,8 +47,17 @@ export class Realtime {
       withCredentials: true,
     });
 
-    this.socket.on('connect', () => this.connectedState.set(true));
-    this.socket.on('disconnect', () => this.connectedState.set(false));
+    this.socket.on('connect', () => {
+      this.connectedState.set(true);
+
+      console.log({
+        connected: true,
+      });
+    });
+
+    this.socket.on('disconnect', () => {
+      this.connectedState.set(false);
+    });
 
     for (const name of ['job:queued', 'job:started', 'job:progress', 'job:completed', 'job:failed'] as const) {
       this.socket.on(name, (event: AsyncJobEvent) => this.lastEventState.set(event));

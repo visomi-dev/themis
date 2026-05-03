@@ -1,245 +1,237 @@
-<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
-  <section class="mx-auto max-w-5xl py-6 md:py-12">
-    <header class="mb-12 text-center">
-      <div class="inline-flex items-center gap-3">
-        <p class="font-display text-on-surface text-2xl font-bold tracking-tight">Themis</p>
-        <span class="bg-outline-variant/30 h-4 w-px"></span>
-        <p class="text-on-surface-variant text-[12px] tracking-[0.18em] uppercase">v1.0.2_STABLE</p>
+<section class="mx-auto flex max-w-6xl flex-col gap-8">
+  <header class="flex flex-col gap-3">
+    <p class="text-primary font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h1 class="text-on-surface font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
+          System activation
+        </h1>
+        <p class="text-on-surface-variant mt-3 max-w-2xl text-sm leading-relaxed md:text-base">
+          Configure your API key, local workspace settings, and project seed prompt before entering the first projects
+          surface.
+        </p>
       </div>
+    </div>
+  </header>
 
-      <div class="mt-6 flex justify-center gap-3">
-        <app-theme-switcher />
-        <button pButton type="button" severity="secondary" [outlined]="true" (click)="signOut()">Sign out</button>
-      </div>
+  @if (errorMessage()) {
+    <p-message severity="error">{{ errorMessage() }}</p-message>
+  }
 
-      <h1 class="font-display text-on-surface mt-8 text-4xl font-extrabold tracking-tighter md:text-5xl">
-        System activation
-      </h1>
-      <p class="text-on-surface-variant mx-auto mt-3 max-w-2xl text-sm leading-relaxed md:text-base">
-        Configure your API key, local workspace settings, and project seed prompt before entering the first projects
-        surface.
-      </p>
-    </header>
+  @if (copyMessage()) {
+    <p-message severity="success">{{ copyMessage() }}</p-message>
+  }
 
-    @if (errorMessage()) {
-      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
-    }
+  @if (loading()) {
+    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
+      <p class="text-on-surface-variant text-sm">Loading activation settings...</p>
+    </section>
+  } @else {
+    <div class="space-y-8">
+      <section>
+        <div class="mb-4 flex items-center gap-3">
+          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
+            >01</span
+          >
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">API infrastructure</h2>
+        </div>
 
-    @if (copyMessage()) {
-      <p-message class="mb-6 block" severity="success">{{ copyMessage() }}</p-message>
-    }
+        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
+          <label
+            class="text-on-surface-variant mb-4 block text-sm font-semibold tracking-widest uppercase"
+            for="activation-api-key-label"
+          >
+            Named API access keys
+          </label>
 
-    @if (loading()) {
-      <section class="auth-panel rounded-xl p-6 md:p-8">
-        <p class="text-on-surface-variant text-sm">Loading activation settings…</p>
-      </section>
-    } @else {
-      <div class="space-y-10">
-        <section>
-          <div class="mb-6 flex items-center gap-3">
-            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">01</span>
-            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">API infrastructure</h2>
-          </div>
+          <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="flex flex-col gap-3 md:flex-row">
+            <input
+              id="activation-api-key-label"
+              pInputText
+              type="text"
+              formControlName="label"
+              placeholder="Production workspace key"
+              class="w-full md:flex-1"
+            />
 
-          <section class="auth-panel rounded-xl p-6 md:p-8">
-            <label
-              class="text-on-surface-variant mb-4 block text-[11px] font-semibold tracking-[0.2em] uppercase"
-              for="activation-api-key-label"
-            >
-              Named API access keys
-            </label>
+            <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
+          </form>
 
-            <div class="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-              <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="grid gap-3 md:grid-cols-[1fr_auto]">
-                <input
-                  id="activation-api-key-label"
-                  pInputText
-                  type="text"
-                  formControlName="label"
-                  placeholder="Production workspace key"
-                  class="w-full"
-                />
-
-                <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
-              </form>
-
-              <div class="activation-warning rounded-lg px-4 py-3">
-                <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-                  <p class="text-on-surface shrink-0 text-xs font-black tracking-[0.18em] uppercase">Caution</p>
-                  <p class="text-on-surface-variant text-sm leading-relaxed">
-                    Each key is displayed only once. Copy it immediately before leaving this screen.
-                  </p>
-                </div>
+          <div class="mt-5 grid gap-3">
+            @if ((activationState()?.apiKeys?.length ?? 0) === 0) {
+              <div
+                class="border-outline-variant/20 bg-surface-container-low text-on-surface-variant rounded-sm border px-4 py-5 font-mono text-sm italic"
+              >
+                ••••••••••••••••••••••••••••••••••••
               </div>
-            </div>
+            }
 
-            <div class="mt-5 grid gap-3">
-              @if ((activationState()?.apiKeys?.length ?? 0) === 0) {
-                <div class="activation-mask-panel rounded-lg px-4 py-5 font-mono text-sm italic">
-                  ••••••••••••••••••••••••••••••••••••
-                </div>
-              }
-
-              @for (apiKey of activationState()?.apiKeys ?? []; track apiKey.id) {
-                <article class="activation-key-row rounded-lg px-4 py-4">
-                  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div class="min-w-0">
-                      <p class="text-on-surface text-sm font-semibold">{{ apiKey.label }}</p>
-                      @if (plaintextTokenFor(apiKey)) {
-                        <p class="text-primary mt-1 font-mono text-xs break-all">
-                          {{ plaintextTokenFor(apiKey) }}
-                        </p>
-                      } @else {
-                        <p class="text-on-surface-variant mt-1 font-mono text-xs">
-                          {{ apiKey.tokenPrefix }}… created {{ keyCreatedAtLabel(apiKey) }}
-                        </p>
-                      }
-                    </div>
-
-                    <div class="flex shrink-0 flex-col gap-3 sm:flex-row md:gap-8">
-                      @if (plaintextTokenFor(apiKey)) {
-                        <button pButton type="button" severity="info" [outlined]="true" (click)="copyGeneratedKey()">
-                          Copy key
-                        </button>
-                      }
-
-                      <button
-                        pButton
-                        type="button"
-                        severity="danger"
-                        [outlined]="true"
-                        [disabled]="revokingKeyId() === apiKey.id"
-                        (click)="revokeApiKey(apiKey.id)"
-                      >
-                        Revoke
-                      </button>
-                    </div>
+            @for (apiKey of activationState()?.apiKeys ?? []; track apiKey.id) {
+              <article
+                class="border-outline-variant/20 bg-surface-container-low dark:bg-surface-container-high rounded-sm border p-4"
+              >
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div class="min-w-0">
+                    <p class="text-on-surface text-sm font-semibold">{{ apiKey.label }}</p>
+                    @if (plaintextTokenFor(apiKey)) {
+                      <p class="text-primary mt-1 font-mono text-xs break-all">
+                        {{ plaintextTokenFor(apiKey) }}
+                      </p>
+                    } @else {
+                      <p class="text-on-surface-variant mt-1 font-mono text-xs">
+                        {{ apiKey.tokenPrefix }}... created {{ keyCreatedAtLabel(apiKey) }}
+                      </p>
+                    }
                   </div>
-                </article>
-              }
-            </div>
-          </section>
-        </section>
 
-        <section>
-          <div class="mb-6 flex items-center gap-3">
-            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">02</span>
-            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Workspace configuration</h2>
+                  <div class="flex shrink-0 flex-col gap-3 sm:flex-row md:gap-4">
+                    @if (plaintextTokenFor(apiKey)) {
+                      <button pButton type="button" severity="info" [outlined]="true" (click)="copyGeneratedKey()">
+                        Copy key
+                      </button>
+                    }
+
+                    <button
+                      pButton
+                      type="button"
+                      severity="danger"
+                      [outlined]="true"
+                      [disabled]="revokingKeyId() === apiKey.id"
+                      (click)="revokeApiKey(apiKey.id)"
+                    >
+                      Revoke
+                    </button>
+                  </div>
+                </div>
+              </article>
+            }
+
+            <div class="border-error bg-error-container/20 border-l-2 px-4 py-3">
+              <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+                <p class="text-on-surface shrink-0 text-xs font-black tracking-widest uppercase">Caution</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed">
+                  Each key is displayed only once. Copy it immediately before leaving this screen.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section>
+        <div class="mb-4 flex items-center gap-3">
+          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
+            >02</span
+          >
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Workspace configuration</h2>
+        </div>
+
+        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
+          <div class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
+            <button
+              type="button"
+              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              [class.bg-surface-container-lowest]="selectedConfigTab() === 'themis'"
+              [class.text-primary]="selectedConfigTab() === 'themis'"
+              (click)="selectConfigTab('themis')"
+            >
+              ~/.config/themis/core.json
+            </button>
+            <button
+              type="button"
+              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              [class.bg-surface-container-lowest]="selectedConfigTab() === 'opencode'"
+              [class.text-primary]="selectedConfigTab() === 'opencode'"
+              (click)="selectConfigTab('opencode')"
+            >
+              ~/.config/opencode/opencode.json
+            </button>
+            <button
+              type="button"
+              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              [class.bg-surface-container-lowest]="selectedConfigTab() === 'env'"
+              [class.text-primary]="selectedConfigTab() === 'env'"
+              (click)="selectConfigTab('env')"
+            >
+              .env.production
+            </button>
           </div>
 
-          <section class="auth-panel overflow-hidden rounded-xl">
-            <div class="activation-tab-strip border-outline-variant/10 flex flex-wrap border-b">
-              <button
-                type="button"
-                class="activation-tab"
-                [class.activation-tab-active]="selectedConfigTab() === 'themis'"
-                (click)="selectConfigTab('themis')"
-              >
-                ~/.config/themis/core.json
-              </button>
-              <button
-                type="button"
-                class="activation-tab"
-                [class.activation-tab-active]="selectedConfigTab() === 'opencode'"
-                (click)="selectConfigTab('opencode')"
-              >
-                ~/.config/opencode/opencode.json
-              </button>
-              <button
-                type="button"
-                class="activation-tab"
-                [class.activation-tab-active]="selectedConfigTab() === 'env'"
-                (click)="selectConfigTab('env')"
-              >
-                .env.production
+          <div class="bg-surface-container-high p-6">
+            <div class="flex items-center justify-between gap-4">
+              <p class="text-on-surface-variant font-mono text-xs">{{ currentConfigPath() }}</p>
+              <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySelectedConfig()">
+                Copy config
               </button>
             </div>
 
-            <div class="activation-code-panel p-6">
-              <div class="flex items-center justify-between gap-4">
-                <p class="text-on-surface-variant font-mono text-xs">{{ currentConfigPath() }}</p>
-                <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySelectedConfig()">
-                  Copy config
-                </button>
-              </div>
+            <pre
+              class="text-on-surface mt-5 overflow-x-auto font-mono text-sm leading-7 break-words whitespace-pre-wrap"
+              >{{ currentConfigText() }}</pre
+            >
+          </div>
+        </section>
+      </section>
 
-              <pre class="activation-code-block mt-5">{{ currentConfigText() }}</pre>
-            </div>
-          </section>
+      <section>
+        <div class="mb-4 flex items-center gap-3">
+          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
+            >03</span
+          >
+          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Seed configuration</h2>
+        </div>
 
-          <p class="text-on-surface-variant mt-4 text-right text-[11px] italic">
-            Local workspace setup is ready now. Transport-level MCP wiring can be added as a later backend slice.
+        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
+          <p class="text-on-surface-variant font-semibold tracking-widest uppercase">System seed prompt</p>
+          <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
+            Use this prompt inside OpenCode to analyze the repository and seed the first project context into Themis.
           </p>
-        </section>
 
-        <section>
-          <div class="mb-6 flex items-center gap-3">
-            <span class="bg-primary-container text-primary rounded-sm px-2 py-0.5 font-mono text-xs">03</span>
-            <h2 class="font-display text-on-surface text-xl font-bold tracking-tight">Seed configuration</h2>
-          </div>
+          <pre
+            class="border-outline-variant/20 bg-surface-container-low text-on-surface mt-5 overflow-x-auto border p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap"
+            >{{ activationState()?.seedPrompt }}</pre
+          >
 
-          <section class="auth-panel rounded-xl p-6 md:p-8">
-            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p class="text-on-surface-variant text-[11px] font-semibold tracking-[0.2em] uppercase">
-                  System seed prompt
-                </p>
-                <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
-                  Use this prompt inside OpenCode to analyze the repository and seed the first project context into
-                  Themis.
-                </p>
-              </div>
-
-              <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySeedPrompt()">
-                Copy prompt
-              </button>
-            </div>
-
-            <pre class="activation-prompt mt-5">{{ activationState()?.seedPrompt }}</pre>
-          </section>
-        </section>
-
-        <footer
-          class="border-outline-variant/10 flex flex-col gap-6 border-t pt-8 md:flex-row md:items-center md:justify-between"
-        >
-          <div class="flex items-center gap-3">
-            <span class="bg-tertiary h-2 w-2 rounded-full"></span>
-            <span class="text-on-surface-variant font-mono text-[10px] tracking-[0.15em] uppercase">
-              @if (hasMilestone('activation_completed')) {
-                Activation completed
-              } @else if (hasMilestone('activation_skipped')) {
-                Activation skipped once
-              } @else {
-                Pending secure initialization
-              }
-            </span>
-          </div>
-
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <button
-              pButton
-              type="button"
-              severity="secondary"
-              [outlined]="true"
-              class="w-full sm:w-auto"
-              [disabled]="continuing()"
-              (click)="skipForNow()"
-            >
-              Skip for now
-            </button>
-
-            <button
-              pButton
-              type="button"
-              class="w-full sm:w-auto"
-              [disabled]="continuing()"
-              (click)="continueToProjects()"
-            >
-              Continue to projects
+          <div class="mt-5 flex justify-end">
+            <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySeedPrompt()">
+              Copy prompt
             </button>
           </div>
-        </footer>
-      </div>
-    }
-  </section>
-</main>
+        </section>
+      </section>
+
+      <footer
+        class="border-outline-variant/20 flex flex-col gap-6 border-t pt-6 md:flex-row md:items-center md:justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <span class="bg-tertiary h-2 w-2 rounded-full"></span>
+          <span class="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
+            @if (hasMilestone('activation_completed')) {
+              Activation completed
+            } @else if (hasMilestone('activation_skipped')) {
+              Activation skipped once
+            } @else {
+              Pending secure initialization
+            }
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <button
+            pButton
+            type="button"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="continuing()"
+            (click)="skipForNow()"
+          >
+            Skip for now
+          </button>
+          <button pButton type="button" [disabled]="continuing()" (click)="continueToProjects()">
+            Continue to projects
+          </button>
+        </div>
+      </footer>
+    </div>
+  }
+</section>

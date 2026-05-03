@@ -28,6 +28,7 @@ const getSeoImage = (page: string, locale: Locale): SeoImage => {
   if (!pageImages) {
     throw new Error(`SEO images not defined for page: ${page}`);
   }
+
   return pageImages[locale];
 };
 

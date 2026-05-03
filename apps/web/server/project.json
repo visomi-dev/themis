@@ -74,6 +74,7 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
+      "useDaemonProcess": false,
       "options": {
         "buildTarget": "server:build",
         "inspect": false,

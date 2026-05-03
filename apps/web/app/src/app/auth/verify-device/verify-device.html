@@ -1,0 +1,68 @@
+<main class="bg-background relative min-h-dvh px-4 py-4 md:px-8 md:py-6">
+  <div class="absolute top-4 right-4 flex items-center gap-6 md:top-6 md:right-8">
+    <app-language-switcher />
+    <app-theme-switcher />
+  </div>
+
+  <section class="mx-auto grid min-h-dvh max-w-6xl content-center gap-10 lg:grid-cols-2 lg:items-center">
+    <div class="space-y-6">
+      <div>
+        <app-logo variant="wordmark" />
+        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@verifyDeviceEyebrow">New device checkpoint</p>
+      </div>
+
+      <div class="hidden space-y-5 lg:block">
+        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@verifyDeviceHeroKicker">
+          Device verification
+        </p>
+
+        <h1
+          class="text-on-surface font-heading max-w-xl text-5xl leading-none font-extrabold tracking-tighter xl:text-6xl"
+          i18n="@@verifyDeviceHeroTitle"
+        >
+          Confirm this device before opening the workspace.
+        </h1>
+      </div>
+    </div>
+
+    <section
+      class="bg-surface-container-lowest border-outline-variant/10 shadow-panel dark:bg-surface-container-low w-full max-w-xl rounded-xl border p-6 md:p-8 lg:justify-self-end"
+    >
+      <header>
+        <p
+          class="text-on-surface-variant text-xs font-black tracking-widest uppercase"
+          i18n="@@verifyDevicePanelKicker"
+        >
+          New device
+        </p>
+
+        <h2 class="text-on-surface font-heading mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight">
+          <ng-container i18n="@@verifyDevicePanelTitle">Verify device</ng-container>
+        </h2>
+
+        <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed" i18n="@@verifyDeviceDescription">
+          Enter the device verification code sent to
+          <strong class="text-on-surface">{{ challenge()?.email }}</strong> to continue.
+        </p>
+      </header>
+
+      <app-verification-code-form
+        [errorMessage]="errorMessage()"
+        [statusMessage]="statusMessage()"
+        [submitting]="verificationSubmitting()"
+        (verify)="submit($event)"
+        (resend)="resend()"
+      />
+
+      <footer class="text-on-surface-variant mt-6 text-sm">
+        <a
+          class="text-primary font-semibold no-underline hover:underline"
+          [routerLink]="signInUrl"
+          i18n="@@verifyDeviceFooterLink"
+        >
+          Start again
+        </a>
+      </footer>
+    </section>
+  </section>
+</main>

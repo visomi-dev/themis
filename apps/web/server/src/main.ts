@@ -6,10 +6,11 @@ import type { Express, NextFunction, Request, Response } from 'express';
 
 import { createGatewayApp } from './gateway';
 
-import { logger } from 'shared';
+import { createAuthRuntimeMiddleware, logger } from 'shared';
 
 type ApiModule = {
   appPromise?: Promise<Express>;
+  createEmbeddedApp?: () => Promise<Express>;
 };
 
 type RealtimeModule = {
@@ -26,7 +27,7 @@ type AstroMiddlewareModule = {
 
 const host = process.env.HOST ?? '0.0.0.0';
 
-const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+const port = process.env.PORT ? Number(process.env.PORT) : 8000;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
@@ -43,6 +44,8 @@ const realtimeEntryFile = resolve(serverDistFolder, '..', 'realtime', 'main.js')
 const workerEntryFile = resolve(serverDistFolder, '..', '..', 'worker', 'main.js');
 
 let workerProcess: ChildProcess | undefined;
+
+let httpServer: ReturnType<Express['listen']> | undefined;
 
 let shuttingDown = false;
 
@@ -68,16 +71,22 @@ function startWorkerRuntime() {
 function shutdown() {
   shuttingDown = true;
   workerProcess?.kill('SIGTERM');
+
+  if (!httpServer) {
+    process.exit(0);
+  }
+
+  httpServer.close(() => process.exit(0));
 }
 
 async function loadApiApp() {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
 
-  if (!apiModule.appPromise) {
+  if (typeof apiModule.createEmbeddedApp !== 'function') {
     throw new Error(`Could not load the API app from '${apiEntryFile}'.`);
   }
 
-  return apiModule.appPromise;
+  return apiModule.createEmbeddedApp();
 }
 
 async function loadRealtimeAttacher() {
@@ -125,9 +134,10 @@ async function bootstrap() {
     angularHandler,
     astroClientFolder,
     astroRequestHandler,
+    authRuntimeHandlers: createAuthRuntimeMiddleware(),
   });
 
-  const httpServer = app.listen(port, host, () => {
+  httpServer = app.listen(port, host, () => {
     logger.info({ host, port }, 'Gateway server ready');
   });
 

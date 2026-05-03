@@ -8,7 +8,13 @@ import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
 
 import { Auth } from '../../shared/auth/auth';
-import { FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_EMAIL_URL } from '../../shared/constants/routes';
+import {
+  APP_URL,
+  FORGOTTEN_PASSWORD_URL,
+  SIGN_UP_URL,
+  VERIFY_DEVICE_URL,
+  VERIFY_EMAIL_URL,
+} from '../../shared/constants/routes';
 import { FormField } from '../../shared/form/form-field/form-field';
 import { controlError } from '../../shared/form/form-errors';
 import { LanguageSwitcher } from '../../shared/layout/language-switcher/language-switcher';
@@ -18,6 +24,7 @@ import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher
 type SignInForm = FormGroup<{
   email: FormControl<string>;
   password: FormControl<string>;
+  rememberDevice: FormControl<boolean>;
 }>;
 
 @Component({
@@ -53,6 +60,9 @@ export class SignIn {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(8)],
     }),
+    rememberDevice: new FormControl(true, {
+      nonNullable: true,
+    }),
   });
 
   readonly submitting = this.auth.submitting;
@@ -76,14 +86,22 @@ export class SignIn {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 
     this.errorMessage.set('');
 
     try {
-      await this.auth.signInWithPassword(this.form.getRawValue());
-      await this.router.navigate([VERIFY_EMAIL_URL]);
+      const result = await this.auth.signInWithPassword(this.form.getRawValue());
+
+      if ('authenticated' in result) {
+        await this.router.navigate([APP_URL]);
+
+        return;
+      }
+
+      await this.router.navigate([result.purpose === 'sign_up' ? VERIFY_EMAIL_URL : VERIFY_DEVICE_URL]);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse

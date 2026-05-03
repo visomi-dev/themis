@@ -3,24 +3,21 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 
-import { Auth } from '../../shared/auth/auth';
 import { ProjectSeed } from '../../shared/jobs/project-seed';
-import { PROJECTS_URL, SIGN_IN_URL } from '../../shared/constants/routes';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../../shared/projects/projects.service';
+import { PROJECTS_URL } from '../../shared/constants/routes';
+import { ProjectsService } from '../../shared/projects/projects';
 import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '../../shared/projects/projects.models';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, MessageModule, RouterLink, ThemeSwitcher],
+  imports: [ButtonModule, MessageModule, RouterLink],
   selector: 'app-project-detail',
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.css',
 })
 export class ProjectDetail implements OnInit {
-  private readonly auth = inject(Auth);
   private readonly projectSeed = inject(ProjectSeed);
   private readonly projectsService = inject(ProjectsService);
   private readonly route = inject(ActivatedRoute);
@@ -30,7 +27,6 @@ export class ProjectDetail implements OnInit {
   readonly loading = signal(true);
   readonly project = signal<ProjectWithDocuments | null>(null);
   readonly seeding = signal(false);
-  readonly user = this.auth.user;
   readonly projectsUrl = PROJECTS_URL;
 
   async ngOnInit() {
@@ -38,6 +34,7 @@ export class ProjectDetail implements OnInit {
 
     if (!projectId) {
       await this.router.navigate([PROJECTS_URL]);
+
       return;
     }
 
@@ -84,11 +81,6 @@ export class ProjectDetail implements OnInit {
     } finally {
       this.seeding.set(false);
     }
-  }
-
-  async signOut() {
-    await this.auth.signOut();
-    await this.router.navigate([SIGN_IN_URL]);
   }
 
   statusLabel(status: ProjectStatus) {

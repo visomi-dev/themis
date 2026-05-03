@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+
+import { Layout } from './shared/layout/layout';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [RouterOutlet],
+  imports: [Layout],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',

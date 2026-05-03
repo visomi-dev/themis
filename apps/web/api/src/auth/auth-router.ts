@@ -1,16 +1,19 @@
 import passport from 'passport';
-import { Router, type NextFunction, type Request, type Response } from 'express';
+import { Router, type CookieOptions, type NextFunction, type Request, type Response } from 'express';
 
+import { env } from '../shared/env';
 import { getValidated, validateRequest } from '../shared/http/route-schemas';
 
 import { authed, authedRequest } from './auth-middleware';
 import {
+  createUserDevice,
   signUp,
   verifyChallenge,
   findUserById,
   beginSignIn,
   resendChallenge,
   requestPasswordReset,
+  resolveAuthUser,
 } from './auth-service';
 import {
   authOpenApiPaths,
@@ -23,6 +26,34 @@ import {
 import { HttpError, httpResponse } from 'shared';
 
 const router = Router();
+
+const REMEMBERED_DEVICE_COOKIE = 'themis.remembered_device';
+
+function parseCookie(req: Request, name: string) {
+  const cookieHeader = req.headers.cookie;
+
+  if (!cookieHeader) {
+    return undefined;
+  }
+
+  const prefix = `${name}=`;
+
+  return cookieHeader
+    .split(';')
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith(prefix))
+    ?.slice(prefix.length);
+}
+
+function rememberedDeviceCookieOptions(): CookieOptions {
+  return {
+    httpOnly: true,
+    maxAge: env.REMEMBERED_DEVICE_MAX_AGE_MS,
+    path: '/',
+    sameSite: 'lax',
+    secure: env.COOKIE_SECURE,
+  };
+}
 
 router.get('/session', authed(), async function sessionHandler(req, res) {
   const $req = authedRequest(req);
@@ -50,6 +81,7 @@ router.post(
       req.login(user, (error) => {
         if (error) {
           reject(error);
+
           return;
         }
 
@@ -75,6 +107,7 @@ router.post(
       async function passportCallback(error: unknown, user?: Express.User, info?: { message?: string }) {
         if (error) {
           next(error);
+
           return;
         }
 
@@ -86,6 +119,7 @@ router.post(
               statusCode: 401,
             }),
           );
+
           return;
         }
 
@@ -100,7 +134,27 @@ router.post(
             });
           }
 
-          const challenge = await beginSignIn(fullUser);
+          const challenge = await beginSignIn(fullUser, parseCookie(req, REMEMBERED_DEVICE_COOKIE));
+
+          if (!challenge) {
+            const user = await resolveAuthUser(fullUser);
+
+            await new Promise<void>((resolve, reject) => {
+              req.login(user, (error) => {
+                if (error) {
+                  reject(error);
+
+                  return;
+                }
+
+                resolve();
+              });
+            });
+
+            httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
+
+            return;
+          }
 
           httpResponse.json(res, { data: challenge, message: 'Verification code sent.' });
         } catch (innerError) {
@@ -115,14 +169,19 @@ router.post(
   '/sign-in/verify',
   validateRequest({ body: challengeVerificationSchema }),
   async function verifySignInHandler(req, res) {
-    const { challengeId, pin } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
+    const { challengeId, pin, rememberDevice } = getValidated<{ body: typeof challengeVerificationSchema }>(req).body!;
 
     const user = await verifyChallenge(challengeId, pin, 'sign_in');
+
+    if (rememberDevice) {
+      res.cookie(REMEMBERED_DEVICE_COOKIE, await createUserDevice(user.id), rememberedDeviceCookieOptions());
+    }
 
     await new Promise<void>((resolve, reject) => {
       req.login(user, (error) => {
         if (error) {
           reject(error);
+
           return;
         }
 
@@ -151,6 +210,7 @@ router.post('/sign-out', authed(), async function signOutHandler(req, res) {
     req.logout((error) => {
       if (error) {
         reject(error);
+
         return;
       }
 

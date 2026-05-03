@@ -21,6 +21,7 @@
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": ["debug", "xmlhttprequest-ssl"],
         "outputPath": "dist/apps/web/app",
         "browser": "apps/web/app/src/main.ts",
         "polyfills": ["@angular/localize/init"],

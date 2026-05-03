@@ -5,10 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 
-import { Auth } from '../../shared/auth/auth';
-import { PROJECTS_URL, SIGN_IN_URL } from '../../shared/constants/routes';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../../shared/projects/projects.service';
+import { PROJECTS_URL } from '../../shared/constants/routes';
+import { ProjectsService } from '../../shared/projects/projects';
 
 type NewProjectForm = FormGroup<{
   name: FormControl<string>;
@@ -19,13 +17,12 @@ type NewProjectForm = FormGroup<{
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule, RouterLink, ThemeSwitcher],
+  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule, RouterLink],
   selector: 'app-project-new',
   templateUrl: './project-new.html',
   styleUrl: './project-new.css',
 })
 export class ProjectNew {
-  private readonly auth = inject(Auth);
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
 
@@ -47,6 +44,7 @@ export class ProjectNew {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 
@@ -62,10 +60,5 @@ export class ProjectNew {
     } finally {
       this.submitting.set(false);
     }
-  }
-
-  async signOut() {
-    await this.auth.signOut();
-    await this.router.navigate([SIGN_IN_URL]);
   }
 }

@@ -12,6 +12,7 @@
     "express": "^5.1.0",
     "express-session": "^1.19.0",
     "ioredis": "^5.8.2",
+    "passport": "^0.7.0",
     "pg": "^8.20.0",
     "pino": "^10.0.0",
     "tslib": "^2.3.0",

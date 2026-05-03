@@ -27,6 +27,7 @@ async function attachRealtimeServer(server: HttpServer) {
 
     if (!userId) {
       next(new Error('Unauthorized'));
+
       return;
     }
 

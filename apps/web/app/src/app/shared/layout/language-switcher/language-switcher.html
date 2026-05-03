@@ -1,23 +1,13 @@
-<div
-  class="dark:font-display flex items-center gap-4 font-[Inter] text-[10px] font-black tracking-[0.2em] text-(--color-switch-muted) uppercase"
+<button
+  type="button"
+  class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-xs font-black tracking-widest uppercase transition-colors"
+  aria-label="Change language"
+  i18n-aria-label="@@languageSwitcherChangeLanguage"
+  (click)="languageMenu.toggle($event)"
 >
-  <a
-    [href]="localeUrl('en')"
-    hreflang="en"
-    [attr.aria-current]="currentLocale() === 'en' ? 'page' : null"
-    [attr.aria-label]="localeLabel('en')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'en'"
-    >EN</a
-  >
-  <span class="opacity-30">/</span>
-  <a
-    [href]="localeUrl('es')"
-    hreflang="es"
-    [attr.aria-current]="currentLocale() === 'es' ? 'page' : null"
-    [attr.aria-label]="localeLabel('es')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'es'"
-    >ES</a
-  >
-</div>
+  <i class="pi pi-globe text-base"></i>
+  <span>{{ currentLocaleLabel() }}</span>
+  <i class="pi pi-angle-down text-xs"></i>
+</button>
+
+<p-menu #languageMenu [model]="localeItems()" [popup]="true" appendTo="body" />

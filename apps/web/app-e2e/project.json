@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web/app-e2e/src",
-  "implicitDependencies": ["app"],
+  "implicitDependencies": ["server"],
   "targets": {
     "e2e": {
       "executor": "@nx/playwright:playwright",
@@ -11,7 +11,8 @@
       "options": {
         "config": "apps/web/app-e2e/playwright.config.ts",
         "skipInstall": true
-      }
+      },
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     }
   }
 }

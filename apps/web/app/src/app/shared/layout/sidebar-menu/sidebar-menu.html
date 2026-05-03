@@ -1,0 +1,134 @@
+@if (mobileMenuOpen()) {
+  <button
+    type="button"
+    class="bg-on-surface/40 fixed inset-0 z-40 cursor-default lg:hidden"
+    aria-label="Close navigation"
+    i18n-aria-label="@@layoutCloseNavigation"
+    (click)="closeMenu()"
+  ></button>
+}
+
+<aside
+  class="bg-surface-container-lowest text-on-surface shadow-panel lg:bg-surface-container fixed inset-y-0 left-0 z-50 flex min-h-dvh w-full max-w-120 shrink-0 flex-col p-6 transition-all duration-200 lg:static lg:z-auto lg:translate-x-0 lg:p-0 lg:shadow-none"
+  [class.-translate-x-full]="!mobileMenuOpen()"
+  [class.translate-x-0]="mobileMenuOpen()"
+  [class.lg:w-16]="collapsed()"
+  [class.lg:w-60]="!collapsed()"
+>
+  <div class="mb-12 flex items-center justify-between gap-6 lg:hidden">
+    <h2 class="text-on-surface font-heading text-3xl font-bold" i18n="@@layoutMobileNavigationTitle">Navigation</h2>
+    <button
+      type="button"
+      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
+      aria-label="Close navigation"
+      i18n-aria-label="@@layoutCloseNavigation"
+      (click)="closeMenu()"
+    >
+      <i class="pi pi-times text-lg"></i>
+    </button>
+  </div>
+
+  <a
+    class="text-on-surface focus:outline-primary font-heading mb-12 flex items-center gap-4 text-xl font-bold tracking-tight no-underline focus:outline-2 focus:outline-offset-2 lg:mb-0 lg:px-4 lg:pt-8 lg:pb-9"
+    [class.lg:justify-center]="collapsed()"
+    [routerLink]="DASHBOARD_URL"
+    (click)="closeMenu()"
+  >
+    <span
+      class="bg-primary text-on-primary flex h-12 w-12 items-center justify-center rounded-sm text-2xl font-bold lg:hidden"
+      >T</span
+    >
+    <span [class.lg:hidden]="collapsed()">Themis</span
+    ><span class="text-primary" [class.lg:hidden]="collapsed()">.</span>
+  </a>
+
+  <button
+    type="button"
+    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high mx-3 mb-6 hidden h-9 items-center justify-center rounded-sm transition-colors lg:flex"
+    [attr.aria-label]="collapsed() ? 'Expand navigation' : 'Collapse navigation'"
+    (click)="toggleCollapsed.emit()"
+  >
+    <i class="pi text-base" [class.pi-angle-right]="collapsed()" [class.pi-angle-left]="!collapsed()"></i>
+  </button>
+
+  <nav class="flex flex-col gap-7 lg:px-3" aria-label="Primary navigation" i18n-aria-label="@@layoutSidebarAriaLabel">
+    @for (section of navSections; track section.label) {
+      <div class="flex flex-col gap-1">
+        <p
+          class="text-on-surface-variant px-2 text-xs font-semibold tracking-widest uppercase"
+          [class.lg:sr-only]="collapsed()"
+        >
+          {{ section.label }}
+        </p>
+
+        @for (item of section.items; track item.url) {
+          <div class="flex flex-col gap-1">
+            <a
+              class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-3 rounded-sm border-l-2 border-transparent px-2 py-2.5 text-base font-medium no-underline transition-colors duration-100 lg:gap-2.5 lg:py-2.25 lg:text-sm"
+              routerLinkActive="bg-surface-container-lowest text-primary shadow-panel border-primary dark:bg-surface-container-high"
+              [routerLink]="item.url"
+              [routerLinkActiveOptions]="{ exact: item.exact }"
+              (click)="closeMenu()"
+              [attr.title]="collapsed() ? item.label : null"
+            >
+              <i class="{{ item.icon }} w-4.5 shrink-0 text-lg opacity-70"></i>
+              <span [class.lg:hidden]="collapsed()">{{ item.label }}</span>
+            </a>
+
+            @if (item.children?.length && !collapsed()) {
+              <div class="border-outline-variant/25 ml-5 flex flex-col gap-1 border-l pl-3">
+                @for (child of item.children; track child.url) {
+                  <a
+                    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium no-underline transition-colors duration-100"
+                    routerLinkActive="bg-surface-container-lowest text-primary shadow-panel dark:bg-surface-container-high"
+                    [routerLink]="child.url"
+                    [routerLinkActiveOptions]="{ exact: child.exact }"
+                    (click)="closeMenu()"
+                  >
+                    <i class="{{ child.icon }} w-4 shrink-0 text-sm opacity-70"></i>
+                    <span>{{ child.label }}</span>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </nav>
+
+  <div class="border-outline-variant/25 mt-auto border-t pt-3 lg:p-3">
+    <button
+      type="button"
+      class="hover:bg-surface-container-low dark:hover:bg-surface-container-high flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left transition-colors"
+      [class.lg:justify-center]="collapsed()"
+      aria-label="Open user menu"
+      i18n-aria-label="@@layoutOpenUserMenu"
+      (click)="userMenu.toggle($event)"
+    >
+      <div
+        class="bg-primary text-on-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+      >
+        {{ userInitials() }}
+      </div>
+      <div class="min-w-0 flex-1" [class.lg:hidden]="collapsed()">
+        <p class="text-on-surface truncate text-sm font-semibold">{{ user()?.email }}</p>
+        <p class="text-on-surface-variant text-xs" i18n="@@layoutSignedInStatus">Signed in</p>
+      </div>
+      <i class="pi pi-angle-up text-on-surface-variant ml-auto text-xs" [class.lg:hidden]="collapsed()"></i>
+    </button>
+
+    <p-menu #userMenu [model]="userMenuItems()" [popup]="true" appendTo="body" />
+
+    <div class="bg-surface-container mt-4 flex items-center justify-between gap-4 rounded-sm p-3 lg:hidden">
+      <button
+        type="button"
+        class="border-outline-variant/50 text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm border transition-colors"
+        (click)="toggleTheme()"
+      >
+        <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
+        <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
+      </button>
+    </div>
+  </div>
+</aside>

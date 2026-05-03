@@ -1,5 +1,4 @@
 import express, {
-  json,
   type RequestHandler,
   static as serveStatic,
   type Express,
@@ -7,6 +6,7 @@ import express, {
   type Request,
   type Response,
 } from 'express';
+import helmet from 'helmet';
 
 type AstroRequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 
@@ -15,12 +15,39 @@ type GatewayDeps = {
   angularHandler: Express;
   astroClientFolder: string;
   astroRequestHandler: AstroRequestHandler;
+  authRuntimeHandlers: RequestHandler[];
 };
 
-const createGatewayApp = ({ angularHandler, apiHandler, astroClientFolder, astroRequestHandler }: GatewayDeps) => {
+const gatewaySecurityHeaders = helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", 'data:'],
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'blob:'],
+      objectSrc: ["'none'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      upgradeInsecureRequests: null,
+    },
+  },
+});
+
+function createGatewayApp({
+  angularHandler,
+  apiHandler,
+  astroClientFolder,
+  astroRequestHandler,
+  authRuntimeHandlers,
+}: GatewayDeps) {
   const app = express();
 
-  app.use(json());
+  app.use(gatewaySecurityHeaders);
+  app.use(...authRuntimeHandlers);
   app.get('/healthz', (_req, res) => {
     res.send({ status: 'ok' });
   });
@@ -39,7 +66,7 @@ const createGatewayApp = ({ angularHandler, apiHandler, astroClientFolder, astro
   app.use((req, res, next) => astroRequestHandler(req, res, next));
 
   return app;
-};
+}
 
 export { createGatewayApp };
 export type { GatewayDeps };

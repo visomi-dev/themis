@@ -160,6 +160,13 @@
           <context context-type="linenumber">88,90</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="signInRememberDeviceLabel" datatype="html">
+        <source>Remember this device.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/auth/sign-in/sign-in.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="signInSubmitButton" datatype="html">
         <source> Sign in </source>
         <context-group purpose="location">
@@ -460,6 +467,54 @@
           <context context-type="linenumber">96</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="verificationCodeLabel" datatype="html">
+        <source>Verification code</source>
+      </trans-unit>
+      <trans-unit id="verificationCodeHelp" datatype="html">
+        <source>Enter the 6-digit code from your email.</source>
+      </trans-unit>
+      <trans-unit id="verificationCodeSubmitButton" datatype="html">
+        <source> Verify and continue </source>
+      </trans-unit>
+      <trans-unit id="verificationCodeResendButton" datatype="html">
+        <source> Resend code </source>
+      </trans-unit>
+      <trans-unit id="verificationCodeErrorLength" datatype="html">
+        <source>Enter the full 6-digit code.</source>
+      </trans-unit>
+      <trans-unit id="verificationCodeErrorRequired" datatype="html">
+        <source>Enter the verification code.</source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceEyebrow" datatype="html">
+        <source>New device checkpoint</source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceHeroKicker" datatype="html">
+        <source> Device verification </source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceHeroTitle" datatype="html">
+        <source> Confirm this device before opening the workspace. </source>
+      </trans-unit>
+      <trans-unit id="verifyDevicePanelKicker" datatype="html">
+        <source> New device </source>
+      </trans-unit>
+      <trans-unit id="verifyDevicePanelTitle" datatype="html">
+        <source>Verify device</source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceDescription" datatype="html">
+        <source> Enter the device verification code sent to <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;text-on-surface&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ challenge()?.email }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> to continue. </source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceFooterLink" datatype="html">
+        <source> Start again </source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceFailed" datatype="html">
+        <source>Device verification failed.</source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceResendSuccess" datatype="html">
+        <source>A fresh device verification code was sent.</source>
+      </trans-unit>
+      <trans-unit id="verifyDeviceResendFailed" datatype="html">
+        <source>Could not resend the device code.</source>
+      </trans-unit>
       <trans-unit id="homeBrand" datatype="html">
         <source> Themis </source>
         <context-group purpose="location">
@@ -516,11 +571,128 @@
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="languageSwitcherChangeLanguage" datatype="html">
+        <source>Change language</source>
+      </trans-unit>
+      <trans-unit id="languageSwitcherEnglishOption" datatype="html">
+        <source>English</source>
+      </trans-unit>
+      <trans-unit id="languageSwitcherSpanishOption" datatype="html">
+        <source>Spanish</source>
+      </trans-unit>
       <trans-unit id="themeSwitcherToggleTheme" datatype="html">
         <source>Toggle theme</source>
         <context-group purpose="location">
           <context context-type="sourcefile">apps/web/app/src/app/shared/layout/theme-switcher/theme-switcher.html</context>
           <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutMenuDashboard" datatype="html">
+        <source>Overview</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutMenuProjects" datatype="html">
+        <source>Projects</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutMenuNewProject" datatype="html">
+        <source>New project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutSidebarAriaLabel" datatype="html">
+        <source>Primary navigation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutSignedInStatus" datatype="html">
+        <source>Signed in</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutOpenUserMenu" datatype="html">
+        <source>Open user menu</source>
+      </trans-unit>
+      <trans-unit id="layoutOpenNavigation" datatype="html">
+        <source>Open navigation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutWorkspaceTitle" datatype="html">
+        <source>Workspace</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutSignOut" datatype="html">
+        <source>Sign out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutMobileNavigationTitle" datatype="html">
+        <source>Navigation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutSignOutLabel" datatype="html">
+        <source>Sign out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutOverviewTitle" datatype="html">
+        <source>Overview</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutSearchPlaceholder" datatype="html">
+        <source>Search projects, tasks...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutNotifications" datatype="html">
+        <source>Notifications</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutHelp" datatype="html">
+        <source>Help</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="layoutCloseNavigation" datatype="html">
+        <source>Close navigation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">apps/web/app/src/app/shared/layout/layout.html</context>
+          <context context-type="linenumber">113</context>
         </context-group>
       </trans-unit>
     </body>

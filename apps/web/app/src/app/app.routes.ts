@@ -1,17 +1,19 @@
 import type { Route } from '@angular/router';
 
-import { authenticatedGuard } from './shared/auth/authenticated.guard';
-import { guestGuard } from './shared/auth/guest.guard';
-import { verificationGuard } from './shared/auth/verification.guard';
+import { authenticatedGuard } from './shared/auth/authenticated-guard';
+import { anonymousGuard } from './shared/auth/anonymous-guard';
+import { verificationGuard } from './shared/auth/verification-guard';
 import {
   ACTIVATION_PATH,
   APP_PATH,
+  DASHBOARD_PATH,
   FORGOTTEN_PASSWORD_PATH,
   PROJECTS_PATH,
   PROJECT_ID_PATH,
   PROJECT_NEW_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
+  VERIFY_DEVICE_PATH,
   VERIFY_EMAIL_PATH,
 } from './shared/constants/routes';
 
@@ -19,7 +21,44 @@ export const appRoutes: Route[] = [
   {
     path: APP_PATH,
     pathMatch: 'full',
-    redirectTo: ACTIVATION_PATH,
+    redirectTo: DASHBOARD_PATH,
+  },
+
+  {
+    path: SIGN_IN_PATH,
+    data: { hideAppShell: true },
+    loadComponent: () => import('./auth/sign-in/sign-in').then((module) => module.SignIn),
+  },
+  {
+    path: SIGN_UP_PATH,
+    canActivate: [anonymousGuard],
+    data: { hideAppShell: true },
+    loadComponent: () => import('./auth/sign-up/sign-up').then((module) => module.SignUp),
+  },
+  {
+    path: VERIFY_EMAIL_PATH,
+    canActivate: [verificationGuard],
+    data: { hideAppShell: true, verificationPurpose: 'sign_up' },
+    loadComponent: () => import('./auth/verify-email/verify-email').then((module) => module.VerifyEmail),
+  },
+  {
+    path: VERIFY_DEVICE_PATH,
+    canActivate: [verificationGuard],
+    data: { hideAppShell: true, verificationPurpose: 'sign_in' },
+    loadComponent: () => import('./auth/verify-device/verify-device').then((module) => module.VerifyDevice),
+  },
+  {
+    path: FORGOTTEN_PASSWORD_PATH,
+    canActivate: [anonymousGuard],
+    data: { hideAppShell: true },
+    loadComponent: () =>
+      import('./auth/forgotten-password/forgotten-password').then((module) => module.ForgottenPassword),
+  },
+
+  {
+    path: DASHBOARD_PATH,
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./dashboard/dashboard').then((module) => module.Dashboard),
   },
   {
     path: ACTIVATION_PATH,
@@ -42,27 +81,7 @@ export const appRoutes: Route[] = [
     canActivate: [authenticatedGuard],
     loadComponent: () => import('./projects/project-detail/project-detail').then((module) => module.ProjectDetail),
   },
-  {
-    path: SIGN_IN_PATH,
-    canActivate: [guestGuard],
-    loadComponent: () => import('./auth/sign-in/sign-in').then((module) => module.SignIn),
-  },
-  {
-    path: SIGN_UP_PATH,
-    canActivate: [guestGuard],
-    loadComponent: () => import('./auth/sign-up/sign-up').then((module) => module.SignUp),
-  },
-  {
-    path: VERIFY_EMAIL_PATH,
-    canActivate: [verificationGuard],
-    loadComponent: () => import('./auth/verify-email/verify-email').then((module) => module.VerifyEmail),
-  },
-  {
-    path: FORGOTTEN_PASSWORD_PATH,
-    canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./auth/forgotten-password/forgotten-password').then((module) => module.ForgottenPassword),
-  },
+
   {
     path: '**',
     redirectTo: APP_PATH,

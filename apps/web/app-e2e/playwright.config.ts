@@ -2,7 +2,7 @@ import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env['BASE_URL'] || 'http://127.0.0.1:8080';
+const baseURL = process.env['BASE_URL'] || 'http://127.0.0.1:8081';
 
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
@@ -12,7 +12,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm exec nx run server:serve:production',
+    command: 'node dist/apps/web/server/main.js',
     cwd: workspaceRoot,
     env: {
       ...process.env,
@@ -22,11 +22,11 @@ export default defineConfig({
       HOST: '127.0.0.1',
       MAIL_TRANSPORT: 'memory',
       NG_ALLOWED_HOSTS: '127.0.0.1',
-      PORT: '8080',
+      PORT: '8081',
       SESSION_SECRET: 'themis-app-e2e-secret',
     },
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:8080/app/en/sign-in',
+    url: 'http://127.0.0.1:8081/app/en/sign-in',
   },
   projects: [
     {

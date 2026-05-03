@@ -90,6 +90,10 @@
         <source>Forgotten password?</source>
         <target>¿Olvidaste tu contraseña?</target>
       </trans-unit>
+      <trans-unit id="signInRememberDeviceLabel" datatype="html">
+        <source>Remember this device.</source>
+        <target>Recordar este dispositivo.</target>
+      </trans-unit>
       <trans-unit id="signInSubmitButton" datatype="html">
         <source>Sign in</source>
         <target>Iniciar sesión</target>
@@ -250,6 +254,70 @@
         <source>Could not resend the verification code.</source>
         <target>No se pudo reenviar el código de verificación.</target>
       </trans-unit>
+      <trans-unit id="verificationCodeLabel" datatype="html">
+        <source>Verification code</source>
+        <target>Código de verificación</target>
+      </trans-unit>
+      <trans-unit id="verificationCodeHelp" datatype="html">
+        <source>Enter the 6-digit code from your email.</source>
+        <target>Ingresa el código de 6 dígitos que recibiste por correo electrónico.</target>
+      </trans-unit>
+      <trans-unit id="verificationCodeSubmitButton" datatype="html">
+        <source> Verify and continue </source>
+        <target> Verificar y continuar </target>
+      </trans-unit>
+      <trans-unit id="verificationCodeResendButton" datatype="html">
+        <source> Resend code </source>
+        <target> Reenviar código </target>
+      </trans-unit>
+      <trans-unit id="verificationCodeErrorLength" datatype="html">
+        <source>Enter the full 6-digit code.</source>
+        <target>Ingresa el código completo de 6 dígitos.</target>
+      </trans-unit>
+      <trans-unit id="verificationCodeErrorRequired" datatype="html">
+        <source>Enter the verification code.</source>
+        <target>Ingresa el código de verificación.</target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceEyebrow" datatype="html">
+        <source>New device checkpoint</source>
+        <target>Punto de verificación de nuevo dispositivo</target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceHeroKicker" datatype="html">
+        <source> Device verification </source>
+        <target> Verificación de dispositivo </target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceHeroTitle" datatype="html">
+        <source> Confirm this device before opening the workspace. </source>
+        <target> Confirma este dispositivo antes de abrir el espacio de trabajo. </target>
+      </trans-unit>
+      <trans-unit id="verifyDevicePanelKicker" datatype="html">
+        <source> New device </source>
+        <target> Nuevo dispositivo </target>
+      </trans-unit>
+      <trans-unit id="verifyDevicePanelTitle" datatype="html">
+        <source>Verify device</source>
+        <target>Verificar dispositivo</target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceDescription" datatype="html">
+        <source> Enter the device verification code sent to <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;text-on-surface&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ challenge()?.email }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> to continue. </source>
+        <target> Ingresa el código de verificación de dispositivo enviado a <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;text-on-surface&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ challenge()?.email }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> para continuar. </target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceFooterLink" datatype="html">
+        <source> Start again </source>
+        <target> Comenzar de nuevo </target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceFailed" datatype="html">
+        <source>Device verification failed.</source>
+        <target>La verificación del dispositivo falló.</target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceResendSuccess" datatype="html">
+        <source>A fresh device verification code was sent.</source>
+        <target>Se envió un nuevo código de verificación de dispositivo.</target>
+      </trans-unit>
+      <trans-unit id="verifyDeviceResendFailed" datatype="html">
+        <source>Could not resend the device code.</source>
+        <target>No se pudo reenviar el código del dispositivo.</target>
+      </trans-unit>
       <trans-unit id="homeBrand" datatype="html">
         <source>Themis</source>
         <target>Themis</target>
@@ -282,9 +350,85 @@
         <source>Switch to English</source>
         <target>Cambiar a inglés</target>
       </trans-unit>
+      <trans-unit id="languageSwitcherChangeLanguage" datatype="html">
+        <source>Change language</source>
+        <target>Cambiar idioma</target>
+      </trans-unit>
+      <trans-unit id="languageSwitcherEnglishOption" datatype="html">
+        <source>English</source>
+        <target>Inglés</target>
+      </trans-unit>
+      <trans-unit id="languageSwitcherSpanishOption" datatype="html">
+        <source>Spanish</source>
+        <target>Español</target>
+      </trans-unit>
       <trans-unit id="themeSwitcherToggleTheme" datatype="html">
         <source>Toggle theme</source>
         <target>Cambiar tema</target>
+      </trans-unit>
+      <trans-unit id="layoutMenuDashboard" datatype="html">
+        <source>Overview</source>
+        <target>Resumen</target>
+      </trans-unit>
+      <trans-unit id="layoutMenuProjects" datatype="html">
+        <source>Projects</source>
+        <target>Proyectos</target>
+      </trans-unit>
+      <trans-unit id="layoutMenuNewProject" datatype="html">
+        <source>New project</source>
+        <target>Nuevo proyecto</target>
+      </trans-unit>
+      <trans-unit id="layoutSidebarAriaLabel" datatype="html">
+        <source>Primary navigation</source>
+        <target>Navegación principal</target>
+      </trans-unit>
+      <trans-unit id="layoutSignedInStatus" datatype="html">
+        <source>Signed in</source>
+        <target>Sesión iniciada</target>
+      </trans-unit>
+      <trans-unit id="layoutOpenUserMenu" datatype="html">
+        <source>Open user menu</source>
+        <target>Abrir menú de usuario</target>
+      </trans-unit>
+      <trans-unit id="layoutOpenNavigation" datatype="html">
+        <source>Open navigation</source>
+        <target>Abrir navegación</target>
+      </trans-unit>
+      <trans-unit id="layoutWorkspaceTitle" datatype="html">
+        <source>Workspace</source>
+        <target>Espacio de trabajo</target>
+      </trans-unit>
+      <trans-unit id="layoutSignOut" datatype="html">
+        <source>Sign out</source>
+        <target>Cerrar sesión</target>
+      </trans-unit>
+      <trans-unit id="layoutMobileNavigationTitle" datatype="html">
+        <source>Navigation</source>
+        <target>Navegación</target>
+      </trans-unit>
+      <trans-unit id="layoutSignOutLabel" datatype="html">
+        <source>Sign out</source>
+        <target>Cerrar sesión</target>
+      </trans-unit>
+      <trans-unit id="layoutOverviewTitle" datatype="html">
+        <source>Overview</source>
+        <target>Resumen</target>
+      </trans-unit>
+      <trans-unit id="layoutSearchPlaceholder" datatype="html">
+        <source>Search projects, tasks...</source>
+        <target>Buscar proyectos, tareas...</target>
+      </trans-unit>
+      <trans-unit id="layoutNotifications" datatype="html">
+        <source>Notifications</source>
+        <target>Notificaciones</target>
+      </trans-unit>
+      <trans-unit id="layoutHelp" datatype="html">
+        <source>Help</source>
+        <target>Ayuda</target>
+      </trans-unit>
+      <trans-unit id="layoutCloseNavigation" datatype="html">
+        <source>Close navigation</source>
+        <target>Cerrar navegación</target>
       </trans-unit>
     </body>
   </file>

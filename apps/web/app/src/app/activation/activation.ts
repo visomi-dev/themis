@@ -14,9 +14,7 @@ import type {
   ActivationState,
   CreatedApiKey,
 } from '../shared/activation/activation.models';
-import { Auth } from '../shared/auth/auth';
-import { PROJECTS_URL, SIGN_IN_URL } from '../shared/constants/routes';
-import { ThemeSwitcher } from '../shared/layout/theme-switcher/theme-switcher';
+import { PROJECTS_URL } from '../shared/constants/routes';
 
 type ApiKeyForm = FormGroup<{
   label: FormControl<string>;
@@ -28,14 +26,13 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule, ThemeSwitcher],
+  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule],
   selector: 'app-activation',
   templateUrl: './activation.html',
   styleUrl: './activation.css',
 })
 export class Activation implements OnInit {
   private readonly activation = inject(ActivationService);
-  private readonly auth = inject(Auth);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
 
@@ -63,6 +60,7 @@ export class Activation implements OnInit {
   async createApiKey() {
     if (this.apiKeyForm.invalid) {
       this.apiKeyForm.markAllAsTouched();
+
       return;
     }
 
@@ -166,11 +164,6 @@ export class Activation implements OnInit {
     this.selectedConfigTab.set(tab);
   }
 
-  async signOut() {
-    await this.auth.signOut();
-    await this.router.navigate([SIGN_IN_URL]);
-  }
-
   currentConfigPath() {
     switch (this.selectedConfigTab()) {
       case 'env':
@@ -248,11 +241,13 @@ export class Activation implements OnInit {
   private async copyText(value: string, message: string) {
     if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
       this.copyMessage.set('Clipboard access is not available in this browser.');
+
       return false;
     }
 
     await navigator.clipboard.writeText(value);
     this.copyMessage.set(message);
+
     return true;
   }
 

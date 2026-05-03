@@ -1,7 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { ProjectsService } from '../projects/projects.service';
+import { ProjectsService } from '../projects/projects';
 import { Realtime } from '../realtime/realtime';
 
 import { ProjectSeed } from './project-seed';

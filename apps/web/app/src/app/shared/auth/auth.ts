@@ -1,19 +1,23 @@
 import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, computed, inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { PLATFORM_ID, REQUEST, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
 
 import type {
   AuthChallenge,
-  AuthMode,
   AuthUser,
   AuthenticatedResponse,
+  ChallengeOrAuthenticatedResponse,
   ChallengeResponse,
   CredentialsPayload,
   SessionResponse,
 } from './auth.models';
+
+type AuthRequestContext = {
+  user?: AuthUser;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +25,8 @@ import type {
 export class Auth {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly request = inject(REQUEST, { optional: true });
+  private readonly requestContext = inject<AuthRequestContext | null>(REQUEST_CONTEXT, { optional: true });
 
   private readonly pendingChallengeState = signal<AuthChallenge | null>(this.readStoredChallenge());
   private readonly sessionLoadedState = signal(false);
@@ -40,9 +46,17 @@ export class Auth {
       return;
     }
 
-    if (!isPlatformBrowser(this.platformId)) {
+    if (isPlatformServer(this.platformId) && this.requestContext?.user) {
+      this.userState.set(this.requestContext.user);
+      this.sessionLoadedState.set(true);
+
+      return;
+    }
+
+    if (isPlatformServer(this.platformId) && !this.requestContext?.user) {
       this.userState.set(null);
       this.sessionLoadedState.set(true);
+
       return;
     }
 
@@ -61,9 +75,22 @@ export class Auth {
     this.submittingState.set(true);
 
     try {
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-in/password', payload));
+      const response = await firstValueFrom(
+        this.http.post<ChallengeOrAuthenticatedResponse>('/api/auth/sign-in/password', payload),
+      );
 
-      this.setPendingChallenge(response.data);
+      if ('authenticated' in response.data) {
+        this.userState.set(response.data.user);
+        this.sessionLoadedState.set(true);
+        this.setPendingChallenge(null);
+
+        return response.data;
+      }
+
+      this.setPendingChallenge({
+        ...response.data,
+        rememberDevice: payload.rememberDevice ?? false,
+      });
 
       return response.data;
     } catch (error) {
@@ -93,22 +120,6 @@ export class Auth {
     }
   }
 
-  async submitCredentials(mode: AuthMode, payload: CredentialsPayload) {
-    this.submittingState.set(true);
-
-    try {
-      const endpoint = mode === 'sign_in' ? '/api/auth/sign-in/password' : '/api/auth/sign-up';
-
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>(endpoint, payload));
-
-      this.setPendingChallenge(response.data);
-
-      return response.data;
-    } finally {
-      this.submittingState.set(false);
-    }
-  }
-
   async submitVerification(pin: string) {
     const challenge = this.pendingChallengeState();
 
@@ -125,6 +136,7 @@ export class Auth {
         this.http.post<AuthenticatedResponse>(endpoint, {
           challengeId: challenge.challengeId,
           pin,
+          rememberDevice: challenge.purpose === 'sign_in' ? (challenge.rememberDevice ?? false) : false,
         }),
       );
 
@@ -197,6 +209,7 @@ export class Auth {
 
     if (!challenge) {
       window.sessionStorage.removeItem(PENDING_CHALLENGE_KEY);
+
       return;
     }
 

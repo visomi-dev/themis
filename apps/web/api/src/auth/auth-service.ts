@@ -5,11 +5,11 @@ import type { z } from 'zod';
 
 import { env } from '../shared/env';
 
-import { generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
+import { generateUserDeviceToken, generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
 import { sendVerificationMessage } from './auth-mail';
 import { authUserSchema, challengeSchema } from './auth-schemas';
 
-import { accountMemberships, accounts, authVerificationChallenges, db, HttpError, users } from 'shared';
+import { accountMemberships, accounts, authVerificationChallenges, db, HttpError, userDevices, users } from 'shared';
 
 type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
 type AuthUser = z.infer<typeof authUserSchema>;
@@ -163,12 +163,61 @@ export async function getOrCreateActiveChallenge(user: typeof users.$inferSelect
   return createChallenge(user, purpose);
 }
 
-export async function beginSignIn(user: typeof users.$inferSelect) {
+export async function createUserDevice(userId: string) {
+  const token = generateUserDeviceToken();
+  const now = new Date();
+
+  await db.insert(userDevices).values({
+    createdAt: now,
+    expiresAt: new Date(now.getTime() + env.REMEMBERED_DEVICE_MAX_AGE_MS),
+    id: randomUUID(),
+    tokenHash: await hashSecret(token),
+    updatedAt: now,
+    userId,
+  });
+
+  return token;
+}
+
+export async function isRememberedDevice(userId: string, token: string | undefined) {
+  if (!token) {
+    return false;
+  }
+
+  const devices = await db
+    .select()
+    .from(userDevices)
+    .where(and(eq(userDevices.userId, userId), gt(userDevices.expiresAt, new Date())));
+
+  for (const device of devices) {
+    if (await verifySecret(token, device.tokenHash)) {
+      await db
+        .update(userDevices)
+        .set({
+          lastUsedAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .where(eq(userDevices.id, device.id));
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export async function beginSignIn(user: typeof users.$inferSelect, rememberedDeviceToken?: string) {
   if (!user.emailVerifiedAt) {
     return getOrCreateActiveChallenge(user, 'sign_up');
   }
 
-  return createChallenge(user, 'sign_in');
+  const rememberDevice = await isRememberedDevice(user.id, rememberedDeviceToken);
+
+  if (rememberDevice) {
+    return null;
+  }
+
+  return getOrCreateActiveChallenge(user, 'sign_in');
 }
 
 export async function signUp(email: string, password: string) {

@@ -1,6 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import type { MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
 
 type Locale = 'en' | 'es';
 
@@ -12,6 +14,7 @@ const ENGLISH_LOCALE_SEGMENT = 'en';
   host: {
     class: /* tw */ 'contents',
   },
+  imports: [MenuModule],
   selector: 'app-language-switcher',
   templateUrl: './language-switcher.html',
   styleUrl: './language-switcher.css',
@@ -34,5 +37,22 @@ export class LanguageSwitcher {
     return locale === 'es'
       ? $localize`:@@languageSwitcherSpanish:Switch to Spanish`
       : $localize`:@@languageSwitcherEnglish:Switch to English`;
+  }
+
+  currentLocaleLabel() {
+    return this.currentLocale().toUpperCase();
+  }
+
+  localeItems(): MenuItem[] {
+    return [
+      {
+        label: $localize`:@@languageSwitcherEnglishOption:English`,
+        url: this.localeUrl('en'),
+      },
+      {
+        label: $localize`:@@languageSwitcherSpanishOption:Spanish`,
+        url: this.localeUrl('es'),
+      },
+    ];
   }
 }
