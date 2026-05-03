@@ -1,11 +1,14 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import type { MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
 
 import { Auth } from '../../auth/auth';
-import { APP_URL, DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL } from '../../constants/routes';
+import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL, SIGN_IN_URL } from '../../constants/routes';
 import { Settings } from '../../settings';
 
 type LayoutNavItem = {
+  children?: LayoutNavItem[];
   exact: boolean;
   icon: string;
   label: string;
@@ -18,7 +21,7 @@ type LayoutNavSection = {
 };
 
 @Component({
-  imports: [RouterLink, RouterLinkActive],
+  imports: [MenuModule, RouterLink, RouterLinkActive],
   selector: 'app-sidebar-menu',
   templateUrl: './sidebar-menu.html',
   styleUrl: './sidebar-menu.css',
@@ -53,20 +56,33 @@ export class SidebarMenu {
           url: DASHBOARD_URL,
         },
         {
-          exact: true,
+          children: [
+            {
+              exact: true,
+              icon: 'pi pi-plus',
+              label: $localize`:@@layoutMenuNewProject:New project`,
+              url: PROJECT_NEW_URL,
+            },
+          ],
+          exact: false,
           icon: 'pi pi-folder',
           label: $localize`:@@layoutMenuProjects:Projects`,
           url: PROJECTS_URL,
         },
-        {
-          exact: true,
-          icon: 'pi pi-plus',
-          label: $localize`:@@layoutMenuNewProject:New project`,
-          url: PROJECT_NEW_URL,
-        },
       ],
     },
   ];
+
+  readonly userMenuItems = computed<MenuItem[]>(() => [
+    {
+      disabled: this.signingOut(),
+      icon: 'pi pi-sign-out',
+      label: $localize`:@@layoutSignOutLabel:Sign out`,
+      command: () => {
+        void this.signOut();
+      },
+    },
+  ]);
 
   closeMenu() {
     this.closed.emit();
@@ -81,7 +97,7 @@ export class SidebarMenu {
 
     try {
       await this.auth.signOut();
-      await this.router.navigateByUrl(APP_URL);
+      await this.router.navigateByUrl(SIGN_IN_URL);
     } finally {
       this.signingOut.set(false);
       this.closeMenu();

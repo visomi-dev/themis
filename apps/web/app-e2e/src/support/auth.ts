@@ -10,6 +10,7 @@ import {
   signInUrlPattern,
   signUpRoute,
   signUpUrlPattern,
+  verifyDeviceUrlPattern,
   verifyEmailUrlPattern,
 } from './routes';
 
@@ -114,8 +115,19 @@ export const signIn = async (page: Page, email: string, password: string) => {
   await fillCredentials(page, email, password);
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await expect(page).toHaveURL(verifyEmailUrlPattern, { timeout: 15000 });
-  await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
+  await expect(page).toHaveURL(verifyDeviceUrlPattern, { timeout: 15000 });
+  await expect(page.getByRole('heading', { name: 'Verify device' })).toBeVisible();
+};
+
+export const signInWithRememberedDevice = async (page: Page, email: string, password: string) => {
+  await page.goto(signInRoute);
+  await expect(page).toHaveURL(signInUrlPattern);
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+  await fillCredentials(page, email, password);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+
+  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await waitForAuthenticatedSession(page, email);
 };
 
 export const verifyLatestCode = async (
@@ -150,6 +162,11 @@ export const signOutViaApi = async (page: Page) => {
       method: 'POST',
     });
   });
+};
+
+export const signOutViaMenu = async (page: Page) => {
+  await page.getByRole('button', { name: 'Open user menu' }).click();
+  await page.getByRole('menuitem', { name: /Sign out/i }).click();
 };
 
 export const registerAndSignOut = async (page: Page, request: APIRequestContext, email: string, password: string) => {

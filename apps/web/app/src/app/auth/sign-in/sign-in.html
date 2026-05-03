@@ -86,6 +86,12 @@
           </a>
         </app-form-field>
 
+        <label class="text-on-surface-variant flex items-start gap-3 text-sm leading-6">
+          <input type="checkbox" formControlName="rememberDevice" class="accent-primary mt-1 size-4 rounded-sm" />
+
+          <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
+        </label>
+
         <button class="mt-2" pButton type="submit" [disabled]="submitting()" i18n="@@signInSubmitButton">
           Sign in
         </button>

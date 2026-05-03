@@ -8,19 +8,19 @@
     <div class="space-y-6">
       <div>
         <app-logo variant="wordmark" />
-        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@verifyEmailEyebrow">Verification checkpoint</p>
+        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@verifyDeviceEyebrow">New device checkpoint</p>
       </div>
 
       <div class="hidden space-y-5 lg:block">
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@verifyEmailHeroKicker">
-          Verification flow
+        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@verifyDeviceHeroKicker">
+          Device verification
         </p>
 
         <h1
           class="text-on-surface font-heading max-w-xl text-5xl leading-none font-extrabold tracking-tighter xl:text-6xl"
-          i18n="@@verifyEmailHeroTitle"
+          i18n="@@verifyDeviceHeroTitle"
         >
-          Confirm the email step before opening the workspace.
+          Confirm this device before opening the workspace.
         </h1>
       </div>
     </div>
@@ -29,17 +29,20 @@
       class="bg-surface-container-lowest border-outline-variant/10 shadow-panel dark:bg-surface-container-low w-full max-w-xl rounded-xl border p-6 md:p-8 lg:justify-self-end"
     >
       <header>
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@verifyEmailPanelKicker">
-          Email verification
+        <p
+          class="text-on-surface-variant text-xs font-black tracking-widest uppercase"
+          i18n="@@verifyDevicePanelKicker"
+        >
+          New device
         </p>
 
         <h2 class="text-on-surface font-heading mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight">
-          <ng-container i18n="@@verifyEmailPanelTitle">Verify email</ng-container>
+          <ng-container i18n="@@verifyDevicePanelTitle">Verify device</ng-container>
         </h2>
 
-        <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed" i18n="@@verifyEmailDescription">
-          Enter the verification code sent to <strong class="text-on-surface">{{ challenge()?.email }}</strong> to
-          continue.
+        <p class="text-on-surface-variant mt-2 max-w-lg text-base leading-relaxed" i18n="@@verifyDeviceDescription">
+          Enter the device verification code sent to
+          <strong class="text-on-surface">{{ challenge()?.email }}</strong> to continue.
         </p>
       </header>
 
@@ -55,7 +58,7 @@
         <a
           class="text-primary font-semibold no-underline hover:underline"
           [routerLink]="signInUrl"
-          i18n="@@verifyEmailFooterLink"
+          i18n="@@verifyDeviceFooterLink"
         >
           Start again
         </a>

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, authenticateViaApi } from '../support/auth';
+import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
 import { projectNewUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
@@ -78,7 +78,7 @@ test.describe('/app/projects', () => {
   });
 
   test('sign out returns to sign-in', async ({ page }) => {
-    await page.getByRole('button', { name: /Sign out/i }).click();
+    await signOutViaMenu(page);
 
     await expect(page).toHaveURL(signInUrlPattern);
   });

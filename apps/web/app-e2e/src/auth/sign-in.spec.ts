@@ -5,6 +5,8 @@ import {
   registerAndAuthenticate,
   registerAndSignOut,
   signIn,
+  signInWithRememberedDevice,
+  signOutViaApi,
   verifyLatestCode,
 } from '../support/auth';
 import { appUrlPattern, signInRoute, signInUrlPattern } from '../support/routes';
@@ -18,6 +20,11 @@ test.describe('/app/sign-in', () => {
     await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
+    await expect(page.getByText('dashboard works!')).toBeVisible();
+
+    await signOutViaApi(page);
+    await signInWithRememberedDevice(page, credentials.email, credentials.password);
+
     await expect(page.getByText('dashboard works!')).toBeVisible();
   });
 

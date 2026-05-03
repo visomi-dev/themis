@@ -9,6 +9,7 @@ import type {
   AuthChallenge,
   AuthUser,
   AuthenticatedResponse,
+  ChallengeOrAuthenticatedResponse,
   ChallengeResponse,
   CredentialsPayload,
   SessionResponse,
@@ -74,9 +75,22 @@ export class Auth {
     this.submittingState.set(true);
 
     try {
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-in/password', payload));
+      const response = await firstValueFrom(
+        this.http.post<ChallengeOrAuthenticatedResponse>('/api/auth/sign-in/password', payload),
+      );
 
-      this.setPendingChallenge(response.data);
+      if ('authenticated' in response.data) {
+        this.userState.set(response.data.user);
+        this.sessionLoadedState.set(true);
+        this.setPendingChallenge(null);
+
+        return response.data;
+      }
+
+      this.setPendingChallenge({
+        ...response.data,
+        rememberDevice: payload.rememberDevice ?? false,
+      });
 
       return response.data;
     } catch (error) {
@@ -122,6 +136,7 @@ export class Auth {
         this.http.post<AuthenticatedResponse>(endpoint, {
           challengeId: challenge.challengeId,
           pin,
+          rememberDevice: challenge.purpose === 'sign_in' ? (challenge.rememberDevice ?? false) : false,
         }),
       );
 

@@ -13,6 +13,7 @@ import {
   PROJECT_NEW_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
+  VERIFY_DEVICE_PATH,
   VERIFY_EMAIL_PATH,
 } from './shared/constants/routes';
 
@@ -37,8 +38,14 @@ export const appRoutes: Route[] = [
   {
     path: VERIFY_EMAIL_PATH,
     canActivate: [verificationGuard],
-    data: { hideAppShell: true },
+    data: { hideAppShell: true, verificationPurpose: 'sign_up' },
     loadComponent: () => import('./auth/verify-email/verify-email').then((module) => module.VerifyEmail),
+  },
+  {
+    path: VERIFY_DEVICE_PATH,
+    canActivate: [verificationGuard],
+    data: { hideAppShell: true, verificationPurpose: 'sign_in' },
+    loadComponent: () => import('./auth/verify-device/verify-device').then((module) => module.VerifyDevice),
   },
   {
     path: FORGOTTEN_PASSWORD_PATH,

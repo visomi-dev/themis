@@ -40,6 +40,7 @@ export const challengeVerificationSchema = z
   .object({
     challengeId: challengeIdSchema,
     pin: pinSchema,
+    rememberDevice: z.boolean().optional().default(false),
   })
   .meta({ id: 'AuthChallengeVerification' });
 

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, registerAndAuthenticate } from '../support/auth';
+import { createCredentials, registerAndAuthenticate, signOutViaMenu } from '../support/auth';
 import { activationRoute, activationUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 test.describe('/app (first-run activation)', () => {
@@ -95,7 +95,7 @@ test.describe('/app (first-run activation)', () => {
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
     await page.goto(activationRoute);
 
-    await page.getByRole('button', { name: /Sign out/i }).click();
+    await signOutViaMenu(page);
 
     await expect(page).toHaveURL(signInUrlPattern);
   });

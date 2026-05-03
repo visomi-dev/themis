@@ -13,18 +13,17 @@ import { VerificationCodeForm } from '../verification-code-form/verification-cod
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
+  selector: 'app-verify-device',
   imports: [LanguageSwitcher, Logo, RouterLink, ThemeSwitcher, VerificationCodeForm],
-  selector: 'app-verify-email',
-  templateUrl: './verify-email.html',
-  styleUrl: './verify-email.css',
+  templateUrl: './verify-device.html',
+  styleUrl: './verify-device.css',
 })
-export class VerifyEmail {
+export class VerifyDevice {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
 
   readonly challenge = this.auth.pendingChallenge;
   readonly verificationSubmitting = this.auth.verificationSubmitting;
-
   readonly errorMessage = signal('');
   readonly statusMessage = signal('');
 
@@ -38,8 +37,8 @@ export class VerifyEmail {
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse
-          ? (error.error?.message ?? $localize`:@@verifyEmailFailed:Verification failed.`)
-          : $localize`:@@verifyEmailFailed:Verification failed.`,
+          ? (error.error?.message ?? $localize`:@@verifyDeviceFailed:Device verification failed.`)
+          : $localize`:@@verifyDeviceFailed:Device verification failed.`,
       );
     }
   }
@@ -50,12 +49,12 @@ export class VerifyEmail {
 
     try {
       await this.auth.resendVerification();
-      this.statusMessage.set($localize`:@@verifyEmailResendSuccess:A fresh verification code was sent.`);
+      this.statusMessage.set($localize`:@@verifyDeviceResendSuccess:A fresh device verification code was sent.`);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse
-          ? (error.error?.message ?? $localize`:@@verifyEmailResendFailed:Could not resend the verification code.`)
-          : $localize`:@@verifyEmailResendFailed:Could not resend the verification code.`,
+          ? (error.error?.message ?? $localize`:@@verifyDeviceResendFailed:Could not resend the device code.`)
+          : $localize`:@@verifyDeviceResendFailed:Could not resend the device code.`,
       );
     }
   }

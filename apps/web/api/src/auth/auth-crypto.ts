@@ -34,3 +34,7 @@ export async function verifySecret(secret: string, storedHash: string) {
 export function generateVerificationPin() {
   return randomInt(0, 1_000_000).toString().padStart(6, '0');
 }
+
+export function generateUserDeviceToken() {
+  return randomBytes(32).toString('base64url');
+}

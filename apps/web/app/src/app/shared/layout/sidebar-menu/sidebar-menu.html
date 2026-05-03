@@ -62,24 +62,50 @@
         </p>
 
         @for (item of section.items; track item.url) {
-          <a
-            class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-3 rounded-sm border-l-2 border-transparent px-2 py-2.5 text-base font-medium no-underline transition-colors duration-100 lg:gap-2.5 lg:py-2.25 lg:text-sm"
-            routerLinkActive="bg-surface-container-lowest text-primary shadow-panel border-primary dark:bg-surface-container-high"
-            [routerLink]="item.url"
-            [routerLinkActiveOptions]="{ exact: item.exact }"
-            (click)="closeMenu()"
-            [attr.title]="collapsed() ? item.label : null"
-          >
-            <i class="{{ item.icon }} w-4.5 shrink-0 text-lg opacity-70"></i>
-            <span [class.lg:hidden]="collapsed()">{{ item.label }}</span>
-          </a>
+          <div class="flex flex-col gap-1">
+            <a
+              class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-3 rounded-sm border-l-2 border-transparent px-2 py-2.5 text-base font-medium no-underline transition-colors duration-100 lg:gap-2.5 lg:py-2.25 lg:text-sm"
+              routerLinkActive="bg-surface-container-lowest text-primary shadow-panel border-primary dark:bg-surface-container-high"
+              [routerLink]="item.url"
+              [routerLinkActiveOptions]="{ exact: item.exact }"
+              (click)="closeMenu()"
+              [attr.title]="collapsed() ? item.label : null"
+            >
+              <i class="{{ item.icon }} w-4.5 shrink-0 text-lg opacity-70"></i>
+              <span [class.lg:hidden]="collapsed()">{{ item.label }}</span>
+            </a>
+
+            @if (item.children?.length && !collapsed()) {
+              <div class="border-outline-variant/25 ml-5 flex flex-col gap-1 border-l pl-3">
+                @for (child of item.children; track child.url) {
+                  <a
+                    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium no-underline transition-colors duration-100"
+                    routerLinkActive="bg-surface-container-lowest text-primary shadow-panel dark:bg-surface-container-high"
+                    [routerLink]="child.url"
+                    [routerLinkActiveOptions]="{ exact: child.exact }"
+                    (click)="closeMenu()"
+                  >
+                    <i class="{{ child.icon }} w-4 shrink-0 text-sm opacity-70"></i>
+                    <span>{{ child.label }}</span>
+                  </a>
+                }
+              </div>
+            }
+          </div>
         }
       </div>
     }
   </nav>
 
   <div class="border-outline-variant/25 mt-auto border-t pt-3 lg:p-3">
-    <div class="flex items-center gap-2.5 rounded-sm px-2 py-2.5" [class.lg:justify-center]="collapsed()">
+    <button
+      type="button"
+      class="hover:bg-surface-container-low dark:hover:bg-surface-container-high flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left transition-colors"
+      [class.lg:justify-center]="collapsed()"
+      aria-label="Open user menu"
+      i18n-aria-label="@@layoutOpenUserMenu"
+      (click)="userMenu.toggle($event)"
+    >
       <div
         class="bg-primary text-on-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
       >
@@ -89,7 +115,10 @@
         <p class="text-on-surface truncate text-sm font-semibold">{{ user()?.email }}</p>
         <p class="text-on-surface-variant text-xs" i18n="@@layoutSignedInStatus">Signed in</p>
       </div>
-    </div>
+      <i class="pi pi-angle-up text-on-surface-variant ml-auto text-xs" [class.lg:hidden]="collapsed()"></i>
+    </button>
+
+    <p-menu #userMenu [model]="userMenuItems()" [popup]="true" appendTo="body" />
 
     <div class="bg-surface-container mt-4 flex items-center justify-between gap-4 rounded-sm p-3 lg:hidden">
       <button
@@ -99,15 +128,6 @@
       >
         <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
         <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
-      </button>
-      <button
-        type="button"
-        class="border-outline-variant/50 text-on-surface hover:bg-surface-container-low dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm border px-4 text-sm font-semibold transition-colors"
-        [disabled]="signingOut()"
-        (click)="signOut()"
-      >
-        <i class="pi pi-sign-out text-base"></i>
-        <span i18n="@@layoutSignOutLabel">Sign out</span>
       </button>
     </div>
   </div>

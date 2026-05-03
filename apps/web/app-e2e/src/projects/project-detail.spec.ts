@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, authenticateViaApi } from '../support/auth';
+import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
 import { projectsRoute, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
@@ -85,7 +85,7 @@ test.describe('/app/projects/:projectId', () => {
     await page.getByLabel(/Project name/i).fill('Sign Out Detail Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await page.getByRole('button', { name: /Sign out/i }).click();
+    await signOutViaMenu(page);
 
     await expect(page).toHaveURL(signInUrlPattern);
   });

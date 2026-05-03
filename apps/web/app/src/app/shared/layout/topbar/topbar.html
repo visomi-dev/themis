@@ -53,13 +53,6 @@
       <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
       <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
     </button>
-    <button
-      type="button"
-      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-sm font-semibold transition-colors"
-      (click)="signOut()"
-    >
-      <i class="pi pi-sign-out text-base"></i>
-      <span i18n="@@layoutSignOutLabel">Sign out</span>
-    </button>
+    <app-language-switcher />
   </div>
 </header>
