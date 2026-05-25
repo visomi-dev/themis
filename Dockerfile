@@ -4,13 +4,13 @@ ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 ENV NX_DAEMON=false
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.2.1 --activate
 
 FROM base AS deps
 
 WORKDIR /workspace
 
-COPY package.json pnpm-lock.yaml nx.json tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml nx.json tsconfig.base.json pnpm-workspace.yaml ./
 
 RUN pnpm install --frozen-lockfile
 
@@ -30,7 +30,7 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=8080
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN pnpm install --frozen-lockfile --prod
 

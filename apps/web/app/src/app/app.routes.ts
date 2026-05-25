@@ -1,8 +1,9 @@
 import type { Route } from '@angular/router';
 
-import { authenticatedGuard } from './shared/auth/authenticated-guard';
-import { anonymousGuard } from './shared/auth/anonymous-guard';
-import { verificationGuard } from './shared/auth/verification-guard';
+import { authenticatedGuard } from './shared/auth/authenticated.guard';
+import { anonymousGuard } from './shared/auth/anonymous.guard';
+import { verificationGuard } from './shared/auth/verification.guard';
+import { activatedGuard } from './shared/activation/activated.guard';
 import {
   ACTIVATION_PATH,
   APP_PATH,
@@ -26,6 +27,7 @@ export const appRoutes: Route[] = [
 
   {
     path: SIGN_IN_PATH,
+    canActivate: [anonymousGuard],
     data: { hideAppShell: true },
     loadComponent: () => import('./auth/sign-in/sign-in').then((module) => module.SignIn),
   },
@@ -57,7 +59,7 @@ export const appRoutes: Route[] = [
 
   {
     path: DASHBOARD_PATH,
-    canActivate: [authenticatedGuard],
+    canActivate: [authenticatedGuard, activatedGuard],
     loadComponent: () => import('./dashboard/dashboard').then((module) => module.Dashboard),
   },
   {
@@ -67,18 +69,18 @@ export const appRoutes: Route[] = [
   },
   {
     path: PROJECTS_PATH,
-    canActivate: [authenticatedGuard],
+    canActivate: [authenticatedGuard, activatedGuard],
     loadComponent: () => import('./projects/projects').then((module) => module.Projects),
     pathMatch: 'full',
   },
   {
     path: `${PROJECTS_PATH}/${PROJECT_NEW_PATH}`,
-    canActivate: [authenticatedGuard],
+    canActivate: [authenticatedGuard, activatedGuard],
     loadComponent: () => import('./projects/project-new/project-new').then((module) => module.ProjectNew),
   },
   {
     path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}`,
-    canActivate: [authenticatedGuard],
+    canActivate: [authenticatedGuard, activatedGuard],
     loadComponent: () => import('./projects/project-detail/project-detail').then((module) => module.ProjectDetail),
   },
 

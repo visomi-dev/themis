@@ -127,10 +127,14 @@
         </div>
 
         <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
-          <div class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
+          <div role="tablist" class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
             <button
               type="button"
-              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              role="tab"
+              id="config-tab-themis"
+              [attr.aria-selected]="selectedConfigTab() === 'themis'"
+              aria-controls="config-tabpanel"
+              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'themis'"
               [class.text-primary]="selectedConfigTab() === 'themis'"
               (click)="selectConfigTab('themis')"
@@ -139,7 +143,11 @@
             </button>
             <button
               type="button"
-              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              role="tab"
+              id="config-tab-opencode"
+              [attr.aria-selected]="selectedConfigTab() === 'opencode'"
+              aria-controls="config-tabpanel"
+              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'opencode'"
               [class.text-primary]="selectedConfigTab() === 'opencode'"
               (click)="selectConfigTab('opencode')"
@@ -148,7 +156,11 @@
             </button>
             <button
               type="button"
-              class="border-outline-variant/20 text-on-surface-variant border-r px-5 py-3 font-mono text-xs"
+              role="tab"
+              id="config-tab-env"
+              [attr.aria-selected]="selectedConfigTab() === 'env'"
+              aria-controls="config-tabpanel"
+              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'env'"
               [class.text-primary]="selectedConfigTab() === 'env'"
               (click)="selectConfigTab('env')"
@@ -157,7 +169,12 @@
             </button>
           </div>
 
-          <div class="bg-surface-container-high p-6">
+          <div
+            id="config-tabpanel"
+            role="tabpanel"
+            [attr.aria-labelledby]="'config-tab-' + selectedConfigTab()"
+            class="bg-surface-container-high p-6"
+          >
             <div class="flex items-center justify-between gap-4">
               <p class="text-on-surface-variant font-mono text-xs">{{ currentConfigPath() }}</p>
               <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySelectedConfig()">

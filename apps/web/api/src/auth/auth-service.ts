@@ -217,7 +217,9 @@ export async function beginSignIn(user: typeof users.$inferSelect, rememberedDev
     return null;
   }
 
-  return getOrCreateActiveChallenge(user, 'sign_in');
+  // Always generate a fresh verification challenge to ensure a fresh email code is sent
+  // and any previous unconsumed sign-in challenges are invalidated.
+  return createChallenge(user, 'sign_in');
 }
 
 export async function signUp(email: string, password: string) {

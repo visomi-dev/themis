@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { PLATFORM_ID, REQUEST, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
+import { PLATFORM_ID, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
@@ -25,7 +25,6 @@ type AuthRequestContext = {
 export class Auth {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly request = inject(REQUEST, { optional: true });
   private readonly requestContext = inject<AuthRequestContext | null>(REQUEST_CONTEXT, { optional: true });
 
   private readonly pendingChallengeState = signal<AuthChallenge | null>(this.readStoredChallenge());
