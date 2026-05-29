@@ -76,6 +76,7 @@ Add a file to `src/pages/` — the filename becomes the route:
 // src/pages/index.astro
 const title = 'Hello, Astro!';
 ---
+
 <html>
   <head><title>{title}</title></head>
   <body>
@@ -91,6 +92,7 @@ const title = 'Hello, Astro!';
 // src/components/Card.astro
 const { title, body } = Astro.props;
 ---
+
 <div class="card">
   <h2>{title}</h2>
   <p>{body}</p>
