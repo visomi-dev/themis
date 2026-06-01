@@ -11,21 +11,21 @@ export type Theme = 'dark' | 'light';
 export class Settings {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly themeState = signal<Theme>(this.getInitialTheme());
+  private readonly $theme = signal<Theme>(this.getInitialTheme());
 
-  readonly isDark = computed(() => this.themeState() === 'dark');
-  readonly theme = this.themeState.asReadonly();
+  readonly isDark = computed(() => this.$theme() === 'dark');
+  readonly theme = this.$theme.asReadonly();
 
   setTheme(theme: Theme) {
-    this.themeState.set(theme);
+    this.$theme.set(theme);
   }
 
   toggleTheme() {
-    this.setTheme(this.themeState() === 'dark' ? 'light' : 'dark');
+    this.setTheme(this.$theme() === 'dark' ? 'light' : 'dark');
   }
 
   readonly persistThemeEffect = effect(() => {
-    const theme = this.themeState();
+    const theme = this.$theme();
 
     this.document.documentElement.classList.toggle('dark', theme === 'dark');
 

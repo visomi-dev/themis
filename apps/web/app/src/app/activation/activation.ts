@@ -43,7 +43,7 @@ export class Activation implements OnInit {
     }),
   });
 
-  readonly activationState = signal<ActivationState | null>(null);
+  readonly activationData = signal<ActivationState | null>(null);
   readonly continuing = signal(false);
   readonly copyMessage = signal('');
   readonly creatingKey = signal(false);
@@ -94,13 +94,13 @@ export class Activation implements OnInit {
   }
 
   async copySeedPrompt() {
-    const activationState = this.activationState();
+    const activationData = this.activationData();
 
-    if (!activationState) {
+    if (!activationData) {
       return;
     }
 
-    const copied = await this.copyText(activationState.seedPrompt, 'Seed prompt copied to your clipboard.');
+    const copied = await this.copyText(activationData.seedPrompt, 'Seed prompt copied to your clipboard.');
 
     if (copied) {
       await this.recordMilestone('seed_prompt_copied');
@@ -218,7 +218,7 @@ export class Activation implements OnInit {
   }
 
   hasMilestone(milestone: ActivationMilestone) {
-    return this.activationState()?.milestones.includes(milestone) ?? false;
+    return this.activationData()?.milestones.includes(milestone) ?? false;
   }
 
   private async loadActivationState() {
@@ -226,7 +226,7 @@ export class Activation implements OnInit {
     this.errorMessage.set('');
 
     try {
-      this.activationState.set(await this.activation.loadState());
+      this.activationData.set(await this.activation.loadState());
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse

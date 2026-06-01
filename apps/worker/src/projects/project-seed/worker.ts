@@ -1,7 +1,7 @@
 import type { Job } from 'bullmq';
 import { Worker } from 'bullmq';
 
-import { getRedis, logger } from 'shared';
+import { getRedis } from 'shared';
 import { type ProjectSeedJobInput, failProjectSeedJob, processProjectSeedJob, projectSeedQueueName } from 'projects';
 
 function toError(error: Error | unknown) {
@@ -24,8 +24,6 @@ function startProjectSeedWorker() {
 
     await failProjectSeedJob({ data: bullJob.data }, toError(error));
   });
-
-  logger.info({ queue: projectSeedQueueName }, 'Project seed worker ready');
 
   return worker;
 }

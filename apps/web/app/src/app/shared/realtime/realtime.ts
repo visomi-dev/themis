@@ -12,11 +12,11 @@ export class Realtime {
   private readonly platformId = inject(PLATFORM_ID);
 
   private socket: Socket | null = null;
-  private readonly lastEventState = signal<AsyncJobEvent | null>(null);
-  private readonly connectedState = signal(false);
+  private readonly $lastEvent = signal<AsyncJobEvent | null>(null);
+  private readonly $connected = signal(false);
 
-  readonly connected = this.connectedState.asReadonly();
-  readonly lastEvent = this.lastEventState.asReadonly();
+  readonly connected = this.$connected.asReadonly();
+  readonly lastEvent = this.$lastEvent.asReadonly();
 
   readonly authEffect = effect(() => {
     const user = this.auth.user();
@@ -48,7 +48,7 @@ export class Realtime {
     });
 
     this.socket.on('connect', () => {
-      this.connectedState.set(true);
+      this.$connected.set(true);
 
       console.log({
         connected: true,
@@ -56,18 +56,18 @@ export class Realtime {
     });
 
     this.socket.on('disconnect', () => {
-      this.connectedState.set(false);
+      this.$connected.set(false);
     });
 
     for (const name of ['job:queued', 'job:started', 'job:progress', 'job:completed', 'job:failed'] as const) {
-      this.socket.on(name, (event: AsyncJobEvent) => this.lastEventState.set(event));
+      this.socket.on(name, (event: AsyncJobEvent) => this.$lastEvent.set(event));
     }
   }
 
   private disconnect() {
     this.socket?.disconnect();
     this.socket = null;
-    this.connectedState.set(false);
-    this.lastEventState.set(null);
+    this.$connected.set(false);
+    this.$lastEvent.set(null);
   }
 }

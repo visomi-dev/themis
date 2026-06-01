@@ -4,25 +4,25 @@
 
 ### 1) Runtime Summary
 
-| Area | Value | Evidence |
-|------|-------|----------|
-| Primary language | [VALUE] | [FILE_PATH] |
-| Runtime + version | [VALUE] | [FILE_PATH] |
-| Package manager | [VALUE] | [FILE_PATH] |
+| Area                | Value   | Evidence    |
+| ------------------- | ------- | ----------- |
+| Primary language    | [VALUE] | [FILE_PATH] |
+| Runtime + version   | [VALUE] | [FILE_PATH] |
+| Package manager     | [VALUE] | [FILE_PATH] |
 | Module/build system | [VALUE] | [FILE_PATH] |
 
 ### 2) Production Frameworks and Dependencies
 
 List only high-impact production dependencies (frameworks, data, transport, auth).
 
-| Dependency | Version | Role in system | Evidence |
-|------------|---------|----------------|----------|
-| [NAME] | [VERSION] | [ROLE] | [FILE_PATH] |
+| Dependency | Version   | Role in system | Evidence    |
+| ---------- | --------- | -------------- | ----------- |
+| [NAME]     | [VERSION] | [ROLE]         | [FILE_PATH] |
 
 ### 3) Development Toolchain
 
-| Tool | Purpose | Evidence |
-|------|---------|----------|
+| Tool   | Purpose                  | Evidence    |
+| ------ | ------------------------ | ----------- |
 | [TOOL] | [LINT/FORMAT/TEST/BUILD] | [FILE_PATH] |
 
 ### 4) Key Commands

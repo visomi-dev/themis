@@ -18,7 +18,7 @@ import type {
 @Injectable({
   providedIn: 'root',
 })
-export class ProjectsService {
+export class ProjectsApi {
   private readonly http = inject(HttpClient);
 
   async listProjects() {

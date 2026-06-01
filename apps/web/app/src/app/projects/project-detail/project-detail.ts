@@ -5,7 +5,7 @@ import { MessageModule } from 'primeng/message';
 
 import { ProjectSeed } from '../../shared/jobs/project-seed';
 import { PROJECTS_URL } from '../../shared/constants/routes';
-import { ProjectsService } from '../../shared/projects/projects';
+import { ProjectsApi } from '../../shared/projects/projects';
 import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '../../shared/projects/projects.models';
 
 @Component({
@@ -19,7 +19,7 @@ import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '.
 })
 export class ProjectDetail implements OnInit {
   private readonly projectSeed = inject(ProjectSeed);
-  private readonly projectsService = inject(ProjectsService);
+  private readonly projectsApi = inject(ProjectsApi);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -98,7 +98,7 @@ export class ProjectDetail implements OnInit {
     this.errorMessage.set('');
 
     try {
-      this.project.set(await this.projectsService.getProject(projectId));
+      this.project.set(await this.projectsApi.getProject(projectId));
     } catch {
       this.errorMessage.set('The project could not be loaded.');
     } finally {

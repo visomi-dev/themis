@@ -15,13 +15,13 @@ Create Git branches that follow the [Conventional Branch](https://conventional-b
 
 ### Branch Types
 
-| Type | Alias | Purpose |
-|------|-------|---------|
-| `feature/` | `feat/` | New features or enhancements |
-| `bugfix/` | `fix/` | Bug fixes |
-| `hotfix/` | — | Urgent production fixes |
-| `release/` | — | Release preparation (dots allowed in version: `release/v1.2.0`) |
-| `chore/` | — | Non-code tasks (deps, docs, config) |
+| Type       | Alias   | Purpose                                                         |
+| ---------- | ------- | --------------------------------------------------------------- |
+| `feature/` | `feat/` | New features or enhancements                                    |
+| `bugfix/`  | `fix/`  | Bug fixes                                                       |
+| `hotfix/`  | —       | Urgent production fixes                                         |
+| `release/` | —       | Release preparation (dots allowed in version: `release/v1.2.0`) |
+| `chore/`   | —       | Non-code tasks (deps, docs, config)                             |
 
 ### Trunk Branches
 
@@ -54,16 +54,16 @@ feature/issue-123-new-login
 
 ## Invalid Examples
 
-| Branch | Problem |
-|--------|---------|
-| `Feature/Add-Login` | Uppercase letters |
-| `feature/new--login` | Consecutive hyphens |
-| `feature/-new-login` | Leading hyphen |
-| `feature/new-login-` | Trailing hyphen |
-| `release/v1.-2.0` | Hyphen adjacent to dot |
-| `fix/header bug` | Space |
-| `fix/header_bug` | Underscore |
-| `unknown/some-task` | Unknown prefix type |
+| Branch               | Problem                |
+| -------------------- | ---------------------- |
+| `Feature/Add-Login`  | Uppercase letters      |
+| `feature/new--login` | Consecutive hyphens    |
+| `feature/-new-login` | Leading hyphen         |
+| `feature/new-login-` | Trailing hyphen        |
+| `release/v1.-2.0`    | Hyphen adjacent to dot |
+| `fix/header bug`     | Space                  |
+| `fix/header_bug`     | Underscore             |
+| `unknown/some-task`  | Unknown prefix type    |
 
 ## Description Guidelines
 
@@ -122,6 +122,7 @@ git checkout -b <type>/<description>
 **Step 5 — Confirm**
 
 Tell the user:
+
 - The branch name that was created
 - That they are now on the new branch
 - Remind them: `git push -u origin <branch-name>` when ready
@@ -130,11 +131,11 @@ Tell the user:
 
 Conventional Branch complements [Conventional Commits](https://www.conventionalcommits.org):
 
-| Conventional Branch | Typical Conventional Commit |
-|---------------------|----------------------------|
-| `feature/add-login` | `feat: add login page` |
+| Conventional Branch | Typical Conventional Commit      |
+| ------------------- | -------------------------------- |
+| `feature/add-login` | `feat: add login page`           |
 | `bugfix/fix-header` | `fix: header overflow on mobile` |
-| `chore/update-deps` | `chore: bump lodash to 5.0` |
-| `release/v1.2.0` | `chore: release v1.2.0` |
+| `chore/update-deps` | `chore: bump lodash to 5.0`      |
+| `release/v1.2.0`    | `chore: release v1.2.0`          |
 
 Align the branch type with commit types where possible (e.g., `feature/*` branches with `feat:` commits).

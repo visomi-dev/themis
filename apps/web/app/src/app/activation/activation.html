@@ -58,7 +58,7 @@
           </form>
 
           <div class="mt-5 grid gap-3">
-            @if ((activationState()?.apiKeys?.length ?? 0) === 0) {
+            @if ((activationData()?.apiKeys?.length ?? 0) === 0) {
               <div
                 class="border-outline-variant/20 bg-surface-container-low text-on-surface-variant rounded-sm border px-4 py-5 font-mono text-sm italic"
               >
@@ -66,7 +66,7 @@
               </div>
             }
 
-            @for (apiKey of activationState()?.apiKeys ?? []; track apiKey.id) {
+            @for (apiKey of activationData()?.apiKeys ?? []; track apiKey.id) {
               <article
                 class="border-outline-variant/20 bg-surface-container-low dark:bg-surface-container-high rounded-sm border p-4"
               >
@@ -206,7 +206,7 @@
 
           <pre
             class="border-outline-variant/20 bg-surface-container-low text-on-surface mt-5 overflow-x-auto border p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap"
-            >{{ activationState()?.seedPrompt }}</pre
+            >{{ activationData()?.seedPrompt }}</pre
           >
 
           <div class="mt-5 flex justify-end">

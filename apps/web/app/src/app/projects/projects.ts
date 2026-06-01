@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 
 import { PROJECT_NEW_URL } from '../shared/constants/routes';
-import { ProjectsService } from '../shared/projects/projects';
+import { ProjectsApi } from '../shared/projects/projects';
 import type { Project } from '../shared/projects/projects.models';
 
 @Component({
@@ -17,7 +17,7 @@ import type { Project } from '../shared/projects/projects.models';
   styleUrl: './projects.css',
 })
 export class Projects implements OnInit {
-  private readonly projectsService = inject(ProjectsService);
+  private readonly projectsApi = inject(ProjectsApi);
 
   readonly errorMessage = signal('');
   readonly loading = signal(true);
@@ -37,7 +37,7 @@ export class Projects implements OnInit {
     }
 
     try {
-      await this.projectsService.deleteProject(projectId);
+      await this.projectsApi.deleteProject(projectId);
       await this.loadProjects();
     } catch {
       this.errorMessage.set('The project could not be deleted.');
@@ -63,7 +63,7 @@ export class Projects implements OnInit {
     this.errorMessage.set('');
 
     try {
-      const projects = await this.projectsService.listProjects();
+      const projects = await this.projectsApi.listProjects();
 
       this.projects.set(projects);
     } catch {

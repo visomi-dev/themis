@@ -3,7 +3,7 @@ import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { ProjectSeed } from '../../shared/jobs/project-seed';
-import { ProjectsService } from '../../shared/projects/projects';
+import { ProjectsApi } from '../../shared/projects/projects';
 
 import { ProjectDetail } from './project-detail';
 
@@ -58,7 +58,7 @@ describe('ProjectDetail', () => {
           },
         },
         {
-          provide: ProjectsService,
+          provide: ProjectsApi,
           useValue: {
             getProject,
           },

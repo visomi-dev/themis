@@ -1,13 +1,13 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { ProjectsService } from '../projects/projects';
+import { ProjectsApi } from '../projects/projects';
 import { Realtime } from '../realtime/realtime';
 
 import { ProjectSeed } from './project-seed';
 
 describe('ProjectSeed', () => {
-  const lastEventState = signal<{
+  const $lastEvent = signal<{
     eventName: 'job:progress';
     job: {
       completedAt: string | null;
@@ -29,14 +29,14 @@ describe('ProjectSeed', () => {
   const startSeed = vi.fn();
 
   beforeEach(() => {
-    lastEventState.set(null);
+    $lastEvent.set(null);
     startSeed.mockReset();
 
     TestBed.configureTestingModule({
       providers: [
         ProjectSeed,
         {
-          provide: ProjectsService,
+          provide: ProjectsApi,
           useValue: {
             startSeed,
           },
@@ -44,7 +44,7 @@ describe('ProjectSeed', () => {
         {
           provide: Realtime,
           useValue: {
-            lastEvent: lastEventState.asReadonly(),
+            lastEvent: $lastEvent.asReadonly(),
           },
         },
       ],
@@ -78,7 +78,7 @@ describe('ProjectSeed', () => {
   it('updates the current project job from realtime events', () => {
     const service = TestBed.inject(ProjectSeed);
 
-    lastEventState.set({
+    $lastEvent.set({
       eventName: 'job:progress',
       job: {
         completedAt: null,

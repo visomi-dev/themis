@@ -27,34 +27,34 @@ export class Auth {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly requestContext = inject<AuthRequestContext | null>(REQUEST_CONTEXT, { optional: true });
 
-  private readonly pendingChallengeState = signal<AuthChallenge | null>(this.readStoredChallenge());
-  private readonly sessionLoadedState = signal(false);
-  private readonly submittingState = signal(false);
-  private readonly userState = signal<AuthUser | null>(null);
-  private readonly verificationSubmittingState = signal(false);
+  private readonly $pendingChallenge = signal<AuthChallenge | null>(this.readStoredChallenge());
+  private readonly $sessionLoaded = signal(false);
+  private readonly $submitting = signal(false);
+  private readonly $user = signal<AuthUser | null>(null);
+  private readonly $verificationSubmitting = signal(false);
 
-  readonly isAuthenticated = computed(() => this.userState() !== null);
-  readonly pendingChallenge = this.pendingChallengeState.asReadonly();
-  readonly sessionLoaded = this.sessionLoadedState.asReadonly();
-  readonly submitting = this.submittingState.asReadonly();
-  readonly user = this.userState.asReadonly();
-  readonly verificationSubmitting = this.verificationSubmittingState.asReadonly();
+  readonly isAuthenticated = computed(() => this.$user() !== null);
+  readonly pendingChallenge = this.$pendingChallenge.asReadonly();
+  readonly sessionLoaded = this.$sessionLoaded.asReadonly();
+  readonly submitting = this.$submitting.asReadonly();
+  readonly user = this.$user.asReadonly();
+  readonly verificationSubmitting = this.$verificationSubmitting.asReadonly();
 
   async ensureSessionLoaded() {
-    if (this.sessionLoadedState()) {
+    if (this.$sessionLoaded()) {
       return;
     }
 
     if (isPlatformServer(this.platformId) && this.requestContext?.user) {
-      this.userState.set(this.requestContext.user);
-      this.sessionLoadedState.set(true);
+      this.$user.set(this.requestContext.user);
+      this.$sessionLoaded.set(true);
 
       return;
     }
 
     if (isPlatformServer(this.platformId) && !this.requestContext?.user) {
-      this.userState.set(null);
-      this.sessionLoadedState.set(true);
+      this.$user.set(null);
+      this.$sessionLoaded.set(true);
 
       return;
     }
@@ -62,16 +62,16 @@ export class Auth {
     try {
       const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
 
-      this.userState.set(response.data.user);
+      this.$user.set(response.data.user);
     } catch {
-      this.userState.set(null);
+      this.$user.set(null);
     } finally {
-      this.sessionLoadedState.set(true);
+      this.$sessionLoaded.set(true);
     }
   }
 
   async signInWithPassword(payload: CredentialsPayload) {
-    this.submittingState.set(true);
+    this.$submitting.set(true);
 
     try {
       const response = await firstValueFrom(
@@ -79,8 +79,8 @@ export class Auth {
       );
 
       if ('authenticated' in response.data) {
-        this.userState.set(response.data.user);
-        this.sessionLoadedState.set(true);
+        this.$user.set(response.data.user);
+        this.$sessionLoaded.set(true);
         this.setPendingChallenge(null);
 
         return response.data;
@@ -97,12 +97,12 @@ export class Auth {
 
       throw error;
     } finally {
-      this.submittingState.set(false);
+      this.$submitting.set(false);
     }
   }
 
   async signUp(payload: CredentialsPayload) {
-    this.submittingState.set(true);
+    this.$submitting.set(true);
 
     try {
       const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-up', payload));
@@ -115,18 +115,18 @@ export class Auth {
 
       throw error;
     } finally {
-      this.submittingState.set(false);
+      this.$submitting.set(false);
     }
   }
 
   async submitVerification(pin: string) {
-    const challenge = this.pendingChallengeState();
+    const challenge = this.$pendingChallenge();
 
     if (!challenge) {
       throw new Error('No pending verification challenge is available.');
     }
 
-    this.verificationSubmittingState.set(true);
+    this.$verificationSubmitting.set(true);
 
     try {
       const endpoint = challenge.purpose === 'sign_in' ? '/api/auth/sign-in/verify' : '/api/auth/sign-up/verify';
@@ -139,18 +139,18 @@ export class Auth {
         }),
       );
 
-      this.userState.set(response.data.user);
-      this.sessionLoadedState.set(true);
+      this.$user.set(response.data.user);
+      this.$sessionLoaded.set(true);
       this.setPendingChallenge(null);
 
       return response.data.user;
     } finally {
-      this.verificationSubmittingState.set(false);
+      this.$verificationSubmitting.set(false);
     }
   }
 
   async resendVerification() {
-    const challenge = this.pendingChallengeState();
+    const challenge = this.$pendingChallenge();
 
     if (!challenge) {
       throw new Error('No pending verification challenge is available.');
@@ -170,9 +170,9 @@ export class Auth {
   async signOut() {
     await firstValueFrom(this.http.post('/api/auth/sign-out', {}, { responseType: 'text' }));
 
-    this.userState.set(null);
+    this.$user.set(null);
     this.setPendingChallenge(null);
-    this.sessionLoadedState.set(true);
+    this.$sessionLoaded.set(true);
   }
 
   async requestPasswordReset(email: string) {
@@ -200,7 +200,7 @@ export class Auth {
   }
 
   private setPendingChallenge(challenge: AuthChallenge | null) {
-    this.pendingChallengeState.set(challenge);
+    this.$pendingChallenge.set(challenge);
 
     if (!isPlatformBrowser(this.platformId)) {
       return;

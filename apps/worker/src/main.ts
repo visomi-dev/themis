@@ -1,13 +1,13 @@
 import { normalize } from 'node:path';
 
-import { startProjectSeedWorker } from './projects/project-seed/worker';
+import { start as startProjectsWorkers } from './projects';
 
 import { logger, runMigrationsIfEnabled } from 'shared';
 
 async function startWorkerRuntime() {
   await runMigrationsIfEnabled();
 
-  startProjectSeedWorker();
+  startProjectsWorkers();
 
   logger.info('Worker runtime ready');
 }

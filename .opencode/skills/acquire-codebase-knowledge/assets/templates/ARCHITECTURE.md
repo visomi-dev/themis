@@ -18,15 +18,15 @@ Describe the flow in 4-6 steps using file-backed evidence.
 
 ### 3) Layer/Module Responsibilities
 
-| Layer or module | Owns | Must not own | Evidence |
-|-----------------|------|--------------|----------|
-| [name] | [responsibility] | [non-responsibility] | [file] |
+| Layer or module | Owns             | Must not own         | Evidence |
+| --------------- | ---------------- | -------------------- | -------- |
+| [name]          | [responsibility] | [non-responsibility] | [file]   |
 
 ### 4) Reused Patterns
 
-| Pattern | Where found | Why it exists |
-|---------|-------------|---------------|
-| [singleton/repository/adapter/etc] | [path] | [reason] |
+| Pattern                            | Where found | Why it exists |
+| ---------------------------------- | ----------- | ------------- |
+| [singleton/repository/adapter/etc] | [path]      | [reason]      |
 
 ### 5) Known Architectural Risks
 

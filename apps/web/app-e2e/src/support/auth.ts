@@ -6,13 +6,22 @@ import { clearMailbox, readLatestPin } from './mailbox';
 import { fillOtp } from './otp';
 import {
   appUrlPattern,
+  activationUrlPattern,
+  dashboardRoute,
   signInRoute,
   signInUrlPattern,
   signUpRoute,
   signUpUrlPattern,
+  projectsUrlPattern,
   verifyDeviceUrlPattern,
   verifyEmailUrlPattern,
 } from './routes';
+
+type VerificationOptions = {
+  completeActivation?: boolean;
+};
+
+const postVerificationUrlPattern = /\/app\/en\/(dashboard|activation)$/;
 
 export const createCredentials = () => ({
   email: `engineer+${randomUUID()}@themis.visomi.dev`,
@@ -84,6 +93,17 @@ const waitForAuthenticatedSession = async (page: Page, email: string) => {
     });
 };
 
+const completeActivationIfNeeded = async (page: Page) => {
+  if (!activationUrlPattern.test(page.url())) {
+    return;
+  }
+
+  await page.getByRole('button', { name: /Skip for now/i }).click();
+  await expect(page).toHaveURL(projectsUrlPattern, { timeout: 15000 });
+  await page.goto(dashboardRoute);
+  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+};
+
 export const authenticateViaApi = async (page: Page, request: APIRequestContext, email: string, password: string) => {
   await clearMailbox(request);
 
@@ -96,8 +116,9 @@ export const authenticateViaApi = async (page: Page, request: APIRequestContext,
   await fillOtp(page, pin);
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await expect(page).toHaveURL(postVerificationUrlPattern, { timeout: 15000 });
   await waitForAuthenticatedSession(page, email);
+  await completeActivationIfNeeded(page);
 };
 
 export const signUp = async (page: Page, email: string, password: string) => {
@@ -135,14 +156,19 @@ export const verifyLatestCode = async (
   request: APIRequestContext,
   email: string,
   purpose: 'sign_in' | 'sign_up',
+  options: VerificationOptions = {},
 ) => {
   const pin = await readLatestPin(request, email, purpose);
 
   await fillOtp(page, pin);
   await page.getByRole('button', { name: 'Verify and continue' }).click();
 
-  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await expect(page).toHaveURL(postVerificationUrlPattern, { timeout: 15000 });
   await waitForAuthenticatedSession(page, email);
+
+  if (options.completeActivation ?? true) {
+    await completeActivationIfNeeded(page);
+  }
 };
 
 export const registerAndAuthenticate = async (
@@ -150,9 +176,10 @@ export const registerAndAuthenticate = async (
   request: APIRequestContext,
   email: string,
   password: string,
+  options: VerificationOptions = {},
 ) => {
   await signUp(page, email, password);
-  await verifyLatestCode(page, request, email, 'sign_up');
+  await verifyLatestCode(page, request, email, 'sign_up', options);
 };
 
 export const signOutViaApi = async (page: Page) => {

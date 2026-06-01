@@ -4,15 +4,15 @@
 
 ### 1) Integration Inventory
 
-| System | Type (API/DB/Queue/etc) | Purpose | Auth model | Criticality | Evidence |
-|--------|---------------------------|---------|------------|-------------|----------|
-| [name] | [type] | [purpose] | [auth] | [high/med/low] | [file] |
+| System | Type (API/DB/Queue/etc) | Purpose   | Auth model | Criticality    | Evidence |
+| ------ | ----------------------- | --------- | ---------- | -------------- | -------- |
+| [name] | [type]                  | [purpose] | [auth]     | [high/med/low] | [file]   |
 
 ### 2) Data Stores
 
-| Store | Role | Access layer | Key risk | Evidence |
-|-------|------|--------------|----------|----------|
-| [db/cache/etc] | [role] | [module] | [risk] | [file] |
+| Store          | Role   | Access layer | Key risk | Evidence |
+| -------------- | ------ | ------------ | -------- | -------- |
+| [db/cache/etc] | [role] | [module]     | [risk]   | [file]   |
 
 ### 3) Secrets and Credentials Handling
 

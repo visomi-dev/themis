@@ -18,6 +18,7 @@ Transforms raw git diffs and change descriptions into clear, story-driven commit
 ## Prerequisites
 
 Have at least one of the following ready:
+
 - Output from `git diff` or `git diff --staged`
 - A description of what you changed and why
 - A list of modified files
@@ -38,18 +39,18 @@ If the user provides a raw `git diff`, extract this context automatically from t
 
 Map the change to a Conventional Commits type using this guide:
 
-| Type | Use When |
-|------|----------|
-| `feat` | A new feature or capability is added |
-| `fix` | A bug or incorrect behavior is corrected |
-| `refactor` | Code restructured without changing behavior |
-| `perf` | A change that improves performance |
-| `docs` | Documentation only changes |
-| `style` | Formatting, whitespace, missing semicolons (no logic change) |
-| `test` | Adding or updating tests |
-| `chore` | Build process, dependency updates, config changes |
-| `ci` | CI/CD pipeline changes |
-| `revert` | Reverting a previous commit |
+| Type       | Use When                                                     |
+| ---------- | ------------------------------------------------------------ |
+| `feat`     | A new feature or capability is added                         |
+| `fix`      | A bug or incorrect behavior is corrected                     |
+| `refactor` | Code restructured without changing behavior                  |
+| `perf`     | A change that improves performance                           |
+| `docs`     | Documentation only changes                                   |
+| `style`    | Formatting, whitespace, missing semicolons (no logic change) |
+| `test`     | Adding or updating tests                                     |
+| `chore`    | Build process, dependency updates, config changes            |
+| `ci`       | CI/CD pipeline changes                                       |
+| `revert`   | Reverting a previous commit                                  |
 
 See `references/conventional-commits-guide.md` for detailed examples.
 
@@ -68,19 +69,22 @@ Follow this structure:
 #### Rules for Each Part
 
 **Subject line (first line):**
+
 - Use imperative mood: "add", "fix", "remove" — not "added" or "fixes"
 - Max 72 characters
 - No period at the end
 - Lowercase after the colon
 
 **Body (the story):**
-- Explain the *why*, not the *what* (the diff already shows the what)
+
+- Explain the _why_, not the _what_ (the diff already shows the what)
 - Describe the problem that existed before this change
 - Mention any alternatives considered if relevant
 - Keep lines under 100 characters
 - Separate from subject with a blank line
 
 **Footer:**
+
 - Reference issues: `Closes #123`, `Fixes #456`, `Refs #789`
 - Mark breaking changes: `BREAKING CHANGE: <description>`
 
@@ -119,13 +123,13 @@ If the diff contains **logically separate changes**, split them into multiple co
 
 ## Edge Cases
 
-| Situation | How to Handle |
-|-----------|---------------|
-| User provides no context beyond a diff | Infer type and scope from file names and changed symbols |
-| Changes span many files with no clear theme | Ask: "Is this one logical change, or multiple?" |
-| Breaking change detected | Add `BREAKING CHANGE:` footer automatically |
-| User says "keep it short" | Omit body, just write a strong subject line |
-| No issue number available | Omit the footer entirely |
+| Situation                                   | How to Handle                                            |
+| ------------------------------------------- | -------------------------------------------------------- |
+| User provides no context beyond a diff      | Infer type and scope from file names and changed symbols |
+| Changes span many files with no clear theme | Ask: "Is this one logical change, or multiple?"          |
+| Breaking change detected                    | Add `BREAKING CHANGE:` footer automatically              |
+| User says "keep it short"                   | Omit body, just write a strong subject line              |
+| No issue number available                   | Omit the footer entirely                                 |
 
 ---
 

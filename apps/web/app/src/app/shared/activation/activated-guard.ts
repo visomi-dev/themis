@@ -15,7 +15,7 @@ export async function activatedGuard(_route: ActivatedRouteSnapshot, _state: Rou
 
   const router = inject(Router);
 
-  const activationState = await activation.loadState();
+  const activationData = await activation.loadState();
 
-  return hasCompletedActivation(activationState.milestones) ? true : router.createUrlTree([ACTIVATION_URL]);
+  return hasCompletedActivation(activationData.milestones) ? true : router.createUrlTree([ACTIVATION_URL]);
 }

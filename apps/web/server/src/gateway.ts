@@ -8,6 +8,8 @@ import express, {
 } from 'express';
 import helmet from 'helmet';
 
+import { logger } from 'shared';
+
 type AstroRequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 
 type GatewayDeps = {
@@ -54,8 +56,15 @@ function createGatewayApp({
   app.get('/', (_req, res) => {
     res.redirect(302, '/en/');
   });
+
   app.use('/api', apiHandler);
+
+  logger.info({ path: '/api' }, 'API Mounted');
+
   app.use('/app', angularHandler);
+
+  logger.info({ path: '/app' }, 'App Mounted');
+
   app.use(
     serveStatic(astroClientFolder, {
       index: false,
@@ -64,6 +73,8 @@ function createGatewayApp({
     }),
   );
   app.use((req, res, next) => astroRequestHandler(req, res, next));
+
+  logger.info({ path: '/' }, 'Site Mounted');
 
   return app;
 }

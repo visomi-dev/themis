@@ -4,12 +4,12 @@
 
 ### 1) Naming Rules
 
-| Item | Rule | Example | Evidence |
-|------|------|---------|----------|
-| Files | [RULE] | [EXAMPLE] | [FILE] |
-| Functions/methods | [RULE] | [EXAMPLE] | [FILE] |
-| Types/interfaces | [RULE] | [EXAMPLE] | [FILE] |
-| Constants/env vars | [RULE] | [EXAMPLE] | [FILE] |
+| Item               | Rule   | Example   | Evidence |
+| ------------------ | ------ | --------- | -------- |
+| Files              | [RULE] | [EXAMPLE] | [FILE]   |
+| Functions/methods  | [RULE] | [EXAMPLE] | [FILE]   |
+| Types/interfaces   | [RULE] | [EXAMPLE] | [FILE]   |
+| Constants/env vars | [RULE] | [EXAMPLE] | [FILE]   |
 
 ### 2) Formatting and Linting
 

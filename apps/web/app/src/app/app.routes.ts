@@ -1,9 +1,9 @@
 import type { Route } from '@angular/router';
 
-import { authenticatedGuard } from './shared/auth/authenticated.guard';
-import { anonymousGuard } from './shared/auth/anonymous.guard';
-import { verificationGuard } from './shared/auth/verification.guard';
-import { activatedGuard } from './shared/activation/activated.guard';
+import { authenticatedGuard } from './shared/auth/authenticated-guard';
+import { anonymousGuard } from './shared/auth/anonymous-guard';
+import { verificationGuard } from './shared/auth/verification-guard';
+import { activatedGuard } from './shared/activation/activated-guard';
 import {
   ACTIVATION_PATH,
   APP_PATH,

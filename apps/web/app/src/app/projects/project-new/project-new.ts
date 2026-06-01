@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 
 import { PROJECTS_URL } from '../../shared/constants/routes';
-import { ProjectsService } from '../../shared/projects/projects';
+import { ProjectsApi } from '../../shared/projects/projects';
 
 type NewProjectForm = FormGroup<{
   name: FormControl<string>;
@@ -23,7 +23,7 @@ type NewProjectForm = FormGroup<{
   styleUrl: './project-new.css',
 })
 export class ProjectNew {
-  private readonly projectsService = inject(ProjectsService);
+  private readonly projectsApi = inject(ProjectsApi);
   private readonly router = inject(Router);
 
   readonly form: NewProjectForm = new FormGroup({
@@ -52,7 +52,7 @@ export class ProjectNew {
     this.errorMessage.set('');
 
     try {
-      const project = await this.projectsService.createProject(this.form.getRawValue());
+      const project = await this.projectsApi.createProject(this.form.getRawValue());
 
       await this.router.navigate(['/projects', project.id]);
     } catch {

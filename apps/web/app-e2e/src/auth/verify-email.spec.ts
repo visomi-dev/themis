@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { readLatestPin } from '../support/mailbox';
-import { createCredentials, signIn, signOutViaApi, signUp } from '../support/auth';
+import { createCredentials, signIn, signOutViaApi, signUp, verifyLatestCode } from '../support/auth';
 import { fillOtp } from '../support/otp';
 import { appUrlPattern, signInUrlPattern, verifyEmailRoute, verifyEmailUrlPattern } from '../support/routes';
 
@@ -50,10 +50,7 @@ test.describe('/app/verify-email', () => {
 
     await signIn(page, credentials.email, credentials.password);
 
-    const signInPin = await readLatestPin(request, credentials.email, 'sign_in');
-
-    await fillOtp(page, signInPin);
-    await page.getByRole('button', { name: 'Verify and continue' }).click();
+    await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
     await expect(page.getByText('dashboard works!')).toBeVisible();

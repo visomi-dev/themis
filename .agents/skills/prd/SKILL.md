@@ -2,12 +2,13 @@
 description: Generate high-quality Product Requirements Documents (PRDs) for software systems and AI-powered features. Includes executive summaries, user stories, technical specifications, and risk analysis.
 license: MIT
 metadata:
-    github-path: skills/prd
-    github-ref: refs/heads/main
-    github-repo: https://github.com/github/awesome-copilot
-    github-tree-sha: b4af69e637f8f2bf620c55273680669ccca3e73c
+  github-path: skills/prd
+  github-ref: refs/heads/main
+  github-repo: https://github.com/github/awesome-copilot
+  github-tree-sha: b4af69e637f8f2bf620c55273680669ccca3e73c
 name: prd
 ---
+
 # Product Requirements Document (PRD)
 
 ## Overview
