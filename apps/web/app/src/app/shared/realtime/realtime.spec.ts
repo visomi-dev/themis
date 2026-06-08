@@ -21,9 +21,10 @@ vi.mock('socket.io-client', () => ({
   io: socketMocks.socketFactory,
 }));
 
+import { BrowserRealtime } from './browser-realtime';
 import { Realtime } from './realtime';
 
-describe('Realtime', () => {
+describe('BrowserRealtime', () => {
   const $user = signal<{ accountId: string; email: string; emailVerifiedAt: string | null; id: string } | null>(null);
 
   beforeEach(() => {
@@ -34,7 +35,8 @@ describe('Realtime', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        Realtime,
+        BrowserRealtime,
+        { provide: Realtime, useExisting: BrowserRealtime },
         {
           provide: Auth,
           useValue: {

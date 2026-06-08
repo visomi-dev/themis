@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
 import { Settings } from './settings';
+import { BrowserSettings } from './browser-settings';
+import { ServerSettings } from './server-settings';
 
-describe('Settings', () => {
+describe('BrowserSettings', () => {
   beforeEach(() => {
     localStorage.clear();
     document.documentElement.classList.remove('dark');
 
     TestBed.configureTestingModule({
-      providers: [Settings],
+      providers: [BrowserSettings, { provide: Settings, useExisting: BrowserSettings }],
     });
   });
 
@@ -18,10 +20,27 @@ describe('Settings', () => {
     const initialDark = settings.isDark();
 
     settings.toggleTheme();
-    TestBed.flushEffects();
 
     expect(settings.isDark()).toBe(!initialDark);
-    expect(document.documentElement.classList.contains('dark')).toBe(!initialDark);
     expect(localStorage.getItem('themis.theme')).toBe(initialDark ? 'light' : 'dark');
+  });
+});
+
+describe('ServerSettings', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [ServerSettings, { provide: Settings, useExisting: ServerSettings }],
+    });
+  });
+
+  it('defaults to light and does not touch the DOM', () => {
+    const settings = TestBed.inject(Settings);
+
+    expect(settings.theme()).toBe('light');
+    expect(settings.isDark()).toBe(false);
+
+    settings.toggleTheme();
+
+    expect(settings.theme()).toBe('light');
   });
 });

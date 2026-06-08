@@ -6,22 +6,39 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideClientHydration, withEventReplay, withI18nSupport } from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withHttpTransferCacheOptions,
+  withI18nSupport,
+} from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 
 import { appRoutes } from './app.routes';
 import { ThemisPreset } from './app.theme';
 import { Auth } from './shared/auth/auth';
-import { Settings } from './shared/settings';
+import { BrowserAuth } from './shared/auth/browser-auth';
+import { Clipboard } from './shared/clipboard/clipboard';
+import { BrowserClipboard } from './shared/clipboard/browser-clipboard';
 import { httpInterceptor } from './shared/http-interceptor';
+import { Realtime } from './shared/realtime/realtime';
+import { BrowserRealtime } from './shared/realtime/browser-realtime';
+import { BrowserSettings } from './shared/browser-settings';
+import { Settings } from './shared/settings';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideHttpClient(withFetch(), withInterceptors([httpInterceptor])),
-    provideClientHydration(withI18nSupport(), withEventReplay()),
+    provideClientHydration(
+      withI18nSupport(),
+      withEventReplay(),
+      withHttpTransferCacheOptions({
+        filter: (req) => !req.url.includes('/api/auth/'),
+      }),
+    ),
     providePrimeNG({
       ripple: false,
       theme: {
@@ -34,7 +51,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideAppInitializer(() => inject(Auth).ensureSessionLoaded()),
 
-    Auth,
-    Settings,
+    { provide: Auth, useExisting: BrowserAuth },
+    { provide: Settings, useExisting: BrowserSettings },
+    { provide: Realtime, useExisting: BrowserRealtime },
+    { provide: Clipboard, useExisting: BrowserClipboard },
   ],
 };

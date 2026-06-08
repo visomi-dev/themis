@@ -1,16 +1,52 @@
+import { HttpHeaders, HttpRequest, type HttpInterceptorFn } from '@angular/common/http';
+import { PLATFORM_ID, REQUEST } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { HttpInterceptorFn } from '@angular/common/http';
 
 import { httpInterceptor } from './http-interceptor';
 
 describe('httpInterceptor', () => {
-  const interceptor: HttpInterceptorFn = (req, next) => TestBed.runInInjectionContext(() => httpInterceptor(req, next));
+  const runInterceptor: HttpInterceptorFn = (req, next) =>
+    TestBed.runInInjectionContext(() => httpInterceptor(req, next));
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  function buildRequest(url: string, headers: Record<string, string> = {}): HttpRequest<unknown> {
+    return new HttpRequest('GET', url, null, { headers: new HttpHeaders(headers) });
+  }
+
+  it('passes the request through on the browser', () => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
+    });
+
+    const next = vi.fn((req: HttpRequest<unknown>) => req);
+    const request = buildRequest('/api/projects');
+
+    const result = runInterceptor(request, next);
+
+    expect(next).toHaveBeenCalledWith(request);
+    expect(result).toBe(request);
   });
 
-  it('should be created', () => {
-    expect(interceptor).toBeTruthy();
+  it('rewrites the request URL and forwards the cookie on the server', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PLATFORM_ID, useValue: 'server' },
+        {
+          provide: REQUEST,
+          useValue: new Request('http://localhost:8080/app/dashboard', { headers: { cookie: 'sid=abc' } }),
+        },
+      ],
+    });
+
+    const next = vi.fn((req: HttpRequest<unknown>) => req);
+    const request = buildRequest('/api/projects');
+
+    runInterceptor(request, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+
+    const cloned = next.mock.calls[0]?.[0] as HttpRequest<unknown>;
+
+    expect(cloned.url).toBe('http://localhost:8080/api/projects');
+    expect(cloned.headers.get('cookie')).toBe('sid=abc');
   });
 });

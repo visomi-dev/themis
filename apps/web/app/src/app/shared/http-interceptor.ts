@@ -8,34 +8,36 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
   const request = inject(REQUEST, { optional: true });
 
-  if (isPlatformServer(platformId)) {
-    let apiBase: string = environment.internalApiUrl;
-
-    if (request) {
-      const reqObj = request as unknown as Record<string, unknown>;
-
-      if (typeof reqObj['url'] === 'string' && reqObj['url'].startsWith('http')) {
-        try {
-          apiBase = new URL(reqObj['url']).origin;
-        } catch (_error) {
-          // Ignore invalid URL parsing
-        }
-      } else {
-        const protocol = (reqObj['protocol'] as string | undefined) ?? 'http';
-        const headers = (reqObj['headers'] as Record<string, unknown> | undefined) ?? {};
-        const host = (headers['host'] as string | undefined) ?? 'localhost:8080';
-
-        apiBase = `${protocol}://${host}`;
-      }
-    }
-
-    const localReq = req.clone({
-      url: `${apiBase}${req.url}`,
-      headers: req.headers.set('cookie', request?.headers.get('cookie') ?? ''),
-    });
-
-    return next(localReq);
+  if (!isPlatformServer(platformId)) {
+    return next(req);
   }
 
-  return next(req);
+  const cookieHeader = request?.headers.get('cookie') ?? '';
+  const apiBase = resolveServerOrigin(request ?? undefined);
+
+  return next(
+    req.clone({
+      url: `${apiBase}${req.url}`,
+      headers: req.headers.set('cookie', cookieHeader),
+    }),
+  );
 };
+
+function resolveServerOrigin(request: Request | undefined): string {
+  if (!request) {
+    return environment.internalApiUrl;
+  }
+
+  if (request.url.startsWith('http')) {
+    try {
+      return new URL(request.url).origin;
+    } catch {
+      return environment.internalApiUrl;
+    }
+  }
+
+  const protocol = (request as Request & { protocol?: string }).protocol ?? 'http';
+  const host = request.headers.get('host') ?? 'localhost:8080';
+
+  return `${protocol}://${host}`;
+}

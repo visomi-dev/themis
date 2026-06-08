@@ -12,7 +12,7 @@ import express, { static as serveStatic, type Request } from 'express';
 import type { AuthUser } from './app/shared/auth/auth.models';
 
 type AuthenticatedRequest = Request & {
-  user?: AuthUser;
+  user?: AuthUser | null;
 };
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -33,9 +33,10 @@ app.use(
 
 app.use((req, res, next) => {
   const request = req as AuthenticatedRequest;
+  const user = request.user ?? null;
 
   angularApp
-    .handle(req, { user: request.user })
+    .handle(req, { user })
     .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });

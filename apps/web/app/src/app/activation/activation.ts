@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -14,6 +13,7 @@ import type {
   ActivationState,
   CreatedApiKey,
 } from '../shared/activation/activation.models';
+import { Clipboard } from '../shared/clipboard/clipboard';
 import { PROJECTS_URL } from '../shared/constants/routes';
 
 type ApiKeyForm = FormGroup<{
@@ -33,7 +33,7 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
 })
 export class Activation implements OnInit {
   private readonly activation = inject(ActivationService);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly clipboard = inject(Clipboard);
   private readonly router = inject(Router);
 
   readonly apiKeyForm: ApiKeyForm = new FormGroup({
@@ -239,13 +239,14 @@ export class Activation implements OnInit {
   }
 
   private async copyText(value: string, message: string) {
-    if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
+    const copied = await this.clipboard.writeText(value);
+
+    if (!copied) {
       this.copyMessage.set('Clipboard access is not available in this browser.');
 
       return false;
     }
 
-    await navigator.clipboard.writeText(value);
     this.copyMessage.set(message);
 
     return true;

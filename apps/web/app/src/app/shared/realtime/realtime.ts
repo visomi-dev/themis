@@ -1,73 +1,8 @@
-import { isPlatformServer } from '@angular/common';
-import { PLATFORM_ID, effect, inject, Injectable, signal } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
-
-import { Auth } from '../auth/auth';
+import type { Signal } from '@angular/core';
 
 import type { AsyncJobEvent } from './realtime.models';
 
-@Injectable({ providedIn: 'root' })
-export class Realtime {
-  private readonly auth = inject(Auth);
-  private readonly platformId = inject(PLATFORM_ID);
-
-  private socket: Socket | null = null;
-  private readonly $lastEvent = signal<AsyncJobEvent | null>(null);
-  private readonly $connected = signal(false);
-
-  readonly connected = this.$connected.asReadonly();
-  readonly lastEvent = this.$lastEvent.asReadonly();
-
-  readonly authEffect = effect(() => {
-    const user = this.auth.user();
-
-    if (isPlatformServer(this.platformId)) {
-      return;
-    }
-
-    if (!user) {
-      this.disconnect();
-
-      return;
-    }
-
-    this.connect();
-  });
-
-  private connect() {
-    if (this.socket?.connected) {
-      return;
-    }
-
-    this.socket?.disconnect();
-    this.socket = io('/', {
-      autoConnect: true,
-      path: '/socket.io',
-      transports: ['websocket'],
-      withCredentials: true,
-    });
-
-    this.socket.on('connect', () => {
-      this.$connected.set(true);
-
-      console.log({
-        connected: true,
-      });
-    });
-
-    this.socket.on('disconnect', () => {
-      this.$connected.set(false);
-    });
-
-    for (const name of ['job:queued', 'job:started', 'job:progress', 'job:completed', 'job:failed'] as const) {
-      this.socket.on(name, (event: AsyncJobEvent) => this.$lastEvent.set(event));
-    }
-  }
-
-  private disconnect() {
-    this.socket?.disconnect();
-    this.socket = null;
-    this.$connected.set(false);
-    this.$lastEvent.set(null);
-  }
+export abstract class Realtime {
+  abstract readonly connected: Signal<boolean>;
+  abstract readonly lastEvent: Signal<AsyncJobEvent | null>;
 }

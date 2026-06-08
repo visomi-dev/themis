@@ -55,3 +55,11 @@ For this standalone monorepo, the first implementation should likely be:
 - API endpoints in `apps/web/api`
 - PostgreSQL-backed persistence later in the implementation sequence
 - mounted through `apps/web/server`
+
+## SSR Compatibility Hardening
+
+Refactor the Angular app to author server-compatible components per the [Angular SSR guide](https://angular.dev/guide/ssr#authoring-server-compatible-components). Replaces `isPlatformBrowser` / `isPlatformServer` checks with platform-specific provider implementations.
+
+- See spec: [`docs/specs/2026-06-08-ssr-browser-refactor/`](./specs/2026-06-08-ssr-browser-refactor/)
+- Branch: `feat/OC/ssr-browser-refactor`
+- Version target: `1.1.0`
