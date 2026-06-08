@@ -1,5 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { PLATFORM_ID, REQUEST } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { Auth } from './auth';
@@ -11,6 +12,10 @@ describe('Auth', () => {
     TestBed.configureTestingModule({
       providers: [Auth, provideHttpClient(), provideHttpClientTesting()],
     });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
   });
 
   it('stores the pending challenge after credential submission', async () => {
@@ -36,5 +41,26 @@ describe('Auth', () => {
 
     expect(auth.pendingChallenge()?.challengeId).toBe('challenge-1');
     expect(sessionStorage.getItem('themis.pendingChallenge')).toContain('challenge-1');
+  });
+
+  it('does not fetch the session on the server without a session cookie', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        Auth,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        { provide: REQUEST, useValue: new Request('http://localhost:8080/app/sign-in') },
+      ],
+    });
+
+    const auth = TestBed.inject(Auth);
+
+    await auth.ensureSessionLoaded();
+
+    TestBed.inject(HttpTestingController).expectNone('/api/auth/session');
+    expect(auth.sessionLoaded()).toBe(true);
+    expect(auth.user()).toBeNull();
   });
 });

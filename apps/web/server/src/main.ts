@@ -1,8 +1,11 @@
 import { spawn, type ChildProcess } from 'node:child_process';
+import type { IncomingMessage } from 'node:http';
+import type { Socket } from 'node:net';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import type { Express, NextFunction, Request, Response } from 'express';
+import type { Express, NextFunction, Request, RequestHandler, Response } from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { createGatewayApp } from './gateway';
 
@@ -18,7 +21,7 @@ type RealtimeModule = {
 };
 
 type AngularModule = {
-  reqHandler?: Express;
+  reqHandler?: RequestHandler;
 };
 
 type AstroMiddlewareModule = {
@@ -27,7 +30,15 @@ type AstroMiddlewareModule = {
 
 const host = process.env.HOST ?? '0.0.0.0';
 
-const port = process.env.PORT ? Number(process.env.PORT) : 8000;
+type UpgradeHandler = (req: IncomingMessage, socket: Socket, head: Buffer) => void;
+
+type AngularHandler = RequestHandler & {
+  upgrade?: UpgradeHandler;
+};
+
+const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+
+const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
@@ -109,14 +120,27 @@ async function loadAstroRequestHandler() {
   return astroModule.handler;
 }
 
-async function loadAngularHandler() {
+async function loadAngularHandler(): Promise<AngularHandler> {
+  if (appDevServerUrl) {
+    const proxy = createProxyMiddleware({
+      changeOrigin: true,
+      target: appDevServerUrl,
+      ws: true,
+      xfwd: true,
+    }) as AngularHandler;
+
+    logger.info({ target: appDevServerUrl }, 'Angular dev server proxy enabled');
+
+    return proxy;
+  }
+
   const angularModule = (await import(pathToFileURL(angularEntryFile).href)) as AngularModule;
 
   if (!angularModule.reqHandler) {
     throw new Error(`Could not load the Angular request handler from '${angularEntryFile}'.`);
   }
 
-  return angularModule.reqHandler;
+  return angularModule.reqHandler as AngularHandler;
 }
 
 async function bootstrap() {
@@ -140,6 +164,14 @@ async function bootstrap() {
   httpServer = app.listen(port, host, () => {
     logger.info({ host, port }, 'Gateway server ready');
   });
+
+  if (angularHandler.upgrade) {
+    httpServer.on('upgrade', (req, socket, head) => {
+      if (req.url?.startsWith('/app/')) {
+        angularHandler.upgrade?.(req, socket as Socket, head);
+      }
+    });
+  }
 
   await attachRealtimeServer(httpServer);
 }

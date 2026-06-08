@@ -33,7 +33,7 @@ It owns monolith startup for local and container deployments while preserving fe
 
 ## Local Development
 
-For local backend development, `pnpm nx run server:serve` starts `apps/web/server` as the orchestration entrypoint.
+For local backend development, `pnpm nx run server:serve` starts `apps/web/server` as the orchestration entrypoint on `http://localhost:8080`.
 
 It starts:
 
@@ -42,7 +42,7 @@ It starts:
 - realtime feature code
 - server gateway
 
-The frontend can then be run separately with `pnpm nx run app:serve`.
+The frontend can then be run separately with `pnpm nx run app:serve`. To keep the gateway as the public development origin while using the Angular dev server, start the gateway with `APP_DEV_SERVER_URL=http://localhost:4200` and open `http://localhost:8080/app`.
 
 ## Future Extraction Path
 

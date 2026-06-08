@@ -61,6 +61,7 @@
           "outputHashing": "all"
         },
         "development": {
+          "baseHref": "/app/",
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true

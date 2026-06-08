@@ -105,6 +105,15 @@ This starts `apps/web/server`, which manages the backend stack for local develop
 
 The server preserves `/socket.io` as the public websocket path on the same HTTP server used by `/api`, `/app`, and `/`.
 
+When developing the Angular app with its dev server, start the app separately and point the gateway at it:
+
+```bash
+pnpm nx run app:serve
+APP_DEV_SERVER_URL=http://localhost:4200 pnpm nx run server:serve
+```
+
+Open the product app through the gateway at `http://localhost:8080/app` so SSR, API requests, sessions, and realtime traffic use the same origin.
+
 ## Docker
 
 Build the production image:

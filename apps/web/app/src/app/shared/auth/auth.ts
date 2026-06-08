@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { PLATFORM_ID, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
+import { PLATFORM_ID, REQUEST, REQUEST_CONTEXT, computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { PENDING_CHALLENGE_KEY } from '../constants/storage';
@@ -25,6 +25,7 @@ type AuthRequestContext = {
 export class Auth {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly request = inject(REQUEST, { optional: true });
   private readonly requestContext = inject<AuthRequestContext | null>(REQUEST_CONTEXT, { optional: true });
 
   private readonly $pendingChallenge = signal<AuthChallenge | null>(this.readStoredChallenge());
@@ -52,7 +53,7 @@ export class Auth {
       return;
     }
 
-    if (isPlatformServer(this.platformId) && !this.requestContext?.user) {
+    if (isPlatformServer(this.platformId) && !this.hasSessionCookie()) {
       this.$user.set(null);
       this.$sessionLoaded.set(true);
 
@@ -68,6 +69,12 @@ export class Auth {
     } finally {
       this.$sessionLoaded.set(true);
     }
+  }
+
+  private hasSessionCookie() {
+    const cookieHeader = this.request?.headers.get('cookie');
+
+    return cookieHeader?.split(';').some((cookie) => cookie.trim().startsWith('connect.sid=')) ?? false;
   }
 
   async signInWithPassword(payload: CredentialsPayload) {

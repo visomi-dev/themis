@@ -1,7 +1,6 @@
 import express, {
   type RequestHandler,
   static as serveStatic,
-  type Express,
   type NextFunction,
   type Request,
   type Response,
@@ -14,7 +13,7 @@ type AstroRequestHandler = (req: Request, res: Response, next: NextFunction) => 
 
 type GatewayDeps = {
   apiHandler: RequestHandler;
-  angularHandler: Express;
+  angularHandler: RequestHandler;
   astroClientFolder: string;
   astroRequestHandler: AstroRequestHandler;
   authRuntimeHandlers: RequestHandler[];
