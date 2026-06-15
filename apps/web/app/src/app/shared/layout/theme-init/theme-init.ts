@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, afterNextRender, effect, inject } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, PLATFORM_ID, effect, inject } from '@angular/core';
 
 import { Settings } from '../../settings';
 
@@ -13,13 +13,16 @@ import { Settings } from '../../settings';
 })
 export class ThemeInit {
   private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly settings = inject(Settings);
 
-  readonly syncThemeClassEffect = afterNextRender(() => {
-    effect(() => {
-      const isDark = this.settings.isDark();
+  readonly syncThemeClassEffect = effect(() => {
+    const isDark = this.settings.isDark();
 
-      this.document.documentElement.classList.toggle('dark', isDark);
-    });
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.document.documentElement.classList.toggle('dark', isDark);
   });
 }
