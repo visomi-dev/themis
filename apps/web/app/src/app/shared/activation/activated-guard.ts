@@ -1,7 +1,8 @@
 import { inject } from '@angular/core';
 import { Router, type ActivatedRouteSnapshot, type RouterStateSnapshot } from '@angular/router';
 
-import { ACTIVATION_URL } from '../constants/routes';
+import { Auth } from '../auth/auth';
+import { ACTIVATION_URL, SIGN_IN_URL } from '../constants/routes';
 
 import { Activation } from './activation';
 import type { ActivationMilestone } from './activation.models';
@@ -11,9 +12,15 @@ function hasCompletedActivation(milestones: ActivationMilestone[]) {
 }
 
 export async function activatedGuard(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
+  const auth = inject(Auth);
   const activation = inject(Activation);
-
   const router = inject(Router);
+
+  await auth.ensureSessionLoaded();
+
+  if (!auth.isAuthenticated()) {
+    return router.createUrlTree([SIGN_IN_URL]);
+  }
 
   const activationData = await activation.loadState();
 
