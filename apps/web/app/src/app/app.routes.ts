@@ -59,7 +59,7 @@ export const appRoutes: Route[] = [
 
   {
     path: DASHBOARD_PATH,
-    canActivate: [authenticatedGuard, activatedGuard],
+    canActivate: [activatedGuard],
     loadComponent: () => import('./dashboard/dashboard').then((module) => module.Dashboard),
   },
   {
@@ -69,18 +69,18 @@ export const appRoutes: Route[] = [
   },
   {
     path: PROJECTS_PATH,
-    canActivate: [authenticatedGuard, activatedGuard],
+    canActivate: [activatedGuard],
     loadComponent: () => import('./projects/projects').then((module) => module.Projects),
     pathMatch: 'full',
   },
   {
     path: `${PROJECTS_PATH}/${PROJECT_NEW_PATH}`,
-    canActivate: [authenticatedGuard, activatedGuard],
+    canActivate: [activatedGuard],
     loadComponent: () => import('./projects/project-new/project-new').then((module) => module.ProjectNew),
   },
   {
     path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}`,
-    canActivate: [authenticatedGuard, activatedGuard],
+    canActivate: [activatedGuard],
     loadComponent: () => import('./projects/project-detail/project-detail').then((module) => module.ProjectDetail),
   },
 
