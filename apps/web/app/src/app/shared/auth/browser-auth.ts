@@ -74,7 +74,6 @@ export class BrowserAuth extends Auth {
         this.$user.set(response.data.user);
         this.$sessionLoaded.set(true);
         this.setPendingChallenge(null);
-        this.markSessionHint();
 
         return response.data;
       }
@@ -127,7 +126,6 @@ export class BrowserAuth extends Auth {
       this.$user.set(response.data.user);
       this.$sessionLoaded.set(true);
       this.setPendingChallenge(null);
-      this.markSessionHint();
 
       return response.data.user;
     } finally {
@@ -170,10 +168,6 @@ export class BrowserAuth extends Auth {
     return this.readCookie(SESSION_PRESENCE_KEY) === '1';
   }
 
-  private markSessionHint(): void {
-    this.writeCookie(SESSION_PRESENCE_KEY, '1');
-  }
-
   private clearSessionHint(): void {
     this.writeCookie(SESSION_PRESENCE_KEY, '', 'Thu, 01 Jan 1970 00:00:00 GMT');
   }
@@ -192,14 +186,8 @@ export class BrowserAuth extends Auth {
     return null;
   }
 
-  private writeCookie(name: string, value: string, expires?: string): void {
-    const parts = [`${name}=${value}`, 'Path=/', 'SameSite=Lax'];
-
-    if (expires) {
-      parts.push(`Expires=${expires}`);
-    } else {
-      parts.push('Max-Age=2592000');
-    }
+  private writeCookie(name: string, value: string, expires: string): void {
+    const parts = [`${name}=${value}`, 'Path=/', 'SameSite=Lax', `Expires=${expires}`];
 
     if (this.document.defaultView?.location.protocol === 'https:') {
       parts.push('Secure');

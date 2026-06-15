@@ -5,7 +5,14 @@ import type { z } from 'zod';
 
 import { env } from '../shared/env';
 
-import { generateUserDeviceToken, generateVerificationPin, hashSecret, verifySecret } from './auth-crypto';
+import {
+  generateUserDeviceToken,
+  generateVerificationPin,
+  hashSecret,
+  hashUserDeviceToken,
+  verifySecret,
+  verifyUserDeviceToken,
+} from './auth-crypto';
 import { sendVerificationMessage } from './auth-mail';
 import { authUserSchema, challengeSchema } from './auth-schemas';
 
@@ -171,7 +178,7 @@ export async function createUserDevice(userId: string) {
     createdAt: now,
     expiresAt: new Date(now.getTime() + env.REMEMBERED_DEVICE_MAX_AGE_MS),
     id: randomUUID(),
-    tokenHash: await hashSecret(token),
+    tokenHash: hashUserDeviceToken(token),
     updatedAt: now,
     userId,
   });
@@ -190,7 +197,7 @@ export async function isRememberedDevice(userId: string, token: string | undefin
     .where(and(eq(userDevices.userId, userId), gt(userDevices.expiresAt, new Date())));
 
   for (const device of devices) {
-    if (await verifySecret(token, device.tokenHash)) {
+    if (verifyUserDeviceToken(token, device.tokenHash)) {
       await db
         .update(userDevices)
         .set({

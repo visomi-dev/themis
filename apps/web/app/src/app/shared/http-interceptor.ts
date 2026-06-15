@@ -12,13 +12,19 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const cookieHeader = request?.headers.get('cookie') ?? '';
+  if (!req.url.startsWith('/api/')) {
+    return next(req);
+  }
+
   const apiBase = resolveServerOrigin(request ?? undefined);
+  const cookieHeader = request?.headers.get('cookie');
+
+  const headers = cookieHeader ? req.headers.set('cookie', cookieHeader) : req.headers;
 
   return next(
     req.clone({
+      headers,
       url: `${apiBase}${req.url}`,
-      headers: req.headers.set('cookie', cookieHeader),
     }),
   );
 };

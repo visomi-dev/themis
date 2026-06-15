@@ -28,6 +28,7 @@ import { HttpError, httpResponse } from 'shared';
 const router = Router();
 
 const REMEMBERED_DEVICE_COOKIE = 'themis.remembered_device';
+const SESSION_HINT_COOKIE = 'themis.hasSession';
 
 function parseCookie(req: Request, name: string) {
   const cookieHeader = req.headers.cookie;
@@ -38,11 +39,21 @@ function parseCookie(req: Request, name: string) {
 
   const prefix = `${name}=`;
 
-  return cookieHeader
+  const raw = cookieHeader
     .split(';')
     .map((cookie) => cookie.trim())
     .find((cookie) => cookie.startsWith(prefix))
     ?.slice(prefix.length);
+
+  if (raw === undefined) {
+    return undefined;
+  }
+
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
 }
 
 function rememberedDeviceCookieOptions(): CookieOptions {
@@ -53,6 +64,24 @@ function rememberedDeviceCookieOptions(): CookieOptions {
     sameSite: 'lax',
     secure: env.COOKIE_SECURE,
   };
+}
+
+function sessionHintCookieOptions(maxAgeMs: number): CookieOptions {
+  return {
+    httpOnly: false,
+    maxAge: maxAgeMs,
+    path: '/',
+    sameSite: 'lax',
+    secure: env.COOKIE_SECURE,
+  };
+}
+
+function setSessionHintCookie(res: Response) {
+  res.cookie(SESSION_HINT_COOKIE, '1', sessionHintCookieOptions(env.SESSION_MAX_AGE_MS));
+}
+
+function clearSessionHintCookie(res: Response) {
+  res.clearCookie(SESSION_HINT_COOKIE, sessionHintCookieOptions(0));
 }
 
 router.get('/session', authed(), async function sessionHandler(req, res) {
@@ -88,6 +117,8 @@ router.post(
         resolve();
       });
     });
+
+    setSessionHintCookie(res);
 
     httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-up complete.' });
   },
@@ -151,6 +182,8 @@ router.post(
               });
             });
 
+            setSessionHintCookie(res);
+
             httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
 
             return;
@@ -189,6 +222,8 @@ router.post(
       });
     });
 
+    setSessionHintCookie(res);
+
     httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
   },
 );
@@ -220,6 +255,7 @@ router.post('/sign-out', authed(), async function signOutHandler(req, res) {
 
   req.session.destroy(() => undefined);
   res.clearCookie('connect.sid');
+  clearSessionHintCookie(res);
   res.status(204).send();
 });
 

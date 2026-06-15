@@ -37,7 +37,7 @@ export class ServerAuth extends Auth {
       return;
     }
 
-    if (this.requestContext?.user) {
+    if (this.requestContext !== null && this.requestContext !== undefined) {
       this.$user.set(this.requestContext.user);
       this.$sessionLoaded.set(true);
 
