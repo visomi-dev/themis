@@ -9,5 +9,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './error-message.css',
 })
 export class ErrorMessage {
-  readonly id = input<string | null>(null);
+  readonly controlId = input<string | null>(null);
 }

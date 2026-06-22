@@ -6,7 +6,7 @@ import { Input } from './input';
 
 @Component({
   imports: [Input, ReactiveFormsModule],
-  template: '<app-input id="name" [formControl]="control" />',
+  template: '<app-input controlId="name" [formControl]="control" />',
 })
 class Host {
   readonly control = new FormControl('Ada', { nonNullable: true });

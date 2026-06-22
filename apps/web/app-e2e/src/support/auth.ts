@@ -193,7 +193,7 @@ export const signOutViaApi = async (page: Page) => {
 
 export const signOutViaMenu = async (page: Page) => {
   await page.getByRole('button', { name: 'Open user menu' }).click();
-  await page.getByRole('menuitem', { name: /Sign out/i }).click();
+  await page.getByRole('option', { name: /Sign out/i }).click();
 };
 
 export const registerAndSignOut = async (page: Page, request: APIRequestContext, email: string, password: string) => {

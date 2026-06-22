@@ -1,1 +1,1 @@
-<div [class]="classes()" role="status"><ng-content /></div>
+<div [class]="classes()" [attr.role]="tone() === 'danger' ? 'alert' : 'status'"><ng-content /></div>

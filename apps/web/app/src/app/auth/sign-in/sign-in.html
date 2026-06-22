@@ -1,112 +1,81 @@
-<main class="bg-background relative min-h-dvh px-4 py-4 md:px-8 md:py-6">
-  <div class="absolute top-4 right-4 flex items-center gap-4 md:top-6 md:right-8">
-    <app-language-switcher />
+<app-auth-layout>
+  <div data-slot="brand" class="space-y-6">
+    <app-logo variant="wordmark" />
+    <app-text size="sm" tone="muted" i18n="@@signInEyebrow">AI-integrated technical access layer</app-text>
+    <p class="text-muted-fg hidden text-xs font-black tracking-widest uppercase md:block" i18n="@@signInHeroKicker">
+      Workspace access
+    </p>
+    <app-heading
+      class="hidden max-w-xl md:block"
+      i18n="@@signInHeroTitle"
+      level="1"
+      [text]="'Human and agent execution, secured.'"
+    />
+  </div>
+
+  <div class="flex justify-end gap-3 pb-6">
     <app-theme-switcher />
   </div>
 
-  <section class="mx-auto grid min-h-dvh max-w-6xl content-center gap-10 lg:grid-cols-2 lg:items-center">
-    <div class="space-y-6">
-      <div>
-        <app-logo variant="wordmark" />
-        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@signInEyebrow">AI-integrated technical access layer</p>
-      </div>
+  <app-card padding="lg" tone="raised">
+    <p class="text-muted-fg text-xs font-black tracking-widest uppercase" i18n="@@signInPanelKicker">Account access</p>
 
-      <div class="hidden space-y-5 lg:block">
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@signInHeroKicker">
-          Workspace access
-        </p>
+    <app-heading i18n="@@signInPanelTitle" level="2" [text]="'Sign in'" />
 
-        <h1
-          class="text-on-surface font-heading max-w-xl text-5xl leading-none font-extrabold tracking-tighter xl:text-6xl"
-          i18n="@@signInHeroTitle"
-        >
-          Human and agent execution, secured.
-        </h1>
-      </div>
-    </div>
+    @if (errorMessage()) {
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+    }
 
-    <section
-      class="bg-surface-container-lowest border-outline-variant/10 shadow-panel dark:bg-surface-container-low w-full max-w-xl rounded-xl border p-6 md:p-8 lg:justify-self-end"
-    >
-      <header>
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@signInPanelKicker">
-          Account access
-        </p>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
+      <app-field>
+        <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
+        <app-input
+          autocomplete="email"
+          formControlName="email"
+          [controlId]="'sign-in-email'"
+          invalid="!!emailError()"
+          name="email"
+          placeholder="name@organization.com"
+          type="email"
+          (blur)="updateEmailError()"
+        />
+        @if (emailError(); as message) {
+          <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
+        }
+      </app-field>
 
-        <h2
-          class="text-on-surface font-heading mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight"
-          i18n="@@signInPanelTitle"
-        >
-          Sign in
-        </h2>
-      </header>
-
-      @if (errorMessage()) {
-        <p-message class="mt-4 block" severity="error">{{ errorMessage() }}</p-message>
-      }
-
-      <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-5" novalidate>
-        <app-form-field fieldId="sign-in-email" label="Email" i18n-label="@@signInEmailLabel" [error]="emailError()">
-          <input
-            id="sign-in-email"
-            pInputText
-            formControlName="email"
-            autocomplete="email"
-            placeholder="name@organization.com"
-            i18n-placeholder="@@signInEmailPlaceholder"
-            class="w-full"
-          />
-        </app-form-field>
-
-        <app-form-field
-          fieldId="sign-in-password"
-          label="Password"
-          i18n-label="@@signInPasswordLabel"
-          [error]="passwordError()"
-        >
-          <div class="pb-1.5">
-            <p-password
-              inputId="sign-in-password"
-              autocomplete="current-password"
-              formControlName="password"
-              placeholder="***************"
-              [feedback]="false"
-              [toggleMask]="true"
-              [fluid]="true"
-            />
-          </div>
-
-          <a
-            footer
-            class="text-primary text-sm font-semibold no-underline hover:underline"
-            [routerLink]="forgottenPasswordUrl"
+      <app-field>
+        <div class="flex items-center justify-between gap-3">
+          <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
+          <app-link
             i18n="@@signInForgottenPasswordLink"
-          >
-            Forgotten password?
-          </a>
-        </app-form-field>
+            [routerLink]="forgottenPasswordUrl"
+            [text]="'Forgotten password?'"
+          />
+        </div>
+        <app-password-input
+          autocomplete="current-password"
+          formControlName="password"
+          [controlId]="'sign-in-password'"
+          invalid="!!passwordError()"
+          name="password"
+          placeholder="***************"
+          (blur)="updatePasswordError()"
+        />
+        @if (passwordError(); as message) {
+          <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
+        }
+      </app-field>
 
-        <label class="text-on-surface-variant flex items-start gap-3 text-sm leading-6">
-          <input type="checkbox" formControlName="rememberDevice" class="accent-primary mt-1 size-4 rounded-sm" />
+      <label class="text-muted-fg flex items-start gap-3 text-sm leading-6" for="sign-in-remember-device">
+        <app-checkbox formControlName="rememberDevice" [controlId]="'sign-in-remember-device'" name="rememberDevice" />
+        <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
+      </label>
 
-          <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
-        </label>
+      <app-button i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()">Sign in</app-button>
+    </form>
 
-        <button class="mt-2" pButton type="submit" [disabled]="submitting()" i18n="@@signInSubmitButton">
-          Sign in
-        </button>
-      </form>
-
-      <footer class="text-on-surface-variant mt-6 flex flex-wrap gap-x-1.5 gap-y-2 text-sm">
-        <span i18n="@@signInFooterPrompt">New to Themis?</span>
-        <a
-          class="text-primary font-semibold no-underline hover:underline"
-          [routerLink]="footerLink"
-          i18n="@@signInFooterLink"
-        >
-          Create an account
-        </a>
-      </footer>
-    </section>
-  </section>
-</main>
+    <p class="text-muted-fg mt-2 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
+    <app-link i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
+  </app-card>
+</app-auth-layout>

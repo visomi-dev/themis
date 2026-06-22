@@ -13,10 +13,8 @@ import {
   withI18nSupport,
 } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { providePrimeNG } from 'primeng/config';
 
 import { appRoutes } from './app.routes';
-import { ThemisPreset } from './app.theme';
 import { Auth } from './shared/auth/auth';
 import { BrowserAuth } from './shared/auth/browser-auth';
 import { Clipboard } from './shared/clipboard/clipboard';
@@ -39,15 +37,6 @@ export const appConfig: ApplicationConfig = {
         filter: (req) => !req.url.includes('/api/auth/'),
       }),
     ),
-    providePrimeNG({
-      ripple: false,
-      theme: {
-        options: {
-          darkModeSelector: '.dark',
-        },
-        preset: ThemisPreset,
-      },
-    }),
     provideRouter(appRoutes),
     provideAppInitializer(() => inject(Auth).ensureSessionLoaded()),
 

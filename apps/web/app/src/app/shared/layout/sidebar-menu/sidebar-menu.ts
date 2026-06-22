@@ -1,16 +1,19 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import type { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
 
 import { Auth } from '../../auth/auth';
 import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL, SIGN_IN_URL } from '../../constants/routes';
 import { Settings } from '../../settings';
+import { Avatar } from '../../ui/data/avatar/avatar';
+import { Dropdown } from '../../ui/overlays/dropdown/dropdown';
+import { Icon } from '../../ui/media/icon/icon';
+import { type IconName } from '../../ui/media/icon/icon-paths';
+import { Listbox, type ListboxOption } from '../../ui/overlays/listbox/listbox';
 
 type LayoutNavItem = {
   children?: LayoutNavItem[];
   exact: boolean;
-  icon: string;
+  icon: IconName;
   label: string;
   url: string;
 };
@@ -21,7 +24,7 @@ type LayoutNavSection = {
 };
 
 @Component({
-  imports: [MenuModule, RouterLink, RouterLinkActive],
+  imports: [Avatar, Dropdown, Icon, Listbox, RouterLink, RouterLinkActive],
   selector: 'app-sidebar-menu',
   templateUrl: './sidebar-menu.html',
   styleUrl: './sidebar-menu.css',
@@ -51,7 +54,7 @@ export class SidebarMenu {
       items: [
         {
           exact: true,
-          icon: 'pi pi-th-large',
+          icon: 'grid',
           label: $localize`:@@layoutMenuDashboard:Overview`,
           url: DASHBOARD_URL,
         },
@@ -59,13 +62,13 @@ export class SidebarMenu {
           children: [
             {
               exact: true,
-              icon: 'pi pi-plus',
+              icon: 'plus',
               label: $localize`:@@layoutMenuNewProject:New project`,
               url: PROJECT_NEW_URL,
             },
           ],
           exact: false,
-          icon: 'pi pi-folder',
+          icon: 'folder',
           label: $localize`:@@layoutMenuProjects:Projects`,
           url: PROJECTS_URL,
         },
@@ -73,14 +76,11 @@ export class SidebarMenu {
     },
   ];
 
-  readonly userMenuItems = computed<MenuItem[]>(() => [
+  readonly userMenuOptions = computed<ListboxOption[]>(() => [
     {
       disabled: this.signingOut(),
-      icon: 'pi pi-sign-out',
       label: $localize`:@@layoutSignOutLabel:Sign out`,
-      command: () => {
-        void this.signOut();
-      },
+      value: 'sign-out',
     },
   ]);
 
@@ -101,6 +101,12 @@ export class SidebarMenu {
     } finally {
       this.signingOut.set(false);
       this.closeMenu();
+    }
+  }
+
+  async handleUserMenuChange(value: string) {
+    if (value === 'sign-out') {
+      await this.signOut();
     }
   }
 }

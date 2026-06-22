@@ -3,7 +3,6 @@
 @import '@fontsource/manrope';
 @import '@fontsource/material-symbols-outlined';
 @import 'tailwindcss';
-@import 'primeicons/primeicons.css' layer(utilities);
 
 @custom-variant dark (&:where(.dark, .dark *));
 

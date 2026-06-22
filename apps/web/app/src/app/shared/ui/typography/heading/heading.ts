@@ -20,6 +20,7 @@ const headingSizes = Object.freeze({
   styleUrl: './heading.css',
 })
 export class Heading {
+  readonly text = input.required<string>();
   readonly level = input<HeadingLevel>('2');
 
   readonly classes = computed(() =>

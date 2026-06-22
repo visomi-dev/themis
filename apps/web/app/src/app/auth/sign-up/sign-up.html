@@ -1,93 +1,75 @@
-<main class="bg-background relative min-h-dvh px-4 py-4 md:px-8 md:py-6">
-  <div class="absolute top-4 right-4 flex items-center gap-4 md:top-6 md:right-8">
-    <app-language-switcher />
+<app-auth-layout>
+  <div data-slot="brand" class="space-y-6">
+    <app-logo variant="wordmark" />
+    <p class="text-muted-fg text-sm" i18n="@@signUpEyebrow">AI-integrated technical access layer</p>
+    <p class="text-muted-fg hidden text-xs font-black tracking-widest uppercase md:block" i18n="@@signUpHeroKicker">
+      New account
+    </p>
+    <app-heading
+      class="hidden max-w-xl md:block"
+      i18n="@@signUpHeroTitle"
+      level="1"
+      [text]="'Start your secured workspace.'"
+    />
+  </div>
+
+  <div class="flex justify-end gap-3 pb-6">
     <app-theme-switcher />
   </div>
 
-  <section class="mx-auto grid min-h-dvh max-w-6xl content-center gap-10 lg:grid-cols-2 lg:items-center">
-    <div class="space-y-6">
-      <div>
-        <app-logo variant="wordmark" />
-        <p class="text-on-surface-variant mt-2 text-sm" i18n="@@signUpEyebrow">AI-integrated technical access layer</p>
-      </div>
+  <app-card padding="lg" tone="raised">
+    <p class="text-muted-fg text-xs font-black tracking-widest uppercase" i18n="@@signUpPanelKicker">Account access</p>
 
-      <div class="hidden space-y-5 lg:block">
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@signUpHeroKicker">
-          New account
-        </p>
+    <app-heading i18n="@@signUpPanelTitle" level="2" [text]="'Create account'" />
 
-        <h1
-          class="text-on-surface font-heading max-w-xl text-5xl leading-none font-extrabold tracking-tighter xl:text-6xl"
-          i18n="@@signUpHeroTitle"
+    @if (errorMessage()) {
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
+      <app-field>
+        <app-label for="sign-up-email" i18n="@@signUpEmailLabel">Email</app-label>
+        <app-input
+          autocomplete="email"
+          formControlName="email"
+          [controlId]="'sign-up-email'"
+          invalid="!!emailError()"
+          name="email"
+          placeholder="name@organization.com"
+          type="email"
+          (blur)="updateEmailError()"
+        />
+        @if (emailError(); as message) {
+          <app-error-message controlId="sign-up-email-error">{{ message }}</app-error-message>
+        }
+      </app-field>
+
+      <app-field>
+        <app-label for="sign-up-password" i18n="@@signUpPasswordLabel">Password</app-label>
+        <app-password-input
+          autocomplete="new-password"
+          formControlName="password"
+          [controlId]="'sign-up-password'"
+          invalid="!!passwordError()"
+          name="password"
+          placeholder="***************"
+          (blur)="updatePasswordError()"
+        />
+        <app-description i18n="@@signUpPasswordHelp"
+          >Use at least 8 characters. Mix uppercase, lowercase, numbers, and symbols for the strongest
+          result.</app-description
         >
-          Start your secured workspace.
-        </h1>
-      </div>
-    </div>
+        @if (passwordError(); as message) {
+          <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
+        }
+      </app-field>
 
-    <section
-      class="bg-surface-container-lowest border-outline-variant/10 shadow-panel dark:bg-surface-container-low w-full max-w-xl rounded-xl border p-6 md:p-8 lg:justify-self-end"
-    >
-      <header>
-        <p class="text-on-surface-variant text-xs font-black tracking-widest uppercase" i18n="@@signUpPanelKicker">
-          Account access
-        </p>
+      <app-button i18n="@@signUpSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+        >Create account</app-button
+      >
+    </form>
 
-        <h2 class="text-on-surface font-heading mt-2 mb-4 text-4xl leading-tight font-extrabold tracking-tight">
-          <ng-container i18n="@@signUpPanelTitle">Create account</ng-container>
-        </h2>
-      </header>
-
-      @if (errorMessage()) {
-        <p-message class="mt-4 block" severity="error">{{ errorMessage() }}</p-message>
-      }
-
-      <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 grid gap-5" novalidate>
-        <app-form-field fieldId="sign-up-email" label="Email" i18n-label="@@signUpEmailLabel" [error]="emailError()">
-          <input
-            id="sign-up-email"
-            pInputText
-            formControlName="email"
-            autocomplete="email"
-            placeholder="name@organization.com"
-            i18n-placeholder="@@signUpEmailPlaceholder"
-            class="w-full"
-          />
-        </app-form-field>
-
-        <app-form-field
-          fieldId="sign-up-password"
-          label="Password"
-          i18n-label="@@signUpPasswordLabel"
-          [error]="passwordError()"
-        >
-          <div class="pb-1.5">
-            <p-password
-              inputId="sign-up-password"
-              autocomplete="new-password"
-              formControlName="password"
-              [feedback]="false"
-              [toggleMask]="true"
-              [fluid]="true"
-            />
-          </div>
-        </app-form-field>
-
-        <button class="mt-2" pButton type="submit" [disabled]="submitting()" i18n="@@signUpSubmitButton">
-          Create account
-        </button>
-      </form>
-
-      <footer class="text-on-surface-variant mt-6 flex flex-wrap gap-x-1.5 gap-y-2 text-sm">
-        <span i18n="@@signUpFooterPrompt">Already have an account?</span>
-        <a
-          class="text-primary font-semibold no-underline hover:underline"
-          [routerLink]="footerLink"
-          i18n="@@signUpFooterLink"
-        >
-          Back to sign in
-        </a>
-      </footer>
-    </section>
-  </section>
-</main>
+    <p class="text-muted-fg mt-2 text-sm" i18n="@@signUpFooterPrompt">Already have an account?</p>
+    <app-link i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />
+  </app-card>
+</app-auth-layout>

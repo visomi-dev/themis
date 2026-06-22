@@ -1,74 +1,70 @@
-<section class="mx-auto flex max-w-6xl flex-col gap-8">
-  <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-    <div>
-      <p class="text-primary font-mono text-xs font-semibold tracking-widest uppercase">Themis</p>
-      <h1 class="text-on-surface font-heading mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">Projects</h1>
-      <p class="text-on-surface-variant mt-3 max-w-xl text-sm leading-relaxed">
-        Software projects registered in Themis.
-      </p>
-    </div>
-
-    <a [routerLink]="projectNewUrl" pButton type="button">New project</a>
-  </header>
-
-  @if (errorMessage()) {
-    <p-message severity="error">{{ errorMessage() }}</p-message>
-  }
-
-  @if (loading()) {
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-      <p class="text-on-surface-variant text-sm">Loading projects...</p>
-    </section>
-  } @else if (projects().length === 0) {
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-      <p class="text-on-surface-variant text-sm">No projects yet. Create the first one to get started.</p>
-    </section>
-  } @else {
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
-      <div class="bg-surface-container-low hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
-        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Project</span>
-        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Status</span>
-        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Created</span>
-        <span class="text-on-surface-variant text-xs font-semibold tracking-widest uppercase">Actions</span>
+<app-container size="lg">
+  <div class="flex flex-col gap-8 py-4">
+    <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-accent font-mono text-xs font-semibold tracking-widest uppercase">Themis</p>
+        <app-heading i18n="@@projectsTitle" level="1" [text]="'Projects'" />
+        <p class="text-muted-fg mt-3 max-w-xl text-sm leading-relaxed">Software projects registered in Themis.</p>
       </div>
 
-      @for (project of projects(); track project.id) {
-        <article class="border-outline-variant/10 grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
-          <div class="min-w-0">
-            <a
-              class="text-on-surface hover:text-primary font-medium no-underline"
-              [routerLink]="['/projects', project.id]"
-            >
-              {{ project.name }}
-            </a>
-            @if (project.summary) {
-              <p class="text-on-surface-variant mt-1 line-clamp-2 text-sm">{{ project.summary }}</p>
-            }
-          </div>
+      <app-link-button i18n="@@projectsNewButton" [routerLink]="projectNewUrl" [text]="'New project'" />
+    </header>
 
-          <span
-            class="bg-tertiary-container text-on-tertiary-container w-fit rounded-sm px-2 py-1 text-xs font-semibold"
-          >
-            {{ statusLabel(project.status) }}
-          </span>
-          <span class="text-on-surface-variant text-xs">{{ formatDate(project.createdAt) }}</span>
-          <div class="flex items-center gap-2">
-            <a
-              [routerLink]="['/projects', project.id]"
-              class="text-primary text-sm font-medium no-underline hover:underline"
-            >
-              View
-            </a>
-            <button
-              type="button"
-              class="text-error text-sm font-medium hover:underline"
-              (click)="deleteProject(project.id, $event)"
-            >
-              Delete
-            </button>
-          </div>
-        </article>
-      }
-    </section>
-  }
-</section>
+    @if (errorMessage()) {
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+    }
+
+    @if (loading()) {
+      <app-card padding="md" tone="raised">
+        <div class="flex items-center gap-4">
+          <app-loader />
+          <p class="text-muted-fg text-sm">Loading projects...</p>
+        </div>
+      </app-card>
+    } @else if (projects().length === 0) {
+      <app-card padding="md" tone="raised">
+        <p class="text-muted-fg text-sm">No projects yet. Create the first one to get started.</p>
+      </app-card>
+    } @else {
+      <app-card padding="md" tone="raised" class="overflow-hidden">
+        <div class="bg-surface-container-low hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
+          <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Project</span>
+          <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Status</span>
+          <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Created</span>
+          <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Actions</span>
+        </div>
+
+        @for (project of projects(); track project.id) {
+          <article class="border-outline-variant/10 grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
+            <div class="min-w-0">
+              <a class="text-fg hover:text-accent font-medium no-underline" [routerLink]="['/projects', project.id]">
+                {{ project.name }}
+              </a>
+              @if (project.summary) {
+                <p class="text-muted-fg mt-1 line-clamp-2 text-sm">{{ project.summary }}</p>
+              }
+            </div>
+
+            <app-badge [tone]="statusTone(project.status)">{{ statusLabel(project.status) }}</app-badge>
+            <span class="text-muted-fg text-xs">{{ formatDate(project.createdAt) }}</span>
+            <div class="flex items-center gap-2">
+              <a
+                [routerLink]="['/projects', project.id]"
+                class="text-accent text-sm font-medium no-underline hover:underline"
+              >
+                View
+              </a>
+              <button
+                type="button"
+                class="text-danger text-sm font-medium hover:underline"
+                (click)="deleteProject(project.id, $event)"
+              >
+                Delete
+              </button>
+            </div>
+          </article>
+        }
+      </app-card>
+    }
+  </div>
+</app-container>

@@ -1,66 +1,61 @@
 <section class="mx-auto flex max-w-6xl flex-col gap-8">
   <header class="flex flex-col gap-3">
-    <p class="text-primary font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div>
-        <h1 class="text-on-surface font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
-          System activation
-        </h1>
-        <p class="text-on-surface-variant mt-3 max-w-2xl text-sm leading-relaxed md:text-base">
-          Configure your API key, local workspace settings, and project seed prompt before entering the first projects
-          surface.
-        </p>
-      </div>
-    </div>
+    <p class="text-accent font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
+    <app-heading i18n="@@activationTitle" level="1" [text]="'System activation'" />
+    <p class="text-muted-fg max-w-2xl text-sm leading-relaxed md:text-base">
+      Configure your API key, local workspace settings, and project seed prompt before entering the first projects
+      surface.
+    </p>
   </header>
 
   @if (errorMessage()) {
-    <p-message severity="error">{{ errorMessage() }}</p-message>
+    <app-alert tone="danger">{{ errorMessage() }}</app-alert>
   }
 
   @if (copyMessage()) {
-    <p-message severity="success">{{ copyMessage() }}</p-message>
+    <app-alert tone="success">{{ copyMessage() }}</app-alert>
   }
 
   @if (loading()) {
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-      <p class="text-on-surface-variant text-sm">Loading activation settings...</p>
-    </section>
+    <app-card padding="md" tone="raised">
+      <div class="flex items-center gap-4">
+        <app-loader />
+        <p class="text-muted-fg text-sm">Loading activation settings...</p>
+      </div>
+    </app-card>
   } @else {
     <div class="space-y-8">
       <section>
         <div class="mb-4 flex items-center gap-3">
-          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
-            >01</span
-          >
-          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">API infrastructure</h2>
+          <app-badge tone="accent">01</app-badge>
+          <app-heading i18n="@@activationApiInfrastructureTitle" level="2" [text]="'API infrastructure'" />
         </div>
 
-        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-          <label
-            class="text-on-surface-variant mb-4 block text-sm font-semibold tracking-widest uppercase"
-            for="activation-api-key-label"
-          >
-            Named API access keys
-          </label>
+        <app-card padding="md" tone="default">
+          <app-label for="activation-api-key-label" i18n="@@activationApiKeyLabel">Named API access keys</app-label>
 
           <form [formGroup]="apiKeyForm" (ngSubmit)="createApiKey()" class="flex flex-col gap-3 md:flex-row">
-            <input
-              id="activation-api-key-label"
-              pInputText
-              type="text"
-              formControlName="label"
-              placeholder="Production workspace key"
+            <app-input
               class="w-full md:flex-1"
+              formControlName="label"
+              [controlId]="'activation-api-key-label'"
+              invalid="!!labelError()"
+              name="label"
+              placeholder="Production workspace key"
+              (blur)="updateLabelError()"
             />
 
-            <button pButton type="submit" [disabled]="creatingKey()">Generate key</button>
+            <app-button tone="accent" type="submit" [loading]="creatingKey()">Generate key</app-button>
           </form>
+
+          @if (labelError(); as message) {
+            <app-error-message controlId="activation-api-key-label-error">{{ message }}</app-error-message>
+          }
 
           <div class="mt-5 grid gap-3">
             @if ((activationData()?.apiKeys?.length ?? 0) === 0) {
               <div
-                class="border-outline-variant/20 bg-surface-container-low text-on-surface-variant rounded-sm border px-4 py-5 font-mono text-sm italic"
+                class="border-outline-variant/20 bg-surface-container-low text-muted-fg rounded-sm border px-4 py-5 font-mono text-sm italic"
               >
                 ••••••••••••••••••••••••••••••••••••
               </div>
@@ -72,13 +67,13 @@
               >
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div class="min-w-0">
-                    <p class="text-on-surface text-sm font-semibold">{{ apiKey.label }}</p>
+                    <p class="text-fg text-sm font-semibold">{{ apiKey.label }}</p>
                     @if (plaintextTokenFor(apiKey)) {
-                      <p class="text-primary mt-1 font-mono text-xs break-all">
+                      <p class="text-accent mt-1 font-mono text-xs break-all">
                         {{ plaintextTokenFor(apiKey) }}
                       </p>
                     } @else {
-                      <p class="text-on-surface-variant mt-1 font-mono text-xs">
+                      <p class="text-muted-fg mt-1 font-mono text-xs">
                         {{ apiKey.tokenPrefix }}... created {{ keyCreatedAtLabel(apiKey) }}
                       </p>
                     }
@@ -86,21 +81,18 @@
 
                   <div class="flex shrink-0 flex-col gap-3 sm:flex-row md:gap-4">
                     @if (plaintextTokenFor(apiKey)) {
-                      <button pButton type="button" severity="info" [outlined]="true" (click)="copyGeneratedKey()">
-                        Copy key
-                      </button>
+                      <app-button type="button" variant="outline" (click)="copyGeneratedKey()">Copy key</app-button>
                     }
 
-                    <button
-                      pButton
+                    <app-button
+                      tone="danger"
                       type="button"
-                      severity="danger"
-                      [outlined]="true"
-                      [disabled]="revokingKeyId() === apiKey.id"
+                      variant="outline"
+                      [loading]="revokingKeyId() === apiKey.id"
                       (click)="revokeApiKey(apiKey.id)"
                     >
                       Revoke
-                    </button>
+                    </app-button>
                   </div>
                 </div>
               </article>
@@ -108,25 +100,23 @@
 
             <div class="border-error bg-error-container/20 border-l-2 px-4 py-3">
               <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-                <p class="text-on-surface shrink-0 text-xs font-black tracking-widest uppercase">Caution</p>
-                <p class="text-on-surface-variant text-sm leading-relaxed">
+                <p class="text-fg shrink-0 text-xs font-black tracking-widest uppercase">Caution</p>
+                <p class="text-muted-fg text-sm leading-relaxed">
                   Each key is displayed only once. Copy it immediately before leaving this screen.
                 </p>
               </div>
             </div>
           </div>
-        </section>
+        </app-card>
       </section>
 
       <section>
         <div class="mb-4 flex items-center gap-3">
-          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
-            >02</span
-          >
-          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Workspace configuration</h2>
+          <app-badge tone="accent">02</app-badge>
+          <app-heading i18n="@@activationWorkspaceConfigurationTitle" level="2" [text]="'Workspace configuration'" />
         </div>
 
-        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container overflow-hidden rounded-sm">
+        <app-card padding="md" tone="default">
           <div role="tablist" class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
             <button
               type="button"
@@ -134,9 +124,9 @@
               id="config-tab-themis"
               [attr.aria-selected]="selectedConfigTab() === 'themis'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
+              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'themis'"
-              [class.text-primary]="selectedConfigTab() === 'themis'"
+              [class.text-accent]="selectedConfigTab() === 'themis'"
               (click)="selectConfigTab('themis')"
             >
               ~/.config/themis/core.json
@@ -147,9 +137,9 @@
               id="config-tab-opencode"
               [attr.aria-selected]="selectedConfigTab() === 'opencode'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
+              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'opencode'"
-              [class.text-primary]="selectedConfigTab() === 'opencode'"
+              [class.text-accent]="selectedConfigTab() === 'opencode'"
               (click)="selectConfigTab('opencode')"
             >
               ~/.config/opencode/opencode.json
@@ -160,9 +150,9 @@
               id="config-tab-env"
               [attr.aria-selected]="selectedConfigTab() === 'env'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-on-surface-variant cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
+              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
               [class.bg-surface-container-lowest]="selectedConfigTab() === 'env'"
-              [class.text-primary]="selectedConfigTab() === 'env'"
+              [class.text-accent]="selectedConfigTab() === 'env'"
               (click)="selectConfigTab('env')"
             >
               .env.production
@@ -176,45 +166,38 @@
             class="bg-surface-container-high p-6"
           >
             <div class="flex items-center justify-between gap-4">
-              <p class="text-on-surface-variant font-mono text-xs">{{ currentConfigPath() }}</p>
-              <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySelectedConfig()">
-                Copy config
-              </button>
+              <p class="text-muted-fg font-mono text-xs">{{ currentConfigPath() }}</p>
+              <app-button type="button" variant="outline" (click)="copySelectedConfig()">Copy config</app-button>
             </div>
 
-            <pre
-              class="text-on-surface mt-5 overflow-x-auto font-mono text-sm leading-7 break-words whitespace-pre-wrap"
-              >{{ currentConfigText() }}</pre
-            >
+            <pre class="text-fg mt-5 overflow-x-auto font-mono text-sm leading-7 break-words whitespace-pre-wrap">{{
+              currentConfigText()
+            }}</pre>
           </div>
-        </section>
+        </app-card>
       </section>
 
       <section>
         <div class="mb-4 flex items-center gap-3">
-          <span class="bg-primary-container text-on-primary-container rounded-sm px-2 py-0.5 font-mono text-xs"
-            >03</span
-          >
-          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Seed configuration</h2>
+          <app-badge tone="accent">03</app-badge>
+          <app-heading i18n="@@activationSeedConfigurationTitle" level="2" [text]="'Seed configuration'" />
         </div>
 
-        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-          <p class="text-on-surface-variant font-semibold tracking-widest uppercase">System seed prompt</p>
-          <p class="text-on-surface-variant mt-2 max-w-2xl text-sm leading-relaxed">
+        <app-card padding="md" tone="default">
+          <p class="text-muted-fg font-semibold tracking-widest uppercase">System seed prompt</p>
+          <p class="text-muted-fg mt-2 max-w-2xl text-sm leading-relaxed">
             Use this prompt inside OpenCode to analyze the repository and seed the first project context into Themis.
           </p>
 
           <pre
-            class="border-outline-variant/20 bg-surface-container-low text-on-surface mt-5 overflow-x-auto border p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap"
+            class="border-outline-variant/20 bg-surface-container-low text-fg mt-5 overflow-x-auto border p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap"
             >{{ activationData()?.seedPrompt }}</pre
           >
 
           <div class="mt-5 flex justify-end">
-            <button pButton type="button" severity="secondary" [outlined]="true" (click)="copySeedPrompt()">
-              Copy prompt
-            </button>
+            <app-button type="button" variant="outline" (click)="copySeedPrompt()">Copy prompt</app-button>
           </div>
-        </section>
+        </app-card>
       </section>
 
       <footer
@@ -222,7 +205,7 @@
       >
         <div class="flex items-center gap-3">
           <span class="bg-tertiary h-2 w-2 rounded-full"></span>
-          <span class="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
+          <span class="text-muted-fg font-mono text-xs tracking-widest uppercase">
             @if (hasMilestone('activation_completed')) {
               Activation completed
             } @else if (hasMilestone('activation_skipped')) {
@@ -234,19 +217,12 @@
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
-          <button
-            pButton
-            type="button"
-            severity="secondary"
-            [outlined]="true"
-            [disabled]="continuing()"
-            (click)="skipForNow()"
-          >
+          <app-button type="button" variant="outline" [loading]="continuing()" (click)="skipForNow()">
             Skip for now
-          </button>
-          <button pButton type="button" [disabled]="continuing()" (click)="continueToProjects()">
+          </app-button>
+          <app-button tone="accent" type="button" [loading]="continuing()" (click)="continueToProjects()">
             Continue to projects
-          </button>
+          </app-button>
         </div>
       </footer>
     </div>

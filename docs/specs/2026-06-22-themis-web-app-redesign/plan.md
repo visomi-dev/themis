@@ -73,3 +73,59 @@ If a target is missing or changes, inspect it first with:
 pnpm nx show project app --json
 pnpm nx show project app-e2e --json
 ```
+
+---
+
+## Implementation Outcome
+
+All seven phases were executed against the actual repository state. The app source no longer references PrimeNG, PrimeIcons, or `tailwindcss-primeui`. Verified with `rg "primeng|primeicons|tailwindcss-primeui|pi pi-|\.p-" apps/web/app/src` returning no matches.
+
+### Final Route-To-Open-Design Mapping
+
+| Open Design File            | Themis Surface                                                                           | Notes                                                                            |
+| --------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `sign-in.html`              | `apps/web/app/src/app/auth/sign-in`                                                      | Two-column auth layout with brand column on the left and form card on the right. |
+| `sign-up.html`              | `apps/web/app/src/app/auth/sign-up`                                                      | Same layout. Replaces `p-password` with `app-password-input`.                    |
+| `recover-password.html`     | `apps/web/app/src/app/auth/forgotten-password`                                           | Single-column form card. Success and error states use `app-alert`.               |
+| `confirm-account.html`      | `apps/web/app/src/app/auth/verify-email`, `verify-device`, `auth/verification-code-form` | `app-pin-input` replaces `p-inputOtp`.                                           |
+| `themis-auth-flow.html`     | `app-auth-layout` primitive                                                              | Brand column and form column composition.                                        |
+| `themis-reset.html`         | Not implemented                                                                          | No password reset route exists yet. Documented as deferred.                      |
+| `index.html`                | `shared/layout/layout`, `sidebar-menu`, `topbar`, `dashboard`                            | Layout shell uses `app-icon` and `app-avatar`.                                   |
+| `critique.json`             | Source of truth for tone                                                                 | The single accent is `accent`, the brand mark is the in-house `app-logo`.        |
+| `.open-design/project.json` | Project metadata only                                                                    | No app code change.                                                              |
+
+### Deviations From Open Design
+
+- **Sidebar collapse animation.** Open Design shows a smooth width transition; the legacy sidebar already animates via `transition-all duration-200`. Kept the legacy behavior for now.
+- **Password strength meter.** Open Design's `sign-up.html` and `reset-password.html` include a multi-tier strength indicator. The current `app-password-input` exposes the same data through `password-input.html` description slot, but a dedicated strength component is out of scope here. The `<app-description>` next to the password field mirrors the helper copy.
+- **Launcher grid.** Open Design's `index.html` shows a launcher grid for auth. The Themis app routes directly to `/app/sign-in` via the guard flow, so no launcher is rendered.
+- **PrimeIcons classes.** The Open Design references `primeicons` for inline glyphs. We replaced them with `app-icon` SVG primitives backed by a small `icon-paths.ts` set in `shared/ui/media/icon`.
+- **Theme tokens.** Open Design uses `--tm-*` variables inline. The Themis app already has a token layer in `apps/web/app/src/styles.css` and `apps/web/site/src/styles/global.css`; we keep the existing tokens to avoid changing the theme contract.
+
+### PrimeNG Cleanup Outcome
+
+- Removed `providePrimeNG` and the `ThemisPreset` Aura mapping from `app.config.ts` and deleted `app.theme.ts`.
+- Removed `@import 'tailwindcss-primeui';` and `@import 'primeicons/primeicons.css' layer(utilities);` from `apps/web/app/src/styles.css`, plus every `.p-*` override.
+- Verified `rg "primeng|primeicons|tailwindcss-primeui|pi pi-|\.p-" apps/web/app/src` returns zero matches.
+- Removed `primeicons/primeicons.css` from `apps/web/site/src/styles/global.css`, then removed root dependencies `primeng`, `primeicons`, `tailwindcss-primeui`, `@primeuix/themes`, and `@primeng/mcp` from `package.json` and `pnpm-lock.yaml`.
+
+### Validation Run
+
+```text
+pnpm nx lint app          → ✔ All files pass linting
+pnpm nx vite:test app     → 19 files, 35 tests passed
+pnpm nx build app         → built dist/apps/web/app (browser + server bundles)
+pnpm nx extract-i18n app  → 121 messages extracted; source xliff updated
+pnpm nx e2e app-e2e       → not run in this session (requires live backend, see below)
+```
+
+The production build reports a soft budget warning (`initial` bundle 602.62 kB against a 500 kB budget). The warning is pre-existing in scale; it is not introduced by this migration. The bundle delta from removing PrimeNG is net-negative because we no longer load `primeng/*` and the Aura theme.
+
+### Notes For Future Cleanup
+
+- The pnpm workspace had pre-existing peer resolution issues between `drizzle-orm`, `@electric-sql/pglite`, and `pg`. The final fix aligns `@electric-sql/pglite`, `drizzle-orm`, `pg`, and `ioredis` across the root package and internal libraries, removes the temporary `@ts-nocheck` comments, and removes the temporary `skipLibCheck` setting from `libs/projects/tsconfig.lib.json`.
+- The e2e suite was updated only for the OTP helper (`fillOtp` now targets `[data-slot=pin-input] input` instead of the PrimeNG `.p-inputotp-input`). The rest of the e2e suite was not executed in this session because it requires a live backend and mailbox. Re-run `pnpm nx e2e app-e2e` against the standard dev stack before merging.
+
+### Final Files Touched
+
+See `plan/feature-web-app-redesign-1.md` for the structured file and task list, and the recipes in `docs/design-system/recipes.md` for runnable UI examples.

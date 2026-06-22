@@ -4,16 +4,20 @@ import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { APP_URL, SIGN_IN_URL } from '../../shared/constants/routes';
-import { LanguageSwitcher } from '../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
+import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { Card } from '../../shared/ui/layout/card/card';
+import { Heading } from '../../shared/ui/typography/heading/heading';
+import { Link } from '../../shared/ui/typography/link/link';
+import { Text } from '../../shared/ui/typography/text/text';
 import { VerificationCodeForm } from '../verification-code-form/verification-code-form';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [LanguageSwitcher, Logo, RouterLink, ThemeSwitcher, VerificationCodeForm],
+  imports: [AuthLayout, Card, Heading, Link, Logo, RouterLink, Text, ThemeSwitcher, VerificationCodeForm],
   selector: 'app-verify-email',
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',

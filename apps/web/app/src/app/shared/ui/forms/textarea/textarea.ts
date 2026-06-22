@@ -12,8 +12,8 @@ import { uiClass } from '../../classes';
 })
 export class Textarea implements ControlValueAccessor {
   readonly ariaDescribedBy = input<string | null>(null);
+  readonly controlId = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
-  readonly id = input<string | null>(null);
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly name = input<string | null>(null);
   readonly placeholder = input('');

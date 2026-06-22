@@ -2,9 +2,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 
 import { Activation as ActivationService } from '../shared/activation/activation';
 import type {
@@ -15,6 +12,15 @@ import type {
 } from '../shared/activation/activation.models';
 import { Clipboard } from '../shared/clipboard/clipboard';
 import { PROJECTS_URL } from '../shared/constants/routes';
+import { Alert } from '../shared/ui/overlays/alert/alert';
+import { Badge } from '../shared/ui/data/badge/badge';
+import { Button } from '../shared/ui/actions/button/button';
+import { Card } from '../shared/ui/layout/card/card';
+import { ErrorMessage } from '../shared/ui/forms/error-message/error-message';
+import { Heading } from '../shared/ui/typography/heading/heading';
+import { Input } from '../shared/ui/forms/input/input';
+import { Label } from '../shared/ui/forms/label/label';
+import { Loader } from '../shared/ui/feedback/loader/loader';
 
 type ApiKeyForm = FormGroup<{
   label: FormControl<string>;
@@ -26,7 +32,7 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule],
+  imports: [Alert, Badge, Button, Card, ErrorMessage, Heading, Input, Label, Loader, ReactiveFormsModule],
   selector: 'app-activation',
   templateUrl: './activation.html',
   styleUrl: './activation.css',
@@ -49,6 +55,7 @@ export class Activation implements OnInit {
   readonly creatingKey = signal(false);
   readonly errorMessage = signal('');
   readonly generatedKey = signal<CreatedApiKey | null>(null);
+  readonly labelError = signal('');
   readonly loading = signal(true);
   readonly revokingKeyId = signal('');
   readonly selectedConfigTab = signal<ConfigTab>('themis');
@@ -60,6 +67,7 @@ export class Activation implements OnInit {
   async createApiKey() {
     if (this.apiKeyForm.invalid) {
       this.apiKeyForm.markAllAsTouched();
+      this.updateLabelError();
 
       return;
     }
@@ -219,6 +227,30 @@ export class Activation implements OnInit {
 
   hasMilestone(milestone: ActivationMilestone) {
     return this.activationData()?.milestones.includes(milestone) ?? false;
+  }
+
+  updateLabelError() {
+    const control = this.apiKeyForm.controls.label;
+
+    if (!control.touched || !control.invalid) {
+      this.labelError.set('');
+
+      return;
+    }
+
+    if (control.hasError('required')) {
+      this.labelError.set('Enter a label for the API key.');
+
+      return;
+    }
+
+    if (control.hasError('maxlength')) {
+      this.labelError.set('Use 80 characters or fewer.');
+
+      return;
+    }
+
+    this.labelError.set('This field is invalid.');
   }
 
   private async loadActivationState() {

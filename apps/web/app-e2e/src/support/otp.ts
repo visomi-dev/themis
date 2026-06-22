@@ -4,6 +4,6 @@ export const fillOtp = async (page: Page, code: string) => {
   const digits = code.split('');
 
   for (const [index, digit] of digits.entries()) {
-    await page.locator('.p-inputotp-input').nth(index).fill(digit);
+    await page.locator('[data-slot=pin-input] input').nth(index).fill(digit);
   }
 };

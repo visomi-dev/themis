@@ -1,10 +1,11 @@
 import { Component, inject, output } from '@angular/core';
 
+import { Icon } from '../../ui/media/icon/icon';
 import { Settings } from '../../settings';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 @Component({
-  imports: [LanguageSwitcher],
+  imports: [Icon, LanguageSwitcher],
   selector: 'app-topbar',
   templateUrl: './topbar.html',
   styleUrl: './topbar.css',

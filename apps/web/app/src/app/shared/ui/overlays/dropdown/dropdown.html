@@ -1,14 +1,13 @@
-<button
+<span
+  class="contents"
   cdkOverlayOrigin
   #origin="cdkOverlayOrigin"
-  class="contents"
-  [attr.aria-expanded]="open()"
-  [disabled]="disabled()"
-  type="button"
-  (click)="toggle()"
+  role="presentation"
+  (click)="onHostClick($event)"
+  (keydown)="onHostKeydown($event)"
 >
   <ng-content select="[data-slot=trigger]" />
-</button>
+</span>
 
 <ng-template
   cdkConnectedOverlay

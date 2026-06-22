@@ -2,18 +2,24 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
-import { PasswordModule } from 'primeng/password';
 
 import { Auth } from '../../shared/auth/auth';
 import { SIGN_IN_URL, VERIFY_EMAIL_URL } from '../../shared/constants/routes';
-import { FormField } from '../../shared/form/form-field/form-field';
 import { controlError } from '../../shared/form/form-errors';
-import { LanguageSwitcher } from '../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
+import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { Button } from '../../shared/ui/actions/button/button';
+import { Card } from '../../shared/ui/layout/card/card';
+import { Description } from '../../shared/ui/forms/description/description';
+import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
+import { Field } from '../../shared/ui/forms/field/field';
+import { Heading } from '../../shared/ui/typography/heading/heading';
+import { Input } from '../../shared/ui/forms/input/input';
+import { Label } from '../../shared/ui/forms/label/label';
+import { Link } from '../../shared/ui/typography/link/link';
+import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
 
 type SignUpForm = FormGroup<{
   email: FormControl<string>;
@@ -25,13 +31,19 @@ type SignUpForm = FormGroup<{
     class: /* tw */ 'block min-h-full w-full',
   },
   imports: [
-    ButtonModule,
-    FormField,
-    InputTextModule,
-    LanguageSwitcher,
+    Alert,
+    AuthLayout,
+    Button,
+    Card,
+    Description,
+    ErrorMessage,
+    Field,
+    Heading,
+    Input,
+    Label,
+    Link,
     Logo,
-    MessageModule,
-    PasswordModule,
+    PasswordInput,
     ReactiveFormsModule,
     RouterLink,
     ThemeSwitcher,
@@ -58,15 +70,25 @@ export class SignUp {
   readonly submitting = this.auth.submitting;
 
   readonly errorMessage = signal('');
+  readonly emailError = signal('');
+  readonly passwordError = signal('');
 
-  emailError() {
+  updateEmailError() {
+    this.emailError.set(this.emailErrorMessage());
+  }
+
+  updatePasswordError() {
+    this.passwordError.set(this.passwordErrorMessage());
+  }
+
+  emailErrorMessage() {
     return controlError(this.form.controls.email, {
       email: $localize`:@@signUpEmailErrorInvalid:Enter a valid email address.`,
       required: $localize`:@@signUpEmailErrorRequired:Enter your email address.`,
     });
   }
 
-  passwordError() {
+  passwordErrorMessage() {
     return controlError(this.form.controls.password, {
       minlength: $localize`:@@signUpPasswordErrorMinlength:Use at least 8 characters.`,
       required: $localize`:@@signUpPasswordErrorRequired:Create a password before continuing.`,
@@ -76,6 +98,8 @@ export class SignUp {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.updateEmailError();
+      this.updatePasswordError();
 
       return;
     }

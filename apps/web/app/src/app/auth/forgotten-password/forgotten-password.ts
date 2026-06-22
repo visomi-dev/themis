@@ -2,17 +2,22 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
 
 import { Auth } from '../../shared/auth/auth';
 import { SIGN_IN_URL } from '../../shared/constants/routes';
-import { FormField } from '../../shared/form/form-field/form-field';
 import { controlError } from '../../shared/form/form-errors';
-import { LanguageSwitcher } from '../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
+import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { Button } from '../../shared/ui/actions/button/button';
+import { Card } from '../../shared/ui/layout/card/card';
+import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
+import { Field } from '../../shared/ui/forms/field/field';
+import { Heading } from '../../shared/ui/typography/heading/heading';
+import { Input } from '../../shared/ui/forms/input/input';
+import { Label } from '../../shared/ui/forms/label/label';
+import { Link } from '../../shared/ui/typography/link/link';
 
 type ForgottenPasswordForm = FormGroup<{
   email: FormControl<string>;
@@ -23,12 +28,17 @@ type ForgottenPasswordForm = FormGroup<{
     class: /* tw */ 'block min-h-full w-full',
   },
   imports: [
-    ButtonModule,
-    FormField,
-    InputTextModule,
-    LanguageSwitcher,
+    Alert,
+    AuthLayout,
+    Button,
+    Card,
+    ErrorMessage,
+    Field,
+    Heading,
+    Input,
+    Label,
+    Link,
     Logo,
-    MessageModule,
     ReactiveFormsModule,
     RouterLink,
     ThemeSwitcher,
@@ -50,8 +60,13 @@ export class ForgottenPassword {
   readonly submitting = signal(false);
   readonly successMessage = signal('');
   readonly errorMessage = signal('');
+  readonly emailError = signal('');
 
-  emailError() {
+  updateEmailError() {
+    this.emailError.set(this.emailErrorMessage());
+  }
+
+  emailErrorMessage() {
     return controlError(this.form.controls.email, {
       email: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address.`,
       required: $localize`:@@forgottenPasswordEmailErrorRequired:Enter your email address.`,
@@ -61,6 +76,7 @@ export class ForgottenPassword {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.updateEmailError();
 
       return;
     }

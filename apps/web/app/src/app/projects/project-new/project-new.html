@@ -1,50 +1,63 @@
-<section class="mx-auto flex max-w-3xl flex-col gap-8">
-  <header>
-    <div class="flex items-center gap-3 text-sm">
-      <a [routerLink]="projectsUrl" class="text-primary font-semibold no-underline hover:underline">Projects</a>
-      <span class="text-outline-variant">/</span>
-      <span class="text-on-surface-variant">New project</span>
-    </div>
-
-    <h1 class="text-on-surface font-heading mt-6 text-4xl font-extrabold tracking-tight">New project</h1>
-  </header>
-
-  @if (errorMessage()) {
-    <p-message severity="error">{{ errorMessage() }}</p-message>
-  }
-
-  <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
-      <div>
-        <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-name">Project name</label>
-        <input
-          id="project-name"
-          pInputText
-          type="text"
-          formControlName="name"
-          placeholder="My application"
-          class="w-full"
-        />
+<app-container size="sm">
+  <div class="flex flex-col gap-8 py-4">
+    <header>
+      <div class="flex items-center gap-3 text-sm">
+        <app-link i18n="@@projectNewBreadcrumb" [routerLink]="projectsUrl" [text]="'Projects'" />
+        <span class="text-outline-variant">/</span>
+        <span class="text-muted-fg" i18n="@@projectNewBreadcrumbCurrent">New project</span>
       </div>
 
-      <div>
-        <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-summary">
-          Summary <span class="text-on-surface-variant font-normal">(optional)</span>
-        </label>
-        <textarea
-          id="project-summary"
-          pInputText
-          formControlName="summary"
-          placeholder="A short description of the project"
-          class="w-full"
-          rows="3"
-        ></textarea>
-      </div>
+      <app-heading class="mt-6" i18n="@@projectNewTitle" level="1" [text]="'New project'" />
+    </header>
 
-      <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <a [routerLink]="projectsUrl" pButton type="button" severity="secondary" [outlined]="true">Cancel</a>
-        <button pButton type="submit" [disabled]="submitting()">Create project</button>
-      </div>
-    </form>
-  </section>
-</section>
+    @if (errorMessage()) {
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+    }
+
+    <app-card padding="md" tone="raised">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
+        <app-field>
+          <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
+          <app-input
+            formControlName="name"
+            [controlId]="'project-name'"
+            invalid="!!nameError()"
+            name="name"
+            placeholder="My application"
+            type="text"
+            (blur)="updateNameError()"
+          />
+          @if (nameError(); as message) {
+            <app-error-message controlId="project-name-error">{{ message }}</app-error-message>
+          }
+        </app-field>
+
+        <app-field>
+          <app-label for="project-summary" i18n="@@projectNewSummaryLabel">Summary</app-label>
+          <app-description i18n="@@projectNewSummaryHelp"
+            >A short description of the project (optional).</app-description
+          >
+          <app-textarea
+            formControlName="summary"
+            [controlId]="'project-summary'"
+            invalid="!!summaryError()"
+            name="summary"
+            placeholder="A short description of the project"
+            [rows]="3"
+            (blur)="updateSummaryError()"
+          />
+          @if (summaryError(); as message) {
+            <app-error-message controlId="project-summary-error">{{ message }}</app-error-message>
+          }
+        </app-field>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <app-link-button i18n="@@projectNewCancel" [routerLink]="projectsUrl" [text]="'Cancel'" variant="outline" />
+          <app-button i18n="@@projectNewSubmit" tone="accent" type="submit" [loading]="submitting()">
+            Create project
+          </app-button>
+        </div>
+      </form>
+    </app-card>
+  </div>
+</app-container>

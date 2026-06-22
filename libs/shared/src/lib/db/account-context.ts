@@ -9,7 +9,9 @@ type TenantContext = {
   userId: string;
 };
 
-async function withAccountContext<T>(context: TenantContext, operation: (tx: ReturnType<typeof getDb>) => Promise<T>) {
+type AccountScopedDb = ReturnType<typeof getDb>;
+
+async function withAccountContext<T>(context: TenantContext, operation: (db: AccountScopedDb) => Promise<T>) {
   const db = getDb();
 
   return db.transaction(async (tx) => {
@@ -18,7 +20,7 @@ async function withAccountContext<T>(context: TenantContext, operation: (tx: Ret
       await tx.execute(sql`select set_config('app.current_user_id', ${context.userId}, true)`);
     }
 
-    return operation(tx as unknown as ReturnType<typeof getDb>);
+    return operation(tx as unknown as AccountScopedDb);
   });
 }
 

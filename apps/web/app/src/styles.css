@@ -3,8 +3,6 @@
 @import '@fontsource/manrope';
 @import '@fontsource/material-symbols-outlined';
 @import 'tailwindcss';
-@import 'tailwindcss-primeui';
-@import 'primeicons/primeicons.css' layer(utilities);
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -30,109 +28,6 @@ select {
 
 a {
   color: inherit;
-}
-
-.p-button {
-  border-radius: 0.5rem;
-  font-weight: 700;
-}
-
-.p-button:not(.p-button-text):not(.p-button-secondary) {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.p-button:not(.p-button-text):not(.p-button-secondary):enabled:hover {
-  background: color-mix(in srgb, var(--color-primary) 90%, black 10%);
-  border-color: color-mix(in srgb, var(--color-primary) 90%, black 10%);
-}
-
-.p-button.p-button-secondary.p-button-outlined,
-.p-button.p-button-secondary:not(.p-button-text) {
-  background: transparent;
-  border-color: rgb(from var(--color-outline) r g b / 0.28);
-  color: var(--color-on-surface);
-}
-
-.p-button.p-button-text {
-  color: var(--color-primary);
-}
-
-.p-inputtext,
-.p-password-input,
-.p-password,
-.p-inputotp-input {
-  background: transparent;
-  color: var(--color-on-surface);
-}
-
-html.dark .p-inputtext,
-html.dark .p-password-input,
-html.dark .p-password,
-html.dark .p-inputotp-input {
-  background: var(--color-surface-container-high);
-}
-
-html.dark input:-webkit-autofill,
-html.dark input:-webkit-autofill:hover,
-html.dark input:-webkit-autofill:focus,
-html.dark textarea:-webkit-autofill,
-html.dark textarea:-webkit-autofill:hover,
-html.dark textarea:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--color-on-surface);
-  box-shadow: 0 0 0 1000px var(--color-surface-container-high) inset;
-  caret-color: var(--color-on-surface);
-}
-
-.p-inputtext,
-.p-password-input {
-  border: 0;
-  box-shadow: none;
-  border-radius: 0;
-  padding-inline: 0;
-}
-
-.p-password,
-.p-password-input {
-  width: 100%;
-}
-
-.p-password-toggle-mask-icon {
-  color: var(--color-on-surface-variant);
-}
-
-.p-inputotp {
-  gap: 0.75rem;
-}
-
-.p-inputotp-input {
-  width: 3rem;
-  height: 3.5rem;
-  border: 1px solid rgb(from var(--color-outline) r g b / 0.24);
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, var(--color-surface-container-low) 88%, transparent);
-}
-
-.p-inputotp-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px rgb(from var(--color-primary) r g b / 0.24);
-}
-
-.p-message {
-  border-radius: 0.5rem;
-}
-
-.p-message-error {
-  background: color-mix(in srgb, var(--color-error-container) 24%, transparent);
-  color: var(--color-on-surface);
-}
-
-.p-message-warn,
-.p-message-success {
-  background: color-mix(in srgb, var(--color-tertiary-container) 18%, transparent);
-  border: 1px solid rgb(from var(--color-tertiary) r g b / 0.18);
-  color: var(--color-on-surface);
 }
 
 .sr-only {

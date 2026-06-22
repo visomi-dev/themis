@@ -1,94 +1,101 @@
-<section class="mx-auto flex max-w-6xl flex-col gap-8">
-  @if (errorMessage()) {
-    <p-message severity="error">{{ errorMessage() }}</p-message>
-  }
+<app-container size="lg">
+  <div class="flex flex-col gap-8 py-4">
+    @if (errorMessage()) {
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+    }
 
-  @if (loading()) {
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-      <p class="text-on-surface-variant text-sm">Loading project...</p>
-    </section>
-  } @else if (project()) {
-    <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-      <div>
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="bg-tertiary-container text-on-tertiary-container rounded-sm px-2 py-1 text-xs font-semibold">
-            {{ statusLabel(project()!.status) }}
-          </span>
-          <span class="text-on-surface-variant text-xs">{{ project()!.sourceType }}</span>
+    @if (loading()) {
+      <app-card padding="md" tone="raised">
+        <div class="flex items-center gap-4">
+          <app-loader />
+          <p class="text-muted-fg text-sm">Loading project...</p>
         </div>
-
-        <h1 class="text-on-surface font-heading mt-3 text-4xl font-extrabold tracking-tight md:text-5xl">
-          {{ project()!.name }}
-        </h1>
-
-        @if (project()!.summary) {
-          <p class="text-on-surface-variant mt-3 max-w-2xl text-base leading-relaxed">{{ project()!.summary }}</p>
-        }
-
-        <p class="text-on-surface-variant mt-3 text-xs">Created {{ formatDate(project()!.createdAt) }}</p>
-      </div>
-
-      <a [routerLink]="projectsUrl" class="text-primary text-sm font-semibold no-underline hover:underline">Projects</a>
-    </header>
-
-    <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      </app-card>
+    } @else if (project()) {
+      <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Project seed</h2>
-          <p class="text-on-surface-variant mt-2 text-sm leading-relaxed">
-            Start the base seed job to create the initial project context and overview document.
-          </p>
-        </div>
-
-        <button pButton type="button" [disabled]="seeding()" (click)="runSeed()">Run project seed</button>
-      </div>
-
-      @if (currentSeedJob()) {
-        <div class="border-outline-variant/20 bg-surface-container-low mt-5 rounded-sm border p-4">
-          <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <p class="text-on-surface text-sm font-semibold">{{ currentSeedJob()!.status }}</p>
-            <p class="text-on-surface-variant text-xs">{{ currentSeedJob()!.progress }}% complete</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <app-badge [tone]="statusTone(project()!.status)">{{ statusLabel(project()!.status) }}</app-badge>
+            <span class="text-muted-fg text-xs">{{ project()!.sourceType }}</span>
           </div>
-          @if (currentSeedJob()!.errorMessage) {
-            <p class="text-error mt-2 text-sm">{{ currentSeedJob()!.errorMessage }}</p>
+
+          <app-heading class="mt-3" level="1" [text]="project()!.name" />
+
+          @if (project()!.summary) {
+            <p class="text-muted-fg mt-3 max-w-2xl text-base leading-relaxed">{{ project()!.summary }}</p>
           }
+
+          <p class="text-muted-fg mt-3 text-xs">Created {{ formatDate(project()!.createdAt) }}</p>
         </div>
-      }
-    </section>
 
-    <section class="flex flex-col gap-4">
-      <h2 class="text-on-surface font-heading text-xl font-bold tracking-tight">Documents</h2>
+        <app-link i18n="@@projectDetailProjectsLink" [routerLink]="projectsUrl" [text]="'Projects'" />
+      </header>
 
-      @if (project()!.documents.length === 0) {
-        <section class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-6">
-          <p class="text-on-surface-variant text-sm">
-            No documents yet. Run the seed job to create the first overview.
-          </p>
-        </section>
-      } @else {
-        <section class="space-y-3">
-          @for (doc of project()!.documents; track doc.id) {
-            <article class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-5">
-              <div class="min-w-0">
-                <div class="flex flex-wrap items-center gap-2">
-                  <h3 class="text-on-surface text-base font-semibold">{{ doc.title }}</h3>
-                  <span
-                    class="border-outline-variant/40 text-on-surface-variant rounded-sm border px-1.5 py-0.5 text-xs font-medium tracking-wide uppercase"
-                  >
-                    {{ documentTypeLabel(doc.documentType) }}
-                  </span>
+      <app-card padding="md" tone="raised">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <app-heading i18n="@@projectDetailSeedTitle" level="2" [text]="'Project seed'" />
+            <p class="text-muted-fg mt-2 text-sm leading-relaxed">
+              Start the base seed job to create the initial project context and overview document.
+            </p>
+          </div>
+
+          <app-button
+            i18n="@@projectDetailRunSeed"
+            tone="accent"
+            type="button"
+            [loading]="seeding()"
+            (click)="runSeed()"
+          >
+            Run project seed
+          </app-button>
+        </div>
+
+        @if (currentSeedJob()) {
+          <div class="border-outline-variant/20 bg-surface-container-low mt-5 rounded-sm border p-4">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <p class="text-fg text-sm font-semibold">{{ currentSeedJob()!.status }}</p>
+              <p class="text-muted-fg text-xs">{{ currentSeedJob()!.progress }}% complete</p>
+            </div>
+            @if (currentSeedJob()!.errorMessage) {
+              <p class="text-danger mt-2 text-sm">{{ currentSeedJob()!.errorMessage }}</p>
+            }
+          </div>
+        }
+      </app-card>
+
+      <section class="flex flex-col gap-4">
+        <app-heading i18n="@@projectDetailDocumentsTitle" level="2" [text]="'Documents'" />
+
+        @if (project()!.documents.length === 0) {
+          <app-card padding="md" tone="raised">
+            <p class="text-muted-fg text-sm">No documents yet. Run the seed job to create the first overview.</p>
+          </app-card>
+        } @else {
+          <section class="space-y-3">
+            @for (doc of project()!.documents; track doc.id) {
+              <article class="bg-surface-container-lowest shadow-panel dark:bg-surface-container rounded-sm p-5">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="text-fg text-base font-semibold">{{ doc.title }}</h3>
+                    <span
+                      class="border-outline-variant/40 text-muted-fg rounded-sm border px-1.5 py-0.5 text-xs font-medium tracking-wide uppercase"
+                    >
+                      {{ documentTypeLabel(doc.documentType) }}
+                    </span>
+                  </div>
+
+                  <p class="text-muted-fg mt-1 text-xs">{{ doc.source }} · {{ formatDate(doc.createdAt) }}</p>
+
+                  @if (doc.contentMarkdown) {
+                    <p class="text-muted-fg mt-3 line-clamp-3 text-sm">{{ doc.contentMarkdown }}</p>
+                  }
                 </div>
-
-                <p class="text-on-surface-variant mt-1 text-xs">{{ doc.source }} · {{ formatDate(doc.createdAt) }}</p>
-
-                @if (doc.contentMarkdown) {
-                  <p class="text-on-surface-variant mt-3 line-clamp-3 text-sm">{{ doc.contentMarkdown }}</p>
-                }
-              </div>
-            </article>
-          }
-        </section>
-      }
-    </section>
-  }
-</section>
+              </article>
+            }
+          </section>
+        }
+      </section>
+    }
+  </div>
+</app-container>

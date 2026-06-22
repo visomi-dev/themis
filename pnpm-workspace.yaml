@@ -17,3 +17,9 @@ minimumReleaseAgeExclude:
   - astro-eslint-parser@2.0.0
   - bullmq@5.79.1
   - eslint-plugin-astro@2.0.0
+
+overrides:
+  '@electric-sql/pglite': 0.5.3
+  drizzle-orm: 1.0.0-beta.21
+  ioredis: 5.11.1
+  pg: 8.22.0

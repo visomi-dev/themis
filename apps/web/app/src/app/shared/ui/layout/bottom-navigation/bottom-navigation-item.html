@@ -1,0 +1,9 @@
+<a
+  [attr.aria-label]="ariaLabel()"
+  [class]="classes()"
+  [routerLink]="routerLink()"
+  routerLinkActive="bg-panel-raised text-fg"
+  [routerLinkActiveOptions]="{ exact: true }"
+>
+  <ng-content />
+</a>

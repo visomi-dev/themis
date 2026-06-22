@@ -1,0 +1,90 @@
+import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { Icon } from '../../media/icon/icon';
+import { uiClass } from '../../classes';
+
+@Component({
+  host: {
+    class: /* tw */ 'block',
+  },
+  imports: [Icon],
+  providers: [
+    {
+      multi: true,
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => RadioCard),
+    },
+  ],
+  selector: 'app-radio-card',
+  templateUrl: './radio-card.html',
+  styleUrl: './radio-card.css',
+})
+export class RadioCard implements ControlValueAccessor {
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly inputId = input<string | null>(null);
+  readonly name = input('radio-card');
+  readonly optionValue = input.required<string>();
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly toggleable = input(true, { transform: booleanAttribute });
+  readonly valueChange = output<string>();
+
+  readonly formDisabled = signal(false);
+  readonly value = signal('');
+  readonly checked = computed(() => this.value() === this.optionValue());
+  readonly classes = computed(() =>
+    uiClass(
+      'ui-focus-ring relative flex min-h-24 cursor-pointer flex-col rounded-[var(--radius-panel)] border bg-panel p-4 text-fg transition',
+      this.checked() ? 'border-accent ring-2 ring-ring/20' : 'border-outline/30 hover:bg-panel-raised',
+      (this.disabled() || this.formDisabled()) && 'pointer-events-none opacity-50',
+    ),
+  );
+  readonly markerClasses = computed(() =>
+    uiClass(
+      'absolute right-3 top-3 flex size-6 items-center justify-center rounded-full border-2 transition',
+      this.checked() ? 'border-accent text-accent' : 'border-outline/30 text-transparent',
+    ),
+  );
+
+  private onChange: (value: string) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
+
+  writeValue(value: string | null): void {
+    this.value.set(value ?? '');
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(disabled: boolean): void {
+    this.formDisabled.set(disabled);
+  }
+
+  select(): void {
+    if (this.disabled() || this.formDisabled()) {
+      return;
+    }
+
+    const nextValue = this.checked() && this.toggleable() ? '' : this.optionValue();
+
+    this.value.set(nextValue);
+    this.onChange(nextValue);
+    this.valueChange.emit(nextValue);
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.select();
+    }
+  }
+
+  markTouched(): void {
+    this.onTouched();
+  }
+}

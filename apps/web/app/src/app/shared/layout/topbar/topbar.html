@@ -12,11 +12,11 @@
     i18n-aria-label="@@layoutOpenNavigation"
     (click)="openMobileMenu.emit()"
   >
-    <i class="pi pi-bars text-lg"></i>
+    <app-icon name="bars" />
   </button>
 
   <div class="relative ml-auto hidden w-70 md:block">
-    <i class="pi pi-search text-on-surface-variant absolute top-1/2 left-2 -translate-y-1/2 text-sm"></i>
+    <app-icon name="search" class="text-on-surface-variant absolute top-1/2 left-2 -translate-y-1/2 text-sm" />
     <input
       class="border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant focus:border-primary h-9 w-full border-0 border-b bg-transparent pr-3 pl-9 text-sm transition-colors outline-none"
       type="search"
@@ -32,7 +32,7 @@
       aria-label="Notifications"
       i18n-aria-label="@@layoutNotifications"
     >
-      <i class="pi pi-bell text-base"></i>
+      <app-icon name="bell" />
       <span
         class="border-surface-container-lowest bg-tertiary absolute top-1.5 right-1.5 h-2 w-2 rounded-full border"
       ></span>
@@ -43,7 +43,7 @@
       aria-label="Help"
       i18n-aria-label="@@layoutHelp"
     >
-      <i class="pi pi-question-circle text-base"></i>
+      <app-icon name="question-circle" />
     </button>
     <button
       type="button"
@@ -51,7 +51,7 @@
       (click)="toggleTheme()"
     >
       <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
-      <i class="pi text-base" [class.pi-moon]="!isDark()" [class.pi-sun]="isDark()"></i>
+      <app-icon [name]="isDark() ? 'sun' : 'moon'" />
     </button>
     <app-language-switcher />
   </div>

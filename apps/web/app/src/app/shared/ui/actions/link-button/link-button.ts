@@ -34,6 +34,7 @@ export class LinkButton {
   readonly routerLink = input<unknown[] | string | null>(null);
   readonly size = input<LinkButtonSize>('md');
   readonly target = input<string | null>(null);
+  readonly text = input.required<string>();
   readonly variant = input<LinkButtonVariant>('solid');
 
   readonly classes = computed(() =>

@@ -1,17 +1,22 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
 
 import { PROJECT_NEW_URL } from '../shared/constants/routes';
 import { ProjectsApi } from '../shared/projects/projects';
 import type { Project } from '../shared/projects/projects.models';
+import { Alert } from '../shared/ui/overlays/alert/alert';
+import { Badge } from '../shared/ui/data/badge/badge';
+import { Card } from '../shared/ui/layout/card/card';
+import { Container } from '../shared/ui/layout/container/container';
+import { Heading } from '../shared/ui/typography/heading/heading';
+import { LinkButton } from '../shared/ui/actions/link-button/link-button';
+import { Loader } from '../shared/ui/feedback/loader/loader';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, MessageModule, RouterLink],
+  imports: [Alert, Badge, Card, Container, Heading, LinkButton, Loader, RouterLink],
   selector: 'app-projects',
   templateUrl: './projects.html',
   styleUrl: './projects.css',
@@ -56,6 +61,17 @@ export class Projects implements OnInit {
     };
 
     return labels[status] ?? status;
+  }
+
+  statusTone(status: Project['status']): 'default' | 'accent' | 'danger' | 'success' | 'warning' {
+    switch (status) {
+      case 'active':
+        return 'success';
+      case 'archived':
+        return 'warning';
+      case 'draft':
+        return 'default';
+    }
   }
 
   private async loadProjects() {

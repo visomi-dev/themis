@@ -1,13 +1,30 @@
-<button
-  type="button"
-  class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-xs font-black tracking-widest uppercase transition-colors"
-  aria-label="Change language"
-  i18n-aria-label="@@languageSwitcherChangeLanguage"
-  (click)="languageMenu.toggle($event)"
->
-  <i class="pi pi-globe text-base"></i>
-  <span>{{ currentLocaleLabel() }}</span>
-  <i class="pi pi-angle-down text-xs"></i>
-</button>
+<app-dropdown>
+  <button
+    data-slot="trigger"
+    type="button"
+    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-xs font-black tracking-widest uppercase transition-colors"
+    aria-label="Change language"
+    i18n-aria-label="@@languageSwitcherChangeLanguage"
+  >
+    <app-icon name="globe" />
+    <span>{{ currentLocaleLabel() }}</span>
+    <app-icon name="angle-down" class="text-xs" />
+  </button>
 
-<p-menu #languageMenu [model]="localeItems()" [popup]="true" appendTo="body" />
+  <div class="ui-panel-raised min-w-40 p-1" role="menu">
+    <a
+      class="ui-focus-ring text-fg hover:bg-panel flex items-center rounded-[var(--radius-control)] px-3 py-2 text-sm"
+      [routerLink]="localeUrl('en')"
+      role="menuitem"
+    >
+      <span i18n="@@languageSwitcherEnglishOption">English</span>
+    </a>
+    <a
+      class="ui-focus-ring text-fg hover:bg-panel flex items-center rounded-[var(--radius-control)] px-3 py-2 text-sm"
+      [routerLink]="localeUrl('es')"
+      role="menuitem"
+    >
+      <span i18n="@@languageSwitcherSpanishOption">Spanish</span>
+    </a>
+  </div>
+</app-dropdown>

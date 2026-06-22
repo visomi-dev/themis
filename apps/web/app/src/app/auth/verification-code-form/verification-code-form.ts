@@ -1,11 +1,14 @@
 import { Component, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputOtpModule } from 'primeng/inputotp';
-import { MessageModule } from 'primeng/message';
 
-import { FormField } from '../../shared/form/form-field/form-field';
 import { controlError } from '../../shared/form/form-errors';
+import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { Button } from '../../shared/ui/actions/button/button';
+import { Description } from '../../shared/ui/forms/description/description';
+import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
+import { Field } from '../../shared/ui/forms/field/field';
+import { Label } from '../../shared/ui/forms/label/label';
+import { PinInput } from '../../shared/ui/forms/pin-input/pin-input';
 
 type VerificationForm = FormGroup<{
   pin: FormControl<string>;
@@ -16,7 +19,7 @@ type VerificationForm = FormGroup<{
     class: /* tw */ 'block',
   },
   selector: 'app-verification-code-form',
-  imports: [ButtonModule, FormField, InputOtpModule, MessageModule, ReactiveFormsModule],
+  imports: [Alert, Button, Description, ErrorMessage, Field, Label, PinInput, ReactiveFormsModule],
   templateUrl: './verification-code-form.html',
   styleUrl: './verification-code-form.css',
 })
@@ -35,7 +38,9 @@ export class VerificationCodeForm {
     }),
   });
 
-  pinError() {
+  pinError = '';
+
+  pinErrorMessage() {
     return controlError(this.form.controls.pin, {
       maxlength: $localize`:@@verificationCodeErrorLength:Enter the full 6-digit code.`,
       minlength: $localize`:@@verificationCodeErrorLength:Enter the full 6-digit code.`,
@@ -43,9 +48,14 @@ export class VerificationCodeForm {
     });
   }
 
+  updatePinError() {
+    this.pinError = this.pinErrorMessage();
+  }
+
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.updatePinError();
 
       return;
     }
