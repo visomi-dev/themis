@@ -1,0 +1,428 @@
+
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Set a new password · Themis</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            bg:           'var(--color-background)',
+            surface:      'var(--color-surface)',
+            'surface-2':  'var(--color-surface-container-low)',
+            'surface-3':  'var(--color-surface-container)',
+            fg:           'var(--color-on-surface)',
+            muted:        'var(--color-on-surface-variant)',
+            outline:      'var(--color-outline)',
+            'outline-2':  'var(--color-outline-variant)',
+            primary:      'var(--color-primary)',
+            'primary-c':  'var(--color-primary-container)',
+            'primary-fg': 'var(--color-on-primary)',
+            secondary:    'var(--color-secondary)',
+            'secondary-c':'var(--color-secondary-container)',
+            success:      'var(--color-success)',
+            'success-c':  'var(--color-success-container)',
+            'success-fg': 'var(--color-on-success)',
+            error:        'var(--color-error)',
+            'error-c':    'var(--color-error-container)',
+            'error-fg':   'var(--color-on-error)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          borderRadius: {
+            sm: 'var(--radius-sm)', DEFAULT: 'var(--radius)',
+            md: 'var(--radius-md)', lg: 'var(--radius-lg)', xl: 'var(--radius-xl)',
+          },
+          boxShadow: { panel: 'var(--shadow-panel)' },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+    :root {
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-heading: 'Manrope', 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --color-surface: #faf8ff;
+      --color-surface-container-lowest: #ffffff;
+      --color-surface-container-low: #f4f3fa;
+      --color-surface-container: #efedf4;
+      --color-on-surface: #1a1b20;
+      --color-on-surface-variant: #434651;
+      --color-outline: #747782;
+      --color-outline-variant: #c4c6d3;
+      --color-primary: #1b4490;
+      --color-on-primary: #ffffff;
+      --color-primary-container: #385ca9;
+      --color-on-primary-container: #ccd9ff;
+      --color-secondary: #535f70;
+      --color-on-secondary: #ffffff;
+      --color-secondary-container: #d7e3f8;
+      --color-success: #1b6e3a;
+      --color-on-success: #ffffff;
+      --color-success-container: #a5d6a7;
+      --color-on-success-container: #0e3b1f;
+      --color-error: #ba1a1a;
+      --color-on-error: #ffffff;
+      --color-error-container: #ffdad6;
+      --color-on-error-container: #93000a;
+      --color-background: #faf8ff;
+      --color-on-background: #1a1b20;
+      --radius-sm: 0.25rem; --radius: 0.5rem; --radius-md: 0.75rem;
+      --radius-lg: 1rem; --radius-xl: 1.5rem;
+      --shadow-panel: 0 32px 64px -12px rgb(26 27 32 / 0.08);
+    }
+    [data-theme='dark'] {
+      --color-surface: #0c1325;
+      --color-surface-container-lowest: #070d1f;
+      --color-surface-container-low: #151b2d;
+      --color-surface-container: #191f32;
+      --color-on-surface: #dce1fb;
+      --color-on-surface-variant: #bfc8cf;
+      --color-outline: #899299;
+      --color-outline-variant: #3f484e;
+      --color-primary: #c3e7ff;
+      --color-on-primary: #00344a;
+      --color-primary-container: #7bd0ff;
+      --color-success: #81c784;
+      --color-on-success: #00340a;
+      --color-success-container: #1b5e20;
+      --color-on-success-container: #a5d6a7;
+      --color-error: #ffb4ab;
+      --color-on-error: #690005;
+      --color-error-container: #93000a;
+      --color-on-error-container: #ffdad6;
+      --color-background: #0c1325;
+      --color-on-background: #dce1fb;
+      --shadow-panel: 0 32px 64px -12px rgb(0 0 0 / 0.5);
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--color-background);
+      color: var(--color-on-surface);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+    .font-display { font-family: var(--font-heading); letter-spacing: -0.02em; }
+    .font-mono { font-family: var(--font-mono); }
+    .themis-label {
+      color: var(--color-on-surface-variant);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .ring-focus:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .input-base {
+      width: 100%;
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 70%, transparent);
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface);
+      border-radius: var(--radius);
+      padding: 0.7rem 0.85rem;
+      font-size: 0.95rem;
+      transition: border-color 120ms ease, box-shadow 120ms ease;
+    }
+    .input-base::placeholder { color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent); }
+    .input-base:hover { border-color: color-mix(in srgb, var(--color-outline) 60%, transparent); }
+    .input-base:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    }
+    .input-base[aria-invalid="true"] {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 18%, transparent);
+    }
+    .meter-seg { transition: background-color 180ms ease; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid color-mix(in srgb, var(--color-on-primary) 35%, transparent);
+      border-top-color: var(--color-on-primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pop-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .pop-in { animation: pop-in 220ms ease-out both; }
+    @media (prefers-reduced-motion: reduce) {
+      .spinner, .pop-in { animation: none; }
+      .meter-seg, .input-base { transition: none; }
+    }
+  </style>
+</head>
+
+<body class="h-full bg-bg text-fg font-sans antialiased">
+  <header class="sticky top-0 z-10 border-b border-outline-2/40 bg-bg/85 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
+      <a href="index.html" class="flex items-center gap-2.5">
+        <span class="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-fg font-display text-sm font-bold">T</span>
+        <span class="font-display text-base font-semibold tracking-tight">Themis</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <label class="sr-only" for="lang">Language</label>
+        <select id="lang" class="rounded-md border border-outline-2/60 bg-surface px-2.5 py-1.5 text-xs font-medium text-fg ring-focus">
+          <option value="en">English</option>
+          <option value="pt">Português</option>
+          <option value="es">Español</option>
+        </select>
+        <button id="theme" type="button" aria-label="Toggle theme"
+                class="grid h-8 w-8 place-items-center rounded-md border border-outline-2/60 bg-surface text-fg hover:bg-surface-3 ring-focus">
+          <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex min-h-[calc(100vh-57px)] items-center justify-center px-5 py-12 sm:px-8">
+    <div class="w-full max-w-[460px]" data-od-id="auth-reset">
+      <div class="mb-7 text-center">
+        <p class="themis-label mb-2">Account recovery</p>
+        <h1 class="font-display text-3xl font-semibold tracking-tight text-fg">Set a new password</h1>
+        <p class="mt-2 text-sm text-muted">
+          Pick a strong password you don't use anywhere else. You'll be signed out of other devices after the change.
+        </p>
+      </div>
+
+      <div id="card-form" class="rounded-lg border border-outline-2/40 bg-surface p-6 shadow-sm sm:p-7">
+        <form id="reset-form" novalidate>
+          <div id="form-alert" role="alert" aria-live="polite" class="hidden rounded-md border border-error/40 bg-error-c/40 px-3 py-2 text-sm text-error-fg"></div>
+
+          <div class="space-y-1.5">
+            <label for="password" class="block text-sm font-medium text-fg">New password</label>
+            <div class="relative">
+              <input id="password" name="password" type="password" autocomplete="new-password" required
+                     placeholder="At least 12 characters"
+                     class="input-base pr-10 ring-focus" />
+              <button type="button" data-toggle="password" aria-label="Show password"
+                      class="absolute right-2 top-1/2 -translate-y-1/2 grid h-7 w-7 place-items-center rounded text-muted hover:bg-surface-3">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <div class="mt-2 flex gap-1" aria-hidden="true">
+              <div id="m1" class="meter-seg h-1 flex-1 rounded-full bg-surface-3"></div>
+              <div id="m2" class="meter-seg h-1 flex-1 rounded-full bg-surface-3"></div>
+              <div id="m3" class="meter-seg h-1 flex-1 rounded-full bg-surface-3"></div>
+              <div id="m4" class="meter-seg h-1 flex-1 rounded-full bg-surface-3"></div>
+            </div>
+            <p id="strength-label" class="text-xs text-muted">Use 12+ characters with a mix of letters, numbers, and symbols.</p>
+            <p data-error-for="password" class="hidden text-xs text-error"></p>
+
+            <ul class="grid grid-cols-1 gap-1 pt-1 text-xs sm:grid-cols-2">
+              <li data-rule="len" class="flex items-center gap-1.5 text-muted">
+                <span class="dot h-1.5 w-1.5 rounded-full bg-outline-2"></span> 12+ characters
+              </li>
+              <li data-rule="case" class="flex items-center gap-1.5 text-muted">
+                <span class="dot h-1.5 w-1.5 rounded-full bg-outline-2"></span> Upper & lowercase
+              </li>
+              <li data-rule="num" class="flex items-center gap-1.5 text-muted">
+                <span class="dot h-1.5 w-1.5 rounded-full bg-outline-2"></span> A number
+              </li>
+              <li data-rule="sym" class="flex items-center gap-1.5 text-muted">
+                <span class="dot h-1.5 w-1.5 rounded-full bg-outline-2"></span> A symbol
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-4 space-y-1.5">
+            <label for="confirm" class="block text-sm font-medium text-fg">Confirm new password</label>
+            <input id="confirm" name="confirm" type="password" autocomplete="new-password" required
+                   placeholder="Re-enter the password"
+                   class="input-base ring-focus" />
+            <p data-error-for="confirm" class="hidden text-xs text-error"></p>
+          </div>
+
+          <button id="submit" type="submit"
+                  class="mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-fg transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70">
+            <span data-label>Update password</span>
+            <span data-spinner class="hidden"><span class="spinner"></span></span>
+          </button>
+
+          <p class="mt-4 text-center text-sm text-muted">
+            <a href="sign-in.html" class="font-medium text-primary hover:underline">Cancel and go back</a>
+          </p>
+        </form>
+      </div>
+
+      <div id="card-success" class="hidden rounded-lg border border-success/40 bg-success-c/30 p-6 text-center shadow-sm sm:p-7 pop-in">
+        <div class="mx-auto mb-3 grid h-11 w-11 place-items-center rounded-full bg-success text-success-fg">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h2 class="font-display text-xl font-semibold text-fg">Password updated</h2>
+        <p class="mt-2 text-sm text-muted">Other devices have been signed out. You can sign in with the new password now.</p>
+        <a href="sign-in.html"
+           class="mt-5 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-fg hover:bg-primary/90">
+          Return to sign in
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const stored = localStorage.getItem('themis-theme');
+      if (stored === 'dark') root.setAttribute('data-theme', 'dark');
+      const langSel = document.getElementById('lang');
+      const langStored = localStorage.getItem('themis-lang');
+      if (langStored) langSel.value = langStored;
+      langSel.addEventListener('change', () => localStorage.setItem('themis-lang', langSel.value));
+      document.getElementById('theme').addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        if (next === 'dark') root.setAttribute('data-theme', 'dark');
+        else root.removeAttribute('data-theme');
+        localStorage.setItem('themis-theme', next);
+      });
+
+      document.querySelectorAll('[data-toggle="password"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const input = btn.parentElement.querySelector('input');
+          if (!input) return;
+          const shown = input.type === 'text';
+          input.type = shown ? 'password' : 'text';
+          btn.setAttribute('aria-label', shown ? 'Show password' : 'Hide password');
+        });
+      });
+
+      const form = document.getElementById('reset-form');
+      const pwInput = document.getElementById('password');
+      const cfInput = document.getElementById('confirm');
+      const submit = document.getElementById('submit');
+      const label = submit.querySelector('[data-label]');
+      const spinner = submit.querySelector('[data-spinner]');
+      const alertEl = document.getElementById('form-alert');
+      const strengthLabel = document.getElementById('strength-label');
+      const meterIds = ['m1', 'm2', 'm3', 'm4'];
+      const cardForm = document.getElementById('card-form');
+      const cardSuccess = document.getElementById('card-success');
+
+      function score(pw) {
+        const checks = {
+          len: pw.length >= 12,
+          case: /[a-z]/.test(pw) && /[A-Z]/.test(pw),
+          num: /\d/.test(pw),
+          sym: /[^A-Za-z0-9]/.test(pw),
+        };
+        const passed = Object.values(checks).filter(Boolean).length;
+        return { checks, score: passed, label: passed <= 1 ? 'Weak' : passed === 2 ? 'Fair' : passed === 3 ? 'Good' : 'Strong' };
+      }
+
+      function renderStrength(pw) {
+        const { checks, score: s, label } = score(pw);
+        meterIds.forEach((id) => {
+          const el = document.getElementById(id);
+          el.classList.remove('bg-error', 'bg-warning', 'bg-success', 'bg-surface-3');
+          el.classList.add('bg-surface-3');
+        });
+        const colors = ['bg-error', 'bg-warning', 'bg-warning', 'bg-success'];
+        for (let i = 0; i < s; i++) {
+          document.getElementById(meterIds[i]).classList.remove('bg-surface-3');
+          document.getElementById(meterIds[i]).classList.add(colors[i]);
+        }
+        Object.entries(checks).forEach(([k, ok]) => {
+          const rule = form.querySelector(`[data-rule="${k}"]`);
+          if (!rule) return;
+          rule.classList.toggle('text-success', ok);
+          rule.classList.toggle('text-muted', !ok);
+          const dot = rule.querySelector('.dot');
+          if (dot) {
+            dot.classList.toggle('bg-success', ok);
+            dot.classList.toggle('bg-outline-2', !ok);
+          }
+        });
+        if (!pw) {
+          strengthLabel.textContent = 'Use 12+ characters with a mix of letters, numbers, and symbols.';
+          strengthLabel.className = 'text-xs text-muted';
+        } else if (s <= 1) {
+          strengthLabel.textContent = `Strength: ${label} — add more variety.`;
+          strengthLabel.className = 'text-xs text-error';
+        } else if (s < 4) {
+          strengthLabel.textContent = `Strength: ${label}.`;
+          strengthLabel.className = 'text-xs text-muted';
+        } else {
+          strengthLabel.textContent = `Strength: ${label}.`;
+          strengthLabel.className = 'text-xs text-success';
+        }
+        return s;
+      }
+      pwInput.addEventListener('input', () => { renderStrength(pwInput.value); setError('password', ''); });
+      cfInput.addEventListener('input', () => setError('confirm', ''));
+
+      function setError(name, msg) {
+        const input = form.elements[name];
+        const err = form.querySelector(`[data-error-for="${name}"]`);
+        if (!input || !err) return;
+        if (msg) {
+          input.setAttribute('aria-invalid', 'true');
+          err.textContent = msg;
+          err.classList.remove('hidden');
+        } else {
+          input.removeAttribute('aria-invalid');
+          err.textContent = '';
+          err.classList.add('hidden');
+        }
+      }
+
+      function showAlert(msg) {
+        if (!msg) { alertEl.classList.add('hidden'); alertEl.textContent = ''; return; }
+        alertEl.textContent = msg;
+        alertEl.classList.remove('hidden');
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pw = pwInput.value;
+        const cf = cfInput.value;
+        const s = renderStrength(pw);
+
+        let ok = true;
+        if (!pw) { setError('password', 'Choose a password.'); ok = false; }
+        else if (s < 4) { setError('password', 'Password is too weak — meet all four rules.'); ok = false; }
+        else setError('password', '');
+
+        if (!cf) { setError('confirm', 'Re-enter your new password.'); ok = false; }
+        else if (cf !== pw) { setError('confirm', 'Passwords do not match.'); ok = false; }
+        else setError('confirm', '');
+
+        if (!ok) { showAlert('Please fix the highlighted fields.'); return; }
+        showAlert('');
+
+        submit.disabled = true;
+        label.textContent = 'Updating…';
+        spinner.classList.remove('hidden');
+
+        setTimeout(() => {
+          submit.disabled = false;
+          label.textContent = 'Update password';
+          spinner.classList.add('hidden');
+          cardForm.classList.add('hidden');
+          cardSuccess.classList.remove('hidden');
+        }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>
