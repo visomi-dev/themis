@@ -5,11 +5,7 @@
   "entry": "themis-reset.html",
   "renderer": "html",
   "status": "complete",
-  "exports": [
-    "html",
-    "pdf",
-    "zip"
-  ],
+  "exports": ["html", "pdf", "zip"],
   "primary": true,
   "createdAt": "2026-06-22T04:18:53.114Z",
   "updatedAt": "2026-06-22T04:18:53.124Z",

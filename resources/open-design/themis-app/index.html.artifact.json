@@ -5,11 +5,7 @@
   "entry": "index.html",
   "renderer": "html",
   "status": "complete",
-  "exports": [
-    "html",
-    "pdf",
-    "zip"
-  ],
+  "exports": ["html", "pdf", "zip"],
   "createdAt": "2026-06-22T03:52:50.125Z",
   "updatedAt": "2026-06-22T03:52:50.125Z",
   "metadata": {

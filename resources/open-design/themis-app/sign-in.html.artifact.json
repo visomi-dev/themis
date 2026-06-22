@@ -5,11 +5,7 @@
   "entry": "sign-in.html",
   "renderer": "html",
   "status": "complete",
-  "exports": [
-    "html",
-    "pdf",
-    "zip"
-  ],
+  "exports": ["html", "pdf", "zip"],
   "createdAt": "2026-06-22T03:53:31.771Z",
   "updatedAt": "2026-06-22T03:53:31.771Z",
   "metadata": {

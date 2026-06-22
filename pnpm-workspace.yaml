@@ -12,3 +12,8 @@ allowBuilds:
   nx: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - astro-eslint-parser@2.0.0
+  - bullmq@5.79.1
+  - eslint-plugin-astro@2.0.0

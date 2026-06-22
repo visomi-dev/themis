@@ -5,11 +5,7 @@
   "entry": "sign-up.html",
   "renderer": "html",
   "status": "complete",
-  "exports": [
-    "html",
-    "pdf",
-    "zip"
-  ],
+  "exports": ["html", "pdf", "zip"],
   "createdAt": "2026-06-22T03:54:14.409Z",
   "updatedAt": "2026-06-22T03:54:14.409Z",
   "metadata": {

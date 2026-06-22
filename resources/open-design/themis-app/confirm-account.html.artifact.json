@@ -5,11 +5,7 @@
   "entry": "confirm-account.html",
   "renderer": "html",
   "status": "complete",
-  "exports": [
-    "html",
-    "pdf",
-    "zip"
-  ],
+  "exports": ["html", "pdf", "zip"],
   "createdAt": "2026-06-22T03:52:35.844Z",
   "updatedAt": "2026-06-22T03:52:35.844Z",
   "metadata": {
