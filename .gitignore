@@ -59,3 +59,4 @@ apps/web/server-e2e/.server-e2e-server.pid
 .env
 
 core.*
+.nx/migrate-runs
