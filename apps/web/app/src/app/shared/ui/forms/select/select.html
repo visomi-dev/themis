@@ -1,0 +1,14 @@
+<select
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-invalid]="invalid()"
+  [attr.id]="id()"
+  [attr.name]="name()"
+  [class]="classes()"
+  [disabled]="disabled() || formDisabled()"
+  [value]="value()"
+  data-slot="control"
+  (blur)="markTouched()"
+  (change)="updateValue($event)"
+>
+  <ng-content />
+</select>

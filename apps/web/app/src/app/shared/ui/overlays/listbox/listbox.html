@@ -1,0 +1,24 @@
+<div
+  class="ui-focus-ring bg-panel grid gap-1 rounded-[var(--radius-panel)] p-1"
+  role="listbox"
+  tabindex="0"
+  [attr.aria-activedescendant]="activeId()"
+  [attr.aria-label]="ariaLabel()"
+  (blur)="markTouched()"
+  (keydown)="handleKeydown($event)"
+>
+  @for (option of options(); track option.value; let index = $index) {
+    <div
+      [attr.aria-disabled]="option.disabled"
+      [attr.aria-selected]="value() === option.value"
+      [class]="optionClasses(index, option)"
+      [id]="'listbox-option-' + index"
+      role="option"
+      tabindex="-1"
+      (click)="choose(option, index)"
+      (keydown)="chooseFromOptionKeydown($event, option, index)"
+    >
+      {{ option.label }}
+    </div>
+  }
+</div>

@@ -63,12 +63,24 @@
   --color-on-success-container: #0e3b1f;
   --color-switch-muted: #434651;
 
+  --color-bg: var(--color-background);
+  --color-panel: var(--color-surface-container-low);
+  --color-panel-raised: var(--color-surface-container-high);
+  --color-fg: var(--color-on-surface);
+  --color-muted-fg: var(--color-on-surface-variant);
+  --color-accent: var(--color-primary);
+  --color-accent-fg: var(--color-on-primary);
+  --color-danger: var(--color-error);
+  --color-ring: var(--color-primary);
+
   --radius-sm: 0.25rem;
   --radius: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.75rem;
 
   --shadow-panel: 0 32px 64px -12px rgb(26 27 32 / 0.08);
 }
@@ -151,6 +163,39 @@ html.dark {
   --color-switch-muted: #bfc8cf;
 
   --shadow-panel: 0 32px 64px -12px rgb(0 0 0 / 0.5);
+}
+
+@utility ui-focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+
+  &:focus-visible {
+    outline-color: var(--color-ring);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-ring) 18%, transparent);
+  }
+}
+
+@utility ui-panel {
+  background: var(--color-panel);
+  color: var(--color-fg);
+  border-radius: var(--radius-panel);
+}
+
+@utility ui-panel-raised {
+  background: var(--color-panel-raised);
+  color: var(--color-fg);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility ui-touch-target {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+@utility ui-text-rhythm {
+  text-wrap: pretty;
+  line-height: 1.7;
 }
 
 html {

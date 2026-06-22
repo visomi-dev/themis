@@ -1,0 +1,16 @@
+<input
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-invalid]="invalid()"
+  [attr.autocomplete]="autocomplete()"
+  [attr.id]="id()"
+  [attr.name]="name()"
+  [class]="classes()"
+  [disabled]="disabled() || formDisabled()"
+  [placeholder]="placeholder()"
+  [required]="required()"
+  [type]="type()"
+  [value]="value()"
+  data-slot="control"
+  (blur)="markTouched()"
+  (input)="updateValue($event)"
+/>

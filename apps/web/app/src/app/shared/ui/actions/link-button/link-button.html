@@ -1,0 +1,9 @@
+@if (routerLink(); as link) {
+  <a [attr.aria-label]="ariaLabel()" [class]="classes()" [routerLink]="link">
+    <ng-content />
+  </a>
+} @else {
+  <a [attr.aria-label]="ariaLabel()" [attr.href]="href()" [attr.target]="target()" [class]="classes()">
+    <ng-content />
+  </a>
+}

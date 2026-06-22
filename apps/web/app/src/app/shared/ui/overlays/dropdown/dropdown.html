@@ -1,0 +1,24 @@
+<button
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  class="contents"
+  [attr.aria-expanded]="open()"
+  [disabled]="disabled()"
+  type="button"
+  (click)="toggle()"
+>
+  <ng-content select="[data-slot=trigger]" />
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayOrigin]="origin"
+  (backdropClick)="close()"
+  (detach)="close()"
+>
+  <div class="ui-panel-raised z-50 mt-2 min-w-56 p-1" role="menu" tabindex="-1" (keydown)="handleKeydown($event)">
+    <ng-content />
+  </div>
+</ng-template>

@@ -1,0 +1,14 @@
+@switch (level()) {
+  @case ('1') {
+    <h1 [class]="classes()"><ng-content /></h1>
+  }
+  @case ('2') {
+    <h2 [class]="classes()"><ng-content /></h2>
+  }
+  @case ('3') {
+    <h3 [class]="classes()"><ng-content /></h3>
+  }
+  @default {
+    <h4 [class]="classes()"><ng-content /></h4>
+  }
+}
