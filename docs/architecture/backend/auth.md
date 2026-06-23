@@ -335,14 +335,13 @@ Important auth transitions should leave an auditable trail in logs or in a dedic
 
 ## Frontend Design Alignment
 
-The auth UI should be implemented in Angular with PrimeNG components, while preserving the visual language established by the Stitch auth references.
+The auth UI should be implemented in Angular with PrimeNG components, while preserving the visual language defined in `DESIGN.md`.
 
 Design rules for V1:
 
 - support both light and dark themes from the start
 - use PrimeNG for controls and interaction states
 - keep the larger page layout custom to preserve the Themis visual language
-- avoid storing tokenized Stitch asset URLs in repository documentation
 
 ## Deferred Scope
 

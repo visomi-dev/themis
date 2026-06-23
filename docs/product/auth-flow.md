@@ -206,7 +206,7 @@ The first implementation should support the following frontend states.
 
 ## Visual Direction
 
-The auth screens should reference the existing Themis Stitch explorations.
+The auth screens should reference the Themis design system (Slate & Syntax).
 
 Implementation guidance:
 
