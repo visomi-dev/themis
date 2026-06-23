@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "themis-app",
+  "name": "Themis App",
+  "createdAt": 1782098877362,
+  "updatedAt": 1782098877362,
+  "skillId": null,
+  "designSystemId": "user:themis-is-a-developer-native-design-system"
+}

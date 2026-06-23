@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { Activation as ActivationService } from '../shared/activation/activation';
 import { Auth } from '../shared/auth/auth';
+import { Clipboard } from '../shared/clipboard/clipboard';
 
 import { Activation } from './activation';
 
@@ -29,6 +30,13 @@ describe('Activation', () => {
           provide: Auth,
           useValue: {
             signOut: vi.fn(),
+          },
+        },
+        {
+          provide: Clipboard,
+          useValue: {
+            available: { asReadonly: () => () => false },
+            writeText: vi.fn().mockResolvedValue(true),
           },
         },
       ],

@@ -28,6 +28,7 @@ const environmentSchema = z
       .transform((v) => v === 'true'),
     PIN_EXPIRY_MINUTES: z.coerce.number().default(10),
     PIN_RESEND_COOLDOWN_SECONDS: z.coerce.number().default(45),
+    REMEMBERED_DEVICE_MAX_AGE_MS: z.coerce.number().default(1000 * 60 * 60 * 24 * 30),
     REDIS_URL: z.string().default('redis://127.0.0.1:6379'),
     REALTIME_INTERNAL_URL: z.string().default('http://127.0.0.1:3001'),
     REALTIME_PATH: z.string().default('/socket.io'),
@@ -48,6 +49,7 @@ const environmentSchema = z
 
 function getEnv({ filePath }: { filePath?: string } = {}) {
   config({ path: filePath });
+
   return environmentSchema.parse(process.env);
 }
 

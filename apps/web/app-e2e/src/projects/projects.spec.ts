@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, authenticateViaApi } from '../support/auth';
+import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
 import { projectNewUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
@@ -10,8 +10,7 @@ test.describe('/app/projects', () => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-
-    await page.getByRole('button', { name: /Continue to projects/i }).click();
+    await page.goto('/app/en/projects');
     await expect(page).toHaveURL(projectsUrlPattern);
   });
 
@@ -24,7 +23,7 @@ test.describe('/app/projects', () => {
   });
 
   test('has a new project button that navigates to the create form', async ({ page }) => {
-    const newProjectButton = page.getByRole('link', { name: /New project/i });
+    const newProjectButton = page.getByRole('main').getByRole('link', { name: /New project/i });
 
     await expect(newProjectButton).toBeVisible();
 
@@ -35,7 +34,10 @@ test.describe('/app/projects', () => {
   });
 
   test('can create a project with a name', async ({ page }) => {
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
 
     const nameInput = page.getByLabel(/Project name/i);
 
@@ -49,20 +51,26 @@ test.describe('/app/projects', () => {
   });
 
   test('shows created project in the list', async ({ page }) => {
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Existing Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await page.getByRole('link', { name: /Projects/i }).click();
+    await page.goto('/app/en/projects');
     await expect(page.getByText('Existing Project')).toBeVisible();
   });
 
   test('can delete a project from the list', async ({ page }) => {
-    await page.getByRole('link', { name: /New project/i }).click();
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: /New project/i })
+      .click();
     await page.getByLabel(/Project name/i).fill('Project To Delete');
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await page.getByRole('link', { name: /Projects/i }).click();
+    await page.goto('/app/en/projects');
     page.once('dialog', (dialog) => dialog.accept());
     await page.getByRole('button', { name: /Delete/i }).click();
 
@@ -70,7 +78,7 @@ test.describe('/app/projects', () => {
   });
 
   test('sign out returns to sign-in', async ({ page }) => {
-    await page.getByRole('button', { name: /Sign out/i }).click();
+    await signOutViaMenu(page);
 
     await expect(page).toHaveURL(signInUrlPattern);
   });

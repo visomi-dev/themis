@@ -11,7 +11,7 @@
         "jestConfig": "apps/web/server-e2e/jest.config.cts",
         "passWithNoTests": true
       },
-      "dependsOn": ["server:build"]
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     }
   }
 }

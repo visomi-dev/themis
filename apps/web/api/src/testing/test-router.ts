@@ -57,6 +57,7 @@ testRouter.get(
 
     if (!match) {
       res.status(404).send({ error: 'mail_not_found' });
+
       return;
     }
 

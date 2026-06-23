@@ -1,205 +1,38 @@
-import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, computed, inject, Injectable, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-
-import { PENDING_CHALLENGE_KEY } from '../constants/storage';
+import type { Signal } from '@angular/core';
 
 import type {
   AuthChallenge,
-  AuthMode,
-  AuthUser,
   AuthenticatedResponse,
+  AuthUser,
+  ChallengeOrAuthenticatedResponse,
   ChallengeResponse,
   CredentialsPayload,
   SessionResponse,
 } from './auth.models';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class Auth {
-  private readonly http = inject(HttpClient);
-  private readonly platformId = inject(PLATFORM_ID);
+export type SignInWithPasswordResult = AuthChallenge | AuthenticatedResponse['data'];
 
-  private readonly pendingChallengeState = signal<AuthChallenge | null>(this.readStoredChallenge());
-  private readonly sessionLoadedState = signal(false);
-  private readonly submittingState = signal(false);
-  private readonly userState = signal<AuthUser | null>(null);
-  private readonly verificationSubmittingState = signal(false);
+export abstract class Auth {
+  abstract readonly isAuthenticated: Signal<boolean>;
+  abstract readonly pendingChallenge: Signal<AuthChallenge | null>;
+  abstract readonly sessionLoaded: Signal<boolean>;
+  abstract readonly submitting: Signal<boolean>;
+  abstract readonly user: Signal<AuthUser | null>;
+  abstract readonly verificationSubmitting: Signal<boolean>;
 
-  readonly isAuthenticated = computed(() => this.userState() !== null);
-  readonly pendingChallenge = this.pendingChallengeState.asReadonly();
-  readonly sessionLoaded = this.sessionLoadedState.asReadonly();
-  readonly submitting = this.submittingState.asReadonly();
-  readonly user = this.userState.asReadonly();
-  readonly verificationSubmitting = this.verificationSubmittingState.asReadonly();
+  abstract ensureSessionLoaded(): Promise<void>;
 
-  async ensureSessionLoaded() {
-    if (this.sessionLoadedState()) {
-      return;
-    }
+  abstract signInWithPassword(payload: CredentialsPayload): Promise<SignInWithPasswordResult>;
 
-    if (!isPlatformBrowser(this.platformId)) {
-      this.userState.set(null);
-      this.sessionLoadedState.set(true);
-      return;
-    }
+  abstract signUp(payload: CredentialsPayload): Promise<AuthChallenge>;
 
-    try {
-      const response = await firstValueFrom(this.http.get<SessionResponse>('/api/auth/session'));
+  abstract submitVerification(pin: string): Promise<AuthUser>;
 
-      this.userState.set(response.data.user);
-    } catch {
-      this.userState.set(null);
-    } finally {
-      this.sessionLoadedState.set(true);
-    }
-  }
+  abstract resendVerification(): Promise<AuthChallenge>;
 
-  async signInWithPassword(payload: CredentialsPayload) {
-    this.submittingState.set(true);
+  abstract signOut(): Promise<void>;
 
-    try {
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-in/password', payload));
-
-      this.setPendingChallenge(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-
-      throw error;
-    } finally {
-      this.submittingState.set(false);
-    }
-  }
-
-  async signUp(payload: CredentialsPayload) {
-    this.submittingState.set(true);
-
-    try {
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>('/api/auth/sign-up', payload));
-
-      this.setPendingChallenge(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
-
-      throw error;
-    } finally {
-      this.submittingState.set(false);
-    }
-  }
-
-  async submitCredentials(mode: AuthMode, payload: CredentialsPayload) {
-    this.submittingState.set(true);
-
-    try {
-      const endpoint = mode === 'sign_in' ? '/api/auth/sign-in/password' : '/api/auth/sign-up';
-
-      const response = await firstValueFrom(this.http.post<ChallengeResponse>(endpoint, payload));
-
-      this.setPendingChallenge(response.data);
-
-      return response.data;
-    } finally {
-      this.submittingState.set(false);
-    }
-  }
-
-  async submitVerification(pin: string) {
-    const challenge = this.pendingChallengeState();
-
-    if (!challenge) {
-      throw new Error('No pending verification challenge is available.');
-    }
-
-    this.verificationSubmittingState.set(true);
-
-    try {
-      const endpoint = challenge.purpose === 'sign_in' ? '/api/auth/sign-in/verify' : '/api/auth/sign-up/verify';
-
-      const response = await firstValueFrom(
-        this.http.post<AuthenticatedResponse>(endpoint, {
-          challengeId: challenge.challengeId,
-          pin,
-        }),
-      );
-
-      this.userState.set(response.data.user);
-      this.sessionLoadedState.set(true);
-      this.setPendingChallenge(null);
-
-      return response.data.user;
-    } finally {
-      this.verificationSubmittingState.set(false);
-    }
-  }
-
-  async resendVerification() {
-    const challenge = this.pendingChallengeState();
-
-    if (!challenge) {
-      throw new Error('No pending verification challenge is available.');
-    }
-
-    const response = await firstValueFrom(
-      this.http.post<ChallengeResponse>('/api/auth/verification/resend', {
-        challengeId: challenge.challengeId,
-      }),
-    );
-
-    this.setPendingChallenge(response.data);
-
-    return response.data;
-  }
-
-  async signOut() {
-    await firstValueFrom(this.http.post('/api/auth/sign-out', {}, { responseType: 'text' }));
-
-    this.userState.set(null);
-    this.setPendingChallenge(null);
-    this.sessionLoadedState.set(true);
-  }
-
-  async requestPasswordReset(email: string) {
-    await firstValueFrom(this.http.post('/api/auth/password/forgotten', { email }));
-  }
-
-  private readStoredChallenge() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return null;
-    }
-
-    const storedChallenge = window.sessionStorage.getItem(PENDING_CHALLENGE_KEY);
-
-    if (!storedChallenge) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(storedChallenge) as AuthChallenge;
-    } catch {
-      window.sessionStorage.removeItem(PENDING_CHALLENGE_KEY);
-
-      return null;
-    }
-  }
-
-  private setPendingChallenge(challenge: AuthChallenge | null) {
-    this.pendingChallengeState.set(challenge);
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    if (!challenge) {
-      window.sessionStorage.removeItem(PENDING_CHALLENGE_KEY);
-      return;
-    }
-
-    window.sessionStorage.setItem(PENDING_CHALLENGE_KEY, JSON.stringify(challenge));
-  }
+  abstract requestPasswordReset(email: string): Promise<void>;
 }
+
+export type { SessionResponse, ChallengeResponse, ChallengeOrAuthenticatedResponse };

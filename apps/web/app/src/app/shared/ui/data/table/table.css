@@ -1,0 +1,14 @@
+:host ::ng-deep thead {
+  background: color-mix(in srgb, var(--color-panel-raised) 82%, transparent);
+}
+
+:host ::ng-deep th,
+:host ::ng-deep td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 52%, transparent);
+}
+
+:host ::ng-deep th {
+  color: var(--color-muted-fg);
+  font-weight: 700;
+}

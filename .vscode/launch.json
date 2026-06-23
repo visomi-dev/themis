@@ -4,6 +4,16 @@
     {
       "type": "chrome",
       "request": "launch",
+      "name": "Debug Gateway",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.(m|c|)js", "!**/node_modules/**"],
+      "runtimeArgs": ["--auto-open-devtools-for-tabs"]
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
       "name": "Debug App",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}",
@@ -15,7 +25,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Debug Site",
-      "url": "http://localhost:8080",
+      "url": "http://localhost:8000",
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.(m|c|)js", "!**/node_modules/**"],

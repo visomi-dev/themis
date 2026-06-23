@@ -1,4 +1,4 @@
-import { integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 const users = pgTable(
   'users',
@@ -67,6 +67,25 @@ const authVerificationChallenges = pgTable('auth_verification_challenges', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+const userDevices = pgTable(
+  'user_devices',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('user_devices_token_hash_idx').on(table.tokenHash),
+    index('user_devices_user_expires_idx').on(table.userId, table.expiresAt),
+  ],
+);
 
 const apiKeys = pgTable('api_keys', {
   id: text('id').primaryKey(),
@@ -165,5 +184,6 @@ export {
   projects,
   userActivationMilestones,
   userSessions,
+  userDevices,
   users,
 };

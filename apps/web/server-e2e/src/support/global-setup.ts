@@ -16,6 +16,7 @@ module.exports = async function () {
   const port = process.env.PORT ? Number(process.env.PORT) : 8080;
 
   const serverProcess = spawn(process.execPath, [SERVER_ENTRYPOINT], {
+    detached: true,
     env: {
       ...process.env,
       DATABASE_AUTO_MIGRATE: 'true',
@@ -35,6 +36,7 @@ module.exports = async function () {
   }
 
   await writeFile(SERVER_PID_PATH, String(serverProcess.pid));
+  serverProcess.unref();
 
   try {
     await waitForPortOpen(port, { host });

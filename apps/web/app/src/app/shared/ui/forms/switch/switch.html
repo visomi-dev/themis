@@ -1,0 +1,14 @@
+<button
+  [attr.aria-checked]="checked()"
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-label]="ariaLabel()"
+  [class]="classes()"
+  [disabled]="disabled() || formDisabled()"
+  [id]="id()"
+  role="switch"
+  type="button"
+  (blur)="markTouched()"
+  (click)="toggle()"
+>
+  <span aria-hidden="true" [class]="thumbClasses()"></span>
+</button>

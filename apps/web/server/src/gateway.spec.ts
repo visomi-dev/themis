@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type RequestHandler } from 'express';
 import request from 'supertest';
 
 import { createGatewayApp } from './gateway';
@@ -26,6 +26,7 @@ describe('createGatewayApp', () => {
       angularHandler,
       astroClientFolder: __dirname,
       astroRequestHandler,
+      authRuntimeHandlers: [((_req, _res, next) => next()) satisfies RequestHandler],
     };
   };
 
@@ -58,5 +59,18 @@ describe('createGatewayApp', () => {
     expect(apiResponse.body).toEqual({ message: 'hello' });
     expect(angularResponse.status).toBe(200);
     expect(angularResponse.text).toContain('<app-root>');
+  });
+
+  it('sets gateway security headers with same-origin connect policy', async () => {
+    const app = createGatewayApp(createDeps());
+
+    const response = await request(app).get('/healthz');
+
+    expect(response.status).toBe(200);
+    expect(response.headers['content-security-policy']).toContain("connect-src 'self'");
+    expect(response.headers['content-security-policy']).toContain("script-src 'self' 'unsafe-inline'");
+    expect(response.headers['content-security-policy']).toContain("script-src-attr 'unsafe-inline'");
+    expect(response.headers['content-security-policy']).toContain("object-src 'none'");
+    expect(response.headers['x-content-type-options']).toBe('nosniff');
   });
 });

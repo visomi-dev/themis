@@ -1,15 +1,13 @@
 import type { ServerRoute } from '@angular/ssr';
 import { RenderMode } from '@angular/ssr';
 
-import { PROJECTS_PATH } from './shared/constants/routes';
-
+// TODO(spec: 2026-06-08-ssr-browser-refactor): prerender anonymous auth pages
+// (`/sign-in`, `/sign-up`, `/forgotten-password`) once the `themis.hasSession`
+// cookie marker is set by the API on sign-in / sign-up verify and cleared on
+// sign-out. The spec defers this until the API contract lands.
 export const serverRoutes: ServerRoute[] = [
   {
-    path: `${PROJECTS_PATH}/:projectId`,
-    renderMode: RenderMode.Server,
-  },
-  {
     path: '**',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Server,
   },
 ];

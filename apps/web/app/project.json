@@ -21,6 +21,7 @@
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": ["debug", "xmlhttprequest-ssl"],
         "outputPath": "dist/apps/web/app",
         "browser": "apps/web/app/src/main.ts",
         "polyfills": ["@angular/localize/init"],
@@ -36,7 +37,10 @@
         "ssr": {
           "entry": "apps/web/app/src/server.ts"
         },
-        "outputMode": "server"
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": ["themis.visomie.dev", "localhost"]
+        }
       },
       "configurations": {
         "production": {
@@ -57,6 +61,7 @@
           "outputHashing": "all"
         },
         "development": {
+          "baseHref": "/app/",
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true

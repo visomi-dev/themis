@@ -69,6 +69,7 @@ const initThemeSwitcher = () => {
             currentDarkIcon.classList.remove('hidden', 'upward-leave');
             currentDarkIcon.classList.add('upward-enter');
           }, 350);
+
           return;
         }
 

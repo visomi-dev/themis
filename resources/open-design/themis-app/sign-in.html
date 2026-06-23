@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in · Themis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --tm-bg: #faf8ff;
+        --tm-surface: #ffffff;
+        --tm-surface-muted: #f4f3fa;
+        --tm-surface-raised: #efedf4;
+        --tm-fg: #1a1b20;
+        --tm-fg-muted: #434651;
+        --tm-border: #c4c6d3;
+        --tm-border-subtle: #e3e1e8;
+        --tm-primary: #1b4490;
+        --tm-primary-hover: #15387a;
+        --tm-primary-strong: #0e2a5e;
+        --tm-primary-soft: #d9e2ff;
+        --tm-on-primary: #ffffff;
+        --tm-accent: #385ca9;
+        --tm-ai: #7d5260;
+        --tm-success: #1b6e3a;
+        --tm-success-soft: #d8eedb;
+        --tm-warning: #b45309;
+        --tm-warning-soft: #fef3c7;
+        --tm-danger: #ba1a1a;
+        --tm-danger-soft: #ffdad6;
+        --tm-danger-strong: #93000a;
+        --tm-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --tm-font-display: 'Manrope', 'Inter', sans-serif;
+        --tm-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --tm-radius-sm: 6px;
+        --tm-radius: 8px;
+        --tm-radius-md: 12px;
+        --tm-radius-full: 9999px;
+        --tm-shadow-sm: 0 1px 2px rgba(26, 27, 32, 0.06), 0 1px 3px rgba(26, 27, 32, 0.04);
+        --tm-shadow-md: 0 4px 12px rgba(26, 27, 32, 0.08), 0 2px 4px rgba(26, 27, 32, 0.04);
+        --tm-motion-fast: 120ms ease;
+        --tm-motion: 180ms ease;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --tm-bg: #0c1325;
+        --tm-surface: #151b2d;
+        --tm-surface-muted: #191f32;
+        --tm-surface-raised: #23293d;
+        --tm-fg: #dce1fb;
+        --tm-fg-muted: #bfc8cf;
+        --tm-border: #3f484e;
+        --tm-border-subtle: #2e3448;
+        --tm-primary: #7cd0ff;
+        --tm-primary-hover: #a8d4f0;
+        --tm-primary-strong: #c3e7ff;
+        --tm-primary-soft: rgba(124, 208, 255, 0.16);
+        --tm-on-primary: #001e2c;
+        --tm-accent: #a8d4f0;
+        --tm-ai: #eeb8c8;
+        --tm-success: #81c784;
+        --tm-success-soft: rgba(129, 199, 132, 0.14);
+        --tm-warning: #fbbf24;
+        --tm-warning-soft: rgba(251, 191, 36, 0.16);
+        --tm-danger: #ffb4ab;
+        --tm-danger-soft: rgba(255, 180, 171, 0.14);
+        --tm-danger-strong: #ffdad6;
+        --tm-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --tm-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--tm-bg);
+        color: var(--tm-fg);
+        font-family: var(--tm-font-sans);
+        font-size: 0.9375rem;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        min-height: 100vh;
+      }
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      a {
+        color: var(--tm-primary);
+        text-decoration: none;
+        transition: color var(--tm-motion-fast);
+      }
+      a:hover {
+        color: var(--tm-primary-hover);
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+        border: 0;
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      p {
+        margin: 0;
+        text-wrap: pretty;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0;
+        text-wrap: balance;
+        font-family: var(--tm-font-display);
+        letter-spacing: -0.02em;
+      }
+      :focus-visible {
+        outline: 2px solid var(--tm-primary);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      .auth-shell {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: color-mix(in srgb, var(--tm-bg) 92%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--tm-border-subtle);
+      }
+      .auth-shell__inner {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--tm-fg);
+        font-family: var(--tm-font-display);
+        font-weight: 700;
+        font-size: 1.0625rem;
+        letter-spacing: -0.02em;
+      }
+      .brand:hover {
+        color: var(--tm-fg);
+      }
+      .brand__mark {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        background: var(--tm-primary);
+        color: var(--tm-on-primary);
+        border-radius: var(--tm-radius-sm);
+      }
+      .brand__mark svg {
+        width: 16px;
+        height: 16px;
+      }
+      .brand__name {
+        font-weight: 700;
+      }
+
+      .auth-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .lang {
+        position: relative;
+      }
+      .lang__summary {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: var(--tm-radius);
+        border: 1px solid transparent;
+        color: var(--tm-fg);
+        font-family: var(--tm-font-mono);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        list-style: none;
+        transition:
+          background var(--tm-motion-fast),
+          border-color var(--tm-motion-fast);
+      }
+      .lang__summary::-webkit-details-marker {
+        display: none;
+      }
+      .lang__summary:hover {
+        background: var(--tm-surface-muted);
+      }
+      .lang[open] .lang__summary {
+        border-color: var(--tm-border-subtle);
+        background: var(--tm-surface);
+      }
+      .lang__summary svg {
+        width: 12px;
+        height: 12px;
+        opacity: 0.6;
+      }
+      .lang__code {
+        font-weight: 600;
+      }
+      .lang__menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        min-width: 200px;
+        background: var(--tm-surface);
+        border: 1px solid var(--tm-border-subtle);
+        border-radius: var(--tm-radius-md);
+        box-shadow: var(--tm-shadow-md);
+        padding: 6px;
+        list-style: none;
+        margin: 0;
+        z-index: 20;
+      }
+      .lang__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-radius: var(--tm-radius-sm);
+        cursor: pointer;
+        color: var(--tm-fg);
+        font-size: 0.875rem;
+        transition: background var(--tm-motion-fast);
+      }
+      .lang__item:hover {
+        background: var(--tm-surface-muted);
+      }
+      .lang__item--active {
+        background: var(--tm-primary-soft);
+        color: var(--tm-primary);
+        font-weight: 600;
+      }
+      .lang__item code {
+        font-family: var(--tm-font-mono);
+        font-size: 0.75rem;
+        color: var(--tm-fg-muted);
+      }
+
+      .theme-toggle {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: var(--tm-radius);
+        border: 1px solid transparent;
+        color: var(--tm-fg);
+        transition:
+          background var(--tm-motion-fast),
+          border-color var(--tm-motion-fast);
+      }
+      .theme-toggle:hover {
+        background: var(--tm-surface-muted);
+      }
+      .theme-toggle svg {
+        width: 16px;
+        height: 16px;
+      }
+      :root[data-theme='light'] .theme-toggle .icon-moon {
+        display: none;
+      }
+      :root[data-theme='dark'] .theme-toggle .icon-sun {
+        display: none;
+      }
+
+      .auth-main {
+        min-height: calc(100vh - 64px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--tm-surface);
+        border: 1px solid var(--tm-border-subtle);
+        border-radius: var(--tm-radius-md);
+        padding: 40px;
+        box-shadow: var(--tm-shadow-sm);
+      }
+      @media (max-width: 520px) {
+        .auth-card {
+          padding: 28px 22px;
+          border-radius: var(--tm-radius);
+        }
+        .auth-main {
+          padding: 24px 16px;
+        }
+      }
+
+      .auth-card__header {
+        margin-bottom: 28px;
+      }
+      .auth-card__title {
+        font-family: var(--tm-font-display);
+        font-size: 1.625rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+      .auth-card__sub {
+        color: var(--tm-fg-muted);
+        font-size: 0.9375rem;
+        line-height: 1.5;
+      }
+
+      .auth-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--tm-radius);
+        margin-bottom: 20px;
+        font-size: 0.875rem;
+        line-height: 1.45;
+      }
+      .auth-alert svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .auth-alert--error {
+        background: var(--tm-danger-soft);
+        color: var(--tm-danger-strong);
+        border: 1px solid color-mix(in srgb, var(--tm-danger) 24%, transparent);
+      }
+      .auth-alert--success {
+        background: var(--tm-success-soft);
+        color: var(--tm-success);
+        border: 1px solid color-mix(in srgb, var(--tm-success) 24%, transparent);
+      }
+
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: relative;
+      }
+      .field__label {
+        font-family: var(--tm-font-mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--tm-fg-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .field__control {
+        position: relative;
+      }
+      .input {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 14px;
+        background: var(--tm-surface);
+        border: 1px solid var(--tm-border);
+        border-radius: var(--tm-radius);
+        color: var(--tm-fg);
+        font-size: 0.9375rem;
+        line-height: 1.4;
+        transition:
+          border-color var(--tm-motion-fast),
+          box-shadow var(--tm-motion-fast);
+      }
+      .input::placeholder {
+        color: var(--tm-fg-muted);
+        opacity: 0.7;
+      }
+      .input:hover {
+        border-color: color-mix(in srgb, var(--tm-fg) 20%, var(--tm-border));
+      }
+      .input:focus {
+        outline: none;
+        border-color: var(--tm-primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--tm-primary) 18%, transparent);
+      }
+      .input:disabled {
+        background: var(--tm-surface-muted);
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      .input--error {
+        border-color: var(--tm-danger);
+      }
+      .input--error:focus {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--tm-danger) 18%, transparent);
+      }
+      .field__hint {
+        font-size: 0.8125rem;
+        color: var(--tm-fg-muted);
+        line-height: 1.45;
+      }
+      .field__error {
+        font-size: 0.8125rem;
+        color: var(--tm-danger);
+        display: none;
+        align-items: center;
+        gap: 6px;
+      }
+      .field__error svg {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+      }
+      .field--invalid .field__error {
+        display: flex;
+      }
+
+      .field__suffix {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        padding: 6px 8px;
+        border-radius: var(--tm-radius-sm);
+        color: var(--tm-fg-muted);
+        font-family: var(--tm-font-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .field__suffix:hover {
+        color: var(--tm-fg);
+        background: var(--tm-surface-muted);
+      }
+      .input--with-suffix {
+        padding-right: 64px;
+      }
+
+      .checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        color: var(--tm-fg);
+      }
+      .checkbox input[type='checkbox'] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--tm-border);
+        border-radius: var(--tm-radius-sm);
+        background: var(--tm-surface);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition:
+          background var(--tm-motion-fast),
+          border-color var(--tm-motion-fast);
+      }
+      .checkbox input[type='checkbox']:hover {
+        border-color: var(--tm-primary);
+      }
+      .checkbox input[type='checkbox']:checked {
+        background: var(--tm-primary);
+        border-color: var(--tm-primary);
+      }
+      .checkbox input[type='checkbox']:checked::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: var(--tm-on-primary);
+        clip-path: polygon(14% 44%, 0 60%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+      }
+      .checkbox input[type='checkbox']:focus-visible {
+        outline: 2px solid var(--tm-primary);
+        outline-offset: 2px;
+      }
+
+      .form-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .form-options .link {
+        font-size: 0.875rem;
+        color: var(--tm-primary);
+        font-weight: 500;
+      }
+      .form-options .link:hover {
+        color: var(--tm-primary-hover);
+        text-decoration: underline;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: var(--tm-radius);
+        font-family: var(--tm-font-sans);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        transition:
+          background var(--tm-motion-fast),
+          border-color var(--tm-motion-fast),
+          color var(--tm-motion-fast),
+          transform var(--tm-motion-fast);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+      .btn--primary {
+        background: var(--tm-primary);
+        color: var(--tm-on-primary);
+        border: 1px solid var(--tm-primary);
+      }
+      .btn--primary:hover:not(:disabled) {
+        background: var(--tm-primary-hover);
+        border-color: var(--tm-primary-hover);
+      }
+      .btn--primary:focus-visible {
+        outline: 2px solid var(--tm-primary);
+        outline-offset: 2px;
+      }
+      .btn--block {
+        width: 100%;
+      }
+      .btn__spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: tm-spin 0.7s linear infinite;
+        display: none;
+      }
+      .btn--loading .btn__spinner {
+        display: block;
+      }
+      .btn--loading .btn__label {
+        opacity: 0.85;
+      }
+      @keyframes tm-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .auth-card__footer {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--tm-border-subtle);
+        text-align: center;
+        color: var(--tm-fg-muted);
+        font-size: 0.875rem;
+      }
+      .auth-card__footer a {
+        font-weight: 500;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--tm-fg-muted);
+        font-size: 0.75rem;
+        font-family: var(--tm-font-mono);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin: 4px 0;
+      }
+      .divider::before,
+      .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--tm-border-subtle);
+      }
+
+      .provider-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 16px;
+        background: var(--tm-surface);
+        color: var(--tm-fg);
+        border: 1px solid var(--tm-border);
+        border-radius: var(--tm-radius);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        width: 100%;
+        transition:
+          border-color var(--tm-motion-fast),
+          background var(--tm-motion-fast);
+        cursor: pointer;
+      }
+      .provider-btn:hover {
+        border-color: var(--tm-fg);
+        background: var(--tm-surface-muted);
+      }
+      .provider-btn svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .provider-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .provider-btn:disabled:hover {
+        border-color: var(--tm-border);
+        background: var(--tm-surface);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="auth-screen" data-screen-label="01 Sign in">
+    <header class="auth-shell">
+      <div class="auth-shell__inner">
+        <a href="index.html" class="brand" aria-label="Themis home">
+          <span class="brand__mark" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 9h14" />
+              <path d="M12 9V3" />
+              <circle cx="5" cy="12" r="2.2" fill="currentColor" />
+              <circle cx="19" cy="12" r="2.2" fill="currentColor" />
+              <path d="M9 21h6" />
+            </svg>
+          </span>
+          <span class="brand__name">Themis</span>
+        </a>
+
+        <div class="auth-controls">
+          <details class="lang" id="lang">
+            <summary class="lang__summary" aria-label="Language">
+              <span class="lang__code">EN</span>
+              <svg
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 4.5l3 3 3-3" />
+              </svg>
+            </summary>
+            <ul class="lang__menu" role="listbox">
+              <li class="lang__item lang__item--active" data-lang="EN" role="option" aria-selected="true">
+                <span>English</span><code>EN</code>
+              </li>
+              <li class="lang__item" data-lang="ES" role="option"><span>Español</span><code>ES</code></li>
+              <li class="lang__item" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code>PT</code></li>
+              <li class="lang__item" data-lang="JA" role="option"><span>日本語</span><code>JA</code></li>
+              <li class="lang__item" data-lang="DE" role="option"><span>Deutsch</span><code>DE</code></li>
+              <li class="lang__item" data-lang="ZH" role="option"><span>中文</span><code>ZH</code></li>
+            </ul>
+          </details>
+
+          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
+            <svg
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-main">
+      <div class="auth-card" data-od-id="sign-in">
+        <header class="auth-card__header">
+          <h1 class="auth-card__title">Sign in</h1>
+          <p class="auth-card__sub">Welcome back. Use your work email to access your Themis workspace.</p>
+        </header>
+
+        <div class="auth-alert auth-alert--error" id="alert" hidden role="alert">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span id="alert-msg"></span>
+        </div>
+
+        <form class="auth-form" id="signin-form" novalidate>
+          <div class="field" data-field="email">
+            <label class="field__label" for="email">Email</label>
+            <div class="field__control">
+              <input
+                class="input"
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                placeholder="you@company.com"
+                required
+              />
+            </div>
+            <div class="field__error">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="field" data-field="password">
+            <label class="field__label" for="password">Password</label>
+            <div class="field__control">
+              <input
+                class="input input--with-suffix"
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                required
+              />
+              <button type="button" class="field__suffix" id="toggle-password" aria-label="Show password">Show</button>
+            </div>
+            <div class="field__error">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox">
+              <input type="checkbox" name="remember" />
+              <span>Remember this device</span>
+            </label>
+            <a href="recover-password.html" class="link">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--block" id="submit">
+            <span class="btn__spinner" aria-hidden="true"></span>
+            <span class="btn__label">Sign in</span>
+          </button>
+        </form>
+
+        <footer class="auth-card__footer">New to Themis? <a href="sign-up.html">Create an account</a></footer>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        'use strict';
+
+        const root = document.documentElement;
+        const themeBtn = document.getElementById('theme-toggle');
+        const storedTheme = localStorage.getItem('tm-theme');
+        const sysPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme = storedTheme || (sysPrefersDark ? 'dark' : 'light');
+        root.setAttribute('data-theme', initialTheme);
+
+        themeBtn.addEventListener('click', () => {
+          const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          localStorage.setItem('tm-theme', next);
+        });
+
+        const langDetails = document.getElementById('lang');
+        const langCode = langDetails.querySelector('.lang__code');
+        const langItems = langDetails.querySelectorAll('.lang__item');
+        const storedLang = localStorage.getItem('tm-lang') || 'EN';
+
+        function applyLang(code) {
+          langCode.textContent = code;
+          langItems.forEach((li) => {
+            const active = li.dataset.lang === code;
+            li.classList.toggle('lang__item--active', active);
+            li.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          localStorage.setItem('tm-lang', code);
+        }
+        applyLang(storedLang);
+
+        langItems.forEach((li) => {
+          li.addEventListener('click', (e) => {
+            e.preventDefault();
+            applyLang(li.dataset.lang);
+            langDetails.removeAttribute('open');
+          });
+        });
+
+        document.addEventListener('click', (e) => {
+          if (langDetails.open && !langDetails.contains(e.target)) langDetails.removeAttribute('open');
+        });
+
+        const pwInput = document.getElementById('password');
+        const pwToggle = document.getElementById('toggle-password');
+        pwToggle.addEventListener('click', () => {
+          const isPw = pwInput.type === 'password';
+          pwInput.type = isPw ? 'text' : 'password';
+          pwToggle.textContent = isPw ? 'Hide' : 'Show';
+          pwInput.focus();
+        });
+
+        const form = document.getElementById('signin-form');
+        const alert = document.getElementById('alert');
+        const alertMsg = document.getElementById('alert-msg');
+        const submit = document.getElementById('submit');
+
+        function setFieldError(fieldName, message) {
+          const field = form.querySelector(`[data-field="${fieldName}"]`);
+          if (!field) return;
+          if (message) {
+            field.classList.add('field--invalid');
+            field.querySelector('.input').classList.add('input--error');
+            field.querySelector('.field__error span').textContent = message;
+          } else {
+            field.classList.remove('field--invalid');
+            field.querySelector('.input').classList.remove('input--error');
+          }
+        }
+
+        function showAlert(message) {
+          alertMsg.textContent = message;
+          alert.hidden = false;
+        }
+        function hideAlert() {
+          alert.hidden = true;
+        }
+
+        function isEmail(value) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        form.querySelectorAll('.input').forEach((input) => {
+          input.addEventListener('input', () => {
+            const field = input.closest('.field');
+            field.classList.remove('field--invalid');
+            input.classList.remove('input--error');
+            hideAlert();
+          });
+        });
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          let valid = true;
+          const email = form.email.value.trim();
+          const password = form.password.value;
+
+          if (!email) {
+            setFieldError('email', 'Enter your email address.');
+            valid = false;
+          } else if (!isEmail(email)) {
+            setFieldError('email', 'Enter a valid email address (e.g. you@company.com).');
+            valid = false;
+          }
+
+          if (!password) {
+            setFieldError('password', 'Enter your password.');
+            valid = false;
+          }
+
+          if (!valid) {
+            hideAlert();
+            return;
+          }
+
+          submit.classList.add('btn--loading');
+          submit.disabled = true;
+          hideAlert();
+
+          await new Promise((r) => setTimeout(r, 900));
+
+          const ok = /^[^@]+@themis\.dev$/i.test(email) && password.length >= 6;
+          submit.classList.remove('btn--loading');
+          submit.disabled = false;
+
+          if (ok) {
+            submit.querySelector('.btn__label').textContent = 'Signed in — redirecting…';
+            submit.disabled = true;
+          } else {
+            showAlert('Email or password is incorrect. Try again or recover your account.');
+            setFieldError('password', ' ');
+            form.password.focus();
+            form.password.select();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

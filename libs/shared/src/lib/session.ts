@@ -47,6 +47,7 @@ class PostgresSessionStore extends Store {
 
         if (!row) {
           callback(undefined, null);
+
           return;
         }
 

@@ -2,6 +2,8 @@
 
 Developer-first task system monorepo built with Nx.
 
+Themis is a structured operational surface for defining, documenting, and executing work with low cognitive load. Designed as a developer-native control surface — part operational notebook, part structured database — it treats tasks as durable objects with attached context, scope, decisions, and execution history. The UI is calm, exact, and technical by default: tonal surface hierarchy instead of card grids, quiet controls, and typography-led layouts using Manrope (display) and Inter (body). It is AI-readable by design, making agent activity visible and reviewable alongside human work. The product ships with light (Slate & Syntax) and dark (Slate & Syntax: Night Edition) modes, project-first navigation, and a mobile-first responsive foundation.
+
 This workspace combines:
 
 - `apps/web/site` - Astro public landing site
@@ -103,6 +105,15 @@ This starts `apps/web/server`, which manages the backend stack for local develop
 
 The server preserves `/socket.io` as the public websocket path on the same HTTP server used by `/api`, `/app`, and `/`.
 
+When developing the Angular app with its dev server, start the app separately and point the gateway at it:
+
+```bash
+pnpm nx run app:serve
+APP_DEV_SERVER_URL=http://localhost:4200 pnpm nx run server:serve
+```
+
+Open the product app through the gateway at `http://localhost:8080/app` so SSR, API requests, sessions, and realtime traffic use the same origin.
+
 ## Docker
 
 Build the production image:
@@ -156,10 +167,11 @@ pnpm nx run server-e2e:e2e
 
 ## Documentation
 
-- `docs/overview.md`
-- `docs/product/prd.md`
-- `docs/architecture/system-architecture.md`
-- `docs/design/visual-discovery.md`
+- [Constitution](docs/constitution/) — mission, tech stack, roadmap
+- [Product PRD](docs/product/prd.md)
+- [System Architecture](docs/architecture/system/overview.md)
+- [Feature Specs](docs/features/specs/)
+- [Design](docs/design/visual-discovery.md)
 
 ## Notes
 

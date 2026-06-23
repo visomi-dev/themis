@@ -1,23 +1,30 @@
-<div
-  class="dark:font-display flex items-center gap-4 font-[Inter] text-[10px] font-black tracking-[0.2em] text-(--color-switch-muted) uppercase"
->
-  <a
-    [href]="localeUrl('en')"
-    hreflang="en"
-    [attr.aria-current]="currentLocale() === 'en' ? 'page' : null"
-    [attr.aria-label]="localeLabel('en')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'en'"
-    >EN</a
+<app-dropdown>
+  <button
+    data-slot="trigger"
+    type="button"
+    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 items-center gap-2 rounded-sm px-3 text-xs font-black tracking-widest uppercase transition-colors"
+    aria-label="Change language"
+    i18n-aria-label="@@languageSwitcherChangeLanguage"
   >
-  <span class="opacity-30">/</span>
-  <a
-    [href]="localeUrl('es')"
-    hreflang="es"
-    [attr.aria-current]="currentLocale() === 'es' ? 'page' : null"
-    [attr.aria-label]="localeLabel('es')"
-    class="auth-locale-link"
-    [class.auth-locale-link-active]="currentLocale() === 'es'"
-    >ES</a
-  >
-</div>
+    <app-icon name="globe" />
+    <span>{{ currentLocaleLabel() }}</span>
+    <app-icon name="angle-down" class="text-xs" />
+  </button>
+
+  <div class="ui-panel-raised min-w-40 p-1" role="menu">
+    <a
+      class="ui-focus-ring text-fg hover:bg-panel flex items-center rounded-[var(--radius-control)] px-3 py-2 text-sm"
+      [routerLink]="localeUrl('en')"
+      role="menuitem"
+    >
+      <span i18n="@@languageSwitcherEnglishOption">English</span>
+    </a>
+    <a
+      class="ui-focus-ring text-fg hover:bg-panel flex items-center rounded-[var(--radius-control)] px-3 py-2 text-sm"
+      [routerLink]="localeUrl('es')"
+      role="menuitem"
+    >
+      <span i18n="@@languageSwitcherSpanishOption">Spanish</span>
+    </a>
+  </div>
+</app-dropdown>

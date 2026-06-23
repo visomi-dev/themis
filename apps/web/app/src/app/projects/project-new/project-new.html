@@ -1,65 +1,63 @@
-<main class="auth-page-shell px-4 py-4 md:px-8 md:py-6">
-  <section class="mx-auto max-w-3xl py-6 md:py-10">
-    <header class="mb-8">
-      <div class="flex items-center gap-4">
-        <a [routerLink]="projectsUrl" class="auth-locale-link text-sm font-semibold no-underline hover:underline">
-          Projects
-        </a>
-
-        <span class="text-outline-variant text-sm">/</span>
-
-        <span class="text-on-surface-variant text-sm">New project</span>
-
-        <div class="ml-auto">
-          <app-theme-switcher />
-        </div>
+<app-container size="sm">
+  <div class="flex flex-col gap-8 py-4">
+    <header>
+      <div class="flex items-center gap-3 text-sm">
+        <app-link i18n="@@projectNewBreadcrumb" [routerLink]="projectsUrl" [text]="'Projects'" />
+        <span class="text-outline-variant">/</span>
+        <span class="text-muted-fg" i18n="@@projectNewBreadcrumbCurrent">New project</span>
       </div>
 
-      <h1 class="font-display text-on-surface mt-6 text-4xl font-extrabold tracking-tighter">New project</h1>
+      <app-heading class="mt-6" i18n="@@projectNewTitle" level="1" [text]="'New project'" />
     </header>
 
     @if (errorMessage()) {
-      <p-message class="mb-6 block" severity="error">{{ errorMessage() }}</p-message>
+      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
     }
 
-    <section class="auth-panel rounded-xl p-6 md:p-8">
+    <app-card padding="md" tone="raised">
       <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
-        <div>
-          <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-name">
-            Project name
-          </label>
-
-          <input
-            id="project-name"
-            pInputText
-            type="text"
+        <app-field>
+          <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
+          <app-input
             formControlName="name"
+            [controlId]="'project-name'"
+            invalid="!!nameError()"
+            name="name"
             placeholder="My application"
-            class="w-full"
+            type="text"
+            (blur)="updateNameError()"
           />
-        </div>
+          @if (nameError(); as message) {
+            <app-error-message controlId="project-name-error">{{ message }}</app-error-message>
+          }
+        </app-field>
 
-        <div>
-          <label class="text-on-surface-variant mb-2 block text-sm font-semibold" for="project-summary">
-            Summary <span class="text-on-surface-variant font-normal">(optional)</span>
-          </label>
-
-          <textarea
-            id="project-summary"
-            pInputText
+        <app-field>
+          <app-label for="project-summary" i18n="@@projectNewSummaryLabel">Summary</app-label>
+          <app-description i18n="@@projectNewSummaryHelp"
+            >A short description of the project (optional).</app-description
+          >
+          <app-textarea
             formControlName="summary"
+            [controlId]="'project-summary'"
+            invalid="!!summaryError()"
+            name="summary"
             placeholder="A short description of the project"
-            class="w-full"
-            rows="3"
-          ></textarea>
-        </div>
+            [rows]="3"
+            (blur)="updateSummaryError()"
+          />
+          @if (summaryError(); as message) {
+            <app-error-message controlId="project-summary-error">{{ message }}</app-error-message>
+          }
+        </app-field>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <a [routerLink]="projectsUrl" pButton type="button" severity="secondary" [outlined]="true"> Cancel </a>
-
-          <button pButton type="submit" [disabled]="submitting()">Create project</button>
+          <app-link-button i18n="@@projectNewCancel" [routerLink]="projectsUrl" [text]="'Cancel'" variant="outline" />
+          <app-button i18n="@@projectNewSubmit" tone="accent" type="submit" [loading]="submitting()">
+            Create project
+          </app-button>
         </div>
       </form>
-    </section>
-  </section>
-</main>
+    </app-card>
+  </div>
+</app-container>

@@ -1,0 +1,6 @@
+<fieldset [class]="classes()">
+  @if (legend()) {
+    <legend class="text-fg mb-1 text-sm font-semibold">{{ legend() }}</legend>
+  }
+  <ng-content />
+</fieldset>

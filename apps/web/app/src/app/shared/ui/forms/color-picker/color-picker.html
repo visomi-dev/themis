@@ -1,0 +1,26 @@
+<fieldset class="grid gap-2" [disabled]="disabled() || formDisabled()">
+  @if (label()) {
+    <legend class="text-fg text-sm font-semibold">{{ label() }}</legend>
+  }
+
+  <div [class]="groupClasses()">
+    @for (option of options(); track option.value) {
+      <label class="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-1">
+        <span class="sr-only">{{ option.label }}</span>
+        <span [class]="optionClasses(option)"></span>
+        <input
+          class="absolute inset-0 size-full cursor-pointer opacity-0"
+          type="radio"
+          [checked]="value() === option.value"
+          [name]="name()"
+          [required]="required()"
+          [value]="option.value"
+          (blur)="markTouched()"
+          (change)="choose(option.value)"
+        />
+      </label>
+    }
+  </div>
+
+  <ng-content />
+</fieldset>

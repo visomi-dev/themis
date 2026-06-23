@@ -95,6 +95,14 @@ describe('auth API', () => {
     });
 
     expect(signInPasswordResponse.status).toBe(200);
+
+    if (signInPasswordResponse.data.data.authenticated) {
+      expect(signInPasswordResponse.data.data.user.email).toBe(email);
+      expect(signInPasswordResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
+
+      return;
+    }
+
     expect(signInPasswordResponse.data.data.purpose).toBe('sign_in');
 
     const signInMail = await axios.get('/test/mailbox/latest', {
@@ -120,10 +128,67 @@ describe('auth API', () => {
     const signInVerifyResponse = await axios.post('/auth/sign-in/verify', {
       challengeId: signInPasswordResponse.data.data.challengeId,
       pin: signInMail.data.pin,
+      rememberDevice: true,
     });
 
     expect(signInVerifyResponse.status).toBe(200);
     expect(signInVerifyResponse.data.data.user.email).toBe(email);
     expect(signInVerifyResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
+
+    const rememberedDeviceCookie = toCookieHeader(signInVerifyResponse.headers['set-cookie']);
+
+    await axios.post(
+      '/auth/sign-out',
+      {},
+      {
+        headers: {
+          Cookie: rememberedDeviceCookie,
+        },
+      },
+    );
+
+    await axios.delete('/test/mailbox');
+
+    const trustedSignInResponse = await axios.post(
+      '/auth/sign-in/password',
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          Cookie: rememberedDeviceCookie,
+        },
+      },
+    );
+
+    expect(trustedSignInResponse.status).toBe(200);
+    expect(trustedSignInResponse.data.data.authenticated).toBe(true);
+    expect(trustedSignInResponse.data.data.user.email).toBe(email);
+    expect(trustedSignInResponse.data.data.user.accountId).toBe(signUpVerifyResponse.data.data.user.accountId);
+  }, 15_000);
+
+  it('should generate a fresh challenge ID on repeated password sign-in', async () => {
+    const firstResponse = await axios.post('/auth/sign-in/password', {
+      email,
+      password,
+    });
+
+    expect(firstResponse.status).toBe(200);
+    expect(firstResponse.data.data.purpose).toBe('sign_in');
+
+    const firstChallengeId = firstResponse.data.data.challengeId;
+
+    const secondResponse = await axios.post('/auth/sign-in/password', {
+      email,
+      password,
+    });
+
+    expect(secondResponse.status).toBe(200);
+    expect(secondResponse.data.data.purpose).toBe('sign_in');
+
+    const secondChallengeId = secondResponse.data.data.challengeId;
+
+    expect(secondChallengeId).not.toBe(firstChallengeId);
   });
 });

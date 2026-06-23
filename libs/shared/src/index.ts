@@ -5,6 +5,7 @@ export * from './lib/db/pool';
 export * from './lib/db/schema';
 export * from './lib/env';
 export * from './lib/http';
+export * from './lib/http/auth-runtime';
 export * from './lib/logger';
 export * from './lib/redis/connection';
 export * from './lib/redis/pub-sub';

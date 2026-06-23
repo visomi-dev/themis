@@ -1,0 +1,240 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Themis - Sign In</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-tertiary-container': '#006146',
+              'tertiary-container': '#8cfecf',
+              'on-error-container': '#ff9993',
+              'surface-container-highest': '#19253f',
+              'primary-container': '#aac0fb',
+              'primary-dim': '#9cb2ec',
+              'on-primary-fixed': '#092557',
+              surface: '#080e1b',
+              primary: '#bdceff',
+              'on-primary': '#2d4477',
+              'on-surface-variant': '#9eabcb',
+              'on-background': '#dde5ff',
+              error: '#ff716c',
+              'error-dim': '#c94947',
+              'inverse-on-surface': '#4f5565',
+              'surface-variant': '#19253f',
+              'surface-tint': '#bdceff',
+              'surface-container-high': '#141f35',
+              tertiary: '#daffeb',
+              'on-tertiary-fixed-variant': '#006d4f',
+              'on-surface': '#dde5ff',
+              'secondary-dim': '#a5beb3',
+              'surface-container-lowest': '#000000',
+              'tertiary-fixed-dim': '#7eefc2',
+              'secondary-fixed-dim': '#cee8dc',
+              'primary-fixed': '#aac0fb',
+              'on-error': '#490006',
+              'surface-container-low': '#0b1323',
+              'surface-container': '#10192c',
+              'on-tertiary': '#006b4d',
+              'on-secondary': '#2e453c',
+              'surface-dim': '#080e1b',
+              'surface-bright': '#1d2c49',
+              'on-secondary-container': '#90a99e',
+              'on-primary-fixed-variant': '#2d4476',
+              'tertiary-dim': '#7eefc2',
+              secondary: '#b3ccc1',
+              'on-primary-container': '#233b6d',
+              'on-secondary-fixed': '#364d44',
+              'inverse-primary': '#485e92',
+              'secondary-fixed': '#dcf7ea',
+              'on-secondary-fixed-variant': '#526960',
+              'secondary-container': '#132a22',
+              background: '#080e1b',
+              'inverse-surface': '#f9f9ff',
+              'primary-fixed-dim': '#9cb2ec',
+              'outline-variant': '#3c4863',
+              outline: '#697593',
+              'error-container': '#8a1a1e',
+              'on-tertiary-fixed': '#004d37',
+              'tertiary-fixed': '#8cfecf',
+            },
+            borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' },
+            fontFamily: {
+              headline: ['Manrope'],
+              body: ['Manrope'],
+              label: ['Manrope'],
+              'headline-sm': ['Manrope'],
+              'body-md': ['Manrope'],
+              'label-sm': ['Manrope'],
+              'display-lg': ['Manrope'],
+              display: ['Manrope'],
+            },
+            fontSize: {
+              'headline-sm': ['1.5rem', { lineHeight: '1.3', fontWeight: '600' }],
+              'body-md': ['0.875rem', { lineHeight: '1.6', fontWeight: '400' }],
+              'label-sm': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.05em', fontWeight: '600' }],
+              'display-lg': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }],
+            },
+            spacing: { margin: '1.5rem', gutter: '1rem', unit: '0.5rem', base: '2' },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+      }
+      body {
+        font-family: 'Manrope', sans-serif;
+        background-color: #070d1f;
+      }
+      .btn-gradient {
+        background: linear-gradient(to right, #7bd0ff, #004c69);
+      }
+      .ghost-border {
+        border: 1px solid rgba(50, 69, 124, 0.2);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-surface text-on-surface selection:bg-primary-container selection:text-primary flex min-h-screen flex-col items-center justify-center p-6"
+  >
+    <!-- Auth Container -->
+    <main class="flex w-full max-w-[420px] flex-col space-y-10">
+      <!-- Brand Identity -->
+      <header class="flex flex-col items-center space-y-6">
+        <div class="flex items-center gap-3">
+          <div class="bg-primary flex h-10 w-10 items-center justify-center rounded-lg">
+            <span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1"
+              >balance</span
+            >
+          </div>
+          <h1 class="text-on-surface text-2xl font-extrabold tracking-tighter uppercase">Themis</h1>
+        </div>
+        <div class="space-y-2 text-center">
+          <h2 class="text-on-surface text-3xl font-bold tracking-tight">Sign in</h2>
+          <p class="text-on-surface-variant text-sm font-medium tracking-wide">
+            Enter your credentials to access the legal archive.
+          </p>
+        </div>
+      </header>
+      <!-- Login Form -->
+      <section class="space-y-6">
+        <div class="space-y-4">
+          <!-- Email Field -->
+          <div class="flex flex-col space-y-1.5">
+            <label class="text-on-surface-variant px-1 text-[0.6875rem] font-bold tracking-widest uppercase" for="email"
+              >Email Address</label
+            >
+            <div class="group relative">
+              <input
+                autocomplete="email"
+                class="bg-surface-container-lowest ghost-border text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary/10 font-body h-12 w-full rounded-lg px-4 text-sm transition-all focus:ring-2 focus:outline-none"
+                id="email"
+                name="email"
+                placeholder="archivist@themis.io"
+                type="email"
+              />
+            </div>
+          </div>
+          <!-- Password Field -->
+          <div class="flex flex-col space-y-1.5">
+            <div class="flex items-end justify-between px-1">
+              <label class="text-on-surface-variant text-[0.6875rem] font-bold tracking-widest uppercase" for="password"
+                >Password</label
+              >
+              <a
+                class="text-primary hover:text-primary-dim text-[0.6875rem] font-bold tracking-widest uppercase transition-colors"
+                href="#"
+                >Forgot Password?</a
+              >
+            </div>
+            <div class="group relative">
+              <input
+                autocomplete="current-password"
+                class="bg-surface-container-lowest ghost-border text-on-surface placeholder:text-outline focus:border-primary focus:ring-primary/10 font-body h-12 w-full rounded-lg px-4 pr-12 text-sm transition-all focus:ring-2 focus:outline-none"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                type="password"
+              />
+              <button
+                class="text-on-surface-variant hover:text-on-surface absolute top-1/2 right-4 -translate-y-1/2 transition-colors"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[20px]">visibility</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Options -->
+        <div class="flex items-center space-x-3 px-1">
+          <div class="relative flex items-center justify-center">
+            <input
+              class="peer bg-surface-container-lowest ghost-border checked:bg-primary checked:border-primary h-4 w-4 cursor-pointer appearance-none rounded-sm transition-all"
+              id="remember"
+              type="checkbox"
+            />
+            <span
+              class="material-symbols-outlined text-on-primary pointer-events-none absolute text-[12px] opacity-0 peer-checked:opacity-100"
+              style="font-variation-settings: 'wght' 700"
+              >check</span
+            >
+          </div>
+          <label class="text-on-surface-variant cursor-pointer text-xs font-medium select-none" for="remember"
+            >Remember this device for 30 days</label
+          >
+        </div>
+        <!-- Action Button -->
+        <button
+          class="btn-gradient text-on-primary shadow-primary/5 h-12 w-full rounded-lg text-sm font-bold tracking-wide uppercase shadow-lg transition-all active:scale-[0.98]"
+          type="submit"
+        >
+          Sign In to Workspace
+        </button>
+      </section>
+      <!-- Footer Call to Action -->
+      <footer class="flex flex-col items-center pt-4">
+        <div class="flex items-center space-x-2 text-sm">
+          <span class="text-on-surface-variant">New to the archive?</span>
+          <a class="text-primary font-bold underline-offset-4 transition-all hover:underline" href="#"
+            >Create an account</a
+          >
+        </div>
+      </footer>
+    </main>
+    <!-- Background Decorative Elements (Architectural/Technical Feel) -->
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div
+        class="bg-primary/5 absolute top-0 right-0 h-[500px] w-[500px] translate-x-1/3 -translate-y-1/2 rounded-full blur-[120px]"
+      ></div>
+      <div
+        class="bg-tertiary/5 absolute bottom-0 left-0 h-[400px] w-[400px] -translate-x-1/4 translate-y-1/3 rounded-full blur-[100px]"
+      ></div>
+      <!-- Grid Pattern Overlay -->
+      <div
+        class="absolute inset-0 opacity-[0.03]"
+        style="background-image: radial-gradient(#dfe4ff 0.5px, transparent 0.5px); background-size: 24px 24px"
+      ></div>
+    </div>
+  </body>
+</html>

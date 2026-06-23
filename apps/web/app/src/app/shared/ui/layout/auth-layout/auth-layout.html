@@ -1,0 +1,9 @@
+<main class="bg-bg grid min-h-screen px-4 py-8 md:grid-cols-[minmax(0,1fr)_minmax(24rem,32rem)] md:p-0">
+  <section class="bg-panel-raised hidden p-12 md:grid md:content-between">
+    <ng-content select="[data-slot=brand]" />
+    <ng-content select="[data-slot=aside]" />
+  </section>
+  <section class="mx-auto grid w-full max-w-md content-center py-8 md:px-10">
+    <ng-content />
+  </section>
+</main>

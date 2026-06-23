@@ -5,6 +5,8 @@ import {
   registerAndAuthenticate,
   registerAndSignOut,
   signIn,
+  signInWithRememberedDevice,
+  signOutViaApi,
   verifyLatestCode,
 } from '../support/auth';
 import { appUrlPattern, signInRoute, signInUrlPattern } from '../support/routes';
@@ -18,7 +20,12 @@ test.describe('/app/sign-in', () => {
     await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByRole('heading', { name: /System activation/ })).toBeVisible();
+    await expect(page.getByText('dashboard works!')).toBeVisible();
+
+    await signOutViaApi(page);
+    await signInWithRememberedDevice(page, credentials.email, credentials.password);
+
+    await expect(page.getByText('dashboard works!')).toBeVisible();
   });
 
   test('stays on the route when credentials are invalid', async ({ page }) => {
@@ -43,13 +50,13 @@ test.describe('/app/sign-in', () => {
     await expect(page.getByText('Use at least 8 characters.')).toBeVisible();
   });
 
-  test('keeps the sign-in route available for authenticated users', async ({ page, request }) => {
+  test('redirects authenticated users away from sign-in', async ({ page, request }) => {
     const credentials = createCredentials();
 
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
     await page.goto(signInRoute);
 
-    await expect(page).toHaveURL(signInUrlPattern);
-    await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+    await expect(page).toHaveURL(appUrlPattern);
+    await expect(page.getByText('dashboard works!')).toBeVisible();
   });
 });

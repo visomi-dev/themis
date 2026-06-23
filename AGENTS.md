@@ -29,6 +29,13 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ---
 
+## Language Policy
+
+- All repository artifacts must be written in English, including specs, docs, comments, code identifiers, commit messages, UI copy, test names, and generated files.
+- User-facing localized content may be translated through the existing i18n flow, but source text and documentation should remain English unless a file is explicitly a translation resource.
+
+---
+
 ## TypeScript Conventions
 
 ### Imports

@@ -185,3 +185,4 @@ http://127.0.0.1:8080/app/sign-up
 - The automated suite does not require real Mailgun credentials.
 - The automated suite does not require a running PostgreSQL server.
 - The production implementation path still uses PostgreSQL and Mailgun when configured.
+- The OTP helper in `apps/web/app-e2e/src/support/otp.ts` targets `[data-slot=pin-input] input`. The previous PrimeNG selector `.p-inputotp-input` was removed when the input migrated to the in-house `app-pin-input` primitive.

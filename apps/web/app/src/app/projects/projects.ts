@@ -1,34 +1,32 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
+import { RouterLink } from '@angular/router';
 
-import { Auth } from '../shared/auth/auth';
-import { APP_URL, PROJECT_NEW_URL, SIGN_IN_URL } from '../shared/constants/routes';
-import { ThemeSwitcher } from '../shared/layout/theme-switcher/theme-switcher';
-import { ProjectsService } from '../shared/projects/projects.service';
+import { PROJECT_NEW_URL } from '../shared/constants/routes';
+import { ProjectsApi } from '../shared/projects/projects';
 import type { Project } from '../shared/projects/projects.models';
+import { Alert } from '../shared/ui/overlays/alert/alert';
+import { Badge } from '../shared/ui/data/badge/badge';
+import { Card } from '../shared/ui/layout/card/card';
+import { Container } from '../shared/ui/layout/container/container';
+import { Heading } from '../shared/ui/typography/heading/heading';
+import { LinkButton } from '../shared/ui/actions/link-button/link-button';
+import { Loader } from '../shared/ui/feedback/loader/loader';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [ButtonModule, MessageModule, RouterLink, ThemeSwitcher],
+  imports: [Alert, Badge, Card, Container, Heading, LinkButton, Loader, RouterLink],
   selector: 'app-projects',
   templateUrl: './projects.html',
   styleUrl: './projects.css',
 })
 export class Projects implements OnInit {
-  private readonly auth = inject(Auth);
-  private readonly projectsService = inject(ProjectsService);
-  private readonly router = inject(Router);
+  private readonly projectsApi = inject(ProjectsApi);
 
   readonly errorMessage = signal('');
   readonly loading = signal(true);
   readonly projects = signal<Project[]>([]);
-  readonly user = this.auth.user;
-
-  readonly activationUrl = APP_URL;
   readonly projectNewUrl = PROJECT_NEW_URL;
 
   async ngOnInit() {
@@ -44,16 +42,11 @@ export class Projects implements OnInit {
     }
 
     try {
-      await this.projectsService.deleteProject(projectId);
+      await this.projectsApi.deleteProject(projectId);
       await this.loadProjects();
     } catch {
       this.errorMessage.set('The project could not be deleted.');
     }
-  }
-
-  async signOut() {
-    await this.auth.signOut();
-    await this.router.navigate([SIGN_IN_URL]);
   }
 
   formatDate(isoString: string) {
@@ -70,12 +63,23 @@ export class Projects implements OnInit {
     return labels[status] ?? status;
   }
 
+  statusTone(status: Project['status']): 'default' | 'accent' | 'danger' | 'success' | 'warning' {
+    switch (status) {
+      case 'active':
+        return 'success';
+      case 'archived':
+        return 'warning';
+      case 'draft':
+        return 'default';
+    }
+  }
+
   private async loadProjects() {
     this.loading.set(true);
     this.errorMessage.set('');
 
     try {
-      const projects = await this.projectsService.listProjects();
+      const projects = await this.projectsApi.listProjects();
 
       this.projects.set(projects);
     } catch {

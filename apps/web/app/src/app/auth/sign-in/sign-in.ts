@@ -2,22 +2,36 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
-import { PasswordModule } from 'primeng/password';
 
 import { Auth } from '../../shared/auth/auth';
-import { FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_EMAIL_URL } from '../../shared/constants/routes';
-import { FormField } from '../../shared/form/form-field/form-field';
+import {
+  APP_URL,
+  FORGOTTEN_PASSWORD_URL,
+  SIGN_UP_URL,
+  VERIFY_DEVICE_URL,
+  VERIFY_EMAIL_URL,
+} from '../../shared/constants/routes';
 import { controlError } from '../../shared/form/form-errors';
-import { LanguageSwitcher } from '../../shared/layout/language-switcher/language-switcher';
 import { Logo } from '../../shared/layout/logo/logo';
 import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
+import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { Button } from '../../shared/ui/actions/button/button';
+import { Card } from '../../shared/ui/layout/card/card';
+import { Checkbox } from '../../shared/ui/forms/checkbox/checkbox';
+import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
+import { Field } from '../../shared/ui/forms/field/field';
+import { Heading } from '../../shared/ui/typography/heading/heading';
+import { Input } from '../../shared/ui/forms/input/input';
+import { Label } from '../../shared/ui/forms/label/label';
+import { Link } from '../../shared/ui/typography/link/link';
+import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
+import { Text } from '../../shared/ui/typography/text/text';
 
 type SignInForm = FormGroup<{
   email: FormControl<string>;
   password: FormControl<string>;
+  rememberDevice: FormControl<boolean>;
 }>;
 
 @Component({
@@ -25,15 +39,22 @@ type SignInForm = FormGroup<{
     class: /* tw */ 'block min-h-full w-full',
   },
   imports: [
-    ButtonModule,
-    FormField,
-    InputTextModule,
-    LanguageSwitcher,
+    Alert,
+    AuthLayout,
+    Button,
+    Card,
+    Checkbox,
+    ErrorMessage,
+    Field,
+    Heading,
+    Input,
+    Label,
+    Link,
     Logo,
-    MessageModule,
-    PasswordModule,
+    PasswordInput,
     ReactiveFormsModule,
     RouterLink,
+    Text,
     ThemeSwitcher,
   ],
   selector: 'app-sign-in',
@@ -53,37 +74,61 @@ export class SignIn {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(8)],
     }),
+    rememberDevice: new FormControl(true, {
+      nonNullable: true,
+    }),
   });
 
   readonly submitting = this.auth.submitting;
 
   readonly errorMessage = signal('');
 
-  emailError() {
+  readonly emailError = signal('');
+  readonly passwordError = signal('');
+
+  emailErrorMessage() {
     return controlError(this.form.controls.email, {
       email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address.`,
       required: $localize`:@@signInEmailErrorRequired:Enter your email address.`,
     });
   }
 
-  passwordError() {
+  passwordErrorMessage() {
     return controlError(this.form.controls.password, {
       minlength: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.`,
       required: $localize`:@@signInPasswordErrorRequired:Enter your password.`,
     });
   }
 
+  updateEmailError() {
+    this.emailError.set(this.emailErrorMessage());
+  }
+
+  updatePasswordError() {
+    this.passwordError.set(this.passwordErrorMessage());
+  }
+
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.updateEmailError();
+      this.updatePasswordError();
+
       return;
     }
 
     this.errorMessage.set('');
 
     try {
-      await this.auth.signInWithPassword(this.form.getRawValue());
-      await this.router.navigate([VERIFY_EMAIL_URL]);
+      const result = await this.auth.signInWithPassword(this.form.getRawValue());
+
+      if ('authenticated' in result) {
+        await this.router.navigate([APP_URL]);
+
+        return;
+      }
+
+      await this.router.navigate([result.purpose === 'sign_up' ? VERIFY_EMAIL_URL : VERIFY_DEVICE_URL]);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse

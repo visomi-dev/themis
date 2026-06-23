@@ -1,16 +1,16 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 
-import { ProjectsService } from '../projects/projects.service';
+import { ProjectsApi } from '../projects/projects';
 import type { AsyncJobRecord } from '../projects/projects.models';
 import { Realtime } from '../realtime/realtime';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectSeed {
-  private readonly projects = inject(ProjectsService);
+  private readonly projects = inject(ProjectsApi);
   private readonly realtime = inject(Realtime);
 
-  private readonly jobsState = signal<Record<string, AsyncJobRecord>>({});
-  readonly jobs = this.jobsState.asReadonly();
+  private readonly $jobs = signal<Record<string, AsyncJobRecord>>({});
+  readonly jobs = this.$jobs.asReadonly();
 
   readonly realtimeEffect = effect(() => {
     const event = this.realtime.lastEvent();
@@ -19,7 +19,7 @@ export class ProjectSeed {
       return;
     }
 
-    this.jobsState.update((jobs) => ({
+    this.$jobs.update((jobs) => ({
       ...jobs,
       [event.job.projectId!]: event.job,
     }));
@@ -28,7 +28,7 @@ export class ProjectSeed {
   async start(projectId: string) {
     const job = await this.projects.startSeed(projectId);
 
-    this.jobsState.update((jobs) => ({
+    this.$jobs.update((jobs) => ({
       ...jobs,
       [projectId]: job,
     }));
@@ -37,6 +37,6 @@ export class ProjectSeed {
   }
 
   currentJob(projectId: string) {
-    return this.jobsState()[projectId] ?? null;
+    return this.$jobs()[projectId] ?? null;
   }
 }

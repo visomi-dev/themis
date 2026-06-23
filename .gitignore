@@ -57,3 +57,6 @@ apps/web/server-e2e/.server-e2e-server.pid
 .claude/settings.local.json
 
 .env
+
+core.*
+.nx/migrate-runs

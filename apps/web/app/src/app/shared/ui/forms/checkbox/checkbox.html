@@ -1,0 +1,13 @@
+<input
+  [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-invalid]="invalid()"
+  [attr.id]="controlId()"
+  [attr.name]="name()"
+  [checked]="checked()"
+  [class]="classes()"
+  [disabled]="disabled() || formDisabled()"
+  data-slot="control"
+  type="checkbox"
+  (blur)="markTouched()"
+  (change)="updateChecked($event)"
+/>

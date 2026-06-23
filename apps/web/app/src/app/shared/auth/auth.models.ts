@@ -20,6 +20,7 @@ export type AuthChallenge = {
   email: string;
   expiresAt: string;
   purpose: AuthMode;
+  rememberDevice?: boolean;
 };
 
 export type SessionResponse = ResponseEnvelope<{
@@ -34,9 +35,12 @@ export type AuthenticatedResponse = ResponseEnvelope<{
 
 export type ChallengeResponse = ResponseEnvelope<AuthChallenge>;
 
+export type ChallengeOrAuthenticatedResponse = ResponseEnvelope<AuthChallenge | AuthenticatedResponse['data']>;
+
 export type MessageResponse = ResponseEnvelope<null>;
 
 export type CredentialsPayload = {
   email: string;
   password: string;
+  rememberDevice?: boolean;
 };

@@ -1,0 +1,14 @@
+<header class="flex min-h-16 items-center justify-between gap-4 px-4 md:px-8">
+  <div class="flex items-center gap-3">
+    <button
+      class="ui-focus-ring ui-touch-target text-muted-fg rounded-[var(--radius-control)] lg:hidden"
+      type="button"
+      (click)="menuClick.emit()"
+    >
+      <span class="sr-only">Open navigation</span>
+      <span aria-hidden="true" class="material-symbols-outlined">menu</span>
+    </button>
+    <ng-content select="[data-slot=title]" />
+  </div>
+  <div class="flex items-center gap-2"><ng-content /></div>
+</header>
