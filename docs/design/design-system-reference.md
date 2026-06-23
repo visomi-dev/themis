@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document records the Stitch design-system assets currently used as the source of truth for Themis public-site colors and typography.
+This document is the Themis design-token reference for public-site colors and typography.
 
 When a screen export and a design-system asset disagree, the design-system asset should win for tokens.
 
@@ -11,12 +11,10 @@ When a screen export and a design-system asset disagree, the design-system asset
 ### Light
 
 - Name: `Slate & Syntax`
-- Asset ID: `asset-stub-assets-b1e9286749f74476a692557a989a8dd1-1775975744858`
 
 ### Dark
 
 - Name: `Slate & Syntax: Night Edition`
-- Asset ID: `asset-stub-assets-d3dbb06bfbc24346aeda94cc7ca17f87-1775983097352`
 
 ## Typography
 
@@ -104,12 +102,6 @@ Accent:
 - Dark CTA styling should use the dark system primary and on-primary colors, not the light-mode CTA token pair.
 - Dark body copy and labels should stay inside the night-edition palette, especially `on_surface` and `on_surface_variant`.
 - Screen exports remain useful for layout, spacing, and section structure.
-
-## Related Stitch Screens
-
-- `Themis Landing Page (Dark AI Integrated)` — `17b2a3aaf52c48928cdc18997bb8c232`
-- `Themis Landing Page (Refined AI Integrated)` — `a6e9cf66f8e9456a8dfe54d5a8a80e87`
-- `Themis Landing Page (Header Fix)` — `b74e1366900e4604a7fb80d6b4cdbf91`
 
 ## Stored Verification Assets
 

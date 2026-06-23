@@ -11,14 +11,6 @@ These instructions apply to Tailwind, visual design, UI polish, accessibility, a
 - Global CSS imports should be ordered as fonts first, then Tailwind, then icon libraries.
 - Component CSS is for keyframes, element-level styles that cannot be expressed as Tailwind utilities, and `@starting-style` transitions.
 
-## Stitch Alignment
-
-- The Stitch project is `Themis` with ID `13964447050944642949`.
-- Light mode design system: `Slate & Syntax`, asset `assets/b1e9286749f74476a692557a989a8dd1`.
-- Dark mode design system: `Slate & Syntax: Night Edition`, asset `assets/d3dbb06bfbc24346aeda94cc7ca17f87`.
-- `apps/web/site/src/styles/global.css` uses Stitch tokens directly in `@theme`.
-- `apps/web/app/src/styles.css` uses CSS custom properties.
-
 ## Core Tokens
 
 - Display and headlines use Manrope through `--font-family-display`.

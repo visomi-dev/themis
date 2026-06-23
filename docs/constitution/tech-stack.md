@@ -71,6 +71,6 @@
 
 | Concern    | Source                                                 |
 | ---------- | ------------------------------------------------------ |
-| Tokens     | Stitch (Slate & Syntax / Night Edition)                |
+| Tokens     | Themis design system (Slate & Syntax / Night Edition)  |
 | CSS        | Tailwind CSS                                           |
 | Typography | Manrope (display), Inter (body), JetBrains Mono (mono) |
