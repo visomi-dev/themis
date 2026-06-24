@@ -4,7 +4,7 @@
   "axes": {
     "philosophy": {
       "score": 5,
-      "notes": "Matches the brief exactly: centered card, no split-screen, no illustration, no marketing copy. Developer-native posture — Manrope display, JetBrains Mono for IDs/labels, structured form chrome. Blue-led as DESIGN.md specifies (deep navy #1b4490 in light, sky #7cd0ff in dark). No purple/violet gradients. No emoji icons."
+      "notes": "Matches the brief exactly: centered card, no split-screen, no illustration, no marketing copy. Developer-native posture — Manrope display, JetBrains Mono for IDs/labels, structured form chrome. Blue-led as the Catalyst-aligned token set specifies (Tailwind blue-600 #2563eb in light, blue-500 #3b82f6 in dark). No purple/violet gradients. No emoji icons."
     },
     "hierarchy": {
       "score": 5,

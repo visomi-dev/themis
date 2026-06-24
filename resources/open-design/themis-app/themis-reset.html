@@ -12,25 +12,25 @@
         theme: {
           extend: {
             colors: {
-              bg: 'var(--color-background)',
-              surface: 'var(--color-surface)',
-              'surface-2': 'var(--color-surface-container-low)',
-              'surface-3': 'var(--color-surface-container)',
-              fg: 'var(--color-on-surface)',
-              muted: 'var(--color-on-surface-variant)',
-              outline: 'var(--color-outline)',
-              'outline-2': 'var(--color-outline-variant)',
-              primary: 'var(--color-primary)',
-              'primary-c': 'var(--color-primary-container)',
-              'primary-fg': 'var(--color-on-primary)',
-              secondary: 'var(--color-secondary)',
-              'secondary-c': 'var(--color-secondary-container)',
+              bg: 'var(--color-bg)',
+              panel: 'var(--color-panel)',
+              'panel-raised': 'var(--color-panel-raised)',
+              fg: 'var(--color-fg)',
+              muted: 'var(--color-muted-fg)',
+              ring: 'var(--color-ring)',
+              border: 'var(--color-border)',
+              'border-subtle': 'var(--color-border-subtle)',
+              accent: 'var(--color-accent)',
+              'accent-fg': 'var(--color-accent-fg)',
+              'accent-soft': 'var(--color-accent-soft)',
+              danger: 'var(--color-danger)',
+              'danger-fg': 'var(--color-danger-fg)',
+              'danger-soft': 'var(--color-danger-soft)',
               success: 'var(--color-success)',
-              'success-c': 'var(--color-success-container)',
               'success-fg': 'var(--color-on-success)',
-              error: 'var(--color-error)',
-              'error-c': 'var(--color-error-container)',
-              'error-fg': 'var(--color-on-error)',
+              'success-soft': 'var(--color-success-soft)',
+              warning: 'var(--color-warning)',
+              'warning-soft': 'var(--color-warning-soft)',
             },
             fontFamily: {
               sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -39,10 +39,12 @@
             },
             borderRadius: {
               sm: 'var(--radius-sm)',
-              DEFAULT: 'var(--radius)',
-              md: 'var(--radius-md)',
+              control: 'var(--radius-control)',
+              DEFAULT: 'var(--radius-control)',
+              panel: 'var(--radius-panel)',
+              md: 'var(--radius-panel)',
               lg: 'var(--radius-lg)',
-              xl: 'var(--radius-xl)',
+              pill: 'var(--radius-pill)',
             },
             boxShadow: { panel: 'var(--shadow-panel)' },
           },
@@ -57,69 +59,75 @@
         --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
         --font-heading: 'Manrope', 'Inter', system-ui, sans-serif;
         --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-        --color-surface: #faf8ff;
-        --color-surface-container-lowest: #ffffff;
-        --color-surface-container-low: #f4f3fa;
-        --color-surface-container: #efedf4;
-        --color-on-surface: #1a1b20;
-        --color-on-surface-variant: #434651;
-        --color-outline: #747782;
-        --color-outline-variant: #c4c6d3;
-        --color-primary: #1b4490;
-        --color-on-primary: #ffffff;
-        --color-primary-container: #385ca9;
-        --color-on-primary-container: #ccd9ff;
-        --color-secondary: #535f70;
-        --color-on-secondary: #ffffff;
-        --color-secondary-container: #d7e3f8;
-        --color-success: #1b6e3a;
+
+        /* Catalyst color tokens — Themis brand accent is Tailwind blue-600 */
+        --color-bg: #ffffff;
+        --color-panel: #fafafa;
+        --color-panel-raised: #f4f4f5;
+        --color-fg: #09090b;
+        --color-muted-fg: #71717a;
+        --color-ring: #2563eb;
+        --color-border: rgb(9 9 11 / 0.10);
+        --color-border-subtle: rgb(9 9 11 / 0.05);
+
+        --color-accent: #2563eb;
+        --color-accent-fg: #ffffff;
+        --color-accent-soft: rgb(37 99 235 / 0.10);
+
+        --color-success: #16a34a;
         --color-on-success: #ffffff;
-        --color-success-container: #a5d6a7;
-        --color-on-success-container: #0e3b1f;
-        --color-error: #ba1a1a;
-        --color-on-error: #ffffff;
-        --color-error-container: #ffdad6;
-        --color-on-error-container: #93000a;
-        --color-background: #faf8ff;
-        --color-on-background: #1a1b20;
-        --radius-sm: 0.25rem;
-        --radius: 0.5rem;
-        --radius-md: 0.75rem;
+        --color-success-soft: rgb(22 163 74 / 0.14);
+
+        --color-warning: #d97706;
+        --color-warning-soft: rgb(217 119 6 / 0.14);
+
+        --color-danger: #dc2626;
+        --color-danger-fg: #ffffff;
+        --color-danger-soft: rgb(220 38 38 / 0.10);
+
+        --radius-sm: 0.5rem;
+        --radius-control: 0.5rem;
+        --radius-panel: 0.75rem;
         --radius-lg: 1rem;
-        --radius-xl: 1.5rem;
-        --shadow-panel: 0 32px 64px -12px rgb(26 27 32 / 0.08);
+        --radius-pill: 9999px;
+
+        --shadow-panel: 0 32px 64px -12px rgb(9 9 11 / 0.08);
       }
       [data-theme='dark'] {
-        --color-surface: #0c1325;
-        --color-surface-container-lowest: #070d1f;
-        --color-surface-container-low: #151b2d;
-        --color-surface-container: #191f32;
-        --color-on-surface: #dce1fb;
-        --color-on-surface-variant: #bfc8cf;
-        --color-outline: #899299;
-        --color-outline-variant: #3f484e;
-        --color-primary: #c3e7ff;
-        --color-on-primary: #00344a;
-        --color-primary-container: #7bd0ff;
-        --color-success: #81c784;
-        --color-on-success: #00340a;
-        --color-success-container: #1b5e20;
-        --color-on-success-container: #a5d6a7;
-        --color-error: #ffb4ab;
-        --color-on-error: #690005;
-        --color-error-container: #93000a;
-        --color-on-error-container: #ffdad6;
-        --color-background: #0c1325;
-        --color-on-background: #dce1fb;
+        --color-bg: #09090b;
+        --color-panel: #18181b;
+        --color-panel-raised: #27272a;
+        --color-fg: #fafafa;
+        --color-muted-fg: #a1a1aa;
+        --color-ring: #3b82f6;
+        --color-border: rgb(255 255 255 / 0.10);
+        --color-border-subtle: rgb(255 255 255 / 0.05);
+
+        --color-accent: #3b82f6;
+        --color-accent-fg: #ffffff;
+        --color-accent-soft: rgb(59 130 246 / 0.18);
+
+        --color-success: #22c55e;
+        --color-on-success: #052e16;
+        --color-success-soft: rgb(34 197 94 / 0.18);
+
+        --color-warning: #fbbf24;
+        --color-warning-soft: rgb(251 191 36 / 0.18);
+
+        --color-danger: #ef4444;
+        --color-danger-fg: #ffffff;
+        --color-danger-soft: rgb(239 68 68 / 0.14);
+
         --shadow-panel: 0 32px 64px -12px rgb(0 0 0 / 0.5);
       }
+
       html,
       body {
         height: 100%;
       }
       body {
-        background: var(--color-background);
-        color: var(--color-on-surface);
+        background: var(--color-bg);
+        color: var(--color-fg);
         font-family: var(--font-sans);
         -webkit-font-smoothing: antialiased;
         text-rendering: geometricPrecision;
@@ -132,7 +140,7 @@
         font-family: var(--font-mono);
       }
       .themis-label {
-        color: var(--color-on-surface-variant);
+        color: var(--color-muted-fg);
         font-family: var(--font-mono);
         font-size: 0.75rem;
         font-weight: 700;
@@ -140,15 +148,15 @@
         text-transform: uppercase;
       }
       .ring-focus:focus-visible {
-        outline: 2px solid var(--color-primary);
+        outline: 2px solid var(--color-ring);
         outline-offset: 2px;
       }
       .input-base {
         width: 100%;
-        border: 1px solid color-mix(in srgb, var(--color-outline-variant) 70%, transparent);
-        background: var(--color-surface-container-lowest);
-        color: var(--color-on-surface);
-        border-radius: var(--radius);
+        border: 1px solid var(--color-border);
+        background: var(--color-bg);
+        color: var(--color-fg);
+        border-radius: var(--radius-control);
         padding: 0.7rem 0.85rem;
         font-size: 0.95rem;
         transition:
@@ -156,19 +164,19 @@
           box-shadow 120ms ease;
       }
       .input-base::placeholder {
-        color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+        color: color-mix(in srgb, var(--color-muted-fg) 70%, transparent);
       }
       .input-base:hover {
-        border-color: color-mix(in srgb, var(--color-outline) 60%, transparent);
+        border-color: color-mix(in srgb, var(--color-muted-fg) 50%, transparent);
       }
       .input-base:focus {
         outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ring) 25%, transparent);
       }
       .input-base[aria-invalid='true'] {
-        border-color: var(--color-error);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 18%, transparent);
+        border-color: var(--color-danger);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
       }
       .meter-seg {
         transition: background-color 180ms ease;
@@ -176,8 +184,8 @@
       .spinner {
         width: 16px;
         height: 16px;
-        border: 2px solid color-mix(in srgb, var(--color-on-primary) 35%, transparent);
-        border-top-color: var(--color-on-primary);
+        border: 2px solid color-mix(in srgb, var(--color-accent-fg) 35%, transparent);
+        border-top-color: var(--color-accent-fg);
         border-radius: 50%;
         animation: spin 0.7s linear infinite;
       }
@@ -213,11 +221,11 @@
   </head>
 
   <body class="bg-bg text-fg h-full font-sans antialiased">
-    <header class="border-outline-2/40 bg-bg/85 sticky top-0 z-10 border-b backdrop-blur-md">
+    <header class="border-border/40 bg-bg/85 sticky top-0 z-10 border-b backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
         <a href="index.html" class="flex items-center gap-2.5">
           <span
-            class="bg-primary text-primary-fg font-display grid h-8 w-8 place-items-center rounded-md text-sm font-bold"
+            class="bg-accent text-accent-fg font-display grid h-8 w-8 place-items-center rounded-md text-sm font-bold"
             >T</span
           >
           <span class="font-display text-base font-semibold tracking-tight">Themis</span>
@@ -226,7 +234,7 @@
           <label class="sr-only" for="lang">Language</label>
           <select
             id="lang"
-            class="border-outline-2/60 bg-surface text-fg ring-focus rounded-md border px-2.5 py-1.5 text-xs font-medium"
+            class="border-border/60 bg-panel text-fg ring-focus rounded-md border px-2.5 py-1.5 text-xs font-medium"
           >
             <option value="en">English</option>
             <option value="pt">Português</option>
@@ -236,7 +244,7 @@
             id="theme"
             type="button"
             aria-label="Toggle theme"
-            class="border-outline-2/60 bg-surface text-fg hover:bg-surface-3 ring-focus grid h-8 w-8 place-items-center rounded-md border"
+            class="border-border/60 bg-panel text-fg hover:bg-panel-raised ring-focus grid h-8 w-8 place-items-center rounded-md border"
           >
             <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -268,13 +276,13 @@
           </p>
         </div>
 
-        <div id="card-form" class="border-outline-2/40 bg-surface rounded-lg border p-6 shadow-sm sm:p-7">
+        <div id="card-form" class="border-border/40 bg-panel rounded-lg border p-6 shadow-sm sm:p-7">
           <form id="reset-form" novalidate>
             <div
               id="form-alert"
               role="alert"
               aria-live="polite"
-              class="border-error/40 bg-error-c/40 text-error-fg hidden rounded-md border px-3 py-2 text-sm"
+              class="border-danger/40 bg-danger-soft text-danger-fg hidden rounded-md border px-3 py-2 text-sm"
             ></div>
 
             <div class="space-y-1.5">
@@ -293,7 +301,7 @@
                   type="button"
                   data-toggle="password"
                   aria-label="Show password"
-                  class="text-muted hover:bg-surface-3 absolute top-1/2 right-2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded"
+                  class="text-muted hover:bg-panel-raised absolute top-1/2 right-2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded"
                 >
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
                     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
@@ -302,28 +310,28 @@
                 </button>
               </div>
               <div class="mt-2 flex gap-1" aria-hidden="true">
-                <div id="m1" class="meter-seg bg-surface-3 h-1 flex-1 rounded-full"></div>
-                <div id="m2" class="meter-seg bg-surface-3 h-1 flex-1 rounded-full"></div>
-                <div id="m3" class="meter-seg bg-surface-3 h-1 flex-1 rounded-full"></div>
-                <div id="m4" class="meter-seg bg-surface-3 h-1 flex-1 rounded-full"></div>
+                <div id="m1" class="meter-seg bg-panel-raised h-1 flex-1 rounded-full"></div>
+                <div id="m2" class="meter-seg bg-panel-raised h-1 flex-1 rounded-full"></div>
+                <div id="m3" class="meter-seg bg-panel-raised h-1 flex-1 rounded-full"></div>
+                <div id="m4" class="meter-seg bg-panel-raised h-1 flex-1 rounded-full"></div>
               </div>
               <p id="strength-label" class="text-muted text-xs">
                 Use 12+ characters with a mix of letters, numbers, and symbols.
               </p>
-              <p data-error-for="password" class="text-error hidden text-xs"></p>
+              <p data-error-for="password" class="text-danger hidden text-xs"></p>
 
               <ul class="grid grid-cols-1 gap-1 pt-1 text-xs sm:grid-cols-2">
                 <li data-rule="len" class="text-muted flex items-center gap-1.5">
-                  <span class="dot bg-outline-2 h-1.5 w-1.5 rounded-full"></span> 12+ characters
+                  <span class="dot bg-border-subtle h-1.5 w-1.5 rounded-full"></span> 12+ characters
                 </li>
                 <li data-rule="case" class="text-muted flex items-center gap-1.5">
-                  <span class="dot bg-outline-2 h-1.5 w-1.5 rounded-full"></span> Upper & lowercase
+                  <span class="dot bg-border-subtle h-1.5 w-1.5 rounded-full"></span> Upper & lowercase
                 </li>
                 <li data-rule="num" class="text-muted flex items-center gap-1.5">
-                  <span class="dot bg-outline-2 h-1.5 w-1.5 rounded-full"></span> A number
+                  <span class="dot bg-border-subtle h-1.5 w-1.5 rounded-full"></span> A number
                 </li>
                 <li data-rule="sym" class="text-muted flex items-center gap-1.5">
-                  <span class="dot bg-outline-2 h-1.5 w-1.5 rounded-full"></span> A symbol
+                  <span class="dot bg-border-subtle h-1.5 w-1.5 rounded-full"></span> A symbol
                 </li>
               </ul>
             </div>
@@ -339,27 +347,27 @@
                 placeholder="Re-enter the password"
                 class="input-base ring-focus"
               />
-              <p data-error-for="confirm" class="text-error hidden text-xs"></p>
+              <p data-error-for="confirm" class="text-danger hidden text-xs"></p>
             </div>
 
             <button
               id="submit"
               type="submit"
-              class="bg-primary text-primary-fg hover:bg-primary/90 mt-5 flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-70"
+              class="bg-accent text-accent-fg hover:bg-accent/90 mt-5 flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-70"
             >
               <span data-label>Update password</span>
               <span data-spinner class="hidden"><span class="spinner"></span></span>
             </button>
 
             <p class="text-muted mt-4 text-center text-sm">
-              <a href="sign-in.html" class="text-primary font-medium hover:underline">Cancel and go back</a>
+              <a href="sign-in.html" class="text-accent font-medium hover:underline">Cancel and go back</a>
             </p>
           </form>
         </div>
 
         <div
           id="card-success"
-          class="border-success/40 bg-success-c/30 pop-in hidden rounded-lg border p-6 text-center shadow-sm sm:p-7"
+          class="border-success/40 bg-success-soft pop-in hidden rounded-lg border p-6 text-center shadow-sm sm:p-7"
         >
           <div class="bg-success text-success-fg mx-auto mb-3 grid h-11 w-11 place-items-center rounded-full">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -372,7 +380,7 @@
           </p>
           <a
             href="sign-in.html"
-            class="bg-primary text-primary-fg hover:bg-primary/90 mt-5 inline-flex w-full items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
+            class="bg-accent text-accent-fg hover:bg-accent/90 mt-5 inline-flex w-full items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold"
           >
             Return to sign in
           </a>
@@ -437,12 +445,12 @@
           const { checks, score: s, label } = score(pw);
           meterIds.forEach((id) => {
             const el = document.getElementById(id);
-            el.classList.remove('bg-error', 'bg-warning', 'bg-success', 'bg-surface-3');
-            el.classList.add('bg-surface-3');
+            el.classList.remove('bg-danger', 'bg-warning', 'bg-success', 'bg-panel-raised');
+            el.classList.add('bg-panel-raised');
           });
-          const colors = ['bg-error', 'bg-warning', 'bg-warning', 'bg-success'];
+          const colors = ['bg-danger', 'bg-warning', 'bg-warning', 'bg-success'];
           for (let i = 0; i < s; i++) {
-            document.getElementById(meterIds[i]).classList.remove('bg-surface-3');
+            document.getElementById(meterIds[i]).classList.remove('bg-panel-raised');
             document.getElementById(meterIds[i]).classList.add(colors[i]);
           }
           Object.entries(checks).forEach(([k, ok]) => {
@@ -453,7 +461,7 @@
             const dot = rule.querySelector('.dot');
             if (dot) {
               dot.classList.toggle('bg-success', ok);
-              dot.classList.toggle('bg-outline-2', !ok);
+              dot.classList.toggle('bg-border-subtle', !ok);
             }
           });
           if (!pw) {
@@ -461,7 +469,7 @@
             strengthLabel.className = 'text-xs text-muted';
           } else if (s <= 1) {
             strengthLabel.textContent = `Strength: ${label} — add more variety.`;
-            strengthLabel.className = 'text-xs text-error';
+            strengthLabel.className = 'text-xs text-danger';
           } else if (s < 4) {
             strengthLabel.textContent = `Strength: ${label}.`;
             strengthLabel.className = 'text-xs text-muted';
