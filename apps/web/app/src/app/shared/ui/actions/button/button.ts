@@ -3,32 +3,50 @@ import { booleanAttribute, Component, computed, input } from '@angular/core';
 import { uiClass } from '../../classes';
 
 type ButtonVariant = 'solid' | 'outline' | 'plain';
-type ButtonTone = 'default' | 'accent' | 'danger' | 'success' | 'warning';
+type ButtonTone = 'zinc' | 'blue' | 'red' | 'green' | 'amber';
 type ButtonSize = 'sm' | 'md' | 'lg';
+
+/**
+ * Tone aliases map the legacy Material 3 names to the Catalyst color names.
+ * Deprecated tones still resolve to the same visual result so existing callers
+ * do not have to migrate in lockstep with this PR.
+ */
+const toneAliases: Record<string, ButtonTone> = {
+  default: 'zinc',
+  accent: 'blue',
+  danger: 'red',
+  success: 'green',
+  warning: 'amber',
+};
 
 const buttonBase =
   /* tw */ 'ui-focus-ring relative isolate inline-flex items-center justify-center gap-x-2 rounded-[var(--radius-control)] font-semibold transition disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-wait [&_[data-slot=icon]]:size-5';
 
-const buttonVariants = Object.freeze({
-  solid: /* tw */ 'shadow-sm',
-  outline: /* tw */ 'border border-outline/30 bg-transparent shadow-[inset_0_1px_rgb(255_255_255/0.08)]',
-  plain: /* tw */ 'bg-transparent shadow-none',
-});
+/**
+ * Solid buttons follow the Catalyst optical-border pattern: the `background`
+ * is the `--btn-border` color (one shade darker than the visible fill), the
+ * `before` pseudo-element renders the actual button color, and the `after`
+ * pseudo-element handles the inset highlight shadow plus the hover overlay.
+ */
+const buttonSolid = /* tw */ [
+  'border-transparent shadow-sm',
+  'bg-(--btn-border) before:absolute before:inset-0 before:-z-10 before:rounded-[calc(var(--radius-control)-1px)] before:bg-(--btn-bg) before:shadow-sm',
+  'after:absolute after:inset-0 after:-z-10 after:rounded-[calc(var(--radius-control)-1px)] after:shadow-[inset_0_1px_rgb(255_255_255/0.15)]',
+  'data-[hover]:after:bg-(--btn-hover-overlay) data-[active]:after:bg-(--btn-hover-overlay) hover:after:bg-(--btn-hover-overlay) active:after:bg-(--btn-hover-overlay)',
+  'disabled:before:shadow-none disabled:after:shadow-none',
+].join(' ');
+
+const buttonOutline = /* tw */ 'border border-border bg-transparent';
+const buttonPlain = /* tw */ 'bg-transparent shadow-none';
 
 const buttonTones = Object.freeze({
-  default: /* tw */ 'bg-panel-raised text-fg hover:bg-surface-container-highest',
-  accent: /* tw */ 'bg-accent text-accent-fg hover:brightness-95',
-  danger: /* tw */ 'bg-danger text-on-error hover:brightness-95',
-  success: /* tw */ 'bg-success text-on-success hover:brightness-95',
-  warning: /* tw */ 'bg-tertiary text-on-tertiary hover:brightness-95',
-});
-
-const outlineTones = Object.freeze({
-  default: /* tw */ 'text-fg hover:bg-panel-raised',
-  accent: /* tw */ 'text-accent hover:bg-primary-container/20',
-  danger: /* tw */ 'text-danger hover:bg-error-container/20',
-  success: /* tw */ 'text-success hover:bg-success-container/20',
-  warning: /* tw */ 'text-tertiary hover:bg-tertiary-container/20',
+  zinc: /* tw */ '[--btn-bg:var(--color-panel-raised)] [--btn-border:var(--color-border)] [--btn-fg:var(--color-fg)] [--btn-hover-overlay:rgb(9_9_11/0.06)] text-fg hover:[--btn-bg:var(--color-bg)]',
+  blue: /* tw */ '[--btn-bg:var(--color-accent)] [--btn-border:var(--color-accent)] [--btn-fg:var(--color-accent-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-accent-fg',
+  red: /* tw */ '[--btn-bg:var(--color-danger)] [--btn-border:var(--color-danger)] [--btn-fg:var(--color-danger-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-danger-fg',
+  green:
+    /* tw */ '[--btn-bg:var(--color-success)] [--btn-border:var(--color-success)] [--btn-fg:var(--color-on-success)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-success',
+  amber:
+    /* tw */ '[--btn-bg:var(--color-tertiary)] [--btn-border:var(--color-tertiary)] [--btn-fg:var(--color-on-tertiary)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-tertiary',
 });
 
 const buttonSizes = Object.freeze({
@@ -36,6 +54,10 @@ const buttonSizes = Object.freeze({
   md: /* tw */ 'min-h-11 px-4 py-2 text-sm',
   lg: /* tw */ 'min-h-12 px-5 py-2.5 text-base',
 });
+
+function resolveTone(value: string): ButtonTone {
+  return toneAliases[value] ?? (value as ButtonTone);
+}
 
 @Component({
   host: {
@@ -49,18 +71,22 @@ export class Button {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
   readonly size = input<ButtonSize>('md');
-  readonly tone = input<ButtonTone>('default');
+  readonly tone = input<string>('zinc');
   readonly type = input<'button' | 'reset' | 'submit'>('button');
   readonly variant = input<ButtonVariant>('solid');
 
   readonly classes = computed(() => {
     const variant = this.variant();
+    const tone = resolveTone(this.tone());
 
-    return uiClass(
-      buttonBase,
-      buttonVariants[variant],
-      buttonSizes[this.size()],
-      variant === 'solid' ? buttonTones[this.tone()] : outlineTones[this.tone()],
-    );
+    if (variant === 'solid') {
+      return uiClass(buttonBase, buttonSolid, buttonTones[tone], buttonSizes[this.size()]);
+    }
+
+    if (variant === 'outline') {
+      return uiClass(buttonBase, buttonOutline, buttonTones[tone], buttonSizes[this.size()]);
+    }
+
+    return uiClass(buttonBase, buttonPlain, buttonTones[tone], buttonSizes[this.size()]);
   });
 }

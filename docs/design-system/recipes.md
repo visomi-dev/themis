@@ -55,7 +55,7 @@ All auth routes share the same `app-auth-layout` primitive. The brand column is 
         }
       </app-field>
 
-      <app-button i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()">Sign in</app-button>
+      <app-button i18n="@@signInSubmitButton" tone="blue" type="submit" [loading]="submitting()">Sign in</app-button>
     </form>
   </app-card>
 </app-auth-layout>
@@ -66,6 +66,7 @@ Notes:
 - Errors are kept in a `signal<string>` updated on `blur` and on `submit` so the template stays reactive without watching the form.
 - `app-password-input` already implements the visibility toggle; no PrimeNG `p-password` required.
 - Keep label and button copy as plain text nodes with `i18n` markers; the Angular compiler extracts them.
+- The submit button uses `tone="blue"`, the Catalyst primary color.
 
 ## PIN / Verification Code
 
@@ -92,14 +93,16 @@ The pin input renders a wrapper with `data-slot="pin-input"`; e2e helpers target
 ## Field With Error
 
 ```html
-<app-field>
+<app-field [invalid]="nameInvalid">
   <app-label for="project-name">Project name</app-label>
-  <app-input id="project-name" formControlName="name" [invalid]="nameInvalid" ariaDescribedBy="project-name-error" />
+  <app-input id="project-name" formControlName="name" ariaDescribedBy="project-name-error" />
   @if (nameInvalid) {
   <app-error-message id="project-name-error">Project name is required.</app-error-message>
   }
 </app-field>
 ```
+
+The `Field` propagates `data-invalid` to its children. `Input` reads the attribute to switch `border-border` to `border-danger`.
 
 ## App Shell (auth routes excluded)
 
@@ -127,6 +130,8 @@ type LayoutNavItem = {
 };
 ```
 
+The `Sidebar` items consume `data-current:bg-accent/10 data-current:text-accent` for the active state.
+
 The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible and the menu items are real `<div role="option">` elements that the screen reader can announce.
 
 ## Page Header
@@ -136,7 +141,7 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
   <p data-slot="eyebrow" class="text-accent text-sm font-semibold">Projects</p>
   <h1 data-slot="title" class="font-heading text-4xl font-bold">Project workspace</h1>
   <p data-slot="description" class="text-muted-fg">Manage active work.</p>
-  <app-button data-slot="actions">New project</app-button>
+  <app-button data-slot="actions" tone="blue">New project</app-button>
 </app-page-header>
 ```
 
@@ -144,7 +149,7 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
 
 ```html
 <app-card padding="md" tone="raised" class="overflow-hidden">
-  <div class="bg-surface-container-low hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
+  <div class="bg-panel hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
     <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Project</span>
     <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Status</span>
     <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Created</span>
@@ -152,7 +157,7 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
   </div>
 
   @for (project of projects(); track project.id) {
-  <article class="border-outline-variant/10 grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
+  <article class="border-border-subtle grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
     <a class="text-fg hover:text-accent font-medium no-underline" [routerLink]="['/projects', project.id]">
       {{ project.name }}
     </a>
@@ -169,12 +174,14 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
 </app-card>
 ```
 
+`Badge` resolves its background and text colors from a `data-tone` attribute. Valid tones are `'zinc' | 'blue' | 'red' | 'green' | 'amber'`.
+
 ## Activation Page Tabs
 
 Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern with Tailwind utilities. No PrimeNG `TabView` is needed.
 
 ```html
-<div role="tablist" class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
+<div role="tablist" class="bg-panel border-border-subtle flex flex-wrap border-b">
   @for (tab of tabs; track tab.id) {
   <button
     type="button"
@@ -182,7 +189,7 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
     [id]="'config-tab-' + tab.id"
     [attr.aria-selected]="selected() === tab.id"
     [attr.aria-controls]="'config-tabpanel'"
-    [class.bg-surface-container-lowest]="selected() === tab.id"
+    [class.bg-bg]="selected() === tab.id"
     [class.text-accent]="selected() === tab.id"
     (click)="select(tab.id)"
   >
@@ -191,7 +198,7 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
   }
 </div>
 
-<div role="tabpanel" [attr.aria-labelledby]="'config-tab-' + selected()" class="bg-surface-container-high p-6">
+<div role="tabpanel" [attr.aria-labelledby]="'config-tab-' + selected()" class="bg-panel-raised p-6">
   <pre class="font-mono text-sm leading-7 break-words whitespace-pre-wrap">{{ content() }}</pre>
 </div>
 ```
@@ -214,3 +221,24 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
   </ng-template>
 </app-table>
 ```
+
+## Buttons
+
+```html
+<!-- Primary blue accent -->
+<app-button tone="blue">Start run</app-button>
+
+<!-- Neutral outline -->
+<app-button tone="zinc" variant="outline">Copy context</app-button>
+
+<!-- Destructive action -->
+<app-button tone="red">Delete project</app-button>
+
+<!-- Success / completion state -->
+<app-button tone="green">Mark complete</app-button>
+
+<!-- Warning / attention state -->
+<app-button tone="amber">Resolve blocker</app-button>
+```
+
+Solid buttons use the Catalyst optical-border pattern internally. The visible border is the `--btn-border` custom property, the visible fill is the `--btn-bg` custom property, and the `after` pseudo-element renders the inset highlight shadow plus the hover overlay.

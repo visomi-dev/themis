@@ -5,7 +5,7 @@ import { Button } from './button';
 
 @Component({
   imports: [Button],
-  template: '<app-button tone="accent" loading>Save</app-button>',
+  template: '<app-button tone="blue" loading>Save</app-button>',
 })
 class Host {}
 
