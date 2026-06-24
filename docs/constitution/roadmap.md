@@ -63,3 +63,17 @@ Refactor the Angular app to author server-compatible components per the [Angular
 - See spec: [`docs/specs/2026-06-08-ssr-browser-refactor/`](./specs/2026-06-08-ssr-browser-refactor/)
 - Branch: `feat/OC/ssr-browser-refactor`
 - Version target: `1.1.0`
+
+## Design System Alignment (Catalyst Purity)
+
+The Catalyst Angular foundation shipped with a Material 3 token base and a Catalyst-style alias layer. The user prefers the pure Catalyst visual language; this phase retires the Material 3 layer and exposes only the Catalyst semantic token set (`bg`, `panel`, `panel-raised`, `fg`, `muted-fg`, `accent`, `danger`, `ring`, `border`). The Themis brand color becomes Tailwind `blue-600`. Components adopt Catalyst visual patterns: optical borders via `before/after`, `--btn-bg` / `--btn-border` / `--btn-icon` custom properties, and `data-*` state selectors. The Open Design package at `~/.od/projects/ds-themis-is-a-developer-native-design-system/` is realigned in lockstep.
+
+- See spec: [`docs/specs/2026-06-23-catalyst-pure-tokens-alignment/`](./specs/2026-06-23-catalyst-pure-tokens-alignment/)
+- Branch: `feat/OC/catalyst-pure-tokens-alignment`
+- Version target: `1.3.0`
+
+Slice plan:
+
+- [ ] Phase 0: external package realignment (`colors_and_type.css`, `DESIGN.md`, `ui_kits/app/`, `preview/`).
+- [ ] PR1: token foundation in `styles.base.css` + `docs/design-system/tokens.md` + `components.md` + `recipes.md`.
+- [ ] PR2: `shared/ui` components adopt the new tokens and Catalyst `data-*` patterns.
