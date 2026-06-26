@@ -1,36 +1,25 @@
 <app-auth-layout>
-  <div data-slot="brand" class="space-y-6">
-    <app-logo variant="wordmark" />
-    <p class="text-muted-fg text-sm" i18n="@@verifyDeviceEyebrow">New device checkpoint</p>
-    <p
-      class="text-muted-fg hidden text-xs font-black tracking-widest uppercase md:block"
-      i18n="@@verifyDeviceHeroKicker"
-    >
-      Device verification
-    </p>
-    <app-heading
-      class="hidden max-w-xl md:block"
-      i18n="@@verifyDeviceHeroTitle"
-      level="1"
-      [text]="'Confirm this device before opening the workspace.'"
-    />
-  </div>
-
-  <div class="flex justify-end gap-3 pb-6">
-    <app-theme-switcher />
-  </div>
-
-  <app-card padding="lg" tone="raised">
-    <p class="text-muted-fg text-xs font-black tracking-widest uppercase" i18n="@@verifyDevicePanelKicker">
-      New device
-    </p>
-
-    <app-heading i18n="@@verifyDevicePanelTitle" level="2" [text]="'Verify device'" />
-
-    <app-text i18n="@@verifyDeviceDescription">
-      Enter the device verification code sent to
-      <strong class="text-fg">{{ challenge()?.email }}</strong> to continue.
-    </app-text>
+  <app-auth-card>
+    <header class="mb-7 space-y-2">
+      <p
+        data-slot="kicker"
+        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        i18n="@@verifyDeviceKicker"
+      >
+        Device verification
+      </p>
+      <h1
+        data-slot="title"
+        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        i18n="@@verifyDeviceTitle"
+      >
+        Verify device
+      </h1>
+      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@verifyDeviceSub">
+        Enter the 6-digit code we sent to <strong class="text-fg">{{ challenge()?.email }}</strong
+        >.
+      </p>
+    </header>
 
     <app-verification-code-form
       [errorMessage]="errorMessage()"
@@ -40,6 +29,7 @@
       (resend)="resend()"
     />
 
-    <app-link i18n="@@verifyDeviceFooterLink" [routerLink]="signInUrl" [text]="'Start again'" />
-  </app-card>
+    <p class="text-muted-fg mt-6 text-sm" i18n="@@verifyDeviceFooterPrompt">Need to start over?</p>
+    <app-link data-slot="footer" i18n="@@verifyDeviceFooterLink" [routerLink]="signInUrl" [text]="'Start again'" />
+  </app-auth-card>
 </app-auth-layout>
