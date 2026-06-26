@@ -77,3 +77,11 @@ Slice plan:
 - [ ] Phase 0: external package realignment (`colors_and_type.css`, `DESIGN.md`, `ui_kits/app/`, `preview/`).
 - [ ] PR1: token foundation in `styles.base.css` + `docs/design-system/tokens.md` + `components.md` + `recipes.md`.
 - [ ] PR2: `shared/ui` components adopt the new tokens and Catalyst `data-*` patterns.
+
+## Auth Flow Fidelity Pass
+
+Bring the five auth route families (sign-in, sign-up, recover-password, verify-email, verify-device) to a 1:1 visual match with the Open Design prototypes in `resources/open-design/themis-app/`, and ship the deferred password reset flow. Migrate auth forms from Reactive Forms to Signal Forms, port the password strength meter from `~/Projects/GitHub/visomi-dev/.legacy/nive-web-app-old`, and lock the visual contract with Playwright snapshots + AXE.
+
+- See spec: [`docs/specs/2026-06-23-themis-auth-fidelity-pass/`](./specs/2026-06-23-themis-auth-fidelity-pass/)
+- Branch: `feat/OC/themis-auth-fidelity-pass`
+- Version target: `1.2.0`

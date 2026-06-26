@@ -4,782 +4,127 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Create account · Themis</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: ['class', '[data-theme="dark"]'],
+        theme: {
+          extend: {
+            colors: {
+              bg: 'var(--color-bg)', surface: 'var(--color-panel)',
+              'surface-2': 'var(--color-panel)', 'surface-3': 'var(--color-panel-raised)',
+              fg: 'var(--color-fg)', muted: 'var(--color-muted-fg)',
+              border: 'var(--color-border)', 'border-subtle': 'var(--color-border-subtle)',
+              accent: 'var(--color-accent)', 'accent-fg': 'var(--color-accent-fg)',
+              success: '#16a34a', warning: '#d97706',
+              danger: 'var(--color-danger)',
+            },
+            accentColor: {
+              primary: 'var(--color-accent)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+              display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            },
+            borderRadius: { sm: '6px', DEFAULT: '8px', md: '12px', full: '9999px' },
+            boxShadow: {
+              sm: '0 1px 2px rgba(26,27,32,.06),0 1px 3px rgba(26,27,32,.04)',
+              md: '0 4px 12px rgba(26,27,32,.08),0 2px 4px rgba(26,27,32,.04)',
+            },
+          },
+        },
+      };
+    </script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
       :root {
         color-scheme: light;
-
-        /* Catalyst color tokens — Themis brand accent is Tailwind blue-600 */
         --color-bg: #ffffff;
         --color-panel: #fafafa;
         --color-panel-raised: #f4f4f5;
-        --color-surface-muted-soft: color-mix(in srgb, #09090b 4%, #ffffff);
         --color-fg: #09090b;
         --color-muted-fg: #71717a;
+        --color-accent: #2563eb;
+        --color-accent-fg: #ffffff;
+        --color-danger: #dc2626;
+        --color-ring: #2563eb;
         --color-border: rgb(9 9 11 / 0.10);
         --color-border-subtle: rgb(9 9 11 / 0.05);
-
-        --color-accent: #2563eb;
-        --color-accent-hover: #1d4ed8;
-        --color-accent-strong: #1e40af;
-        --color-accent-soft: rgb(37 99 235 / 0.10);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #16a34a;
-        --color-success-soft: rgb(22 163 74 / 0.14);
-        --color-warning: #d97706;
-        --color-warning-soft: rgb(217 119 6 / 0.14);
-        --color-danger: #dc2626;
-        --color-danger-soft: rgb(220 38 38 / 0.10);
-        --color-danger-strong: #991b1b;
-
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        --font-heading: 'Manrope', 'Inter', sans-serif;
-        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-        --radius-sm: 0.5rem;
-        --radius-control: 0.5rem;
-        --radius-panel: 0.75rem;
-        --radius-lg: 1rem;
-        --radius-pill: 9999px;
-
-        --shadow-sm: 0 1px 2px rgb(9 9 11 / 0.06), 0 1px 1px rgb(9 9 11 / 0.04);
-        --shadow-md: 0 4px 12px rgb(9 9 11 / 0.08), 0 2px 4px rgb(9 9 11 / 0.04);
-        --shadow-lg: 0 12px 32px rgb(9 9 11 / 0.10), 0 4px 8px rgb(9 9 11 / 0.06);
-
-        --motion-fast: 120ms ease;
-        --motion-base: 180ms ease;
-        --motion-slow: 260ms cubic-bezier(0.2, 0, 0, 1);
       }
-      :root[data-theme='dark'] {
+      [data-theme='dark'] {
         color-scheme: dark;
-
         --color-bg: #09090b;
         --color-panel: #18181b;
         --color-panel-raised: #27272a;
-        --color-surface-muted-soft: color-mix(in srgb, #fafafa 5%, #09090b);
         --color-fg: #fafafa;
         --color-muted-fg: #a1a1aa;
+        --color-accent: #3b82f6;
+        --color-accent-fg: #ffffff;
+        --color-danger: #ef4444;
+        --color-ring: #3b82f6;
         --color-border: rgb(255 255 255 / 0.10);
         --color-border-subtle: rgb(255 255 255 / 0.05);
-
-        --color-accent: #3b82f6;
-        --color-accent-hover: #60a5fa;
-        --color-accent-strong: #93c5fd;
-        --color-accent-soft: rgb(59 130 246 / 0.18);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #22c55e;
-        --color-success-soft: rgb(34 197 94 / 0.18);
-        --color-warning: #fbbf24;
-        --color-warning-soft: rgb(251 191 36 / 0.18);
-        --color-danger: #ef4444;
-        --color-danger-soft: rgb(239 68 68 / 0.14);
-        --color-danger-strong: #f87171;
-
-        --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30), 0 1px 1px rgb(0 0 0 / 0.20);
-        --shadow-md: 0 4px 12px rgb(0 0 0 / 0.40), 0 2px 4px rgb(0 0 0 / 0.20);
-        --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.50), 0 4px 8px rgb(0 0 0 / 0.30);
       }
 
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-      html {
-        -webkit-text-size-adjust: 100%;
-      }
-      body {
-        margin: 0;
-        background: var(--color-bg);
-        color: var(--color-fg);
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        min-height: 100vh;
-      }
-      img,
-      svg {
-        display: block;
-        max-width: 100%;
-      }
-      a {
-        color: var(--color-accent);
-        text-decoration: none;
-        transition: color var(--motion-fast);
-      }
-      a:hover {
-        color: var(--color-accent-hover);
-      }
-      button {
-        font: inherit;
-        cursor: pointer;
-        border: 0;
-        background: none;
-        padding: 0;
-        color: inherit;
-      }
-      input,
-      select,
-      textarea {
-        font: inherit;
-        color: inherit;
-      }
-      p {
-        margin: 0;
-        text-wrap: pretty;
-      }
-      h1,
-      h2,
-      h3,
-      h4 {
-        margin: 0;
-        text-wrap: balance;
-        font-family: var(--font-heading);
-        letter-spacing: -0.02em;
-      }
-      :focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-        border-radius: 4px;
-      }
-
-      .auth-shell {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: color-mix(in srgb, var(--color-bg) 92%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--color-border-subtle);
-      }
-      .auth-shell__inner {
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 14px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--color-fg);
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 1.0625rem;
-        letter-spacing: -0.02em;
-      }
-      .brand:hover {
-        color: var(--color-fg);
-      }
-      .brand__mark {
-        width: 28px;
-        height: 28px;
-        display: grid;
-        place-items: center;
-        background: var(--color-accent);
-        color: var(--color-accent-fg);
-        border-radius: var(--radius-sm);
-      }
-      .brand__mark svg {
-        width: 16px;
-        height: 16px;
-      }
-      .brand__name {
-        font-weight: 700;
-      }
-
-      .auth-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .lang {
-        position: relative;
-      }
-      .lang__summary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        font-family: var(--font-mono);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        list-style: none;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .lang__summary::-webkit-details-marker {
-        display: none;
-      }
-      .lang__summary:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang[open] .lang__summary {
-        border-color: var(--color-border-subtle);
-        background: var(--color-panel);
-      }
-      .lang__summary svg {
-        width: 12px;
-        height: 12px;
-        opacity: 0.6;
-      }
-      .lang__code {
-        font-weight: 600;
-      }
-      .lang__menu {
-        position: absolute;
-        top: calc(100% + 6px);
-        right: 0;
-        min-width: 200px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        box-shadow: var(--shadow-md);
-        padding: 6px;
-        list-style: none;
-        margin: 0;
-        z-index: 20;
-      }
-      .lang__item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 10px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        color: var(--color-fg);
-        font-size: 0.875rem;
-        transition: background var(--motion-fast);
-      }
-      .lang__item:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang__item--active {
-        background: var(--color-accent-soft);
-        color: var(--color-accent);
-        font-weight: 600;
-      }
-      .lang__item code {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        color: var(--color-muted-fg);
-      }
-
-      .theme-toggle {
-        width: 38px;
-        height: 38px;
-        display: grid;
-        place-items: center;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .theme-toggle:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .theme-toggle svg {
-        width: 16px;
-        height: 16px;
-      }
-      :root[data-theme='light'] .theme-toggle .icon-moon {
-        display: none;
-      }
-      :root[data-theme='dark'] .theme-toggle .icon-sun {
-        display: none;
-      }
-
-      .auth-main {
-        min-height: calc(100vh - 64px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 48px 24px;
-      }
-      .auth-card {
-        width: 100%;
-        max-width: 440px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        padding: 40px;
-        box-shadow: var(--shadow-sm);
-      }
-      @media (max-width: 520px) {
-        .auth-card {
-          padding: 28px 22px;
-          border-radius: var(--radius-control);
-        }
-        .auth-main {
-          padding: 24px 16px;
-        }
-      }
-
-      .auth-card__header {
-        margin-bottom: 28px;
-      }
-      .auth-card__title {
-        font-family: var(--font-heading);
-        font-size: 1.625rem;
-        font-weight: 700;
-        letter-spacing: -0.025em;
-        line-height: 1.2;
-        margin-bottom: 8px;
-      }
-      .auth-card__sub {
-        color: var(--color-muted-fg);
-        font-size: 0.9375rem;
-        line-height: 1.5;
-      }
-
-      .auth-alert {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 12px 14px;
-        border-radius: var(--radius-control);
-        margin-bottom: 20px;
-        font-size: 0.875rem;
-        line-height: 1.45;
-      }
-      .auth-alert svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-      .auth-alert--error {
-        background: var(--color-danger-soft);
-        color: var(--color-danger-strong);
-        border: 1px solid color-mix(in srgb, var(--color-danger) 24%, transparent);
-      }
-
-      .auth-form {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        position: relative;
-      }
-      .field__label {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--color-muted-fg);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-      .field__control {
-        position: relative;
-      }
-      .input {
-        width: 100%;
-        min-height: 44px;
-        padding: 0 14px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-control);
-        color: var(--color-fg);
-        font-size: 0.9375rem;
-        line-height: 1.4;
-        transition:
-          border-color var(--motion-fast),
-          box-shadow var(--motion-fast);
-      }
-      .input::placeholder {
-        color: var(--color-muted-fg);
-        opacity: 0.7;
-      }
-      .input:hover {
-        border-color: color-mix(in srgb, var(--color-fg) 20%, var(--color-border));
-      }
-      .input:focus {
-        outline: none;
-        border-color: var(--color-accent);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
-      }
-      .input:disabled {
-        background: var(--color-surface-muted-soft);
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
-      .input--error {
-        border-color: var(--color-danger);
-      }
-      .input--error:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
-      }
-      .field__hint {
-        font-size: 0.8125rem;
-        color: var(--color-muted-fg);
-        line-height: 1.45;
-      }
-      .field__error {
-        font-size: 0.8125rem;
-        color: var(--color-danger);
-        display: none;
-        align-items: center;
-        gap: 6px;
-      }
-      .field__error svg {
-        width: 12px;
-        height: 12px;
-        flex-shrink: 0;
-      }
-      .field--invalid .field__error {
-        display: flex;
-      }
-
-      .field__suffix {
-        position: absolute;
-        top: 50%;
-        right: 8px;
-        transform: translateY(-50%);
-        padding: 6px 8px;
-        border-radius: var(--radius-sm);
-        color: var(--color-muted-fg);
-        font-family: var(--font-mono);
-        font-size: 0.6875rem;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      .field__suffix:hover {
-        color: var(--color-fg);
-        background: var(--color-surface-muted-soft);
-      }
-      .input--with-suffix {
-        padding-right: 64px;
-      }
-
-      /* strength meter */
-      .strength {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 4px;
-      }
-      .strength__bars {
-        display: flex;
-        gap: 4px;
-        flex: 1;
-      }
-      .strength__bar {
-        flex: 1;
-        height: 4px;
-        background: var(--color-border-subtle);
-        border-radius: var(--radius-pill);
-        transition: background var(--motion-base);
-      }
-      .strength[data-level='1'] .strength__bar:nth-child(-n + 1) {
-        background: var(--color-danger);
-      }
-      .strength[data-level='2'] .strength__bar:nth-child(-n + 2) {
-        background: var(--color-warning);
-      }
-      .strength[data-level='3'] .strength__bar:nth-child(-n + 3) {
-        background: var(--color-accent);
-      }
-      .strength[data-level='4'] .strength__bar:nth-child(-n + 4) {
-        background: var(--color-success);
-      }
-      .strength__label {
-        font-family: var(--font-mono);
-        font-size: 0.6875rem;
-        color: var(--color-muted-fg);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        min-width: 64px;
-        text-align: right;
-      }
-
-      .checkbox {
-        display: inline-flex;
-        align-items: flex-start;
-        gap: 10px;
-        cursor: pointer;
-        font-size: 0.875rem;
-        color: var(--color-fg);
-        line-height: 1.45;
-      }
-      .checkbox input[type='checkbox'] {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-        margin-top: 1px;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        background: var(--color-panel);
-        cursor: pointer;
-        display: grid;
-        place-items: center;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .checkbox input[type='checkbox']:hover {
-        border-color: var(--color-accent);
-      }
-      .checkbox input[type='checkbox']:checked {
-        background: var(--color-accent);
-        border-color: var(--color-accent);
-      }
-      .checkbox input[type='checkbox']:checked::after {
-        content: '';
-        width: 10px;
-        height: 10px;
-        background: var(--color-accent-fg);
-        clip-path: polygon(14% 44%, 0 60%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
-      }
-      .checkbox input[type='checkbox']:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-      }
-      .checkbox__text small {
-        display: block;
-        color: var(--color-muted-fg);
-        font-size: 0.8125rem;
-        margin-top: 2px;
-      }
-      .checkbox__text a {
-        color: var(--color-accent);
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 0 20px;
-        border-radius: var(--radius-control);
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        font-weight: 600;
-        letter-spacing: -0.005em;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast),
-          color var(--motion-fast),
-          transform var(--motion-fast);
-        cursor: pointer;
-        white-space: nowrap;
-      }
-      .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      .btn:active:not(:disabled) {
-        transform: translateY(1px);
-      }
-      .btn--primary {
-        background: var(--color-accent);
-        color: var(--color-accent-fg);
-        border: 1px solid var(--color-accent);
-      }
-      .btn--primary:hover:not(:disabled) {
-        background: var(--color-accent-hover);
-        border-color: var(--color-accent-hover);
-      }
-      .btn--primary:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-      }
-      .btn--block {
-        width: 100%;
-      }
-      .btn__spinner {
-        width: 14px;
-        height: 14px;
-        border: 2px solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: tm-spin 0.7s linear infinite;
-        display: none;
-      }
-      .btn--loading .btn__spinner {
-        display: block;
-      }
-      .btn--loading .btn__label {
-        opacity: 0.85;
-      }
-      @keyframes tm-spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .auth-card__footer {
-        margin-top: 24px;
-        padding-top: 20px;
-        border-top: 1px solid var(--color-border-subtle);
-        text-align: center;
-        color: var(--color-muted-fg);
-        font-size: 0.875rem;
-      }
-      .auth-card__footer a {
-        font-weight: 500;
-      }
-
-      .auth-success {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 8px 0;
-      }
-      .auth-success.is-active {
-        display: flex;
-      }
-      .auth-success__icon {
-        width: 48px;
-        height: 48px;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        background: var(--color-success-soft);
-        color: var(--color-success);
-        margin-bottom: 16px;
-      }
-      .auth-success__icon svg {
-        width: 22px;
-        height: 22px;
-      }
-      .auth-success__title {
-        font-family: var(--font-heading);
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 8px;
-      }
-      .auth-success__msg {
-        color: var(--color-muted-fg);
-        font-size: 0.9375rem;
-        line-height: 1.5;
-        margin-bottom: 24px;
-        max-width: 38ch;
-      }
-      .auth-success__msg code {
-        font-family: var(--font-mono);
-        font-size: 0.9em;
-        color: var(--color-fg);
-        background: var(--color-surface-muted-soft);
-        padding: 1px 6px;
-        border-radius: var(--radius-sm);
-      }
-
+      .field--invalid input { @apply border-danger; }
+      .field--invalid input:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent); }
+      .field--invalid .field__error { @apply flex; }
+      .btn--loading .btn__spinner { @apply block; }
+      .btn--loading .btn__label { @apply opacity-85; }
+      .auth-success { display: none; }
+      .auth-success.is-active { @apply flex; }
+      .lang__summary::-webkit-details-marker { display: none; }
+      [data-theme='light'] .icon-moon { @apply hidden; }
+      [data-theme='dark'] .icon-sun { @apply hidden; }
+      .lang[open] .lang__summary { @apply border-border-subtle bg-surface; }
+      .strength[data-level='0'] .strength__bar { @apply bg-border-subtle; }
+      .strength[data-level='1'] .strength__bar:nth-child(-n+1) { @apply bg-danger; }
+      .strength[data-level='2'] .strength__bar:nth-child(-n+2) { @apply bg-warning; }
+      .strength[data-level='3'] .strength__bar:nth-child(-n+3) { @apply bg-accent; }
+      .strength[data-level='4'] .strength__bar { @apply bg-success; }
+      @keyframes tm-spin { to { transform: rotate(360deg); } }
+      .btn__spinner { animation: tm-spin 0.7s linear infinite; }
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          transition-duration: 0.01ms !important;
-        }
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       }
     </style>
   </head>
-  <body class="auth-screen" data-screen-label="02 Create account">
-    <header class="auth-shell">
-      <div class="auth-shell__inner">
-        <a href="index.html" class="brand" aria-label="Themis home">
-          <span class="brand__mark" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M5 9h14" />
-              <path d="M12 9V3" />
-              <circle cx="5" cy="12" r="2.2" fill="currentColor" />
-              <circle cx="19" cy="12" r="2.2" fill="currentColor" />
-              <path d="M9 21h6" />
+  <body class="min-h-screen bg-bg font-sans text-fg antialiased" data-screen-label="02 Create account">
+    <header class="sticky top-0 z-10 bg-bg/85 backdrop-blur-md">
+      <div class="mx-auto flex max-w-[1240px] items-center justify-between gap-4 px-6 py-3.5">
+        <a href="index.html" class="inline-flex items-center gap-2.5 text-fg" aria-label="Themis home">
+          <span class="grid h-7 w-7 place-items-center rounded-md bg-accent text-accent-fg" aria-hidden="true">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 9h14" /><path d="M12 9V3" /><circle cx="5" cy="12" r="2.2" fill="currentColor" /><circle cx="19" cy="12" r="2.2" fill="currentColor" /><path d="M9 21h6" />
             </svg>
           </span>
-          <span class="brand__name">Themis</span>
+          <span class="font-display text-[1.0625rem] font-bold tracking-tight">Themis</span>
         </a>
-
-        <div class="auth-controls">
-          <details class="lang" id="lang">
-            <summary class="lang__summary" aria-label="Language">
-              <span class="lang__code">EN</span>
-              <svg
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
+        <div class="flex items-center gap-2">
+          <details id="lang" class="relative">
+            <summary class="lang__summary inline-flex cursor-pointer list-none items-center gap-1.5 rounded px-3 py-2 font-mono text-xs font-medium text-fg transition-colors hover:bg-surface-2">
+              <span class="lang__code font-semibold">EN</span>
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M3 4.5l3 3 3-3" />
               </svg>
             </summary>
-            <ul class="lang__menu" role="listbox">
-              <li class="lang__item lang__item--active" data-lang="EN" role="option" aria-selected="true">
-                <span>English</span><code>EN</code>
-              </li>
-              <li class="lang__item" data-lang="ES" role="option"><span>Español</span><code>ES</code></li>
-              <li class="lang__item" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code>PT</code></li>
-              <li class="lang__item" data-lang="JA" role="option"><span>日本語</span><code>JA</code></li>
-              <li class="lang__item" data-lang="DE" role="option"><span>Deutsch</span><code>DE</code></li>
-              <li class="lang__item" data-lang="ZH" role="option"><span>中文</span><code>ZH</code></li>
+            <ul class="absolute right-0 top-[calc(100%+6px)] z-20 m-0 min-w-[200px] list-none rounded-md border border-border-subtle bg-surface p-1.5 shadow-md" role="listbox">
+              <li class="lang__item lang__item--active flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="EN" role="option" aria-selected="true"><span>English</span><code class="font-mono text-xs text-muted">EN</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ES" role="option"><span>Español</span><code class="font-mono text-xs text-muted">ES</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code class="font-mono text-xs text-muted">PT</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="JA" role="option"><span>日本語</span><code class="font-mono text-xs text-muted">JA</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="DE" role="option"><span>Deutsch</span><code class="font-mono text-xs text-muted">DE</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ZH" role="option"><span>中文</span><code class="font-mono text-xs text-muted">ZH</code></li>
             </ul>
           </details>
-
-          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
+          <button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" class="grid h-[38px] w-[38px] place-items-center rounded text-fg transition-colors hover:bg-surface-2">
+            <svg class="icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4" />
-              <path
-                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
-              />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
             </svg>
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
+            <svg class="icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
@@ -787,176 +132,100 @@
       </div>
     </header>
 
-    <main class="auth-main">
-      <div class="auth-card" data-od-id="sign-up">
-        <header class="auth-card__header">
-          <h1 class="auth-card__title">Create your account</h1>
-          <p class="auth-card__sub">
-            Start operationalizing agent work in a few minutes. We&rsquo;ll send a verification code to your inbox.
-          </p>
+    <main class="flex min-h-[calc(100vh-64px)] items-center justify-center px-6 py-12 max-[520px]:px-4">
+      <div class="w-full max-w-[440px] rounded-md border border-border-subtle bg-surface p-10 shadow-sm max-[520px]:rounded max-[520px]:p-7" data-od-id="sign-up">
+        <header class="mb-7">
+          <h1 class="mb-2 font-display text-[1.625rem] font-bold leading-tight tracking-[-0.025em]">Create your account</h1>
+          <p class="text-[0.9375rem] leading-relaxed text-muted">Start operationalizing agent work in a few minutes. We&rsquo;ll send a verification code to your inbox.</p>
         </header>
 
-        <div class="auth-alert auth-alert--error" id="alert" hidden role="alert">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <span id="alert-msg"></span>
-        </div>
-
-        <form class="auth-form" id="signup-form" novalidate>
-          <div class="field" data-field="email">
-            <label class="field__label" for="email">Work email</label>
-            <div class="field__control">
-              <input
-                class="input"
-                id="email"
-                name="email"
-                type="email"
-                autocomplete="email"
-                placeholder="you@company.com"
-                required
-              />
-            </div>
-            <div class="field__error">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+        <form id="signup-form" novalidate class="flex flex-col gap-4">
+          <div class="field flex flex-col gap-1.5" data-field="email">
+            <label for="email" class="font-mono text-xs font-semibold uppercase tracking-wider text-muted">Work email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required
+              class="h-11 w-full rounded border border-border bg-surface px-3.5 text-[0.9375rem] leading-tight text-fg transition placeholder:text-muted hover:border-fg/20 focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20" />
+            <div class="field__error hidden items-center gap-1.5 text-[0.8125rem] text-danger">
+              <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <span></span>
             </div>
           </div>
 
-          <div class="field" data-field="password">
-            <label class="field__label" for="password">Password</label>
-            <div class="field__control">
-              <input
-                class="input input--with-suffix"
-                id="password"
-                name="password"
-                type="password"
-                autocomplete="new-password"
-                placeholder="At least 8 characters"
-                required
-              />
-              <button type="button" class="field__suffix" id="toggle-password" aria-label="Show password">Show</button>
+          <div class="field flex flex-col gap-1.5" data-field="password">
+            <label for="password" class="font-mono text-xs font-semibold uppercase tracking-wider text-muted">Password</label>
+            <div class="relative">
+              <input id="password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required
+                class="h-11 w-full rounded border border-border bg-surface px-3.5 pr-16 text-[0.9375rem] leading-tight text-fg transition placeholder:text-muted hover:border-fg/20 focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20" />
+              <button type="button" id="toggle-password" aria-label="Show password" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm px-2 py-1.5 font-mono text-[0.6875rem] uppercase tracking-wider text-muted transition-colors hover:bg-surface-2 hover:text-fg">Show</button>
             </div>
-            <div class="strength" id="strength" data-level="0" aria-hidden="true">
-              <div class="strength__bars">
-                <span class="strength__bar"></span>
-                <span class="strength__bar"></span>
-                <span class="strength__bar"></span>
-                <span class="strength__bar"></span>
+            <div id="strength" data-level="0" class="flex items-center gap-3" aria-hidden="true">
+              <div class="flex flex-1 gap-1">
+                <span class="strength__bar h-1 flex-1 rounded-full bg-border-subtle transition-colors"></span>
+                <span class="strength__bar h-1 flex-1 rounded-full bg-border-subtle transition-colors"></span>
+                <span class="strength__bar h-1 flex-1 rounded-full bg-border-subtle transition-colors"></span>
+                <span class="strength__bar h-1 flex-1 rounded-full bg-border-subtle transition-colors"></span>
               </div>
-              <span class="strength__label" id="strength-label">&mdash;</span>
+              <span id="strength-label" class="min-w-[64px] text-right font-mono text-[0.6875rem] uppercase tracking-wider text-muted">&mdash;</span>
             </div>
-            <p class="field__hint">
-              Use 8+ characters. Mix uppercase, lowercase, numbers, and symbols for the strongest result.
-            </p>
-            <div class="field__error">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+            <p class="text-[0.8125rem] text-muted">Use 8+ characters. Mix uppercase, lowercase, numbers, and symbols for the strongest result.</p>
+            <div class="field__error hidden items-center gap-1.5 text-[0.8125rem] text-danger">
+              <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <span></span>
             </div>
           </div>
 
-          <div class="field" data-field="confirm">
-            <label class="field__label" for="confirm">Confirm password</label>
-            <div class="field__control">
-              <input
-                class="input"
-                id="confirm"
-                name="confirm"
-                type="password"
-                autocomplete="new-password"
-                placeholder="Re-enter your password"
-                required
-              />
-            </div>
-            <div class="field__error">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
+          <div class="field flex flex-col gap-1.5" data-field="confirm">
+            <label for="confirm" class="font-mono text-xs font-semibold uppercase tracking-wider text-muted">Confirm password</label>
+            <input id="confirm" name="confirm" type="password" autocomplete="new-password" placeholder="Re-enter your password" required
+              class="h-11 w-full rounded border border-border bg-surface px-3.5 text-[0.9375rem] leading-tight text-fg transition placeholder:text-muted hover:border-fg/20 focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20" />
+            <div class="field__error hidden items-center gap-1.5 text-[0.8125rem] text-danger">
+              <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <span></span>
             </div>
           </div>
 
-          <label class="checkbox">
-            <input type="checkbox" name="terms" required />
-            <span class="checkbox__text">
-              I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-              <small>Themis uses your email only for authentication and product updates. No marketing list.</small>
+          <label class="flex cursor-pointer items-start gap-2 text-[0.875rem] text-fg">
+            <input type="checkbox" name="terms" required class="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-primary focus:ring-accent" />
+            <span>
+              I agree to the <a href="#" class="font-medium text-accent">Terms of Service</a> and <a href="#" class="font-medium text-accent">Privacy Policy</a>.
+              <small class="mt-0.5 block text-[0.8125rem] text-muted">Themis uses your email only for authentication and product updates. No marketing list.</small>
             </span>
           </label>
 
-          <button type="submit" class="btn btn--primary btn--block" id="submit">
-            <span class="btn__spinner" aria-hidden="true"></span>
+          <button type="submit" id="submit"
+            class="relative inline-flex h-11 w-full items-center justify-center gap-2 rounded bg-accent px-5 text-[0.9375rem] font-semibold tracking-tight text-accent-fg transition hover:bg-[color-mix(in_srgb,var(--color-accent)_88%,black)] disabled:cursor-not-allowed disabled:opacity-60">
+            <span class="btn__spinner hidden h-3.5 w-3.5 rounded-full border-2 border-accent-fg border-r-transparent"></span>
             <span class="btn__label">Create account</span>
           </button>
+
+          <div id="alert" hidden role="alert" class="flex items-start gap-2.5 rounded border border-danger/30 bg-[color-mix(in_srgb,var(--color-danger)_12%,transparent)] px-3.5 py-3 text-[0.875rem] leading-snug text-danger font-semibold">
+            <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span id="alert-msg"></span>
+          </div>
         </form>
 
-        <div class="auth-success" id="success" role="status" aria-live="polite">
-          <div class="auth-success__icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+        <div id="success" class="auth-success flex-col items-center px-0 py-2 text-center">
+          <div class="mb-4 grid h-12 w-12 place-items-center rounded-full bg-success/10 text-success" aria-hidden="true">
+            <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h2 class="auth-success__title">Account created</h2>
-          <p class="auth-success__msg">
-            We sent a 6-digit verification code to <code id="success-email">your email</code>. Enter it on the next
-            screen to activate your workspace.
+          <h2 class="mb-2 font-display text-xl font-bold tracking-[-0.02em]">Account created</h2>
+          <p class="mx-auto mb-6 max-w-[38ch] text-[0.9375rem] leading-relaxed text-muted">
+            We sent a 6-digit verification code to <code id="success-email" class="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em] text-fg">your email</code>. Enter it on the next screen to activate your workspace.
           </p>
-          <a href="confirm-account.html" class="btn btn--primary btn--block">Enter verification code</a>
+          <a href="confirm-account.html" class="inline-flex h-11 w-full items-center justify-center rounded bg-accent px-5 text-[0.9375rem] font-semibold tracking-tight text-accent-fg transition hover:bg-[color-mix(in_srgb,var(--color-accent)_88%,black)]">Enter verification code</a>
         </div>
 
-        <footer class="auth-card__footer" id="form-footer">
-          Already have an account? <a href="sign-in.html">Sign in</a>
+        <footer id="form-footer" class="mt-6 border-t border-border-subtle pt-5 text-center text-[0.875rem] text-muted">
+          Already have an account? <a href="sign-in.html" class="font-medium text-accent">Sign in</a>
         </footer>
       </div>
     </main>
@@ -1035,7 +304,6 @@
             document.getElementById('confirm').value === pwInput.value
           ) {
             confirmField.classList.remove('field--invalid');
-            document.getElementById('confirm').classList.remove('input--error');
           }
         });
 
@@ -1051,29 +319,19 @@
           if (!field) return;
           if (message) {
             field.classList.add('field--invalid');
-            field.querySelector('.input').classList.add('input--error');
             field.querySelector('.field__error span').textContent = message;
           } else {
             field.classList.remove('field--invalid');
-            field.querySelector('.input').classList.remove('input--error');
           }
         }
-        function showAlert(message) {
-          alertMsg.textContent = message;
-          alert.hidden = false;
-        }
-        function hideAlert() {
-          alert.hidden = true;
-        }
-        function isEmail(value) {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        }
+        function showAlert(message) { alertMsg.textContent = message; alert.hidden = false; }
+        function hideAlert() { alert.hidden = true; }
+        function isEmail(value) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); }
 
-        form.querySelectorAll('.input').forEach((input) => {
+        form.querySelectorAll('input').forEach((input) => {
           input.addEventListener('input', () => {
             const field = input.closest('.field');
             field.classList.remove('field--invalid');
-            input.classList.remove('input--error');
             hideAlert();
           });
         });
@@ -1086,27 +344,12 @@
           const terms = form.terms.checked;
           let valid = true;
 
-          if (!email) {
-            setFieldError('email', 'Enter your email address.');
-            valid = false;
-          } else if (!isEmail(email)) {
-            setFieldError('email', 'Enter a valid email address (e.g. you@company.com).');
-            valid = false;
-          }
-          if (!password) {
-            setFieldError('password', 'Choose a password.');
-            valid = false;
-          } else if (password.length < 8) {
-            setFieldError('password', 'Password must be at least 8 characters.');
-            valid = false;
-          }
-          if (!confirm) {
-            setFieldError('confirm', 'Re-enter your password.');
-            valid = false;
-          } else if (password && confirm !== password) {
-            setFieldError('confirm', 'Passwords do not match.');
-            valid = false;
-          }
+          if (!email) { setFieldError('email', 'Enter your email address.'); valid = false; }
+          else if (!isEmail(email)) { setFieldError('email', 'Enter a valid email address (e.g. you@company.com).'); valid = false; }
+          if (!password) { setFieldError('password', 'Choose a password.'); valid = false; }
+          else if (password.length < 8) { setFieldError('password', 'Password must be at least 8 characters.'); valid = false; }
+          if (!confirm) { setFieldError('confirm', 'Re-enter your password.'); valid = false; }
+          else if (password && confirm !== password) { setFieldError('confirm', 'Passwords do not match.'); valid = false; }
           if (!terms) {
             hideAlert();
             if (valid) showAlert('Please agree to the Terms of Service and Privacy Policy to continue.');
