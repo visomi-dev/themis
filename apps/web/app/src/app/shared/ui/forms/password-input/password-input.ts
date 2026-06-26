@@ -57,13 +57,13 @@ export class PasswordInput implements ControlValueAccessor {
   readonly toggleClasses = computed(() => {
     if (this.isTextVariant()) {
       return uiClass(
-        'ui-focus-ring text-muted-fg hover:text-fg absolute right-2 top-1/2 inline-flex h-9 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] px-2 font-mono text-[0.6875rem] font-semibold tracking-wider uppercase',
+        'ui-focus-ring ui-touch-target text-muted-fg hover:text-fg absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] px-2 font-mono text-[0.6875rem] font-semibold tracking-wider uppercase',
         !this.value() && 'pointer-events-none opacity-0',
       );
     }
 
     return uiClass(
-      'ui-focus-ring absolute right-2 top-1/2 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-muted-fg transition hover:text-fg',
+      'ui-focus-ring ui-touch-target absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-muted-fg transition hover:text-fg',
       !this.value() && 'pointer-events-none opacity-0',
     );
   });

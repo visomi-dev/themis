@@ -20,7 +20,7 @@ const toneAliases: Record<string, ButtonTone> = {
 };
 
 const buttonBase =
-  /* tw */ 'ui-focus-ring relative isolate inline-flex items-center justify-center gap-x-2 rounded-[var(--radius-control)] font-semibold transition disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-wait [&_[data-slot=icon]]:size-5';
+  /* tw */ 'ui-focus-ring ui-touch-target relative isolate inline-flex items-center justify-center gap-x-2 rounded-[var(--radius-control)] font-semibold transition disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-wait [&_[data-slot=icon]]:size-5';
 
 /**
  * Solid buttons follow the Catalyst optical-border pattern: the `background`

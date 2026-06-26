@@ -1,6 +1,6 @@
 # Themis Auth Fidelity Pass — Implementation Plan
 
-The work is sliced into nine phases. Each phase ends with a verification command. Phases 1–3 cover shared primitives and the auth shell; phase 4 fixes the backend OTP reset contract; phases 5–8 cover the per-route rewrites; phase 9 covers e2e visual assertions and snapshots. No phase combines infrastructure, product behavior, broad refactors, and e2e coverage in a single PR — the slices below are independently shippable.
+The work is sliced into ten phases. Each phase ends with a verification command. Phases 1–3 cover shared primitives and the auth shell; phase 4 fixes the backend OTP reset contract; phases 5–8 cover the per-route rewrites; phase 9 covers e2e visual assertions and snapshots; phase 10 is the mobile-first polish and visual quality pass derived from the `web-design-reviewer` and `premium-frontend-ui` skills. No phase combines infrastructure, product behavior, broad refactors, and e2e coverage in a single PR — the slices below are independently shippable.
 
 The branch is `feat/OC/themis-auth-fidelity-pass`. Each phase lands as one PR (or stacked PRs) on top of `main`.
 
@@ -224,9 +224,98 @@ pnpm nx show project app-e2e --json
 pnpm nx show project shared-ui --json
 ```
 
+## Phase 10 — Mobile-First Polish And Visual Quality Pass
+
+This phase operationalizes the `.opencode/skills/web-design-reviewer` and `.opencode/skills/premium-frontend-ui` skills inside the auth fidelity pass scope, since those skills cannot be executed from open-design. It does not introduce new visual primitives; it tightens the existing ones against a mobile-first viewport matrix and a premium-UI checklist.
+
+### 10.1 — Viewport Matrix
+
+For every auth route (`sign-in`, `sign-up`, `forgotten-password`, `verify-email`, `verify-device`, `reset-password`), capture screenshots at:
+
+| Name    | Width  | Height | Notes                              |
+| ------- | ------ | ------ | ---------------------------------- |
+| Mobile  | 360px  | 720px  | Tightest target (Android baseline) |
+| Mobile  | 390px  | 844px  | iPhone 13/14 baseline              |
+| Mobile  | 520px  | 720px  | Tailwind `sm:` breakpoint boundary |
+| Tablet  | 768px  | 1024px | Tailwind `md:` breakpoint boundary |
+| Desktop | 1280px | 800px  | Tailwind `lg:` breakpoint boundary |
+| Wide    | 1920px | 1080px | Optional sanity check              |
+
+Snapshots land under `apps/web/app-e2e/src/auth/__screenshots__/` with the naming pattern `<route>-<width>-<theme>.png`. Only `360`, `390`, `520`, `768`, and `1280` are committed; `1920` is on-demand.
+
+### 10.2 — Issue Matrix (web-design-reviewer)
+
+Each issue is logged in the PR description using the skill's template:
+
+| Severity | Class              | Examples                                                                   |
+| -------- | ------------------ | -------------------------------------------------------------------------- |
+| P1       | Functional layout  | Element overflow, viewport overflow, content unreachable on mobile         |
+| P1       | Touch targets      | Buttons or rows < 44px on touch devices                                    |
+| P1       | Focus state        | Missing or invisible `:focus-visible` ring on any interactive element      |
+| P2       | Responsive         | Layout breaks between breakpoints, awkward horizontal scroll, awkward wrap |
+| P2       | Visual consistency | Mixed font families, off-token colors, inconsistent spacing scale          |
+| P2       | Accessibility      | Insufficient contrast, missing labels, missing `aria-describedby` wiring   |
+| P3       | Polish             | Inconsistent radius, drift from token scale, micro-spacing issues          |
+
+### 10.3 — Premium UI Checklist (premium-frontend-ui)
+
+For each route, run through these checks:
+
+1. **Typography rhythm**: title size uses `clamp()` or token scale; body copy keeps a readable rhythm (≥ 16px on mobile, 0.9375rem is acceptable here).
+2. **Spacing scale**: padding/margin adhere to the 8/16/24/40 grid; no off-scale values.
+3. **Motion**: entrance transitions for kicker/title/sub use `transform`/`opacity` only; respect `prefers-reduced-motion`.
+4. **Focus visible**: every interactive element has a visible `:focus-visible` ring driven by the `--color-ring` token.
+5. **Touch targets**: every clickable element is at least 44×44px on mobile (use `ui-touch-target` utility where available).
+6. **Surface hierarchy**: tonal surfaces over heavy borders; avoid stacking more than two surfaces on a single screen.
+7. **Optical balance**: card content is centered with `mx-auto`, has consistent vertical rhythm, and does not hug the viewport edges (padding stays at `px-4` minimum on mobile).
+8. **Dark mode parity**: every color used has an explicit dark-mode value through the Catalyst token layer.
+9. **Glass/depth**: avoid ad-hoc `backdrop-filter` blur; if used, it lives in `app-auth-layout` chrome only and is gated behind `@media (prefers-reduced-motion: no-preference)`.
+
+### 10.4 — Implementation Slices
+
+To stay within the "small vertical slice" rule from `AGENTS.md`, Phase 10 lands as **one PR per P1 cluster**, not one mega PR:
+
+1. **PR10.1 — Touch targets + focus rings audit.** Walk every interactive element on the five routes. Fix any < 44px touch target and any missing `:focus-visible` ring. Snapshot diff at 360/390/520 light + dark.
+2. **PR10.2 — Mobile-first layout fixes.** Overflow, wrap, viewport-edge padding, breakpoint awkwardness at 360→520→768. Snapshot diff at the same viewports.
+3. **PR10.3 — Visual consistency sweep.** Token drift (off-token colors), spacing scale drift, font drift. Snapshot diff at 768/1280.
+4. **PR10.4 — Dark mode parity.** Audit every route in dark mode; fix any element without an explicit dark token. Snapshot diff at 360/768 dark.
+5. **PR10.5 — Polish pass.** Radius/spacing/optical balance. Snapshot diff at 1280 light.
+
+Each PR runs the full e2e suite plus the relevant Nx lint/test/build targets before merge.
+
+### 10.5 — Workflow
+
+Because the skills cannot be executed directly in open-design, this spec follows an iterative loop until zero P1 issues remain:
+
+1. Boot the gateway locally: `pnpm nx run server:build:production && node dist/apps/web/server/main.js &`.
+2. For each route, capture screenshots at the viewport matrix using Playwright (already wired into `apps/web/app-e2e/src/auth/__screenshots__/`).
+3. Inspect each screenshot against the issue matrix and premium checklist.
+4. Fix one cluster of P1 issues at a time at the source (`shared/ui`, `app-auth-layout`, `app-auth-card`, or route templates).
+5. Re-capture and compare with the previous baseline.
+6. When no P1 issues remain, mark the PR ready for review. P2/P3 issues are tracked separately and may ship in the polish PR10.5.
+
+### 10.6 — Exit Criteria
+
+- Zero P1 issues at 360/390/520/768/1280px in light and dark mode.
+- All five routes have updated snapshots checked into `apps/web/app-e2e/src/auth/__screenshots__/`.
+- AXE checks pass at 360px and 1280px for every route.
+- `pnpm nx run app:build --skip-nx-cache` passes.
+- Bundle delta is within the existing budget (no new primitives introduced).
+
+Verification commands per PR (rotate depending on the slice):
+
+```bash
+pnpm nx lint app
+pnpm nx lint shared-ui
+pnpm nx run app:vite:test
+pnpm nx run shared-ui:test
+pnpm nx run app:build --skip-nx-cache
+pnpm nx e2e app-e2e
+```
+
 ## Definition Of Done
 
-- All nine phases merged.
+- All ten phases merged.
 - The five auth route families render 1:1 with the Open Design prototypes in light and dark mode at 360/768/1280px.
 - The new `app-password-strength` primitive has unit + visual coverage.
 - The new OTP reset route sequence (`/app/forgotten-password` → `/app/reset-password` single-screen OTP + password) is mounted, validated, and transitions to the success state.

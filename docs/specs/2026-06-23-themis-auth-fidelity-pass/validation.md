@@ -2,11 +2,11 @@
 
 ## Status
 
-Pending. The validation plan is designed for execution after all nine phases of `plan.md` merge to `main`.
+Pending. The validation plan is designed for execution after all ten phases of `plan.md` merge to `main`.
 
 ## Definition Of Done (validation gate)
 
-- All nine phases of `plan.md` merged to `main`.
+- All ten phases of `plan.md` merged to `main`.
 - All commands in the consolidated verification block below exit zero.
 - Every e2e spec in `apps/web/app-e2e/src/auth/` passes locally and in CI.
 - Visual snapshots at 360/768/1280px in light + dark mode match the Open Design prototypes within tolerance (`maxDiffPixels: 200` for reflow, `0` for chrome).
@@ -256,6 +256,81 @@ Must pass without source changes to `*.spec.ts` other than the new visual assert
 
 - `pnpm nx run app:build --skip-nx-cache` — the auth bundle delta must be net-negative or net-neutral. We are removing no large dependency; the only additions are `app-password-strength`, `app-auth-card`, `app-lang-switcher`, and the routes/auth components. The bundle should not grow by more than ~15 kB gzipped.
 - Initial bundle soft budget warning (`initial` 603.03 kB against 500 kB budget) is pre-existing in scale; this spec must not worsen it.
+
+## Phase 10 — Mobile-First Polish And Visual Quality Validation
+
+This validation block operationalizes the `web-design-reviewer` and `premium-frontend-ui` skills. Each item must be evidenced by either a fixed source file path or a screenshot committed under `apps/web/app-e2e/src/auth/__screenshots__/`.
+
+### 10.A — Viewport Matrix Coverage
+
+For each route (`sign-in`, `sign-up`, `forgotten-password`, `verify-email`, `verify-device`, `reset-password`), the snapshots must exist for the following viewports × themes:
+
+```text
+<route>-360-light.png     <route>-360-dark.png
+<route>-390-light.png     <route>-390-dark.png
+<route>-520-light.png     <route>-520-dark.png
+<route>-768-light.png     <route>-768-dark.png
+<route>-1280-light.png    <route>-1280-dark.png
+```
+
+A missing snapshot or a `maxDiffPixels` > 200 against the Open Design prototype fails the gate.
+
+### 10.B — Issue Matrix (web-design-reviewer)
+
+For each route, log findings using this template inside the PR description (one entry per issue):
+
+```markdown
+### [P1/P2/P3] {issue title}
+
+- Page: {route}
+- Viewport(s): {widths where it appears}
+- Element: {data-od-id or selector}
+- Issue: {concise description}
+- Fix: {file path + summary}
+- Screenshot before/after: {paths in **screenshots**}
+```
+
+The PR may not merge with any open P1.
+
+### 10.C — Premium UI Checklist (premium-frontend-ui)
+
+Each route must pass:
+
+1. Title scales fluidly between 360 and 1280 (no static px that overflows on small screens).
+2. Body copy stays ≥ 0.9375rem on mobile.
+3. Card padding is at least `px-4 py-8` on mobile and `p-10` on desktop, never less.
+4. Every interactive element has a visible `:focus-visible` ring driven by `--color-ring`.
+5. Every touch target is at least 44×44px on mobile (the `ui-touch-target` utility is preferred; manual sizing is acceptable when justified).
+6. Motion uses `transform`/`opacity` only; reduced-motion is respected.
+7. No off-token colors (`#hex` literals in templates).
+8. Dark mode parity: every surface and text color has an explicit dark variant.
+
+### 10.D — Accessibility Re-check
+
+- AXE checks pass at 360px and 1280px in light and dark mode for every auth route.
+- Tab order is DOM order on every route.
+- `aria-describedby` and `aria-invalid` are wired on every form field.
+- The language switcher is keyboard accessible (Enter/Space toggle, Escape close, outside click close).
+
+### 10.E — Regression Check
+
+- The previous test contract still holds: every selector in the Stable Selectors table in `requirements.md` resolves without source changes to `apps/web/app-e2e/src/auth/*.spec.ts` other than the explicitly listed new tests.
+- `pnpm nx e2e app-e2e` passes for all auth suites (sign-in, sign-up, forgotten-password, verify-email, verify-device, reset-password).
+- `pnpm nx run app:build --skip-nx-cache` passes; bundle delta stays within the existing budget.
+- AXE zero serious/critical.
+
+### 10.F — Polish Iteration Loop
+
+Because the skills cannot be executed from open-design, Phase 10 follows this loop until zero P1 issues remain:
+
+1. Boot the gateway locally and capture screenshots at the viewport matrix.
+2. Compare against the Open Design prototypes in `resources/open-design/themis-app/`.
+3. Log every issue in the PR description using the 10.B template.
+4. Fix one cluster of P1 issues per PR (touch targets + focus rings, mobile-first layout, visual consistency, dark mode parity, polish).
+5. Re-capture and re-compare before merging.
+6. Move P2/P3 issues to follow-up or to the polish PR10.5.
+
+Iteration limit: if a single P1 issue requires more than three fix attempts, surface it to the user for a decision instead of continuing to iterate silently.
 
 ## Notes For Future Cleanup
 
