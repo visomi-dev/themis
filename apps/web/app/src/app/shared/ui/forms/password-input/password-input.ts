@@ -49,7 +49,7 @@ export class PasswordInput implements ControlValueAccessor {
     uiClass(
       'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-panel px-3 py-2.5 text-sm text-fg placeholder:text-muted-fg disabled:cursor-not-allowed disabled:opacity-50',
       this.isTextVariant() ? 'pr-16' : 'pr-12',
-      this.invalid() ? 'border-danger' : 'border-outline/30',
+      this.invalid() ? 'border-danger' : 'border-[color:var(--color-border)] focus-visible:border-accent',
       this.loading() && 'pointer-events-none !text-transparent',
     ),
   );

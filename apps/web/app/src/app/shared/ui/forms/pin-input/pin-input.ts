@@ -80,7 +80,7 @@ export class PinInput implements ControlValueAccessor {
   readonly inputClasses = computed(() =>
     uiClass(
       'ui-focus-ring h-14 w-full appearance-none rounded-[var(--radius-control)] border-2 bg-transparent px-3 py-2 text-center font-mono text-lg font-semibold text-fg placeholder:text-muted-fg disabled:cursor-not-allowed disabled:opacity-50 md:h-16',
-      this.invalid() ? 'border-danger' : 'border-outline/30 focus:border-accent',
+      this.invalid() ? 'border-danger' : 'border-[color:var(--color-border)] focus-visible:border-accent',
       this.loading() &&
         'pointer-events-none relative flex items-center justify-center bg-panel/90 !text-transparent after:absolute after:block after:size-[1em] after:animate-spin after:rounded-full after:border-2 after:border-current after:border-r-transparent after:border-t-transparent',
     ),

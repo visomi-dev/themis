@@ -18,7 +18,7 @@ export class AuthCard {
 
   readonly classes = computed(() =>
     uiClass(
-      'mx-auto w-full max-w-[27.5rem] rounded-[var(--radius-panel)] border border-outline-variant/60 px-[1.375rem] py-7 shadow-sm md:px-10 md:py-10',
+      'mx-auto w-full max-w-[27.5rem] rounded-[var(--radius-panel)] border border-outline-variant/60 px-5 py-6 shadow-sm sm:px-8 sm:py-8 md:px-10 md:py-10',
       this.tone() === 'raised' ? 'bg-panel-raised' : 'bg-panel',
     ),
   );

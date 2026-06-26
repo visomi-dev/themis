@@ -36,7 +36,7 @@ const buttonSolid = /* tw */ [
   'disabled:before:shadow-none disabled:after:shadow-none',
 ].join(' ');
 
-const buttonOutline = /* tw */ 'border border-border bg-transparent';
+const buttonOutline = /* tw */ 'border border-[color:var(--color-border)] bg-transparent';
 const buttonPlain = /* tw */ 'bg-transparent shadow-none';
 
 const buttonTones = Object.freeze({

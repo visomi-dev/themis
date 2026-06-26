@@ -25,7 +25,7 @@ const linkButtonSolid = /* tw */ [
   'data-[hover]:after:bg-(--btn-hover-overlay) data-[active]:after:bg-(--btn-hover-overlay) hover:after:bg-(--btn-hover-overlay) active:after:bg-(--btn-hover-overlay)',
 ].join(' ');
 
-const linkButtonOutline = /* tw */ 'border border-border bg-transparent';
+const linkButtonOutline = /* tw */ 'border border-[color:var(--color-border)] bg-transparent';
 const linkButtonPlain = /* tw */ 'bg-transparent shadow-none';
 
 const linkButtonTones = Object.freeze({
