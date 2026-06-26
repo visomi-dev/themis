@@ -107,7 +107,7 @@ The Open Design `reset-password.html` collapses the verify-code step and the set
 
 - New route: `/app/reset-password` with `canActivate: [anonymousGuard, resetSessionGuard]` and `data: { hideAppShell: true }`. The component lives in `apps/web/app/src/app/auth/reset-password/`.
 - Form steps (single screen, two internal states):
-  - OTP step: 6 cells (`app-pin-input`), auto-advance, paste support, label "Verification code".
+  - OTP step: 6 cells using `app-pin-input` directly. Do **not** wrap the OTP step in `app-verification-code-form` — that wrapper emits `(verify)` and `(resend)` outputs and assumes a separate route, which the single-screen flow does not have. The component must own the OTP submit, the resend cooldown, and the password-step reveal itself, and consume `app-pin-input` directly with `[digits]="6"`, `[idPrefix]="'reset-password-otp'"`, and `idPrefix` rendered into the OTP cells.
   - Password step: new password (with `app-password-strength` + show/hide text button) and confirm new password (with show/hide text button).
 - Email hint card above the form: label "Code sent to", email address, "Change email" link.
 - Helper text under the new password field: "Use 8+ characters. Mix uppercase, lowercase, numbers, and symbols for the strongest result."
@@ -157,28 +157,29 @@ The Open Design `reset-password.html` collapses the verify-code step and the set
 
 The e2e suite in `apps/web/app-e2e/src/auth/` and the unit specs under `apps/web/app/src/app/auth/` rely on a fixed set of selectors. The redesign must preserve all of them.
 
-| Surface                      | Stable selector                                                        | Notes                                                                      |
-| ---------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| sign-in / sign-up / reset    | `getByLabel('Email')`                                                  | `<label for=…>` + matching `id`                                            |
-| sign-in / sign-up / reset    | `getByLabel('Password')` / `'New password'` / `'Confirm new password'` | New labels added for reset; sign-in keeps `Password`                       |
-| sign-in / sign-up            | `getByRole('button', { name: 'Sign in' })` / `'Create account'`        |                                                                            |
-| sign-up                      | `getByRole('button', { name: 'Create account' })`                      |                                                                            |
-| verify-email / verify-device | `getByRole('button', { name: 'Verify and continue' })`                 |                                                                            |
-| verify-email / verify-device | `getByRole('button', { name: 'Resend code' })`                         |                                                                            |
-| verify-email / verify-device | `[data-slot=pin-input] input`                                          | OTP helper selector (from prior spec)                                      |
-| sign-in                      | `getByRole('link', { name: 'Forgotten password?' })`                   |                                                                            |
-| forgotten-password           | `#forgotten-password-email`                                            | `id` retained on the input                                                 |
-| forgotten-password           | `getByRole('button', { name: 'Send reset link' })`                     |                                                                            |
-| forgotten-password           | `getByRole('link', { name: 'Back to sign in' })`                       |                                                                            |
-| reset-password (new)         | `getByRole('button', { name: 'Verify code' })`                         | OTP step submit; label toggles to "Update password" after OTP verification |
-| reset-password (new)         | `getByRole('button', { name: 'Update password' })`                     | Password step submit                                                       |
-| reset-password (new)         | `getByRole('button', { name: 'Resend code' })`                         | Resend inside the card (matches verify-email)                              |
-| reset-password (new)         | `getByRole('button', { name: 'Sign in to continue' })`                 | Success state CTA, distinct from sign-in submit                            |
-| reset-password (new)         | `getByLabel('Show password')` / `'Hide password'`                      | Text button                                                                |
-| reset-password (new)         | `[data-od-id="pending-email"]`                                         | Email hint card slot for visual e2e                                        |
-| auth chrome (new)            | `getByRole('button', { name: 'Toggle light/dark theme' })`             | New                                                                        |
-| auth chrome (new)            | `[data-od-id="auth-shell"]` / `[data-od-id="auth-card"]`               | For visual e2e assertions                                                  |
-| strength meter (new)         | `[data-slot=password-strength]` / `[data-level]`                       | For visual e2e assertions                                                  |
+| Surface                      | Stable selector                                                        | Notes                                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| sign-in / sign-up / reset    | `getByLabel('Email')`                                                  | `<label for=…>` + matching `id`                                                                         |
+| sign-in / sign-up / reset    | `getByLabel('Password')` / `'New password'` / `'Confirm new password'` | New labels added for reset; sign-in keeps `Password`                                                    |
+| sign-in / sign-up            | `getByRole('button', { name: 'Sign in' })` / `'Create account'`        |                                                                                                         |
+| sign-up                      | `getByRole('button', { name: 'Create account' })`                      |                                                                                                         |
+| verify-email / verify-device | `getByRole('button', { name: 'Verify and continue' })`                 |                                                                                                         |
+| verify-email / verify-device | `getByRole('button', { name: 'Resend code' })`                         |                                                                                                         |
+| verify-email / verify-device | `[data-slot=pin-input] input`                                          | OTP helper selector (from prior spec)                                                                   |
+| reset-password (new)         | `[data-slot=pin-input] input`                                          | `app-pin-input` rendered directly inside the reset-password card (not via `app-verification-code-form`) |
+| sign-in                      | `getByRole('link', { name: 'Forgotten password?' })`                   |                                                                                                         |
+| forgotten-password           | `#forgotten-password-email`                                            | `id` retained on the input                                                                              |
+| forgotten-password           | `getByRole('button', { name: 'Send reset link' })`                     |                                                                                                         |
+| forgotten-password           | `getByRole('link', { name: 'Back to sign in' })`                       |                                                                                                         |
+| reset-password (new)         | `getByRole('button', { name: 'Verify code' })`                         | OTP step submit; label toggles to "Update password" after OTP verification                              |
+| reset-password (new)         | `getByRole('button', { name: 'Update password' })`                     | Password step submit                                                                                    |
+| reset-password (new)         | `getByRole('button', { name: 'Resend code' })`                         | Resend inside the card (matches verify-email)                                                           |
+| reset-password (new)         | `getByRole('button', { name: 'Sign in to continue' })`                 | Success state CTA, distinct from sign-in submit                                                         |
+| reset-password (new)         | `getByLabel('Show password')` / `'Hide password'`                      | Text button                                                                                             |
+| reset-password (new)         | `[data-od-id="pending-email"]`                                         | Email hint card slot for visual e2e                                                                     |
+| auth chrome (new)            | `getByRole('button', { name: 'Toggle light/dark theme' })`             | New                                                                                                     |
+| auth chrome (new)            | `[data-od-id="auth-shell"]` / `[data-od-id="auth-card"]`               | For visual e2e assertions                                                                               |
+| strength meter (new)         | `[data-slot=password-strength]` / `[data-level]`                       | For visual e2e assertions                                                                               |
 
 All e2e selectors must resolve after the redesign without source-level changes in `apps/web/app-e2e/src/auth/*.spec.ts` other than the explicitly listed new tests for the reset OTP routes and the visual chrome assertions.
 
