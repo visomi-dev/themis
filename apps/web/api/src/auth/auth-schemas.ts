@@ -21,7 +21,9 @@ export const challengeSchema = z
     challengeId: challengeIdSchema,
     email: emailSchema,
     expiresAt: z.string().meta({ description: 'Challenge expiry timestamp.', example: '2026-01-01T00:10:00.000Z' }),
-    purpose: z.enum(['sign_in', 'sign_up']).meta({ description: 'Challenge purpose.', example: 'sign_up' }),
+    purpose: z
+      .enum(['sign_in', 'sign_up', 'password_reset'])
+      .meta({ description: 'Challenge purpose.', example: 'sign_up' }),
   })
   .meta({ id: 'AuthChallenge' });
 

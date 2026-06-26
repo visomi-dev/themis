@@ -444,5 +444,5 @@ export async function requestPasswordReset(email: string) {
     return;
   }
 
-  await createChallenge(user, 'sign_in');
+  await createChallenge(user, 'password_reset');
 }
