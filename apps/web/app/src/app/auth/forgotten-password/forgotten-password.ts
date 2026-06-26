@@ -6,15 +6,12 @@ import { RouterLink } from '@angular/router';
 import { Auth } from '../../shared/auth/auth';
 import { SIGN_IN_URL } from '../../shared/constants/routes';
 import { controlError } from '../../shared/form/form-errors';
-import { Logo } from '../../shared/layout/logo/logo';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
-import { Card } from '../../shared/ui/layout/card/card';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
-import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
@@ -29,19 +26,16 @@ type ForgottenPasswordForm = FormGroup<{
   },
   imports: [
     Alert,
+    AuthCard,
     AuthLayout,
     Button,
-    Card,
     ErrorMessage,
     Field,
-    Heading,
     Input,
     Label,
     Link,
-    Logo,
     ReactiveFormsModule,
     RouterLink,
-    ThemeSwitcher,
   ],
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.html',
@@ -58,7 +52,7 @@ export class ForgottenPassword {
   });
 
   readonly submitting = signal(false);
-  readonly successMessage = signal('');
+  readonly successEmail = signal('');
   readonly errorMessage = signal('');
   readonly emailError = signal('');
 
@@ -68,7 +62,7 @@ export class ForgottenPassword {
 
   emailErrorMessage() {
     return controlError(this.form.controls.email, {
-      email: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address.`,
+      email: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
       required: $localize`:@@forgottenPasswordEmailErrorRequired:Enter your email address.`,
     });
   }
@@ -82,14 +76,11 @@ export class ForgottenPassword {
     }
 
     this.errorMessage.set('');
-    this.successMessage.set('');
     this.submitting.set(true);
 
     try {
       await this.auth.requestPasswordReset(this.form.getRawValue().email);
-      this.successMessage.set(
-        $localize`:@@forgottenPasswordSuccess:If an account exists with that email, a reset link has been sent.`,
-      );
+      this.successEmail.set(this.form.getRawValue().email);
       this.form.reset();
     } catch (error) {
       this.errorMessage.set(
