@@ -160,8 +160,28 @@ export class BrowserAuth extends Auth {
     this.clearSessionHint();
   }
 
-  async requestPasswordReset(email: string): Promise<void> {
-    await firstValueFrom(this.http.post('/api/auth/password/forgotten', { email }));
+  async requestPasswordReset(email: string): Promise<AuthChallenge | null> {
+    const response = await firstValueFrom(
+      this.http.post<{ data: AuthChallenge | null }>('/api/auth/password/forgotten', { email }),
+    );
+
+    if (response.data) {
+      this.setPendingChallenge(response.data);
+    }
+
+    return response.data;
+  }
+
+  async verifyPasswordReset(challengeId: string, pin: string): Promise<void> {
+    await firstValueFrom(this.http.post('/api/auth/password/reset/verify', { challengeId, pin }));
+  }
+
+  async submitPasswordReset(password: string): Promise<void> {
+    await firstValueFrom(this.http.post('/api/auth/password/reset', { password }, { responseType: 'text' }));
+  }
+
+  clearPendingChallenge(): void {
+    this.setPendingChallenge(null);
   }
 
   private hasSessionHint(): boolean {

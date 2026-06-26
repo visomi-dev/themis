@@ -20,6 +20,11 @@ declare module 'express-session' {
         id: string;
       };
     };
+    resetPassword?: {
+      challengeId: string;
+      email: string;
+      userId: string;
+    };
   }
 }
 

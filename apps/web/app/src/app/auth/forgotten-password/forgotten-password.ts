@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
-import { SIGN_IN_URL } from '../../shared/constants/routes';
+import { RESET_PASSWORD_URL, SIGN_IN_URL } from '../../shared/constants/routes';
 import { controlError } from '../../shared/form/form-errors';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
@@ -24,25 +24,14 @@ type ForgottenPasswordForm = FormGroup<{
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [
-    Alert,
-    AuthCard,
-    AuthLayout,
-    Button,
-    ErrorMessage,
-    Field,
-    Input,
-    Label,
-    Link,
-    ReactiveFormsModule,
-    RouterLink,
-  ],
+  imports: [Alert, AuthCard, AuthLayout, Button, ErrorMessage, Field, Input, Label, Link, ReactiveFormsModule],
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.html',
   styleUrl: './forgotten-password.css',
 })
 export class ForgottenPassword {
   private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
 
   readonly form: ForgottenPasswordForm = new FormGroup({
     email: new FormControl('', {
@@ -79,9 +68,14 @@ export class ForgottenPassword {
     this.submitting.set(true);
 
     try {
-      await this.auth.requestPasswordReset(this.form.getRawValue().email);
-      this.successEmail.set(this.form.getRawValue().email);
-      this.form.reset();
+      const challenge = await this.auth.requestPasswordReset(this.form.getRawValue().email);
+
+      if (challenge) {
+        this.successEmail.set(this.form.getRawValue().email);
+        await this.router.navigate([RESET_PASSWORD_URL]);
+      } else {
+        this.successEmail.set(this.form.getRawValue().email);
+      }
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse

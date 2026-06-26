@@ -32,7 +32,13 @@ export abstract class Auth {
 
   abstract signOut(): Promise<void>;
 
-  abstract requestPasswordReset(email: string): Promise<void>;
+  abstract requestPasswordReset(email: string): Promise<AuthChallenge | null>;
+
+  abstract verifyPasswordReset(challengeId: string, pin: string): Promise<void>;
+
+  abstract submitPasswordReset(password: string): Promise<void>;
+
+  abstract clearPendingChallenge(): void;
 }
 
 export type { SessionResponse, ChallengeResponse, ChallengeOrAuthenticatedResponse };
