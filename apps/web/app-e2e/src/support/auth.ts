@@ -29,9 +29,9 @@ export const createCredentials = () => ({
 });
 
 const fillCredentials = async (page: Page, email: string, password: string) => {
-  const emailField = page.getByLabel('Email');
+  const emailField = page.getByRole('textbox', { name: 'Email' });
 
-  const passwordField = page.getByLabel('Password');
+  const passwordField = page.getByRole('textbox', { name: 'Password' });
 
   await expect(emailField).toBeVisible();
   await expect(emailField).toBeEditable();

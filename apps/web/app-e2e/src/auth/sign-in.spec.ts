@@ -30,9 +30,9 @@ test.describe('/app/sign-in', () => {
 
   test('stays on the route when credentials are invalid', async ({ page }) => {
     await page.goto(signInRoute);
-    const emailField = page.getByLabel('Email');
+    const emailField = page.getByRole('textbox', { name: 'Email' });
 
-    const passwordField = page.getByLabel('Password');
+    const passwordField = page.getByRole('textbox', { name: 'Password' });
 
     await expect(page).toHaveURL(signInUrlPattern);
     await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();

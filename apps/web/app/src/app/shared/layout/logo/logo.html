@@ -1,9 +1,35 @@
+@if (variant() === 'mark' || variant() === 'mark-name') {
+  <span class="bg-accent text-accent-fg grid h-7 w-7 shrink-0 place-items-center rounded-md" aria-hidden="true">
+    <svg
+      class="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M5 9h14" />
+      <path d="M12 9V3" />
+      <circle cx="5" cy="12" r="2.2" fill="currentColor" />
+      <circle cx="19" cy="12" r="2.2" fill="currentColor" />
+      <path d="M9 21h6" />
+    </svg>
+  </span>
+}
+
 @if (variant() === 'isotype') {
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" class="h-8 w-8">
     <rect width="64" height="64" rx="12" fill="currentColor" class="text-primary" />
     <path d="M17 18h30v7H32v20H24V25H17z" fill="currentColor" class="text-on-primary" />
   </svg>
-} @else {
+}
+
+@if (variant() === 'wordmark' || variant() === 'mark-name') {
+  <span class="font-display text-[1.0625rem] font-bold tracking-tight">Themis</span>
+}
+
+@if (variant() === 'wordmark') {
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 55" fill="none" class="h-8 w-auto">
     <g clip-path="url(#clip0_1_8)">
       <path

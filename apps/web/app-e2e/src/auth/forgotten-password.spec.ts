@@ -52,7 +52,7 @@ test.describe('/app/forgotten-password', () => {
 
   test('shows validation error for invalid email format', async ({ page }) => {
     await page.goto(forgottenPasswordRoute);
-    const emailField = page.getByLabel('Email');
+    const emailField = page.getByRole('textbox', { name: 'Email' });
 
     await expect(page.getByRole('heading', { name: 'Reset password' })).toBeVisible();
     await expect(emailField).toBeEditable();
@@ -65,7 +65,7 @@ test.describe('/app/forgotten-password', () => {
 
   test('shows success message after valid submission', async ({ page }) => {
     await page.goto(forgottenPasswordRoute);
-    const emailField = page.getByLabel('Email');
+    const emailField = page.getByRole('textbox', { name: 'Email' });
 
     await expect(page.getByRole('heading', { name: 'Reset password' })).toBeVisible();
     await expect(emailField).toBeEditable();
