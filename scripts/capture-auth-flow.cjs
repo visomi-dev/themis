@@ -24,7 +24,7 @@ const { chromium, devices } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const BASE_URL = 'http://127.0.0.1:8081';
+const BASE_URL = 'http://localhost:8081';
 const MEDIA_ROOT = path.join(process.cwd(), 'media', 'auth-flow-videos');
 
 const VIEWPORTS = [
