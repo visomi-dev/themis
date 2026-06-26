@@ -8,13 +8,27 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
 <app-auth-layout>
   <app-auth-card>
     <header class="mb-7 space-y-2">
-      <p data-slot="kicker" class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase" i18n="@@signInKicker">Account access</p>
-      <h1 data-slot="title" class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]" i18n="@@signInTitle">Sign in</h1>
-      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signInSub">Welcome back. Use your work email to access your Themis workspace.</p>
+      <p
+        data-slot="kicker"
+        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        i18n="@@signInKicker"
+      >
+        Account access
+      </p>
+      <h1
+        data-slot="title"
+        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        i18n="@@signInTitle"
+      >
+        Sign in
+      </h1>
+      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signInSub">
+        Welcome back. Use your work email to access your Themis workspace.
+      </p>
     </header>
 
     @if (errorMessage()) {
-      <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
+    <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
@@ -31,7 +45,7 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
           (blur)="updateEmailError()"
         />
         @if (emailError(); as message) {
-          <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
+        <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
         }
       </app-field>
 
@@ -47,11 +61,13 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
           (blur)="updatePasswordError()"
         />
         @if (passwordError(); as message) {
-          <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
+        <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
         }
       </app-field>
 
-      <app-button data-slot="submit" i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()">Sign in</app-button>
+      <app-button data-slot="submit" i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+        >Sign in</app-button
+      >
     </form>
 
     <p class="text-muted-fg mt-6 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
@@ -86,7 +102,7 @@ Notes:
   />
   <app-password-strength [password]="passwordValue" />
   @if (passwordError(); as message) {
-    <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
+  <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
   }
 </app-field>
 ```
