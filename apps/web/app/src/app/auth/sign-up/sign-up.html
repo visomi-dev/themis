@@ -1,29 +1,29 @@
 <app-auth-layout>
-  <div data-slot="brand" class="space-y-6">
-    <app-logo variant="wordmark" />
-    <p class="text-muted-fg text-sm" i18n="@@signUpEyebrow">AI-integrated technical access layer</p>
-    <p class="text-muted-fg hidden text-xs font-black tracking-widest uppercase md:block" i18n="@@signUpHeroKicker">
-      New account
-    </p>
-    <app-heading
-      class="hidden max-w-xl md:block"
-      i18n="@@signUpHeroTitle"
-      level="1"
-      [text]="'Start your secured workspace.'"
-    />
-  </div>
-
-  <div class="flex justify-end gap-3 pb-6">
-    <app-theme-switcher />
-  </div>
-
-  <app-card padding="lg" tone="raised">
-    <p class="text-muted-fg text-xs font-black tracking-widest uppercase" i18n="@@signUpPanelKicker">Account access</p>
-
-    <app-heading i18n="@@signUpPanelTitle" level="2" [text]="'Create account'" />
+  <app-auth-card>
+    <header class="mb-7 space-y-2">
+      <p
+        data-slot="kicker"
+        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        i18n="@@signUpKicker"
+      >
+        New account
+      </p>
+      <h1
+        data-slot="title"
+        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        i18n="@@signUpTitle"
+      >
+        Create your account
+      </h1>
+      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signUpSub">
+        Use 8+ characters. Mix uppercase, lowercase, numbers, and symbols for the strongest result.
+      </p>
+    </header>
 
     @if (errorMessage()) {
-      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+      <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signUpAuthFailedAlert">{{
+        errorMessage()
+      }}</app-alert>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
@@ -55,21 +55,34 @@
           placeholder="***************"
           (blur)="updatePasswordError()"
         />
-        <app-description i18n="@@signUpPasswordHelp"
-          >Use at least 8 characters. Mix uppercase, lowercase, numbers, and symbols for the strongest
-          result.</app-description
-        >
+        <app-password-strength [password]="passwordValue" />
         @if (passwordError(); as message) {
           <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
         }
       </app-field>
 
-      <app-button i18n="@@signUpSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+      <app-field>
+        <app-label for="sign-up-confirm-password" i18n="@@signUpConfirmPasswordLabel">Confirm password</app-label>
+        <app-password-input
+          autocomplete="new-password"
+          formControlName="confirmPassword"
+          [controlId]="'sign-up-confirm-password'"
+          invalid="!!confirmPasswordError()"
+          name="confirmPassword"
+          placeholder="***************"
+          (blur)="updateConfirmPasswordError()"
+        />
+        @if (confirmPasswordError(); as message) {
+          <app-error-message controlId="sign-up-confirm-password-error">{{ message }}</app-error-message>
+        }
+      </app-field>
+
+      <app-button data-slot="submit" i18n="@@signUpSubmitButton" tone="accent" type="submit" [loading]="submitting()"
         >Create account</app-button
       >
     </form>
 
-    <p class="text-muted-fg mt-2 text-sm" i18n="@@signUpFooterPrompt">Already have an account?</p>
-    <app-link i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />
-  </app-card>
+    <p class="text-muted-fg mt-6 text-sm" i18n="@@signUpFooterPrompt">Already have an account?</p>
+    <app-link data-slot="footer" i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />
+  </app-auth-card>
 </app-auth-layout>

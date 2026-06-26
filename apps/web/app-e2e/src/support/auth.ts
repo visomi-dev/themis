@@ -31,7 +31,9 @@ export const createCredentials = () => ({
 const fillCredentials = async (page: Page, email: string, password: string) => {
   const emailField = page.getByRole('textbox', { name: 'Email' });
 
-  const passwordField = page.getByRole('textbox', { name: 'Password' });
+  const passwordField = page.getByRole('textbox', { name: 'Password', exact: true });
+
+  const confirmField = page.getByRole('textbox', { name: 'Confirm password' });
 
   await expect(emailField).toBeVisible();
   await expect(emailField).toBeEditable();
@@ -42,6 +44,11 @@ const fillCredentials = async (page: Page, email: string, password: string) => {
   await expect(emailField).toHaveValue(email);
   await passwordField.fill(password);
   await expect(passwordField).toHaveValue(password);
+
+  if (await confirmField.isVisible().catch(() => false)) {
+    await confirmField.fill(password);
+    await expect(confirmField).toHaveValue(password);
+  }
 };
 
 const submitSignUpCredentials = async (page: Page, email: string, password: string) => {
@@ -124,7 +131,7 @@ export const authenticateViaApi = async (page: Page, request: APIRequestContext,
 export const signUp = async (page: Page, email: string, password: string) => {
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);
-  await expect(page.getByRole('heading', { name: 'Create account' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible();
   await submitSignUpCredentials(page, email, password);
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 };
