@@ -4,29 +4,19 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
-import {
-  APP_URL,
-  FORGOTTEN_PASSWORD_URL,
-  SIGN_UP_URL,
-  VERIFY_DEVICE_URL,
-  VERIFY_EMAIL_URL,
-} from '../../shared/constants/routes';
+import { APP_URL, FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_DEVICE_URL } from '../../shared/constants/routes';
 import { controlError } from '../../shared/form/form-errors';
-import { Logo } from '../../shared/layout/logo/logo';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
-import { Card } from '../../shared/ui/layout/card/card';
 import { Checkbox } from '../../shared/ui/forms/checkbox/checkbox';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
-import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
 import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
-import { Text } from '../../shared/ui/typography/text/text';
 
 type SignInForm = FormGroup<{
   email: FormControl<string>;
@@ -40,22 +30,18 @@ type SignInForm = FormGroup<{
   },
   imports: [
     Alert,
+    AuthCard,
     AuthLayout,
     Button,
-    Card,
     Checkbox,
     ErrorMessage,
     Field,
-    Heading,
     Input,
     Label,
     Link,
-    Logo,
     PasswordInput,
     ReactiveFormsModule,
     RouterLink,
-    Text,
-    ThemeSwitcher,
   ],
   selector: 'app-sign-in',
   templateUrl: './sign-in.html',
@@ -88,7 +74,7 @@ export class SignIn {
 
   emailErrorMessage() {
     return controlError(this.form.controls.email, {
-      email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address.`,
+      email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
       required: $localize`:@@signInEmailErrorRequired:Enter your email address.`,
     });
   }
@@ -128,7 +114,7 @@ export class SignIn {
         return;
       }
 
-      await this.router.navigate([result.purpose === 'sign_up' ? VERIFY_EMAIL_URL : VERIFY_DEVICE_URL]);
+      await this.router.navigate([VERIFY_DEVICE_URL]);
     } catch (error) {
       this.errorMessage.set(
         error instanceof HttpErrorResponse

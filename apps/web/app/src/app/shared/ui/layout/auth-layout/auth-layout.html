@@ -1,9 +1,21 @@
-<main class="bg-bg grid min-h-screen px-4 py-8 md:grid-cols-[minmax(0,1fr)_minmax(24rem,32rem)] md:p-0">
-  <section class="bg-panel-raised hidden p-12 md:grid md:content-between">
-    <ng-content select="[data-slot=brand]" />
-    <ng-content select="[data-slot=aside]" />
-  </section>
-  <section class="mx-auto grid w-full max-w-md content-center py-8 md:px-10">
-    <ng-content />
-  </section>
+<header data-od-id="auth-shell" class="bg-bg/85 border-outline-variant/40 sticky top-0 z-20 border-b backdrop-blur-md">
+  <div class="mx-auto flex max-w-[1240px] items-center justify-between gap-4 px-4 py-3 md:px-6">
+    <a
+      data-od-id="brand"
+      routerLink="/"
+      class="font-display text-fg inline-flex items-center gap-2.5 font-bold tracking-tight"
+      aria-label="Themis home"
+    >
+      <app-logo variant="mark-name" />
+    </a>
+
+    <div class="flex items-center gap-2">
+      <app-lang-switcher [options]="languages" />
+      <app-theme-switcher variant="toggle" />
+    </div>
+  </div>
+</header>
+
+<main class="bg-bg grid min-h-[calc(100vh-64px)] place-items-center px-4 py-10 md:px-6 md:py-14">
+  <ng-content />
 </main>

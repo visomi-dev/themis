@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 
 import { Icon } from '../../ui/media/icon/icon';
 import { Settings } from '../../settings';
+
+type ThemeSwitcherVariant = 'toggle' | 'dropdown';
 
 @Component({
   host: {
@@ -14,4 +16,8 @@ import { Settings } from '../../settings';
 })
 export class ThemeSwitcher {
   readonly settings = inject(Settings);
+  readonly variant = input<ThemeSwitcherVariant>('dropdown');
+
+  readonly iconName = computed(() => (this.settings.isDark() ? 'sun' : 'moon'));
+  readonly isToggle = computed(() => this.variant() === 'toggle');
 }
