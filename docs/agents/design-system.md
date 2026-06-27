@@ -19,13 +19,13 @@ These instructions apply to Tailwind, visual design, UI polish, accessibility, a
 
 ## Core Tokens
 
-- Display and headlines use Manrope through `--font-family-display`.
-- Body text uses Inter through `--font-family`.
-- Monospace text uses JetBrains Mono through `--font-family-mono`.
-- Preserve the surface hierarchy: `surface`, `surface-container-low`, `surface-container`, `surface-container-high`, `surface-container-highest`.
+- Display and headlines use Manrope through `--font-heading` / `font-heading`.
+- Body text uses Inter through `--font-sans` / `font-sans`.
+- Monospace text uses JetBrains Mono through `--font-mono` / `font-mono`.
+- Preserve the raw Tailwind v4 surface ladder: light mode `bg-white` → `bg-zinc-50` → `bg-zinc-100`, dark mode `dark:bg-zinc-950` → `dark:bg-zinc-900` → `dark:bg-zinc-800`.
 - Avoid solid 1px borders for sectioning; use tonal shifts.
-- Use ghost borders with `outline-variant` at low opacity for inputs.
-- Default card radius is `0.25rem`; small element radius is `0.125rem`.
+- Use ghost borders with `border-zinc-950/10` (light) / `dark:border-white/10` (dark) for inputs and dividers.
+- Default card radius is `0.75rem` (`rounded-lg`); small element radius is `0.5rem` (`rounded-md`).
 
 ## Mobile-First Layout
 

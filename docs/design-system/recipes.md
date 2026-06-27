@@ -10,19 +10,19 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
     <header class="mb-7 space-y-2">
       <p
         data-slot="kicker"
-        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
         i18n="@@signInKicker"
       >
         Account access
       </p>
       <h1
         data-slot="title"
-        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
         i18n="@@signInTitle"
       >
         Sign in
       </h1>
-      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signInSub">
+      <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signInSub">
         Welcome back. Use your work email to access your Themis workspace.
       </p>
     </header>
@@ -70,7 +70,7 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
       >
     </form>
 
-    <p class="text-muted-fg mt-6 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
+    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
     <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
   </app-auth-card>
 </app-auth-layout>
@@ -147,7 +147,7 @@ The pin input renders a wrapper with `data-slot="pin-input"`; e2e helpers target
 </app-field>
 ```
 
-The `Field` propagates `data-invalid` to its children. `Input` reads the attribute to switch `border-border` to `border-danger`.
+The `Field` propagates `data-invalid` to its children. `Input` reads the attribute to switch `border-zinc-950/15` to `border-red-600` (`dark:border-red-500`).
 
 ## App Shell (auth routes excluded)
 
@@ -175,7 +175,7 @@ type LayoutNavItem = {
 };
 ```
 
-The `Sidebar` items consume `data-current:bg-accent/10 data-current:text-accent` for the active state.
+The `Sidebar` items consume `data-current:bg-blue-600/10 data-current:text-blue-600 dark:data-current:bg-blue-400/10 dark:data-current:text-blue-400` for the active state.
 
 The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible and the menu items are real `<div role="option">` elements that the screen reader can announce.
 
@@ -183,9 +183,9 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
 
 ```html
 <app-page-header>
-  <p data-slot="eyebrow" class="text-accent text-sm font-semibold">Projects</p>
-  <h1 data-slot="title" class="font-heading text-4xl font-bold">Project workspace</h1>
-  <p data-slot="description" class="text-muted-fg">Manage active work.</p>
+  <p data-slot="eyebrow" class="text-sm font-semibold text-blue-600 dark:text-blue-500">Projects</p>
+  <h1 data-slot="title" class="font-heading text-4xl font-bold text-zinc-950 dark:text-zinc-50">Project workspace</h1>
+  <p data-slot="description" class="text-zinc-500 dark:text-zinc-400">Manage active work.</p>
   <app-button data-slot="actions" tone="blue">New project</app-button>
 </app-page-header>
 ```
@@ -194,23 +194,30 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
 
 ```html
 <app-card padding="md" tone="raised" class="overflow-hidden">
-  <div class="bg-panel hidden grid-cols-4 gap-3 px-6 py-3 md:grid">
-    <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Project</span>
-    <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Status</span>
-    <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Created</span>
-    <span class="text-muted-fg text-xs font-semibold tracking-widest uppercase">Actions</span>
+  <div class="hidden grid-cols-4 gap-3 bg-zinc-50 px-6 py-3 md:grid dark:bg-zinc-900">
+    <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Project</span>
+    <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Status</span>
+    <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Created</span>
+    <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Actions</span>
   </div>
 
   @for (project of projects(); track project.id) {
-  <article class="border-border-subtle grid gap-3 border-t px-6 py-4 md:grid-cols-4 md:items-center">
-    <a class="text-fg hover:text-accent font-medium no-underline" [routerLink]="['/projects', project.id]">
+  <article class="grid gap-3 border-t border-zinc-950/10 px-6 py-4 md:grid-cols-4 md:items-center dark:border-white/10">
+    <a
+      class="font-medium text-zinc-950 no-underline hover:text-blue-600 dark:text-zinc-50 dark:hover:text-blue-500"
+      [routerLink]="['/projects', project.id]"
+    >
       {{ project.name }}
     </a>
     <app-badge [tone]="statusTone(project.status)">{{ statusLabel(project.status) }}</app-badge>
-    <span class="text-muted-fg text-xs">{{ formatDate(project.createdAt) }}</span>
+    <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ formatDate(project.createdAt) }}</span>
     <div class="flex items-center gap-2">
-      <a [routerLink]="['/projects', project.id]" class="text-accent text-sm font-medium">View</a>
-      <button type="button" class="text-danger text-sm font-medium" (click)="deleteProject(project.id, $event)">
+      <a [routerLink]="['/projects', project.id]" class="text-sm font-medium text-blue-600 dark:text-blue-500">View</a>
+      <button
+        type="button"
+        class="text-sm font-medium text-red-600 dark:text-red-400"
+        (click)="deleteProject(project.id, $event)"
+      >
         Delete
       </button>
     </div>
@@ -226,7 +233,7 @@ The user menu uses `app-dropdown` + `app-listbox` so it is keyboard accessible a
 Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern with Tailwind utilities. No PrimeNG `TabView` is needed.
 
 ```html
-<div role="tablist" class="bg-panel border-border-subtle flex flex-wrap border-b">
+<div role="tablist" class="flex flex-wrap border-b border-zinc-950/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-900">
   @for (tab of tabs; track tab.id) {
   <button
     type="button"
@@ -234,8 +241,10 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
     [id]="'config-tab-' + tab.id"
     [attr.aria-selected]="selected() === tab.id"
     [attr.aria-controls]="'config-tabpanel'"
-    [class.bg-bg]="selected() === tab.id"
-    [class.text-accent]="selected() === tab.id"
+    [class.bg-white]="selected() === tab.id"
+    [class.dark:bg-zinc-950]="selected() === tab.id"
+    [class.text-blue-600]="selected() === tab.id"
+    [class.dark:text-blue-500]="selected() === tab.id"
     (click)="select(tab.id)"
   >
     {{ tab.label }}
@@ -243,7 +252,7 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
   }
 </div>
 
-<div role="tabpanel" [attr.aria-labelledby]="'config-tab-' + selected()" class="bg-panel-raised p-6">
+<div role="tabpanel" [attr.aria-labelledby]="'config-tab-' + selected()" class="bg-zinc-100 p-6 dark:bg-zinc-800">
   <pre class="font-mono text-sm leading-7 break-words whitespace-pre-wrap">{{ content() }}</pre>
 </div>
 ```
@@ -252,8 +261,8 @@ Use the accessible `role="tablist"` / `role="tab"` / `role="tabpanel"` pattern w
 
 ```html
 <app-dialog [open]="dialogOpen()" ariaLabelledBy="dialog-title" (closed)="dialogOpen.set(false)">
-  <h2 id="dialog-title" class="font-heading text-2xl font-bold">Confirm action</h2>
-  <p class="text-muted-fg">This action can be undone from settings.</p>
+  <h2 id="dialog-title" class="font-heading text-2xl font-bold text-zinc-950 dark:text-zinc-50">Confirm action</h2>
+  <p class="text-zinc-500 dark:text-zinc-400">This action can be undone from settings.</p>
 </app-dialog>
 ```
 
