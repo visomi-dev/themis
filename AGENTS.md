@@ -44,6 +44,7 @@ OpenCode does not automatically expand file references from this document. Befor
 - Backend, API, worker, realtime, validation, or tenancy work: read `docs/agents/backend.md`.
 - Playwright, end-to-end, route-flow, or auth-flow testing work: read `docs/agents/e2e.md`. For e2e work that needs the full gateway (api + app + site + worker + realtime) running, follow the "Full-Server E2E Playbook" section there before changing tests or hooks.
 - Tailwind, UI polish, visual design, accessibility, or design-token work: read `docs/agents/design-system.md`.
+- Authoring a Themis UI prototype (HTML + Tailwind v4, run in the local preview server) without touching Angular: use the `themis-ui-prototype` opencode skill.
 - Feature planning, implementation slicing, PR boundaries, or multi-agent handoff work: read `docs/agents/workflow.md`.
 - Code review requests: read `docs/agents/review.md`.
 

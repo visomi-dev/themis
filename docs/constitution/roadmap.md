@@ -66,7 +66,7 @@ Refactor the Angular app to author server-compatible components per the [Angular
 
 ## Design System Alignment (Catalyst Purity)
 
-The Catalyst Angular foundation shipped with a Material 3 token base and a Catalyst-style alias layer. The user prefers the pure Catalyst visual language; this phase retires the Material 3 layer and exposes only the Catalyst semantic token set (`bg`, `panel`, `panel-raised`, `fg`, `muted-fg`, `accent`, `danger`, `ring`, `border`). The Themis brand color becomes Tailwind `blue-600`. Components adopt Catalyst visual patterns: optical borders via `before/after`, `--btn-bg` / `--btn-border` / `--btn-icon` custom properties, and `data-*` state selectors. The Open Design package at `~/.od/projects/ds-themis-is-a-developer-native-design-system/` is realigned in lockstep.
+The Catalyst Angular foundation shipped with a Material 3 token base and a Catalyst-style alias layer. The user prefers the pure Catalyst visual language; this phase retires the Material 3 layer and exposes only the Catalyst semantic token set (`bg`, `panel`, `panel-raised`, `fg`, `muted-fg`, `accent`, `danger`, `ring`, `border`). The Themis brand color becomes Tailwind `blue-600`. Components adopt Catalyst visual patterns: optical borders via `before/after`, `--btn-bg` / `--btn-border` / `--btn-icon` custom properties, and `data-*` state selectors.
 
 - See spec: [`docs/specs/2026-06-23-catalyst-pure-tokens-alignment/`](./specs/2026-06-23-catalyst-pure-tokens-alignment/)
 - Branch: `feat/OC/catalyst-pure-tokens-alignment`
@@ -74,14 +74,13 @@ The Catalyst Angular foundation shipped with a Material 3 token base and a Catal
 
 Slice plan:
 
-- [ ] Phase 0: external package realignment (`colors_and_type.css`, `DESIGN.md`, `ui_kits/app/`, `preview/`).
 - [ ] PR1: token foundation in `styles.base.css` + `docs/design-system/tokens.md` + `components.md` + `recipes.md`.
 - [ ] PR2: `shared/ui` components adopt the new tokens and Catalyst `data-*` patterns.
 
-## Auth Flow Fidelity Pass
+## UI Designer App
 
-Bring the five auth route families (sign-in, sign-up, recover-password, verify-email, verify-device) to a 1:1 visual match with the Open Design prototypes in `resources/open-design/themis-app/`, and ship the deferred password reset flow. Migrate auth forms from Reactive Forms to Signal Forms, port the password strength meter from `~/Projects/GitHub/visomi-dev/.legacy/nive-web-app-old`, and lock the visual contract with Playwright snapshots + AXE.
+Replace the vendored Open Design prototypes and the inherited design-system skill with a first-party Node + Tailwind v4 preview application. The app reuses `styles.base.css`, serves a local preview server with light/dark + mobile/tablet/desktop viewports, ships one seed prototype that mirrors the auth shell recipe, and is paired with a `themis-ui-prototype` opencode skill that drives the workflow. The cleanup drops `resources/open-design/themis-app/`, `.opencode/skills/themis-design-system/`, and the historical specs that referenced them. Two upstream open-design skills (`impeccable-design-polish`, `login-flow`) fill the gap left by the deleted skill; the Themis brand already lives in `docs/design-system/tokens.md` and `DESIGN.md`, so no brand skill is vendored. Node is the only runtime target — Bun is intentionally out of scope to keep the workspace runtime uniform.
 
-- See spec: [`docs/specs/2026-06-23-themis-auth-fidelity-pass/`](./specs/2026-06-23-themis-auth-fidelity-pass/)
-- Branch: `feat/OC/themis-auth-fidelity-pass`
-- Version target: `1.2.0`
+- See spec: [`docs/specs/2026-06-26-ui-designer-app/`](./specs/2026-06-26-ui-designer-app/)
+- Branch: `feat/OC/ui-designer-app`
+- Version target: `1.4.0`

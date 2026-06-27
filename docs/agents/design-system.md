@@ -2,6 +2,11 @@
 
 These instructions apply to Tailwind, visual design, UI polish, accessibility, and Themis design-token work.
 
+## Prototyping
+
+- For new screens that are not yet ready for the Angular app, use the [`themis-ui-prototype`](../../.opencode/skills/themis-ui-prototype/) opencode skill to compose a prototype in `apps/web/ui-designer/src/prototypes/<slug>.html` and preview it at `http://localhost:4300/preview/<slug>`.
+- The preview app shares `styles.base.css` with the Angular app and the Astro site. A change in the token file reflects in all three at the next build.
+
 ## Tailwind And CSS
 
 - Tailwind is the primary styling tool. Use utility classes directly in templates.

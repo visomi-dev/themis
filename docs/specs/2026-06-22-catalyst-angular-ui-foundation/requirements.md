@@ -27,10 +27,9 @@ Project status:
 ## Non-Goals
 
 1. Do not redesign Themis routes in this spec.
-2. Do not implement the `resources/open-design` prototypes in this spec.
-3. Do not remove every PrimeNG dependency yet; removal happens after migrated routes no longer need it.
-4. Do not create a public package or move components into `libs/ui` in the first iteration.
-5. Do not port Catalyst literally when an Angular-native API is simpler.
+2. Do not remove every PrimeNG dependency yet; removal happens after migrated routes no longer need it.
+3. Do not create a public package or move components into `libs/ui` in the first iteration.
+4. Do not port Catalyst literally when an Angular-native API is simpler.
 
 ## Required Components
 
