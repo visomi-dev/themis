@@ -142,11 +142,9 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
 
 <main>
   <nav
-    class="border-outline-variant/10 bg-surface dark:bg-surface/80 sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between border-b px-4 py-3 backdrop-blur-md transition-colors duration-200 ease-in-out md:px-12"
+    class="sticky top-0 z-50 mx-auto flex w-full max-w-screen-2xl items-center justify-between border-b border-zinc-950/10 bg-white/80 px-4 py-3 backdrop-blur-md transition-colors duration-200 ease-in-out md:px-12 dark:border-white/10 dark:bg-zinc-950/80"
   >
-    <div class="text-primary dark:text-on-surface font-heading text-xl font-bold tracking-tighter dark:uppercase">
-      Themis
-    </div>
+    <div class="font-heading text-xl font-bold tracking-tighter text-blue-600 uppercase dark:text-zinc-50">Themis</div>
     <div class="flex items-center gap-8">
       <div class="flex items-center gap-8">
         <LocaleSwitcher locale={locale} />
@@ -154,7 +152,7 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
       </div>
       <a
         href={appHref}
-        class="bg-primary text-on-primary dark:hover:bg-primary/90 rounded-lg px-6 py-2 text-sm font-semibold transition-all hover:opacity-90 active:scale-95 dark:font-bold"
+        class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-all hover:bg-blue-700 active:scale-95 dark:bg-blue-500 dark:font-bold dark:hover:bg-blue-400"
         >{content.headerCta}</a
       >
     </div>
@@ -164,22 +162,22 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     class="mx-auto flex min-h-dvh max-w-screen-2xl flex-col items-center justify-center px-4 py-6 text-center md:px-12 md:py-8"
   >
     <h1
-      class="text-on-surface font-heading mb-4 max-w-5xl text-4xl leading-none font-extrabold tracking-tighter md:text-6xl lg:text-8xl"
+      class="font-heading mb-4 max-w-5xl text-4xl leading-none font-extrabold tracking-tighter text-zinc-950 md:text-6xl lg:text-8xl dark:text-zinc-50"
     >
       {content.heroTitle}
     </h1>
-    <p class="text-on-surface-variant mb-6 max-w-2xl text-base leading-relaxed font-light md:text-xl">
+    <p class="mb-6 max-w-2xl text-base leading-relaxed font-light text-zinc-500 md:text-xl dark:text-zinc-400">
       {content.heroBody}
     </p>
     <div class="flex flex-col gap-3 sm:flex-row md:gap-4">
       <a
         href={appHref}
-        class="bg-primary text-on-primary dark:hover:bg-primary/90 w-full rounded-lg px-6 py-2.5 text-center font-semibold transition-all hover:opacity-90 sm:w-auto md:px-8 md:py-3 md:font-bold"
+        class="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-center font-semibold text-white transition-all hover:bg-blue-700 sm:w-auto md:px-8 md:py-3 md:font-bold dark:bg-blue-500 dark:hover:bg-blue-400"
         >{content.heroPrimary}</a
       >
       <a
         href="#methodology"
-        class="border-outline text-on-surface hover:bg-surface-container w-full rounded-lg border px-6 py-2.5 text-center font-semibold transition-colors sm:w-auto md:px-8 md:py-3 md:font-bold"
+        class="w-full rounded-lg border border-zinc-950/20 px-6 py-2.5 text-center font-semibold text-zinc-950 transition-colors hover:bg-zinc-100 sm:w-auto md:px-8 md:py-3 md:font-bold dark:border-white/20 dark:text-zinc-50 dark:hover:bg-zinc-800"
         >{content.heroSecondary}</a
       >
     </div>
@@ -187,113 +185,113 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
 
   <section class="mx-auto mb-8 max-w-screen-2xl px-4 md:mb-16 md:px-12">
     <div
-      class="border-outline-variant/20 bg-surface-container-lowest overflow-hidden rounded-xl border shadow-2xl dark:border-slate-400/10 dark:shadow-2xl"
+      class="overflow-hidden rounded-xl border border-zinc-950/10 bg-white shadow-2xl dark:border-white/10 dark:bg-zinc-900"
     >
-      <div class="bg-surface-container-low dark:bg-surface-container/50 p-4 md:p-8">
+      <div class="bg-zinc-50 p-4 md:p-8 dark:bg-zinc-900/50">
         <div class="mb-5 flex items-center justify-between">
           <div>
-            <h3 class="text-on-surface font-heading text-2xl font-extrabold">Projects Overview</h3>
-            <p class="text-on-surface-variant mt-1 text-xs font-bold tracking-widest uppercase">
+            <h3 class="font-heading text-2xl font-extrabold text-zinc-950 dark:text-zinc-50">Projects Overview</h3>
+            <p class="mt-1 text-xs font-bold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
               {content.overviewLabel}
             </p>
           </div>
           <div class="flex items-center gap-4">
-            <span class="material-symbols-outlined text-on-surface-variant">search</span>
-            <div class="border-primary/30 bg-primary/20 flex items-center gap-2 rounded-sm border px-3 py-1">
-              <span class="material-symbols-outlined text-primary text-sm">smart_toy</span>
-              <span class="text-primary text-xs font-bold tracking-tighter uppercase">4 Agents Active</span>
-            </div>
+            <span class="material-symbols-outlined text-zinc-500 dark:text-zinc-400">search</span>
             <div
-              class="bg-primary/10 dark:bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded-full"
+              class="flex items-center gap-2 rounded-sm border border-blue-600/30 bg-blue-600/20 px-3 py-1 dark:border-blue-400/30 dark:bg-blue-400/20"
             >
-              <span class="material-symbols-outlined text-primary text-sm">person</span>
+              <span class="material-symbols-outlined text-sm text-blue-600 dark:text-blue-400">smart_toy</span>
+              <span class="text-xs font-bold tracking-tighter text-blue-600 uppercase dark:text-blue-400"
+                >4 Agents Active</span
+              >
+            </div>
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600/10 dark:bg-zinc-700">
+              <span class="material-symbols-outlined text-sm text-blue-600 dark:text-blue-400">person</span>
             </div>
           </div>
         </div>
         <div class="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
           <div class="space-y-4 lg:col-span-2">
             <div
-              class="border-outline-variant/10 border-primary bg-surface-container-lowest dark:bg-surface-container-low rounded border border-l-4 p-4 shadow-sm md:p-6"
+              class="rounded border border-l-4 border-blue-600 border-zinc-950/10 bg-white p-4 shadow-sm md:p-6 dark:border-zinc-700 dark:bg-zinc-900"
             >
               <div class="mb-4 flex items-start justify-between">
                 <div>
-                  <h4 class="text-on-surface font-heading text-lg font-bold">Project Alpha</h4>
-                  <p class="text-on-surface-variant text-sm">
-                    {projectAlphaBodyParts.before}<span class="text-primary font-medium"
+                  <h4 class="font-heading text-lg font-bold text-zinc-950 dark:text-zinc-50">Project Alpha</h4>
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                    {projectAlphaBodyParts.before}<span class="font-medium text-blue-600 dark:text-blue-400"
                       >{content.projectAlphaAgent}</span
                     >{projectAlphaBodyParts.after}
                   </p>
                 </div>
                 <span
-                  class="bg-tertiary-container text-on-tertiary-container dark:bg-tertiary/20 dark:text-tertiary rounded px-2 py-0.5 text-xs font-black uppercase dark:tracking-wider"
+                  class="rounded bg-green-100 px-2 py-0.5 text-xs font-black text-green-700 uppercase dark:bg-green-500/20 dark:tracking-wider dark:text-green-300"
                   >Active</span
                 >
               </div>
               <div class="space-y-2">
-                <div
-                  class="bg-surface-container-high dark:bg-surface-container-highest/30 h-1.5 w-full overflow-hidden rounded-full"
-                >
-                  <div class="bg-primary h-full w-3/4"></div>
+                <div class="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-700/30">
+                  <div class="h-full w-3/4 bg-blue-600 dark:bg-blue-500"></div>
                 </div>
                 <div
-                  class="text-outline dark:text-on-surface-variant flex justify-between text-xs font-bold tracking-wider uppercase"
+                  class="flex justify-between text-xs font-bold tracking-wider text-zinc-500 uppercase dark:text-zinc-400"
                 >
                   <span>Technical Distribution</span>
-                  <span class="text-on-surface">12 Ready / 4 In Progress</span>
+                  <span class="text-zinc-950 dark:text-zinc-50">12 Ready / 4 In Progress</span>
                 </div>
               </div>
             </div>
             <div
-              class="border-outline-variant/10 bg-surface-container-lowest dark:bg-surface-container-low rounded border border-l-4 p-4 opacity-80 shadow-sm md:p-6"
+              class="rounded border border-l-4 border-zinc-950/10 bg-white p-4 opacity-80 shadow-sm md:p-6 dark:border-white/10 dark:bg-zinc-900"
             >
               <div class="mb-4 flex items-start justify-between">
                 <div>
-                  <h4 class="text-on-surface font-heading text-lg font-bold">Infrastructure Core</h4>
-                  <p class="text-on-surface-variant text-sm">{content.infrastructureBody}</p>
+                  <h4 class="font-heading text-lg font-bold text-zinc-950 dark:text-zinc-50">Infrastructure Core</h4>
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400">{content.infrastructureBody}</p>
                 </div>
                 <span
-                  class="bg-surface-container-high text-outline dark:bg-surface-container-highest dark:text-on-surface-variant rounded px-2 py-0.5 text-xs font-black tracking-wider uppercase"
+                  class="rounded bg-zinc-100 px-2 py-0.5 text-xs font-black tracking-wider text-zinc-500 uppercase dark:bg-zinc-800 dark:text-zinc-400"
                   >{content.infrastructureStatus}</span
                 >
               </div>
-              <div class="text-on-surface-variant text-xs font-bold tracking-wider uppercase italic">
+              <div class="text-xs font-bold tracking-wider text-zinc-500 uppercase italic dark:text-zinc-400">
                 {content.infrastructureNote}
               </div>
             </div>
           </div>
           <div class="space-y-3">
             <div
-              class="border-outline-variant/10 bg-surface-container-lowest dark:border-outline-variant/20 dark:bg-surface-container-low rounded border p-4 shadow-sm md:p-6"
+              class="rounded border border-zinc-950/10 bg-white p-4 shadow-sm md:p-6 dark:border-white/10 dark:bg-zinc-900"
             >
-              <h5 class="text-outline mb-4 text-xs font-black tracking-widest uppercase">
+              <h5 class="mb-4 text-xs font-black tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
                 {content.insightsTitle}
               </h5>
               <div class="space-y-4">
                 <div class="flex gap-3">
-                  <div class="bg-error mt-1.5 h-1.5 w-1.5 rounded-full"></div>
-                  <p class="text-on-surface text-xs font-bold">{content.insightsItems[0]}</p>
+                  <div class="mt-1.5 h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500"></div>
+                  <p class="text-xs font-bold text-zinc-950 dark:text-zinc-50">{content.insightsItems[0]}</p>
                 </div>
                 <div class="flex gap-3">
-                  <div class="bg-primary mt-1.5 h-1.5 w-1.5 rounded-full"></div>
-                  <p class="text-on-surface text-xs font-bold">{content.insightsItems[1]}</p>
+                  <div class="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-500"></div>
+                  <p class="text-xs font-bold text-zinc-950 dark:text-zinc-50">{content.insightsItems[1]}</p>
                 </div>
               </div>
             </div>
             <div
-              class="border-outline-variant/10 bg-surface-container-lowest dark:border-outline-variant/20 dark:bg-surface-container-low rounded border p-4 shadow-sm md:p-6"
+              class="rounded border border-zinc-950/10 bg-white p-4 shadow-sm md:p-6 dark:border-white/10 dark:bg-zinc-900"
             >
-              <h5 class="text-outline mb-4 text-xs font-black tracking-widest uppercase">
+              <h5 class="mb-4 text-xs font-black tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
                 {content.decisionsTitle}
               </h5>
               <div
-                class="border-tertiary-dim dark:border-primary dark:text-on-surface-variant text-on-surface space-y-4 border-l-2 pl-3"
+                class="space-y-4 border-l-2 border-green-600/40 pl-3 text-zinc-950 dark:border-blue-400/40 dark:text-zinc-400"
               >
-                <p class="dark:text-on-surface-variant text-xs leading-relaxed">
-                  {firstDecisionParts.before}<span class="text-on-surface font-bold">{decisionHighlight}</span>{
-                    firstDecisionParts.after
-                  }
+                <p class="text-xs leading-relaxed dark:text-zinc-400">
+                  {firstDecisionParts.before}<span class="font-bold text-zinc-950 dark:text-zinc-50"
+                    >{decisionHighlight}</span
+                  >{firstDecisionParts.after}
                 </p>
-                <p class="dark:text-on-surface-variant text-xs leading-relaxed">{content.decisions[1]}</p>
+                <p class="text-xs leading-relaxed dark:text-zinc-400">{content.decisions[1]}</p>
               </div>
             </div>
           </div>
@@ -302,14 +300,17 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     </div>
   </section>
 
-  <section id="methodology" class="border-outline-variant/10 bg-surface-container-low border-y py-8 md:py-12">
+  <section
+    id="methodology"
+    class="border-y border-zinc-950/10 bg-zinc-50 py-8 md:py-12 dark:border-white/10 dark:bg-zinc-900"
+  >
     <div class="mx-auto max-w-screen-2xl px-4 md:px-12">
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
         {
           content.valueTitles.map((title, index) => (
-            <div class="border-primary-dim space-y-4 border-l-2 pl-6">
-              <h3 class="text-on-surface font-heading text-xl font-bold">{title}</h3>
-              <p class="text-on-surface-variant text-sm leading-relaxed">{content.valueBodies[index]}</p>
+            <div class="space-y-4 border-l-2 border-blue-600/40 pl-6 dark:border-blue-400/40">
+              <h3 class="font-heading text-xl font-bold text-zinc-950 dark:text-zinc-50">{title}</h3>
+              <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{content.valueBodies[index]}</p>
             </div>
           ))
         }
@@ -322,87 +323,103 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
   >
     <div class="space-y-4">
       <div
-        class="bg-tertiary-container text-on-tertiary-container dark:bg-primary/20 dark:text-primary inline-block rounded px-2 py-1 text-xs font-black tracking-widest uppercase md:px-3"
+        class="inline-block rounded bg-green-100 px-2 py-1 text-xs font-black tracking-widest text-green-700 uppercase md:px-3 dark:bg-blue-400/20 dark:text-blue-400"
       >
         {content.contextWindow}
       </div>
       <h2
-        class="text-on-surface font-heading text-3xl leading-tight font-extrabold tracking-tight md:text-4xl lg:text-5xl"
+        class="font-heading text-3xl leading-tight font-extrabold tracking-tight text-zinc-950 md:text-4xl lg:text-5xl dark:text-zinc-50"
       >
         {content.detailTitle}
       </h2>
-      <p class="text-on-surface-variant text-base leading-relaxed md:text-lg">{content.detailBody}</p>
+      <p class="text-base leading-relaxed text-zinc-500 md:text-lg dark:text-zinc-400">{content.detailBody}</p>
       <div class="space-y-2">
         <div
-          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 rounded border border-l-4 p-3 md:gap-4 md:p-4"
+          class="flex items-center gap-3 rounded border border-l-4 border-blue-600 border-zinc-950/10 bg-zinc-50 p-3 md:gap-4 md:p-4 dark:border-blue-500 dark:border-white/10 dark:bg-zinc-900"
         >
-          <span class="material-symbols-outlined text-primary">auto_graph</span>
-          <span class="text-on-surface text-xs font-bold md:text-sm">{content.detailFeatures[0]}</span>
+          <span class="material-symbols-outlined text-blue-600 dark:text-blue-500">auto_graph</span>
+          <span class="text-xs font-bold text-zinc-950 md:text-sm dark:text-zinc-50">{content.detailFeatures[0]}</span>
         </div>
         <div
-          class="border-outline-variant/10 border-primary bg-surface-container-low flex items-center gap-3 rounded border border-l-4 p-3 md:gap-4 md:p-4"
+          class="flex items-center gap-3 rounded border border-l-4 border-blue-600 border-zinc-950/10 bg-zinc-50 p-3 md:gap-4 md:p-4 dark:border-blue-500 dark:border-white/10 dark:bg-zinc-900"
         >
-          <span class="material-symbols-outlined text-primary">terminal</span>
-          <span class="text-on-surface text-xs font-bold md:text-sm">{content.detailFeatures[1]}</span>
+          <span class="material-symbols-outlined text-blue-600 dark:text-blue-500">terminal</span>
+          <span class="text-xs font-bold text-zinc-950 md:text-sm dark:text-zinc-50">{content.detailFeatures[1]}</span>
         </div>
       </div>
     </div>
     <div class="relative">
       <div
-        class="border-outline-variant/10 bg-surface-container-lowest shadow-panel dark:border-outline-variant/20 dark:bg-surface-container-low relative z-10 mx-auto max-w-lg rounded-lg border p-5 md:p-8"
+        class="relative z-10 mx-auto max-w-lg rounded-lg border border-zinc-950/10 bg-white p-5 shadow-2xl md:p-8 dark:border-white/10 dark:bg-zinc-900"
       >
-        <div class="border-outline-variant/20 mb-4 flex items-center justify-between border-b pb-2">
-          <span class="text-on-surface-variant font-mono text-xs font-bold tracking-tighter uppercase"
+        <div class="mb-4 flex items-center justify-between border-b border-zinc-950/10 pb-2 dark:border-white/10">
+          <span class="font-mono text-xs font-bold tracking-tighter text-zinc-500 uppercase dark:text-zinc-400"
             >TASK-442 / OPS</span
           >
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-xs">smart_toy</span>
-            <span class="text-on-surface text-xs font-black tracking-tighter uppercase">Agent Tracking</span>
+            <span class="material-symbols-outlined text-xs text-blue-600 dark:text-blue-500">smart_toy</span>
+            <span class="text-xs font-black tracking-tighter text-zinc-950 uppercase dark:text-zinc-50"
+              >Agent Tracking</span
+            >
           </div>
         </div>
-        <h4 class="text-on-surface font-heading mb-2 text-2xl font-bold tracking-tight">{content.taskTitle}</h4>
-        <p class="text-on-surface-variant mb-4 text-sm leading-relaxed">
-          {taskBodyParts.before}<span class="text-primary font-semibold">{content.taskAgent}</span>{taskBodyParts.after}
+        <h4 class="font-heading mb-2 text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+          {content.taskTitle}
+        </h4>
+        <p class="mb-4 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+          {taskBodyParts.before}<span class="font-semibold text-blue-600 dark:text-blue-500">{content.taskAgent}</span>{
+            taskBodyParts.after
+          }
         </p>
         <div class="space-y-3">
-          <div class="border-primary/30 bg-primary/10 flex items-center justify-between rounded border p-4">
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-primary text-lg">schema</span>
-              <span class="text-on-surface text-xs font-bold tracking-wide uppercase">{content.taskPrimary}</span>
-            </div>
-            <span class="text-primary text-xs font-bold">{content.taskPrimaryAction}</span>
-          </div>
           <div
-            class="border-outline-variant/10 bg-surface-container-low dark:bg-surface-container flex items-center justify-between rounded border p-4"
+            class="flex items-center justify-between rounded border border-blue-600/30 bg-blue-600/10 p-4 dark:border-blue-400/30 dark:bg-blue-400/10"
           >
             <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-tertiary text-lg">verified</span>
-              <span class="text-on-surface text-xs font-bold tracking-wide uppercase">{content.taskSecondary}</span>
+              <span class="material-symbols-outlined text-lg text-blue-600 dark:text-blue-500">schema</span>
+              <span class="text-xs font-bold tracking-wide text-zinc-950 uppercase dark:text-zinc-50"
+                >{content.taskPrimary}</span
+              >
             </div>
-            <span class="text-tertiary text-xs font-bold uppercase">{content.taskSecondaryAction}</span>
+            <span class="text-xs font-bold text-blue-600 dark:text-blue-500">{content.taskPrimaryAction}</span>
+          </div>
+          <div
+            class="flex items-center justify-between rounded border border-zinc-950/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-800"
+          >
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg text-green-700 dark:text-green-400">verified</span>
+              <span class="text-xs font-bold tracking-wide text-zinc-950 uppercase dark:text-zinc-50"
+                >{content.taskSecondary}</span
+              >
+            </div>
+            <span class="text-xs font-bold text-green-700 uppercase dark:text-green-400"
+              >{content.taskSecondaryAction}</span
+            >
           </div>
         </div>
       </div>
       <div
-        class="bg-surface-container-high dark:bg-primary/5 absolute -top-6 -right-6 -z-10 h-full w-full rounded-xl opacity-30 dark:opacity-100"
+        class="absolute -top-6 -right-6 -z-10 h-full w-full rounded-xl bg-zinc-100 opacity-30 dark:bg-blue-500/5 dark:opacity-100"
       >
       </div>
     </div>
   </section>
 
-  <section class="border-outline-variant/10 mx-auto max-w-screen-2xl border-t px-4 py-10 md:px-12 md:py-16">
+  <section
+    class="mx-auto max-w-screen-2xl border-t border-zinc-950/10 px-4 py-10 md:px-12 md:py-16 dark:border-white/10"
+  >
     <div class="flex flex-col items-start gap-8 md:flex-row">
       <div class="w-full md:w-1/3">
-        <h2 class="text-on-surface font-heading text-3xl leading-tight font-extrabold tracking-tight">
+        <h2 class="font-heading text-3xl leading-tight font-extrabold tracking-tight text-zinc-950 dark:text-zinc-50">
           {content.systemTitle}
         </h2>
       </div>
       <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
         {
           content.systemCards.map((card) => (
-            <div class="border-outline-variant/10 bg-surface-container-low dark:border-outline-variant/20 rounded-lg border p-8 shadow-md">
-              <h4 class="text-on-surface font-heading mb-3 text-lg font-bold">{card.title}</h4>
-              <p class="text-on-surface-variant text-sm leading-relaxed">{card.body}</p>
+            <div class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-8 shadow-md dark:border-white/10 dark:bg-zinc-900">
+              <h4 class="font-heading mb-3 text-lg font-bold text-zinc-950 dark:text-zinc-50">{card.title}</h4>
+              <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{card.body}</p>
             </div>
           ))
         }
@@ -410,21 +427,25 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
     </div>
   </section>
 
-  <section class="border-outline-variant/10 bg-surface border-t px-4 py-10 text-center md:px-12 md:py-16">
+  <section
+    class="border-t border-zinc-950/10 bg-white px-4 py-10 text-center md:px-12 md:py-16 dark:border-white/10 dark:bg-zinc-950"
+  >
     <div class="mx-auto max-w-3xl space-y-4">
-      <h2 class="text-on-surface font-heading text-3xl font-extrabold tracking-tight md:text-4xl lg:text-5xl">
+      <h2
+        class="font-heading text-3xl font-extrabold tracking-tight text-zinc-950 md:text-4xl lg:text-5xl dark:text-zinc-50"
+      >
         {content.closingTitle}
       </h2>
-      <p class="text-on-surface-variant text-base md:text-xl">{content.closingBody}</p>
+      <p class="text-base text-zinc-500 md:text-xl dark:text-zinc-400">{content.closingBody}</p>
       <div class="flex flex-col items-center justify-center gap-3 sm:flex-row md:gap-4">
         <a
           href={appHref}
-          class="bg-primary text-on-primary dark:hover:bg-primary/90 w-full rounded-lg px-8 py-3 text-base font-bold transition-all hover:opacity-90 sm:w-auto md:px-12 md:py-4 md:text-lg"
+          class="w-full rounded-lg bg-blue-600 px-8 py-3 text-base font-bold text-white transition-all hover:bg-blue-700 sm:w-auto md:px-12 md:py-4 md:text-lg dark:bg-blue-500 dark:hover:bg-blue-400"
           >{content.closingPrimary}</a
         >
         <a
           href={appHref}
-          class="border-outline text-on-surface hover:bg-surface-container w-full rounded-lg border px-8 py-3 text-base font-bold transition-all sm:w-auto md:px-12 md:py-4 md:text-lg"
+          class="w-full rounded-lg border border-zinc-950/20 px-8 py-3 text-base font-bold text-zinc-950 transition-all hover:bg-zinc-100 sm:w-auto md:px-12 md:py-4 md:text-lg dark:border-white/20 dark:text-zinc-50 dark:hover:bg-zinc-800"
           >{content.closingSecondary}</a
         >
       </div>
@@ -432,26 +453,28 @@ const firstDecisionParts = splitHighlightedText(content.decisions[0], decisionHi
   </section>
 </main>
 
-<footer class="border-outline-variant/10 bg-surface-container-low w-full border-t px-4 py-8 md:px-12 md:py-10">
+<footer
+  class="w-full border-t border-zinc-950/10 bg-zinc-50 px-4 py-8 md:px-12 md:py-10 dark:border-white/10 dark:bg-zinc-900"
+>
   <div class="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-3 md:flex-row">
-    <div class="text-on-surface-variant font-sans text-xs font-bold tracking-widest uppercase">
+    <div class="font-sans text-xs font-bold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
       © 2024 THEMIS TECHNICAL LEDGER. ALL RIGHTS RESERVED.
     </div>
     <div class="flex gap-8">
       <a
-        class="text-on-surface-variant hover:text-on-surface font-sans text-xs font-bold tracking-widest uppercase transition-colors"
+        class="font-sans text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
         href="#">{content.footerLinks[0]}</a
       >
       <a
-        class="text-on-surface-variant hover:text-on-surface font-sans text-xs font-bold tracking-widest uppercase transition-colors"
+        class="font-sans text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
         href="#">{content.footerLinks[1]}</a
       >
       <a
-        class="text-on-surface-variant hover:text-on-surface font-sans text-xs font-bold tracking-widest uppercase transition-colors"
+        class="font-sans text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
         href="#">{content.footerLinks[2]}</a
       >
       <a
-        class="text-on-surface-variant hover:text-on-surface font-sans text-xs font-bold tracking-widest uppercase transition-colors"
+        class="font-sans text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
         href="#">{content.footerLinks[3]}</a
       >
     </div>
