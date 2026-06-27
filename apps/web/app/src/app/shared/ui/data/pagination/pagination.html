@@ -1,15 +1,15 @@
 <nav class="flex items-center justify-between gap-3" aria-label="Pagination">
   <button
-    class="ui-focus-ring border-outline/30 rounded-[var(--radius-control)] border px-3 py-2 text-sm font-medium disabled:opacity-50"
+    class="ui-focus-ring rounded-[var(--radius-control)] border border-zinc-500/30 px-3 py-2 text-sm font-medium disabled:opacity-50 dark:border-zinc-400/30"
     [disabled]="!canGoPrevious()"
     type="button"
     (click)="goToPage(page() - 1)"
   >
     Previous
   </button>
-  <span class="text-muted-fg text-sm">Page {{ page() }} of {{ pageCount() }}</span>
+  <span class="text-sm text-zinc-500 dark:text-zinc-400">Page {{ page() }} of {{ pageCount() }}</span>
   <button
-    class="ui-focus-ring border-outline/30 rounded-[var(--radius-control)] border px-3 py-2 text-sm font-medium disabled:opacity-50"
+    class="ui-focus-ring rounded-[var(--radius-control)] border border-zinc-500/30 px-3 py-2 text-sm font-medium disabled:opacity-50 dark:border-zinc-400/30"
     [disabled]="!canGoNext()"
     type="button"
     (click)="goToPage(page() + 1)"

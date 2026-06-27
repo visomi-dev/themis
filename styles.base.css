@@ -3,57 +3,6 @@
   --font-heading: 'Manrope', 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
-  --color-bg: #ffffff;
-  --color-panel: #fafafa;
-  --color-panel-raised: #f4f4f5;
-  --color-fg: #09090b;
-  --color-muted-fg: #71717a;
-  --color-accent: #2563eb;
-  --color-accent-fg: #ffffff;
-  --color-danger: #dc2626;
-  --color-danger-fg: #ffffff;
-  --color-ring: #2563eb;
-  --color-border: rgb(9 9 11 / 0.1);
-  --color-border-subtle: rgb(9 9 11 / 0.05);
-
-  --color-primary: var(--color-accent);
-  --color-on-primary: var(--color-accent-fg);
-  --color-on-surface: var(--color-fg);
-  --color-on-surface-variant: var(--color-muted-fg);
-  --color-background: var(--color-bg);
-  --color-on-background: var(--color-fg);
-  --color-error: var(--color-danger);
-  --color-on-error: var(--color-danger-fg);
-
-  --color-primary-container: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg));
-  --color-on-primary-container: var(--color-accent);
-  --color-error-container: color-mix(in srgb, var(--color-danger) 12%, var(--color-bg));
-  --color-on-error-container: var(--color-danger);
-  --color-success: #16a34a;
-  --color-on-success: #ffffff;
-  --color-success-container: color-mix(in srgb, #16a34a 14%, var(--color-bg));
-  --color-on-success-container: #15803d;
-  --color-tertiary: #d97706;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: color-mix(in srgb, #d97706 14%, var(--color-bg));
-  --color-on-tertiary-container: #b45309;
-  --color-secondary: var(--color-muted-fg);
-  --color-on-secondary: var(--color-bg);
-  --color-secondary-container: var(--color-panel-raised);
-  --color-on-secondary-container: var(--color-fg);
-  --color-outline: var(--color-muted-fg);
-  --color-outline-variant: var(--color-border);
-  --color-surface: var(--color-bg);
-  --color-surface-dim: var(--color-bg);
-  --color-surface-bright: var(--color-bg);
-  --color-surface-variant: var(--color-panel-raised);
-  --color-surface-container-lowest: var(--color-bg);
-  --color-surface-container-low: var(--color-panel);
-  --color-surface-container: var(--color-panel-raised);
-  --color-surface-container-high: var(--color-panel-raised);
-  --color-surface-container-highest: var(--color-panel-raised);
-  --color-on-surface-variant-soft: var(--color-muted-fg);
-
   --font-family: var(--font-sans);
   --font-family-display: var(--font-heading);
   --font-family-mono: var(--font-mono);
@@ -67,9 +16,13 @@
   --radius-control: 0.5rem;
   --radius-panel: 0.75rem;
 
-  --shadow-panel: 0 32px 64px -12px rgb(9 9 11 / 0.08);
   --shadow-sm: 0 1px 2px rgb(9 9 11 / 0.06), 0 1px 1px rgb(9 9 11 / 0.04);
   --shadow-md: 0 16px 40px rgb(9 9 11 / 0.12);
+  --shadow-panel: 0 32px 64px -12px rgb(9 9 11 / 0.08);
+
+  --motion-fast: 100ms ease;
+  --motion-base: 200ms ease;
+  --motion-enter: 300ms ease-in-out;
 }
 
 :root {
@@ -77,10 +30,6 @@
 
   --container-max: 1440px;
   --content-max: 1152px;
-
-  --motion-fast: 100ms ease;
-  --motion-base: 200ms ease;
-  --motion-enter: 300ms ease-in-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -91,76 +40,39 @@
   }
 }
 
-html.dark {
-  --color-bg: #09090b;
-  --color-panel: #18181b;
-  --color-panel-raised: #27272a;
-  --color-fg: #fafafa;
-  --color-muted-fg: #a1a1aa;
-  --color-accent: #3b82f6;
-  --color-accent-fg: #ffffff;
-  --color-danger: #ef4444;
-  --color-danger-fg: #ffffff;
-  --color-ring: #3b82f6;
-  --color-border: rgb(255 255 255 / 0.1);
-  --color-border-subtle: rgb(255 255 255 / 0.05);
-
-  --color-primary-container: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg));
-  --color-on-primary-container: var(--color-accent);
-  --color-error-container: color-mix(in srgb, var(--color-danger) 18%, var(--color-bg));
-  --color-on-error-container: var(--color-danger);
-  --color-success: #22c55e;
-  --color-on-success: #052e16;
-  --color-success-container: color-mix(in srgb, #22c55e 18%, var(--color-bg));
-  --color-on-success-container: #4ade80;
-  --color-tertiary: #fbbf24;
-  --color-on-tertiary: #422006;
-  --color-tertiary-container: color-mix(in srgb, #fbbf24 18%, var(--color-bg));
-  --color-on-tertiary-container: #fbbf24;
-  --color-secondary: var(--color-muted-fg);
-  --color-on-secondary: var(--color-bg);
-  --color-secondary-container: var(--color-panel-raised);
-  --color-on-secondary-container: var(--color-fg);
-  --color-outline: var(--color-muted-fg);
-  --color-outline-variant: var(--color-border);
-  --color-surface: var(--color-bg);
-  --color-surface-dim: var(--color-bg);
-  --color-surface-bright: var(--color-panel-raised);
-  --color-surface-variant: var(--color-panel-raised);
-  --color-surface-container-lowest: var(--color-bg);
-  --color-surface-container-low: var(--color-panel);
-  --color-surface-container: var(--color-panel);
-  --color-surface-container-high: var(--color-panel-raised);
-  --color-surface-container-highest: var(--color-panel-raised);
-
-  --shadow-panel: 0 32px 64px -12px rgb(0 0 0 / 0.5);
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5), 0 1px 1px rgb(0 0 0 / 0.3);
-  --shadow-md: 0 16px 40px rgb(0 0 0 / 0.4);
-}
-
 @utility ui-focus-ring {
   outline: 2px solid transparent;
   outline-offset: 2px;
 
   &:focus-visible {
-    outline-color: var(--color-ring);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-ring) 18%, transparent);
+    outline-color: var(--color-blue-500);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-blue-500) 18%, transparent);
   }
 }
 
 @utility ui-panel {
-  background: var(--color-panel);
-  color: var(--color-fg);
+  background: var(--color-zinc-50);
+  color: var(--color-zinc-950);
   border-radius: var(--radius-panel);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid color-mix(in srgb, var(--color-zinc-950) 5%, transparent);
+
+  html.dark & {
+    background: var(--color-zinc-900);
+    color: var(--color-zinc-50);
+  }
 }
 
 @utility ui-panel-raised {
-  background: var(--color-panel-raised);
-  color: var(--color-fg);
+  background: var(--color-zinc-100);
+  color: var(--color-zinc-950);
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-panel);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid color-mix(in srgb, var(--color-zinc-950) 5%, transparent);
+
+  html.dark & {
+    background: var(--color-zinc-800);
+    color: var(--color-zinc-50);
+  }
 }
 
 @utility ui-touch-target {
@@ -180,8 +92,8 @@ html {
 body {
   min-height: 100%;
   margin: 0;
-  background: var(--color-bg);
-  color: var(--color-fg);
+  background: #ffffff;
+  color: var(--color-zinc-950);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -189,7 +101,8 @@ body {
 }
 
 html.dark body {
-  background: var(--color-bg);
+  background: var(--color-zinc-950);
+  color: var(--color-zinc-50);
 }
 
 a,
@@ -198,13 +111,13 @@ button:not(:disabled) {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent) 24%, transparent);
-  color: var(--color-accent-fg);
+  background: color-mix(in srgb, var(--color-blue-600) 24%, transparent);
+  color: #ffffff;
 }
 
 html.dark ::selection {
-  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
-  color: var(--color-fg);
+  background: color-mix(in srgb, var(--color-blue-500) 30%, transparent);
+  color: var(--color-zinc-50);
 }
 
 .material-symbols-outlined {

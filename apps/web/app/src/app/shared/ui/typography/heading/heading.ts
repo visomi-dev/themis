@@ -24,6 +24,9 @@ export class Heading {
   readonly level = input<HeadingLevel>('2');
 
   readonly classes = computed(() =>
-    uiClass('font-heading font-bold tracking-tight text-fg text-balance', headingSizes[this.level()]),
+    uiClass(
+      'font-heading font-bold tracking-tight text-zinc-950 dark:text-zinc-50 text-balance',
+      headingSizes[this.level()],
+    ),
   );
 }

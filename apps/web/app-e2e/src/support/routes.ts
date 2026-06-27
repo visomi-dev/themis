@@ -16,5 +16,7 @@ export const signUpUrlPattern = /\/app\/en\/sign-up$/;
 export const verifyEmailUrlPattern = /\/app\/en\/verify-email$/;
 export const verifyDeviceUrlPattern = /\/app\/en\/verify-device$/;
 export const forgottenPasswordUrlPattern = /\/app\/en\/forgotten-password$/;
+export const resetPasswordRoute = '/app/en/reset-password';
+export const resetPasswordUrlPattern = /\/app\/en\/reset-password$/;
 export const projectsUrlPattern = /\/app\/en\/projects$/;
 export const projectNewUrlPattern = /\/app\/en\/projects\/new$/;

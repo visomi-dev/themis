@@ -5,11 +5,11 @@ import { uiClass } from '../../classes';
 type BadgeTone = 'default' | 'accent' | 'danger' | 'success' | 'warning';
 
 const badgeTones = Object.freeze({
-  default: /* tw */ 'bg-panel-raised text-fg',
-  accent: /* tw */ 'bg-primary-container/40 text-primary',
-  danger: /* tw */ 'bg-error-container/40 text-danger',
-  success: /* tw */ 'bg-success-container/40 text-success',
-  warning: /* tw */ 'bg-tertiary-container/40 text-tertiary',
+  default: /* tw */ 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-zinc-50',
+  accent: /* tw */ 'bg-blue-600/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400',
+  danger: /* tw */ 'bg-red-600/10 dark:bg-red-500/20 text-red-600 dark:text-red-400',
+  success: /* tw */ 'bg-green-600/10 dark:bg-green-500/20 text-green-600 dark:text-green-400',
+  warning: /* tw */ 'bg-amber-600/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400',
 });
 
 @Component({

@@ -6,3 +6,5 @@
 .angular
 pnpm-lock.yaml
 resources
+# open-design skills are vendored documentation shipped as-is
+.opencode

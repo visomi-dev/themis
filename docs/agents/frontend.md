@@ -39,6 +39,8 @@ These instructions apply to Angular frontend work in Themis. Read them before ed
 - Keep templates simple; move complex logic into the component class.
 - Use Angular `animate.enter` and `animate.leave` for transition animations.
 - Do not use `ngClass` or `ngStyle`; use native `class` and `style` bindings.
+- Use Tailwind utilities directly in Angular templates for layout and visual styling. Do not introduce semantic or BEM-style CSS class names such as `auth-controls`, `auth-card__title`, or `password-strength__bar` in route templates.
+- Custom semantic CSS classes are exceptional. They are allowed only inside reusable primitives when Tailwind cannot express the behavior cleanly, such as keyframes, `@starting-style`, reduced-motion overrides, or very small element-level selectors. Prefer `data-slot` and `data-od-id` for testing hooks instead of private CSS class names.
 - Do not assume browser globals, such as `new Date()`, are available in templates.
 - Do not write arrow functions in templates.
 - Use the `async` pipe for Observables.

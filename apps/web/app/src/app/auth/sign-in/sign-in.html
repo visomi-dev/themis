@@ -1,29 +1,29 @@
 <app-auth-layout>
-  <div data-slot="brand" class="space-y-6">
-    <app-logo variant="wordmark" />
-    <app-text size="sm" tone="muted" i18n="@@signInEyebrow">AI-integrated technical access layer</app-text>
-    <p class="text-muted-fg hidden text-xs font-black tracking-widest uppercase md:block" i18n="@@signInHeroKicker">
-      Workspace access
-    </p>
-    <app-heading
-      class="hidden max-w-xl md:block"
-      i18n="@@signInHeroTitle"
-      level="1"
-      [text]="'Human and agent execution, secured.'"
-    />
-  </div>
-
-  <div class="flex justify-end gap-3 pb-6">
-    <app-theme-switcher />
-  </div>
-
-  <app-card padding="lg" tone="raised">
-    <p class="text-muted-fg text-xs font-black tracking-widest uppercase" i18n="@@signInPanelKicker">Account access</p>
-
-    <app-heading i18n="@@signInPanelTitle" level="2" [text]="'Sign in'" />
+  <app-auth-card>
+    <header class="mb-7 space-y-2">
+      <p
+        data-slot="kicker"
+        class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
+        i18n="@@signInKicker"
+      >
+        Account access
+      </p>
+      <h1
+        data-slot="title"
+        class="font-display text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
+        i18n="@@signInTitle"
+      >
+        Sign in
+      </h1>
+      <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signInSub">
+        Welcome back. Use your work email to access your Themis workspace.
+      </p>
+    </header>
 
     @if (errorMessage()) {
-      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+      <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{
+        errorMessage()
+      }}</app-alert>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
@@ -33,7 +33,7 @@
           autocomplete="email"
           formControlName="email"
           [controlId]="'sign-in-email'"
-          invalid="!!emailError()"
+          [invalid]="!!emailError()"
           name="email"
           placeholder="name@organization.com"
           type="email"
@@ -57,7 +57,7 @@
           autocomplete="current-password"
           formControlName="password"
           [controlId]="'sign-in-password'"
-          invalid="!!passwordError()"
+          [invalid]="!!passwordError()"
           name="password"
           placeholder="***************"
           (blur)="updatePasswordError()"
@@ -67,15 +67,20 @@
         }
       </app-field>
 
-      <label class="text-muted-fg flex items-start gap-3 text-sm leading-6" for="sign-in-remember-device">
+      <label
+        class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+        for="sign-in-remember-device"
+      >
         <app-checkbox formControlName="rememberDevice" [controlId]="'sign-in-remember-device'" name="rememberDevice" />
         <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
       </label>
 
-      <app-button i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()">Sign in</app-button>
+      <app-button data-slot="submit" i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+        >Sign in</app-button
+      >
     </form>
 
-    <p class="text-muted-fg mt-2 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
-    <app-link i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
-  </app-card>
+    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
+    <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
+  </app-auth-card>
 </app-auth-layout>

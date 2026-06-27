@@ -5,11 +5,12 @@ These instructions apply to Tailwind, visual design, UI polish, accessibility, a
 ## Tailwind And CSS
 
 - Tailwind is the primary styling tool. Use utility classes directly in templates.
+- Do not copy semantic or BEM-style class names from static prototypes into Angular templates. Use Tailwind utilities for styling and `data-slot` / `data-od-id` for stable test hooks.
 - Never use raw CSS variables for colors or design tokens in component code. Define reusable tokens inside `@theme` blocks in global styles.
 - Use `@utility` to define custom utilities.
 - Dark mode uses the configured `dark` variant: `@custom-variant dark (&:where(.dark, .dark *))`.
 - Global CSS imports should be ordered as fonts first, then Tailwind, then icon libraries.
-- Component CSS is for keyframes, element-level styles that cannot be expressed as Tailwind utilities, and `@starting-style` transitions.
+- Component CSS is for keyframes, element-level styles that cannot be expressed as Tailwind utilities, reduced-motion overrides, and `@starting-style` transitions. Custom selectors in component CSS must be rare and local to reusable primitives, not route-level pages.
 
 ## Core Tokens
 

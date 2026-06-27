@@ -11,9 +11,9 @@ const textSizes = Object.freeze({
   lg: /* tw */ 'text-lg',
 });
 const textTones = Object.freeze({
-  default: /* tw */ 'text-fg',
-  muted: /* tw */ 'text-muted-fg',
-  danger: /* tw */ 'text-danger',
+  default: /* tw */ 'text-zinc-950 dark:text-zinc-50',
+  muted: /* tw */ 'text-zinc-500 dark:text-zinc-400',
+  danger: /* tw */ 'text-red-600 dark:text-red-400',
   accent: /* tw */ 'text-accent',
 });
 

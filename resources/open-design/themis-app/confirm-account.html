@@ -4,845 +4,183 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Confirm your account · Themis</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: ['class', '[data-theme="dark"]'],
+        theme: {
+          extend: {
+            colors: {
+              bg: 'var(--color-bg)', surface: 'var(--color-panel)',
+              'surface-2': 'var(--color-panel)', 'surface-3': 'var(--color-panel-raised)',
+              fg: 'var(--color-fg)', muted: 'var(--color-muted-fg)',
+              border: 'var(--color-border)', 'border-subtle': 'var(--color-border-subtle)',
+              accent: 'var(--color-accent)', 'accent-fg': 'var(--color-accent-fg)',
+              success: '#16a34a', warning: '#d97706',
+              danger: 'var(--color-danger)',
+            },
+            accentColor: {
+              primary: 'var(--color-accent)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+              display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            },
+            borderRadius: { sm: '6px', DEFAULT: '8px', md: '12px', full: '9999px' },
+            boxShadow: {
+              sm: '0 1px 2px rgba(26,27,32,.06),0 1px 3px rgba(26,27,32,.04)',
+              md: '0 4px 12px rgba(26,27,32,.08),0 2px 4px rgba(26,27,32,.04)',
+            },
+          },
+        },
+      };
+    </script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
       :root {
         color-scheme: light;
-
-        /* Catalyst color tokens — Themis brand accent is Tailwind blue-600 */
         --color-bg: #ffffff;
         --color-panel: #fafafa;
         --color-panel-raised: #f4f4f5;
-        --color-surface-muted-soft: color-mix(in srgb, #09090b 4%, #ffffff);
         --color-fg: #09090b;
         --color-muted-fg: #71717a;
+        --color-accent: #2563eb;
+        --color-accent-fg: #ffffff;
+        --color-danger: #dc2626;
+        --color-ring: #2563eb;
         --color-border: rgb(9 9 11 / 0.10);
         --color-border-subtle: rgb(9 9 11 / 0.05);
-
-        --color-accent: #2563eb;
-        --color-accent-hover: #1d4ed8;
-        --color-accent-strong: #1e40af;
-        --color-accent-soft: rgb(37 99 235 / 0.10);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #16a34a;
-        --color-success-soft: rgb(22 163 74 / 0.14);
-        --color-warning: #d97706;
-        --color-warning-soft: rgb(217 119 6 / 0.14);
-        --color-danger: #dc2626;
-        --color-danger-soft: rgb(220 38 38 / 0.10);
-        --color-danger-strong: #991b1b;
-
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        --font-heading: 'Manrope', 'Inter', sans-serif;
-        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-        --radius-sm: 0.5rem;
-        --radius-control: 0.5rem;
-        --radius-panel: 0.75rem;
-        --radius-lg: 1rem;
-        --radius-pill: 9999px;
-
-        --shadow-sm: 0 1px 2px rgb(9 9 11 / 0.06), 0 1px 1px rgb(9 9 11 / 0.04);
-        --shadow-md: 0 4px 12px rgb(9 9 11 / 0.08), 0 2px 4px rgb(9 9 11 / 0.04);
-        --shadow-lg: 0 12px 32px rgb(9 9 11 / 0.10), 0 4px 8px rgb(9 9 11 / 0.06);
-
-        --motion-fast: 120ms ease;
-        --motion-base: 180ms ease;
-        --motion-slow: 260ms cubic-bezier(0.2, 0, 0, 1);
       }
-      :root[data-theme='dark'] {
+      [data-theme='dark'] {
         color-scheme: dark;
-
         --color-bg: #09090b;
         --color-panel: #18181b;
         --color-panel-raised: #27272a;
-        --color-surface-muted-soft: color-mix(in srgb, #fafafa 5%, #09090b);
         --color-fg: #fafafa;
         --color-muted-fg: #a1a1aa;
+        --color-accent: #3b82f6;
+        --color-accent-fg: #ffffff;
+        --color-danger: #ef4444;
+        --color-ring: #3b82f6;
         --color-border: rgb(255 255 255 / 0.10);
         --color-border-subtle: rgb(255 255 255 / 0.05);
-
-        --color-accent: #3b82f6;
-        --color-accent-hover: #60a5fa;
-        --color-accent-strong: #93c5fd;
-        --color-accent-soft: rgb(59 130 246 / 0.18);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #22c55e;
-        --color-success-soft: rgb(34 197 94 / 0.18);
-        --color-warning: #fbbf24;
-        --color-warning-soft: rgb(251 191 36 / 0.18);
-        --color-danger: #ef4444;
-        --color-danger-soft: rgb(239 68 68 / 0.14);
-        --color-danger-strong: #f87171;
-
-        --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30), 0 1px 1px rgb(0 0 0 / 0.20);
-        --shadow-md: 0 4px 12px rgb(0 0 0 / 0.40), 0 2px 4px rgb(0 0 0 / 0.20);
-        --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.50), 0 4px 8px rgb(0 0 0 / 0.30);
       }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-      html {
-        -webkit-text-size-adjust: 100%;
-      }
-      body {
-        margin: 0;
-        background: var(--color-bg);
-        color: var(--color-fg);
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        min-height: 100vh;
-      }
-      img,
-      svg {
-        display: block;
-        max-width: 100%;
-      }
-      a {
-        color: var(--color-accent);
-        text-decoration: none;
-        transition: color var(--motion-fast);
-      }
-      a:hover {
-        color: var(--color-accent-hover);
-      }
-      button {
-        font: inherit;
-        cursor: pointer;
-        border: 0;
-        background: none;
-        padding: 0;
-        color: inherit;
-      }
-      input,
-      select,
-      textarea {
-        font: inherit;
-        color: inherit;
-      }
-      p {
-        margin: 0;
-        text-wrap: pretty;
-      }
-      h1,
-      h2,
-      h3,
-      h4 {
-        margin: 0;
-        text-wrap: balance;
-        font-family: var(--font-heading);
-        letter-spacing: -0.02em;
-      }
-      :focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-        border-radius: 4px;
-      }
-
-      .auth-shell {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: color-mix(in srgb, var(--color-bg) 92%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--color-border-subtle);
-      }
-      .auth-shell__inner {
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 14px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--color-fg);
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 1.0625rem;
-        letter-spacing: -0.02em;
-      }
-      .brand:hover {
-        color: var(--color-fg);
-      }
-      .brand__mark {
-        width: 28px;
-        height: 28px;
-        display: grid;
-        place-items: center;
-        background: var(--color-accent);
-        color: var(--color-accent-fg);
-        border-radius: var(--radius-sm);
-      }
-      .brand__mark svg {
-        width: 16px;
-        height: 16px;
-      }
-
-      .auth-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .lang {
-        position: relative;
-      }
-      .lang__summary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        font-family: var(--font-mono);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        list-style: none;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .lang__summary::-webkit-details-marker {
-        display: none;
-      }
-      .lang__summary:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang[open] .lang__summary {
-        border-color: var(--color-border-subtle);
-        background: var(--color-panel);
-      }
-      .lang__summary svg {
-        width: 12px;
-        height: 12px;
-        opacity: 0.6;
-      }
-      .lang__code {
-        font-weight: 600;
-      }
-      .lang__menu {
-        position: absolute;
-        top: calc(100% + 6px);
-        right: 0;
-        min-width: 200px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        box-shadow: var(--shadow-md);
-        padding: 6px;
-        list-style: none;
-        margin: 0;
-        z-index: 20;
-      }
-      .lang__item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 10px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        color: var(--color-fg);
-        font-size: 0.875rem;
-        transition: background var(--motion-fast);
-      }
-      .lang__item:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang__item--active {
-        background: var(--color-accent-soft);
-        color: var(--color-accent);
-        font-weight: 600;
-      }
-      .lang__item code {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        color: var(--color-muted-fg);
-      }
-
-      .theme-toggle {
-        width: 38px;
-        height: 38px;
-        display: grid;
-        place-items: center;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .theme-toggle:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .theme-toggle svg {
-        width: 16px;
-        height: 16px;
-      }
-      :root[data-theme='light'] .theme-toggle .icon-moon {
-        display: none;
-      }
-      :root[data-theme='dark'] .theme-toggle .icon-sun {
-        display: none;
-      }
-
-      .auth-main {
-        min-height: calc(100vh - 64px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 48px 24px;
-      }
-      .auth-card {
-        width: 100%;
-        max-width: 460px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        padding: 40px;
-        box-shadow: var(--shadow-sm);
-      }
-      @media (max-width: 520px) {
-        .auth-card {
-          padding: 28px 22px;
-          border-radius: var(--radius-control);
-        }
-        .auth-main {
-          padding: 24px 16px;
-        }
-      }
-
-      .auth-card__header {
-        margin-bottom: 28px;
-      }
-      .auth-card__title {
-        font-family: var(--font-heading);
-        font-size: 1.625rem;
-        font-weight: 700;
-        letter-spacing: -0.025em;
-        line-height: 1.2;
-        margin-bottom: 8px;
-      }
-      .auth-card__sub {
-        color: var(--color-muted-fg);
-        font-size: 0.9375rem;
-        line-height: 1.5;
-      }
-      .auth-card__sub code {
-        font-family: var(--font-mono);
-        font-size: 0.92em;
-        background: var(--color-surface-muted-soft);
-        padding: 1px 6px;
-        border-radius: var(--radius-sm);
-        color: var(--color-fg);
-      }
-
-      .auth-alert {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 12px 14px;
-        border-radius: var(--radius-control);
-        margin-bottom: 20px;
-        font-size: 0.875rem;
-        line-height: 1.45;
-      }
-      .auth-alert svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-      .auth-alert--error {
-        background: var(--color-danger-soft);
-        color: var(--color-danger-strong);
-        border: 1px solid color-mix(in srgb, var(--color-danger) 24%, transparent);
-      }
-      .auth-alert--success {
-        background: var(--color-success-soft);
-        color: var(--color-success);
-        border: 1px solid color-mix(in srgb, var(--color-success) 24%, transparent);
-      }
-
-      .auth-form {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
-
-      .otp {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 8px;
-      }
-      .otp__cell {
-        width: 100%;
-        height: 60px;
-        text-align: center;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-control);
-        color: var(--color-fg);
-        font-family: var(--font-mono);
-        font-size: 1.625rem;
-        font-weight: 600;
-        line-height: 1;
-        caret-color: var(--color-accent);
-        transition:
-          border-color var(--motion-fast),
-          box-shadow var(--motion-fast),
-          background var(--motion-fast);
-      }
-      .otp__cell:focus {
-        outline: none;
-        border-color: var(--color-accent);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
-      }
-      .otp__cell--filled {
-        border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
-        background: color-mix(in srgb, var(--color-accent) 5%, var(--color-panel));
-      }
-      .otp__cell--error {
-        border-color: var(--color-danger);
-        animation: tm-shake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-      }
-      .otp__cell--error:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
-      }
+      .btn--loading .btn__spinner { @apply block; }
+      .btn--loading .btn__label { @apply opacity-85; }
+      .auth-success { display: none; }
+      .auth-success.is-active { @apply flex; }
+      .lang__summary::-webkit-details-marker { display: none; }
+      [data-theme='light'] .icon-moon { @apply hidden; }
+      [data-theme='dark'] .icon-sun { @apply hidden; }
+      .lang[open] .lang__summary { @apply border-border-subtle bg-surface; }
+      .otp__cell--filled { @apply border-accent/50 bg-accent/[.05]; }
+      .otp__cell--error { @apply border-danger; animation: tm-shake 0.32s cubic-bezier(0.36,0.07,0.19,0.97); }
+      .otp__cell--error:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent); }
+      @keyframes tm-spin { to { transform: rotate(360deg); } }
+      .btn__spinner { animation: tm-spin 0.7s linear infinite; }
       @keyframes tm-shake {
-        10%,
-        90% {
-          transform: translateX(-1px);
-        }
-        20%,
-        80% {
-          transform: translateX(2px);
-        }
-        30%,
-        50%,
-        70% {
-          transform: translateX(-4px);
-        }
-        40%,
-        60% {
-          transform: translateX(4px);
-        }
+        10%,90% { transform: translateX(-1px); }
+        20%,80% { transform: translateX(2px); }
+        30%,50%,70% { transform: translateX(-4px); }
+        40%,60% { transform: translateX(4px); }
       }
-      @media (max-width: 420px) {
-        .otp {
-          gap: 6px;
-        }
-        .otp__cell {
-          height: 52px;
-          font-size: 1.375rem;
-        }
-      }
-
-      .resend {
-        text-align: center;
-        font-size: 0.875rem;
-        color: var(--color-muted-fg);
-      }
-      .resend__btn {
-        color: var(--color-accent);
-        font-weight: 500;
-        cursor: pointer;
-      }
-      .resend__btn:hover {
-        color: var(--color-accent-hover);
-        text-decoration: underline;
-      }
-      .resend__btn:disabled {
-        color: var(--color-muted-fg);
-        cursor: not-allowed;
-        text-decoration: none;
-      }
-      .resend__timer {
-        font-family: var(--font-mono);
-        font-size: 0.8125rem;
-        color: var(--color-muted-fg);
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 0 20px;
-        border-radius: var(--radius-control);
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        font-weight: 600;
-        letter-spacing: -0.005em;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast),
-          color var(--motion-fast),
-          transform var(--motion-fast);
-        cursor: pointer;
-        white-space: nowrap;
-      }
-      .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      .btn:active:not(:disabled) {
-        transform: translateY(1px);
-      }
-      .btn--primary {
-        background: var(--color-accent);
-        color: var(--color-accent-fg);
-        border: 1px solid var(--color-accent);
-      }
-      .btn--primary:hover:not(:disabled) {
-        background: var(--color-accent-hover);
-        border-color: var(--color-accent-hover);
-      }
-      .btn--primary:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-      }
-      .btn--block {
-        width: 100%;
-      }
-      .btn__spinner {
-        width: 14px;
-        height: 14px;
-        border: 2px solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: tm-spin 0.7s linear infinite;
-        display: none;
-      }
-      .btn--loading .btn__spinner {
-        display: block;
-      }
-      .btn--loading .btn__label {
-        opacity: 0.85;
-      }
-      @keyframes tm-spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .auth-card__footer {
-        margin-top: 24px;
-        padding-top: 20px;
-        border-top: 1px solid var(--color-border-subtle);
-        text-align: center;
-        color: var(--color-muted-fg);
-        font-size: 0.875rem;
-      }
-
-      .change-email {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 14px;
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-control);
-        background: var(--color-surface-muted-soft);
-        font-size: 0.875rem;
-      }
-      .change-email__label {
-        color: var(--color-muted-fg);
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 2px;
-      }
-      .change-email__value {
-        color: var(--color-fg);
-        font-family: var(--font-mono);
-        font-size: 0.875rem;
-        font-weight: 500;
-        word-break: break-all;
-      }
-      .change-email__btn {
-        font-size: 0.8125rem;
-        font-weight: 500;
-        flex-shrink: 0;
-      }
-
-      .auth-success {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 8px 0;
-      }
-      .auth-success.is-active {
-        display: flex;
-      }
-      .auth-success__icon {
-        width: 48px;
-        height: 48px;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        background: var(--color-success-soft);
-        color: var(--color-success);
-        margin-bottom: 16px;
-      }
-      .auth-success__icon svg {
-        width: 22px;
-        height: 22px;
-      }
-      .auth-success__title {
-        font-family: var(--font-heading);
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 8px;
-      }
-      .auth-success__msg {
-        color: var(--color-muted-fg);
-        font-size: 0.9375rem;
-        line-height: 1.5;
-        margin-bottom: 24px;
-        max-width: 36ch;
-      }
-
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          transition-duration: 0.01ms !important;
-        }
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       }
     </style>
   </head>
-  <body class="auth-screen" data-screen-label="03 Confirm account">
-    <header class="auth-shell">
-      <div class="auth-shell__inner">
-        <a href="index.html" class="brand" aria-label="Themis home">
-          <span class="brand__mark" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M5 9h14" />
-              <path d="M12 9V3" />
-              <circle cx="5" cy="12" r="2.2" fill="currentColor" />
-              <circle cx="19" cy="12" r="2.2" fill="currentColor" />
-              <path d="M9 21h6" />
+  <body class="min-h-screen bg-bg font-sans text-fg antialiased" data-screen-label="03 Confirm account">
+    <header class="sticky top-0 z-10 bg-bg/85 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3.5">
+        <a href="index.html" class="inline-flex items-center gap-2.5 text-fg" aria-label="Themis home">
+          <span class="grid h-7 w-7 place-items-center rounded-md bg-accent text-accent-fg" aria-hidden="true">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 9h14" /><path d="M12 9V3" /><circle cx="5" cy="12" r="2.2" fill="currentColor" /><circle cx="19" cy="12" r="2.2" fill="currentColor" /><path d="M9 21h6" />
             </svg>
           </span>
-          <span class="brand__name">Themis</span>
+          <span class="font-display text-[1.0625rem] font-bold tracking-tight">Themis</span>
         </a>
-
-        <div class="auth-controls">
-          <details class="lang" id="lang">
-            <summary class="lang__summary" aria-label="Language">
-              <span class="lang__code">EN</span>
-              <svg
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 4.5l3 3 3-3" />
-              </svg>
+        <div class="flex items-center gap-2">
+          <details id="lang" class="relative">
+            <summary class="lang__summary inline-flex cursor-pointer list-none items-center gap-1.5 rounded px-3 py-2 font-mono text-xs font-medium text-fg transition-colors hover:bg-surface-2">
+              <span class="lang__code font-semibold">EN</span>
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3" /></svg>
             </summary>
-            <ul class="lang__menu" role="listbox">
-              <li class="lang__item lang__item--active" data-lang="EN" role="option" aria-selected="true">
-                <span>English</span><code>EN</code>
-              </li>
-              <li class="lang__item" data-lang="ES" role="option"><span>Español</span><code>ES</code></li>
-              <li class="lang__item" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code>PT</code></li>
-              <li class="lang__item" data-lang="JA" role="option"><span>日本語</span><code>JA</code></li>
-              <li class="lang__item" data-lang="DE" role="option"><span>Deutsch</span><code>DE</code></li>
-              <li class="lang__item" data-lang="ZH" role="option"><span>中文</span><code>ZH</code></li>
+            <ul class="absolute right-0 top-[calc(100%+6px)] z-20 m-0 min-w-[200px] list-none rounded-md border border-border-subtle bg-surface p-1.5 shadow-md" role="listbox">
+              <li class="lang__item lang__item--active flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="EN" role="option" aria-selected="true"><span>English</span><code class="font-mono text-xs text-muted">EN</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ES" role="option"><span>Español</span><code class="font-mono text-xs text-muted">ES</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code class="font-mono text-xs text-muted">PT</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="JA" role="option"><span>日本語</span><code class="font-mono text-xs text-muted">JA</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="DE" role="option"><span>Deutsch</span><code class="font-mono text-xs text-muted">DE</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ZH" role="option"><span>中文</span><code class="font-mono text-xs text-muted">ZH</code></li>
             </ul>
           </details>
-
-          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="4" />
-              <path
-                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
-              />
-            </svg>
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
+          <button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" class="grid h-[38px] w-[38px] place-items-center rounded text-fg transition-colors hover:bg-surface-2">
+            <svg class="icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
+            <svg class="icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
           </button>
         </div>
       </div>
     </header>
 
-    <main class="auth-main">
-      <div class="auth-card" data-od-id="confirm-account">
-        <header class="auth-card__header">
-          <h1 class="auth-card__title">Confirm your account</h1>
-          <p class="auth-card__sub">
-            We sent a 6-digit verification code to <code id="pending-email">your email</code>. Codes expire in 10
-            minutes.
-          </p>
+    <main class="flex min-h-[calc(100vh-64px)] items-center justify-center px-6 py-12 max-[520px]:px-4">
+      <div class="w-full max-w-[460px] rounded-md border border-border-subtle bg-surface p-10 shadow-sm max-[520px]:rounded max-[520px]:p-7" data-od-id="confirm-account">
+        <header class="mb-7">
+          <h1 class="mb-2 font-display text-[1.625rem] font-bold leading-tight tracking-[-0.025em]">Confirm your account</h1>
+          <p class="text-[0.9375rem] leading-relaxed text-muted">We sent a 6-digit verification code to <code id="pending-email" class="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[0.9em] text-fg">your email</code>. Codes expire in 10 minutes.</p>
         </header>
 
-        <div class="change-email">
+        <div class="mb-5 flex items-center justify-between rounded border border-border-subtle bg-surface-2 px-4 py-3">
           <div>
-            <div class="change-email__label">Sending to</div>
-            <div class="change-email__value" id="pending-email-2">your@email.com</div>
+            <div class="font-mono text-[0.6875rem] font-semibold uppercase tracking-wider text-muted">Sending to</div>
+            <div id="pending-email-2" class="font-mono text-sm font-medium text-fg">your@email.com</div>
           </div>
-          <a href="sign-up.html" class="change-email__btn">Change email</a>
+          <a href="sign-up.html" class="font-mono text-[0.75rem] font-semibold uppercase tracking-wider text-accent hover:underline">Change email</a>
         </div>
 
-        <div class="auth-alert auth-alert--error" id="alert" hidden role="alert">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <span id="alert-msg"></span>
-        </div>
-
-        <form class="auth-form" id="confirm-form" novalidate style="margin-top: 8px">
-          <div class="field" data-field="code">
-            <label class="field__label" for="otp-1" style="margin-bottom: 4px">Verification code</label>
-            <div class="otp" id="otp" role="group" aria-label="6-digit verification code">
-              <input
-                class="otp__cell"
-                id="otp-1"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 1"
-                autocomplete="one-time-code"
-              />
-              <input
-                class="otp__cell"
-                id="otp-2"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 2"
-              />
-              <input
-                class="otp__cell"
-                id="otp-3"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 3"
-              />
-              <input
-                class="otp__cell"
-                id="otp-4"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 4"
-              />
-              <input
-                class="otp__cell"
-                id="otp-5"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 5"
-              />
-              <input
-                class="otp__cell"
-                id="otp-6"
-                inputmode="numeric"
-                pattern="[0-9]"
-                maxlength="1"
-                aria-label="Digit 6"
-              />
+        <form id="confirm-form" novalidate class="mt-2 flex flex-col gap-4">
+          <div class="field flex flex-col gap-1.5" data-field="code">
+            <label for="otp-1" class="mb-1 font-mono text-xs font-semibold uppercase tracking-wider text-muted">Verification code</label>
+            <div id="otp" role="group" aria-label="6-digit verification code" class="grid grid-cols-6 gap-2 max-[420px]:gap-1.5">
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-1" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 1" autocomplete="one-time-code" />
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-2" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 2" />
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-3" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 3" />
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-4" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 4" />
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-5" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 5" />
+              <input class="otp__cell h-15 w-full rounded border border-border bg-surface text-center font-mono text-[1.625rem] font-semibold leading-none text-fg caret-accent transition focus:border-accent focus:outline-none focus:ring-[3px] focus:ring-accent/20 max-[420px]:h-[52px] max-[420px]:text-[1.375rem]" id="otp-6" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 6" />
             </div>
           </div>
 
-          <button type="submit" class="btn btn--primary btn--block" id="submit" disabled>
-            <span class="btn__spinner" aria-hidden="true"></span>
+          <button type="submit" id="submit" disabled
+            class="relative inline-flex h-11 w-full items-center justify-center gap-2 rounded bg-accent px-5 text-[0.9375rem] font-semibold tracking-tight text-accent-fg transition hover:bg-[color-mix(in_srgb,var(--color-accent)_88%,black)] disabled:cursor-not-allowed disabled:opacity-60">
+            <span class="btn__spinner hidden h-3.5 w-3.5 rounded-full border-2 border-accent-fg border-r-transparent"></span>
             <span class="btn__label">Confirm account</span>
           </button>
 
-          <div class="resend">
+          <div id="alert" hidden role="alert" class="flex items-start gap-2.5 rounded border border-danger/30 bg-[color-mix(in_srgb,var(--color-danger)_12%,transparent)] px-3.5 py-3 text-[0.875rem] leading-snug text-danger font-semibold">
+            <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+            <span id="alert-msg"></span>
+          </div>
+
+          <div class="resend mt-1.5 flex items-center justify-end gap-1.5 text-right text-[0.8125rem] text-muted">
             <span id="resend-state">Didn&rsquo;t get the code? </span>
-            <button type="button" class="resend__btn" id="resend" disabled>Resend code</button>
-            <span class="resend__timer" id="resend-timer" hidden> · resend in <span id="timer">30</span>s</span>
+            <button type="button" id="resend" disabled class="font-medium text-accent hover:underline disabled:cursor-not-allowed disabled:text-muted disabled:no-underline">Resend code</button>
+            <span id="resend-timer" hidden class="font-mono text-[0.8125rem] text-muted">&middot; resend in <span id="timer">30</span>s</span>
           </div>
         </form>
 
-        <div class="auth-success" id="success" role="status" aria-live="polite">
-          <div class="auth-success__icon" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+        <div id="success" class="auth-success flex-col items-center px-0 py-2 text-center">
+          <div class="mb-4 grid h-12 w-12 place-items-center rounded-full bg-success/10 text-success" aria-hidden="true">
+            <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
           </div>
-          <h2 class="auth-success__title">Account verified</h2>
-          <p class="auth-success__msg">Your workspace is ready. Redirecting you to sign in&hellip;</p>
-          <a href="sign-in.html" class="btn btn--primary btn--block">Continue to sign in</a>
+          <h2 class="mb-2 font-display text-xl font-bold tracking-[-0.02em]">Account verified</h2>
+          <p class="mx-auto mb-6 max-w-[36ch] text-[0.9375rem] leading-relaxed text-muted">Your workspace is ready. Redirecting you to sign in&hellip;</p>
+          <a href="sign-in.html" class="inline-flex h-11 w-full items-center justify-center rounded bg-accent px-5 text-[0.9375rem] font-semibold tracking-tight text-accent-fg transition hover:bg-[color-mix(in_srgb,var(--color-accent)_88%,black)]">Continue to sign in</a>
         </div>
 
-        <footer class="auth-card__footer" id="form-footer">
-          Wrong email? <a href="sign-up.html">Start over</a> · <a href="sign-in.html">Sign in</a>
+        <footer id="form-footer" class="mt-6 border-t border-border-subtle pt-5 text-center text-[0.875rem] text-muted">
+          Wrong email? <a href="sign-up.html" class="font-medium text-accent">Start over</a> &middot; <a href="sign-in.html" class="font-medium text-accent">Sign in</a>
         </footer>
       </div>
     </main>
@@ -850,7 +188,6 @@
     <script>
       (function () {
         'use strict';
-
         const root = document.documentElement;
         const themeBtn = document.getElementById('theme-toggle');
         const storedTheme = localStorage.getItem('tm-theme');
@@ -888,12 +225,10 @@
           if (langDetails.open && !langDetails.contains(e.target)) langDetails.removeAttribute('open');
         });
 
-        /* populate email from session */
         const pendingEmail = sessionStorage.getItem('tm-pending-email') || 'you@company.com';
         document.getElementById('pending-email').textContent = pendingEmail;
         document.getElementById('pending-email-2').textContent = pendingEmail;
 
-        /* OTP behavior */
         const cells = Array.from(document.querySelectorAll('.otp__cell'));
         const submit = document.getElementById('submit');
         const form = document.getElementById('confirm-form');
@@ -901,6 +236,7 @@
         const alertMsg = document.getElementById('alert-msg');
         const success = document.getElementById('success');
         const formFooter = document.getElementById('form-footer');
+        const changeEmailBlock = document.querySelector('.change-email') || document.querySelector('[class*="border-border-subtle"][class*="bg-surface-2"]');
 
         function updateFilledState() {
           cells.forEach((c) => c.classList.toggle('otp__cell--filled', c.value.length === 1));
@@ -911,10 +247,7 @@
             alert.hidden = true;
           }
         }
-
-        function focusCell(idx) {
-          if (idx >= 0 && idx < cells.length) cells[idx].focus();
-        }
+        function focusCell(idx) { if (idx >= 0 && idx < cells.length) cells[idx].focus(); }
 
         cells.forEach((cell, idx) => {
           cell.addEventListener('input', (e) => {
@@ -935,21 +268,17 @@
           cell.addEventListener('paste', (e) => {
             e.preventDefault();
             const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
-            text.split('').forEach((ch, i) => {
-              if (cells[i]) cells[i].value = ch;
-            });
+            text.split('').forEach((ch, i) => { if (cells[i]) cells[i].value = ch; });
             updateFilledState();
             focusCell(Math.min(text.length, cells.length - 1));
           });
           cell.addEventListener('focus', () => cell.select());
         });
 
-        /* resend timer */
         const resendBtn = document.getElementById('resend');
         const resendTimer = document.getElementById('resend-timer');
         const timerSpan = document.getElementById('timer');
         let cooldown = 30;
-
         function tick() {
           if (cooldown > 0) {
             resendTimer.hidden = false;
@@ -969,13 +298,11 @@
           resendBtn.disabled = true;
           tick();
           alert.hidden = true;
-          // brief inline notice
           const note = document.createElement('div');
-          note.className = 'auth-alert auth-alert--success';
+          note.className = 'flex items-start gap-2.5 rounded border border-success/30 bg-success/10 px-3.5 py-3 text-[0.875rem] leading-snug text-success';
           note.setAttribute('role', 'status');
-          note.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Code resent. Check your inbox.</span>';
-          const header = document.querySelector('.change-email');
+          note.innerHTML = '<svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Code resent. Check your inbox.</span>';
+          const header = document.querySelector('header');
           header.parentNode.insertBefore(note, header.nextSibling);
           setTimeout(() => {
             note.style.transition = 'opacity 200ms ease';
@@ -984,7 +311,6 @@
           }, 3000);
         });
 
-        /* submit */
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
           const code = cells.map((c) => c.value).join('');
@@ -995,10 +321,8 @@
           alert.hidden = true;
 
           await new Promise((r) => setTimeout(r, 900));
-
           submit.classList.remove('btn--loading');
 
-          // demo: any code starting with 0 is invalid; otherwise success
           if (code.startsWith('0')) {
             submit.disabled = false;
             alertMsg.textContent = 'That code doesn\u2019t match. Double-check your email or request a new code.';
@@ -1009,15 +333,13 @@
             return;
           }
 
-          // success
           form.style.display = 'none';
-          document.querySelector('.change-email').style.display = 'none';
+          if (changeEmailBlock) changeEmailBlock.style.display = 'none';
           formFooter.style.display = 'none';
           success.classList.add('is-active');
           sessionStorage.removeItem('tm-pending-email');
         });
 
-        // start focused on first cell for fast entry
         setTimeout(() => cells[0].focus(), 50);
       })();
     </script>

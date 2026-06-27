@@ -6,7 +6,7 @@ import { emailSchema, getValidated, validateRequest, z } from '../shared/http/ro
 const mailboxQuerySchema = z
   .object({
     email: emailSchema.optional(),
-    purpose: z.enum(['sign_in', 'sign_up']).optional(),
+    purpose: z.enum(['sign_in', 'sign_up', 'password_reset']).optional(),
   })
   .meta({ id: 'TestMailboxQuery' });
 

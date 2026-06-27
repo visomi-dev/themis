@@ -441,8 +441,32 @@ export async function requestPasswordReset(email: string) {
   const user = await findUserByEmail(email);
 
   if (!user || !user.emailVerifiedAt) {
-    return;
+    return null;
   }
 
-  await createChallenge(user, 'sign_in');
+  return createChallenge(user, 'password_reset');
+}
+
+export async function submitPasswordReset(userId: string, newPassword: string) {
+  const user = await findUserById(userId);
+
+  if (!user) {
+    throw new HttpError({
+      code: 'user_not_found',
+      message: 'The account could not be found.',
+      statusCode: 404,
+    });
+  }
+
+  const now = new Date();
+
+  await db
+    .update(users)
+    .set({
+      passwordHash: await hashSecret(newPassword),
+      updatedAt: now,
+    })
+    .where(eq(users.id, user.id));
+
+  await db.update(userDevices).set({ expiresAt: now, updatedAt: now }).where(eq(userDevices.userId, user.id));
 }

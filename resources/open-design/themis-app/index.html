@@ -4,588 +4,180 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Authentication · Themis</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: ['class', '[data-theme="dark"]'],
+        theme: {
+          extend: {
+            colors: {
+              bg: 'var(--color-bg)', surface: 'var(--color-panel)',
+              'surface-2': 'var(--color-panel)', 'surface-3': 'var(--color-panel-raised)',
+              fg: 'var(--color-fg)', muted: 'var(--color-muted-fg)',
+              border: 'var(--color-border)', 'border-subtle': 'var(--color-border-subtle)',
+              accent: 'var(--color-accent)', 'accent-fg': 'var(--color-accent-fg)',
+              success: '#16a34a', warning: '#d97706',
+              danger: 'var(--color-danger)',
+            },
+            accentColor: {
+              primary: 'var(--color-accent)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+              display: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            },
+            borderRadius: { sm: '6px', DEFAULT: '8px', md: '12px', lg: '16px', full: '9999px' },
+            boxShadow: {
+              sm: '0 1px 2px rgba(26,27,32,.06),0 1px 3px rgba(26,27,32,.04)',
+              md: '0 4px 12px rgba(26,27,32,.08),0 2px 4px rgba(26,27,32,.04)',
+              lg: '0 12px 32px rgba(26,27,32,.10),0 4px 8px rgba(26,27,32,.06)',
+            },
+          },
+        },
+      };
+    </script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
       :root {
         color-scheme: light;
-
-        /* Catalyst color tokens — Themis brand accent is Tailwind blue-600 */
         --color-bg: #ffffff;
         --color-panel: #fafafa;
         --color-panel-raised: #f4f4f5;
-        --color-surface-muted-soft: color-mix(in srgb, #09090b 4%, #ffffff);
         --color-fg: #09090b;
         --color-muted-fg: #71717a;
+        --color-accent: #2563eb;
+        --color-accent-fg: #ffffff;
+        --color-danger: #dc2626;
+        --color-ring: #2563eb;
         --color-border: rgb(9 9 11 / 0.10);
         --color-border-subtle: rgb(9 9 11 / 0.05);
-
-        --color-accent: #2563eb;
-        --color-accent-hover: #1d4ed8;
-        --color-accent-strong: #1e40af;
-        --color-accent-soft: rgb(37 99 235 / 0.10);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #16a34a;
-        --color-success-soft: rgb(22 163 74 / 0.14);
-        --color-warning: #d97706;
-        --color-warning-soft: rgb(217 119 6 / 0.14);
-        --color-danger: #dc2626;
-        --color-danger-soft: rgb(220 38 38 / 0.10);
-        --color-danger-strong: #991b1b;
-
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        --font-heading: 'Manrope', 'Inter', sans-serif;
-        --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-        --radius-sm: 0.5rem;
-        --radius-control: 0.5rem;
-        --radius-panel: 0.75rem;
-        --radius-lg: 1rem;
-        --radius-pill: 9999px;
-
-        --shadow-sm: 0 1px 2px rgb(9 9 11 / 0.06), 0 1px 1px rgb(9 9 11 / 0.04);
-        --shadow-md: 0 4px 12px rgb(9 9 11 / 0.08), 0 2px 4px rgb(9 9 11 / 0.04);
-        --shadow-lg: 0 12px 32px rgb(9 9 11 / 0.10), 0 4px 8px rgb(9 9 11 / 0.06);
-
-        --motion-fast: 120ms ease;
-        --motion-base: 180ms ease;
-        --motion-slow: 260ms cubic-bezier(0.2, 0, 0, 1);
       }
-      :root[data-theme='dark'] {
+      [data-theme='dark'] {
         color-scheme: dark;
-
         --color-bg: #09090b;
         --color-panel: #18181b;
         --color-panel-raised: #27272a;
-        --color-surface-muted-soft: color-mix(in srgb, #fafafa 5%, #09090b);
         --color-fg: #fafafa;
         --color-muted-fg: #a1a1aa;
+        --color-accent: #3b82f6;
+        --color-accent-fg: #ffffff;
+        --color-danger: #ef4444;
+        --color-ring: #3b82f6;
         --color-border: rgb(255 255 255 / 0.10);
         --color-border-subtle: rgb(255 255 255 / 0.05);
-
-        --color-accent: #3b82f6;
-        --color-accent-hover: #60a5fa;
-        --color-accent-strong: #93c5fd;
-        --color-accent-soft: rgb(59 130 246 / 0.18);
-        --color-accent-fg: #ffffff;
-
-        --color-success: #22c55e;
-        --color-success-soft: rgb(34 197 94 / 0.18);
-        --color-warning: #fbbf24;
-        --color-warning-soft: rgb(251 191 36 / 0.18);
-        --color-danger: #ef4444;
-        --color-danger-soft: rgb(239 68 68 / 0.14);
-        --color-danger-strong: #f87171;
-
-        --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30), 0 1px 1px rgb(0 0 0 / 0.20);
-        --shadow-md: 0 4px 12px rgb(0 0 0 / 0.40), 0 2px 4px rgb(0 0 0 / 0.20);
-        --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.50), 0 4px 8px rgb(0 0 0 / 0.30);
       }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-      html {
-        -webkit-text-size-adjust: 100%;
-      }
-      body {
-        margin: 0;
-        background: var(--color-bg);
-        color: var(--color-fg);
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        min-height: 100vh;
-      }
-      img,
-      svg {
-        display: block;
-        max-width: 100%;
-      }
-      a {
-        color: var(--color-accent);
-        text-decoration: none;
-        transition: color var(--motion-fast);
-      }
-      a:hover {
-        color: var(--color-accent-hover);
-      }
-      button {
-        font: inherit;
-        cursor: pointer;
-        border: 0;
-        background: none;
-        padding: 0;
-        color: inherit;
-      }
-      input,
-      select,
-      textarea {
-        font: inherit;
-        color: inherit;
-      }
-      p {
-        margin: 0;
-        text-wrap: pretty;
-      }
-      h1,
-      h2,
-      h3,
-      h4 {
-        margin: 0;
-        text-wrap: balance;
-        font-family: var(--font-heading);
-        letter-spacing: -0.02em;
-      }
-      :focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 2px;
-        border-radius: 4px;
-      }
-
-      .auth-shell {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: color-mix(in srgb, var(--color-bg) 92%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--color-border-subtle);
-      }
-      .auth-shell__inner {
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 14px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--color-fg);
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 1.0625rem;
-        letter-spacing: -0.02em;
-      }
-      .brand:hover {
-        color: var(--color-fg);
-      }
-      .brand__mark {
-        width: 28px;
-        height: 28px;
-        display: grid;
-        place-items: center;
-        background: var(--color-accent);
-        color: var(--color-accent-fg);
-        border-radius: var(--radius-sm);
-      }
-      .brand__mark svg {
-        width: 16px;
-        height: 16px;
-      }
-      .brand__name {
-        font-weight: 700;
-      }
-
-      .auth-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .lang {
-        position: relative;
-      }
-      .lang__summary {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        font-family: var(--font-mono);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        list-style: none;
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .lang__summary::-webkit-details-marker {
-        display: none;
-      }
-      .lang__summary:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang[open] .lang__summary {
-        border-color: var(--color-border-subtle);
-        background: var(--color-panel);
-      }
-      .lang__summary svg {
-        width: 12px;
-        height: 12px;
-        opacity: 0.6;
-      }
-      .lang__code {
-        font-weight: 600;
-      }
-      .lang__menu {
-        position: absolute;
-        top: calc(100% + 6px);
-        right: 0;
-        min-width: 200px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        box-shadow: var(--shadow-md);
-        padding: 6px;
-        list-style: none;
-        margin: 0;
-        z-index: 20;
-      }
-      .lang__item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 10px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        color: var(--color-fg);
-        font-size: 0.875rem;
-        transition: background var(--motion-fast);
-      }
-      .lang__item:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .lang__item--active {
-        background: var(--color-accent-soft);
-        color: var(--color-accent);
-        font-weight: 600;
-      }
-      .lang__item code {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        color: var(--color-muted-fg);
-      }
-
-      .theme-toggle {
-        width: 38px;
-        height: 38px;
-        display: grid;
-        place-items: center;
-        border-radius: var(--radius-control);
-        border: 1px solid transparent;
-        color: var(--color-fg);
-        transition:
-          background var(--motion-fast),
-          border-color var(--motion-fast);
-      }
-      .theme-toggle:hover {
-        background: var(--color-surface-muted-soft);
-      }
-      .theme-toggle svg {
-        width: 16px;
-        height: 16px;
-      }
-      :root[data-theme='light'] .theme-toggle .icon-moon {
-        display: none;
-      }
-      :root[data-theme='dark'] .theme-toggle .icon-sun {
-        display: none;
-      }
-
-      .auth-main {
-        min-height: calc(100vh - 64px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 48px 24px;
-      }
-
-      .launcher {
-        width: 100%;
-        max-width: 760px;
-        text-align: center;
-      }
-      .launcher__eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-pill);
-        background: var(--color-panel);
-        color: var(--color-muted-fg);
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        margin-bottom: 24px;
-      }
-      .launcher__eyebrow::before {
-        content: '';
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--color-success);
-        box-shadow: 0 0 0 4px var(--color-success-soft);
-      }
-      .launcher h1 {
-        font-size: clamp(2rem, 5vw, 2.75rem);
-        font-weight: 700;
-        line-height: 1.1;
-        margin-bottom: 12px;
-        letter-spacing: -0.025em;
-      }
-      .launcher__sub {
-        color: var(--color-muted-fg);
-        font-size: 1.0625rem;
-        max-width: 52ch;
-        margin: 0 auto 40px;
-      }
-      .launcher__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 12px;
-        text-align: left;
-      }
-      .launcher__card {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 20px;
-        background: var(--color-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-panel);
-        color: var(--color-fg);
-        transition:
-          border-color var(--motion-base),
-          box-shadow var(--motion-base),
-          transform var(--motion-fast);
-      }
-      .launcher__card:hover {
-        color: var(--color-fg);
-        border-color: var(--color-accent);
-        box-shadow: var(--shadow-sm);
-        transform: translateY(-1px);
-      }
-      .launcher__card-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .launcher__card-title {
-        font-family: var(--font-heading);
-        font-weight: 600;
-        font-size: 1rem;
-        letter-spacing: -0.01em;
-      }
-      .launcher__card-tag {
-        font-family: var(--font-mono);
-        font-size: 0.6875rem;
-        color: var(--color-muted-fg);
-        letter-spacing: 0.04em;
-      }
-      .launcher__card-desc {
-        color: var(--color-muted-fg);
-        font-size: 0.875rem;
-        line-height: 1.5;
-      }
-      .launcher__card-arrow {
-        align-self: flex-end;
-        color: var(--color-muted-fg);
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        margin-top: 4px;
-      }
-      .launcher__card:hover .launcher__card-arrow {
-        color: var(--color-accent);
-      }
-      .launcher__foot {
-        margin-top: 40px;
-        padding-top: 24px;
-        border-top: 1px solid var(--color-border-subtle);
-        color: var(--color-muted-fg);
-        font-size: 0.8125rem;
-        font-family: var(--font-mono);
-      }
-
+      .lang__summary::-webkit-details-marker { display: none; }
+      [data-theme='light'] .icon-moon { @apply hidden; }
+      [data-theme='dark'] .icon-sun { @apply hidden; }
+      .lang[open] .lang__summary { @apply border-border-subtle bg-surface; }
+      .launcher__card:hover { @apply -translate-y-px border-accent shadow-sm; }
+      .launcher__card:hover .launcher__card-arrow { @apply text-accent; }
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          transition-duration: 0.01ms !important;
-        }
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       }
     </style>
   </head>
-  <body class="auth-screen" data-screen-label="Authentication launcher">
-    <header class="auth-shell">
-      <div class="auth-shell__inner">
-        <a href="index.html" class="brand" aria-label="Themis home">
-          <span class="brand__mark" aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M5 9h14" />
-              <path d="M12 9V3" />
-              <circle cx="5" cy="12" r="2.2" fill="currentColor" />
-              <circle cx="19" cy="12" r="2.2" fill="currentColor" />
-              <path d="M9 21h6" />
-            </svg>
+  <body class="min-h-screen bg-bg font-sans text-fg antialiased" data-screen-label="Authentication launcher">
+    <header class="sticky top-0 z-10 bg-bg/85 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3.5">
+        <a href="index.html" class="inline-flex items-center gap-2.5 text-fg" aria-label="Themis home">
+          <span class="grid h-7 w-7 place-items-center rounded-md bg-accent text-accent-fg" aria-hidden="true">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14" /><path d="M12 9V3" /><circle cx="5" cy="12" r="2.2" fill="currentColor" /><circle cx="19" cy="12" r="2.2" fill="currentColor" /><path d="M9 21h6" /></svg>
           </span>
-          <span class="brand__name">Themis</span>
+          <span class="font-display text-[1.0625rem] font-bold tracking-tight">Themis</span>
         </a>
-
-        <div class="auth-controls">
-          <details class="lang" id="lang">
-            <summary class="lang__summary" aria-label="Language">
-              <span class="lang__code">EN</span>
-              <svg
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 4.5l3 3 3-3" />
-              </svg>
+        <div class="flex items-center gap-2">
+          <details id="lang" class="relative">
+            <summary class="lang__summary inline-flex cursor-pointer list-none items-center gap-1.5 rounded px-3 py-2 font-mono text-xs font-medium text-fg transition-colors hover:bg-surface-2">
+              <span class="lang__code font-semibold">EN</span>
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5l3 3 3-3" /></svg>
             </summary>
-            <ul class="lang__menu" role="listbox">
-              <li class="lang__item lang__item--active" data-lang="EN" role="option" aria-selected="true">
-                <span>English</span><code>EN</code>
-              </li>
-              <li class="lang__item" data-lang="ES" role="option"><span>Español</span><code>ES</code></li>
-              <li class="lang__item" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code>PT</code></li>
-              <li class="lang__item" data-lang="JA" role="option"><span>日本語</span><code>JA</code></li>
-              <li class="lang__item" data-lang="DE" role="option"><span>Deutsch</span><code>DE</code></li>
-              <li class="lang__item" data-lang="ZH" role="option"><span>中文</span><code>ZH</code></li>
+            <ul class="absolute right-0 top-[calc(100%+6px)] z-20 m-0 min-w-[200px] list-none rounded-md border border-border-subtle bg-surface p-1.5 shadow-md" role="listbox">
+              <li class="lang__item lang__item--active flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="EN" role="option" aria-selected="true"><span>English</span><code class="font-mono text-xs text-muted">EN</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ES" role="option"><span>Español</span><code class="font-mono text-xs text-muted">ES</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="PT-BR" role="option"><span>Português (Brasil)</span><code class="font-mono text-xs text-muted">PT</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="JA" role="option"><span>日本語</span><code class="font-mono text-xs text-muted">JA</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="DE" role="option"><span>Deutsch</span><code class="font-mono text-xs text-muted">DE</code></li>
+              <li class="lang__item flex cursor-pointer items-center justify-between rounded-sm px-2.5 py-2 text-sm text-fg transition-colors hover:bg-surface-2" data-lang="ZH" role="option"><span>中文</span><code class="font-mono text-xs text-muted">ZH</code></li>
             </ul>
           </details>
-
-          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
-            <svg
-              class="icon-sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="4" />
-              <path
-                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
-              />
-            </svg>
-            <svg
-              class="icon-moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
+          <button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" class="grid h-[38px] w-[38px] place-items-center rounded text-fg transition-colors hover:bg-surface-2">
+            <svg class="icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
+            <svg class="icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
           </button>
         </div>
       </div>
     </header>
 
-    <main class="auth-main" data-od-id="launcher">
-      <div class="launcher">
-        <div class="launcher__eyebrow">Authentication · Operational Access</div>
-        <h1>Sign in to Themis</h1>
-        <p class="launcher__sub">
-          Operational work surface for AI-assisted engineering. Tasks, decisions, runs, and provenance for the whole
-          team &mdash; humans and agents.
+    <main class="flex min-h-[calc(100vh-64px)] items-center justify-center px-6 py-12" data-od-id="launcher">
+      <div class="w-full max-w-[760px] text-center">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface px-3 py-1.5 font-mono text-[0.75rem] font-medium uppercase tracking-wider text-muted">
+          <span class="block h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_0_4px_color-mix(in_srgb,#16a34a_14%,transparent)]"></span>
+          Authentication · Operational Access
+        </div>
+        <h1 class="mb-3 font-display text-[clamp(2rem,5vw,2.75rem)] font-bold leading-[1.1] tracking-[-0.025em]">Sign in to Themis</h1>
+        <p class="mx-auto mb-10 max-w-[52ch] text-[1.0625rem] leading-relaxed text-muted">
+          Operational work surface for AI-assisted engineering. Tasks, decisions, runs, and provenance for the whole team &mdash; humans and agents.
         </p>
 
-        <div class="launcher__grid">
-          <a class="launcher__card" href="sign-in.html">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">Sign in</span>
-              <span class="launcher__card-tag">01</span>
+        <div class="grid gap-3 text-left" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+          <a href="sign-in.html" class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg transition hover:-translate-y-px hover:border-accent hover:shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">Sign in</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">01</span>
             </div>
-            <p class="launcher__card-desc">Use your work email and password to access your workspace.</p>
-            <span class="launcher__card-arrow">Open &rarr;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">Use your work email and password to access your workspace.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted transition-colors">Open &rarr;</span>
           </a>
 
-          <a class="launcher__card" href="sign-up.html">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">Create account</span>
-              <span class="launcher__card-tag">02</span>
+          <a href="sign-up.html" class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg transition hover:-translate-y-px hover:border-accent hover:shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">Create account</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">02</span>
             </div>
-            <p class="launcher__card-desc">Start a new workspace with email and a strong password.</p>
-            <span class="launcher__card-arrow">Open &rarr;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">Start a new workspace with email and a strong password.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted transition-colors">Open &rarr;</span>
           </a>
 
-          <a class="launcher__card" href="confirm-account.html">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">Confirm account</span>
-              <span class="launcher__card-tag">03</span>
+          <a href="confirm-account.html" class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg transition hover:-translate-y-px hover:border-accent hover:shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">Confirm account</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">03</span>
             </div>
-            <p class="launcher__card-desc">Enter the 6-digit code we sent to verify your address.</p>
-            <span class="launcher__card-arrow">Open &rarr;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">Enter the 6-digit code we sent to verify your address.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted transition-colors">Open &rarr;</span>
           </a>
 
-          <a class="launcher__card" href="recover-password.html">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">Recover password</span>
-              <span class="launcher__card-tag">04</span>
+          <a href="recover-password.html" class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg transition hover:-translate-y-px hover:border-accent hover:shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">Recover password</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">04</span>
             </div>
-            <p class="launcher__card-desc">Email yourself a recovery link when you&rsquo;ve forgotten your password.</p>
-            <span class="launcher__card-arrow">Open &rarr;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">Email yourself a recovery link when you&rsquo;ve forgotten your password.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted transition-colors">Open &rarr;</span>
           </a>
 
-          <a class="launcher__card" href="reset-password.html">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">Set a new password</span>
-              <span class="launcher__card-tag">05</span>
+          <a href="reset-password.html" class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg transition hover:-translate-y-px hover:border-accent hover:shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">Set a new password</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">05</span>
             </div>
-            <p class="launcher__card-desc">Choose a new password after opening a recovery link.</p>
-            <span class="launcher__card-arrow">Open &rarr;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">Choose a new password after opening a recovery link.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted transition-colors">Open &rarr;</span>
           </a>
 
-          <div class="launcher__card" style="opacity: 0.6; cursor: not-allowed" aria-disabled="true">
-            <div class="launcher__card-head">
-              <span class="launcher__card-title">SSO &amp; passkeys</span>
-              <span class="launcher__card-tag">soon</span>
+          <div class="launcher__card flex flex-col gap-2 rounded-md border border-border-subtle bg-surface p-5 text-fg opacity-60" aria-disabled="true">
+            <div class="flex items-center justify-between">
+              <span class="font-display text-base font-semibold tracking-[-0.01em]">SSO &amp; passkeys</span>
+              <span class="font-mono text-[0.6875rem] tracking-wider text-muted">soon</span>
             </div>
-            <p class="launcher__card-desc">SAML SSO and passkey sign-in are planned for the Team tier.</p>
-            <span class="launcher__card-arrow">&mdash;</span>
+            <p class="text-[0.875rem] leading-relaxed text-muted">SAML SSO and passkey sign-in are planned for the Team tier.</p>
+            <span class="launcher__card-arrow mt-1 self-end font-mono text-xs text-muted">&mdash;</span>
           </div>
         </div>
 
-        <div class="launcher__foot">
+        <div class="mt-10 border-t border-border-subtle pt-6 font-mono text-[0.8125rem] text-muted">
           Themis &middot; secure-by-default &middot; session tokens are HTTP-only, 30-day rotation
         </div>
       </div>
@@ -594,7 +186,6 @@
     <script>
       (function () {
         'use strict';
-
         const root = document.documentElement;
         const themeBtn = document.getElementById('theme-toggle');
         const storedTheme = localStorage.getItem('tm-theme');

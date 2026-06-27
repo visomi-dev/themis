@@ -26,7 +26,9 @@ export class RadioGroup implements ControlValueAccessor {
   readonly value = signal('');
   readonly formDisabled = signal(false);
   readonly optionClasses = computed(() =>
-    uiClass('grid gap-2 rounded-[var(--radius-control)] border border-outline/30 bg-panel p-3 text-sm text-fg'),
+    uiClass(
+      'grid gap-2 rounded-[var(--radius-control)] border border-zinc-500/30 dark:border-zinc-400/30 bg-zinc-50 dark:bg-zinc-900 p-3 text-sm text-zinc-950 dark:text-zinc-50',
+    ),
   );
 
   private onChange: (value: string) => void = () => undefined;

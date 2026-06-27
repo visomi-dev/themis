@@ -8,7 +8,7 @@ test.describe('theme', () => {
 
     await expect(page.locator('html')).not.toHaveClass(/dark/);
 
-    await page.getByRole('button', { name: 'Toggle theme' }).click();
+    await page.getByRole('button', { name: 'Toggle light/dark theme' }).click();
 
     await expect(page.locator('html')).toHaveClass(/dark/);
 

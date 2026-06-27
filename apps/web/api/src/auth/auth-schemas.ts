@@ -21,7 +21,9 @@ export const challengeSchema = z
     challengeId: challengeIdSchema,
     email: emailSchema,
     expiresAt: z.string().meta({ description: 'Challenge expiry timestamp.', example: '2026-01-01T00:10:00.000Z' }),
-    purpose: z.enum(['sign_in', 'sign_up']).meta({ description: 'Challenge purpose.', example: 'sign_up' }),
+    purpose: z
+      .enum(['sign_in', 'sign_up', 'password_reset'])
+      .meta({ description: 'Challenge purpose.', example: 'sign_up' }),
   })
   .meta({ id: 'AuthChallenge' });
 
@@ -55,6 +57,23 @@ export const forgottenPasswordSchema = z
     email: emailSchema,
   })
   .meta({ id: 'ForgottenPasswordRequest' });
+
+export const passwordResetVerifySchema = challengeVerificationSchema.meta({
+  id: 'PasswordResetVerify',
+});
+
+export const passwordResetSchema = z
+  .object({
+    password: passwordSchema,
+  })
+  .meta({ id: 'PasswordResetSubmit' });
+
+export const passwordResetSessionSchema = z
+  .object({
+    active: z.boolean().meta({ description: 'Whether a reset session is currently active.' }),
+    email: z.string().nullable().meta({ description: 'Email of the account being reset.' }),
+  })
+  .meta({ id: 'PasswordResetSession' });
 
 export const sessionResponseSchema = z
   .object({
@@ -160,8 +179,37 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: forgottenPasswordSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: messageResponseSchema } },
-          description: 'Password reset requested.',
+          content: { 'application/json': { schema: challengeSchema } },
+          description: 'Password reset challenge created.',
+        },
+      },
+    },
+  },
+  '/auth/password/reset/verify': {
+    post: {
+      requestBody: { content: { 'application/json': { schema: passwordResetVerifySchema } } },
+      responses: {
+        200: {
+          content: { 'application/json': { schema: passwordResetSessionSchema } },
+          description: 'Reset session established.',
+        },
+      },
+    },
+  },
+  '/auth/password/reset': {
+    post: {
+      requestBody: { content: { 'application/json': { schema: passwordResetSchema } } },
+      responses: {
+        204: { description: 'Password updated.' },
+      },
+    },
+  },
+  '/auth/password/reset/session': {
+    get: {
+      responses: {
+        200: {
+          content: { 'application/json': { schema: passwordResetSessionSchema } },
+          description: 'Current reset session state.',
         },
       },
     },

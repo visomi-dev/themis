@@ -20,13 +20,17 @@ const toneAliases: Record<string, ButtonTone> = {
 };
 
 const buttonBase =
-  /* tw */ 'ui-focus-ring relative isolate inline-flex items-center justify-center gap-x-2 rounded-[var(--radius-control)] font-semibold transition disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-wait [&_[data-slot=icon]]:size-5';
+  /* tw */ 'ui-focus-ring ui-touch-target relative isolate inline-flex items-center justify-center gap-x-2 rounded-[var(--radius-control)] font-semibold transition disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-wait [&_[data-slot=icon]]:size-5';
 
 /**
  * Solid buttons follow the Catalyst optical-border pattern: the `background`
  * is the `--btn-border` color (one shade darker than the visible fill), the
  * `before` pseudo-element renders the actual button color, and the `after`
  * pseudo-element handles the inset highlight shadow plus the hover overlay.
+ *
+ * All tone-specific values come from the Tailwind v4 palette via
+ * `var(--color-*)`. The Button does not depend on any custom semantic
+ * tokens in styles.base.css.
  */
 const buttonSolid = /* tw */ [
   'border-transparent shadow-sm',
@@ -36,17 +40,17 @@ const buttonSolid = /* tw */ [
   'disabled:before:shadow-none disabled:after:shadow-none',
 ].join(' ');
 
-const buttonOutline = /* tw */ 'border border-border bg-transparent';
+const buttonOutline = /* tw */ 'border border-zinc-950/10 dark:border-white/10 bg-transparent';
 const buttonPlain = /* tw */ 'bg-transparent shadow-none';
 
 const buttonTones = Object.freeze({
-  zinc: /* tw */ '[--btn-bg:var(--color-panel-raised)] [--btn-border:var(--color-border)] [--btn-fg:var(--color-fg)] [--btn-hover-overlay:rgb(9_9_11/0.06)] text-fg hover:[--btn-bg:var(--color-bg)]',
-  blue: /* tw */ '[--btn-bg:var(--color-accent)] [--btn-border:var(--color-accent)] [--btn-fg:var(--color-accent-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-accent-fg',
-  red: /* tw */ '[--btn-bg:var(--color-danger)] [--btn-border:var(--color-danger)] [--btn-fg:var(--color-danger-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-danger-fg',
+  zinc: /* tw */ '[--btn-bg:var(--color-zinc-100)] [--btn-border:var(--color-zinc-200)] [--btn-fg:var(--color-zinc-950)] [--btn-hover-overlay:rgb(9_9_11/0.06)] text-zinc-950 dark:[--btn-bg:var(--color-zinc-800)] dark:[--btn-border:var(--color-zinc-700)] dark:[--btn-fg:var(--color-zinc-50)] dark:[--btn-hover-overlay:rgb(255_255_255/0.05)] dark:text-zinc-50',
+  blue: /* tw */ '[--btn-bg:var(--color-blue-600)] [--btn-border:var(--color-blue-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
+  red: /* tw */ '[--btn-bg:var(--color-red-600)] [--btn-border:var(--color-red-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
   green:
-    /* tw */ '[--btn-bg:var(--color-success)] [--btn-border:var(--color-success)] [--btn-fg:var(--color-on-success)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-success',
+    /* tw */ '[--btn-bg:var(--color-green-600)] [--btn-border:var(--color-green-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
   amber:
-    /* tw */ '[--btn-bg:var(--color-tertiary)] [--btn-border:var(--color-tertiary)] [--btn-fg:var(--color-on-tertiary)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-tertiary',
+    /* tw */ '[--btn-bg:var(--color-amber-500)] [--btn-border:var(--color-amber-600)] [--btn-fg:var(--color-zinc-950)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-zinc-950',
 });
 
 const buttonSizes = Object.freeze({
@@ -54,10 +58,6 @@ const buttonSizes = Object.freeze({
   md: /* tw */ 'min-h-11 px-4 py-2 text-sm',
   lg: /* tw */ 'min-h-12 px-5 py-2.5 text-base',
 });
-
-function resolveTone(value: string): ButtonTone {
-  return toneAliases[value] ?? (value as ButtonTone);
-}
 
 @Component({
   host: {
@@ -89,4 +89,8 @@ export class Button {
 
     return uiClass(buttonBase, buttonPlain, buttonTones[tone], buttonSizes[this.size()]);
   });
+}
+
+function resolveTone(value: string): ButtonTone {
+  return toneAliases[value] ?? (value as ButtonTone);
 }

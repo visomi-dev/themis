@@ -34,15 +34,19 @@ export class RadioCard implements ControlValueAccessor {
   readonly checked = computed(() => this.value() === this.optionValue());
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring relative flex min-h-24 cursor-pointer flex-col rounded-[var(--radius-panel)] border bg-panel p-4 text-fg transition',
-      this.checked() ? 'border-accent ring-2 ring-ring/20' : 'border-outline/30 hover:bg-panel-raised',
+      'ui-focus-ring relative flex min-h-24 cursor-pointer flex-col rounded-[var(--radius-panel)] border bg-zinc-50 dark:bg-zinc-900 p-4 text-zinc-950 dark:text-zinc-50 transition',
+      this.checked()
+        ? 'border-blue-600 dark:border-blue-500 ring-2 ring-blue-500/20'
+        : 'border-zinc-500/30 dark:border-zinc-400/30 hover:bg-zinc-100 dark:bg-zinc-800',
       (this.disabled() || this.formDisabled()) && 'pointer-events-none opacity-50',
     ),
   );
   readonly markerClasses = computed(() =>
     uiClass(
       'absolute right-3 top-3 flex size-6 items-center justify-center rounded-full border-2 transition',
-      this.checked() ? 'border-accent text-accent' : 'border-outline/30 text-transparent',
+      this.checked()
+        ? 'border-blue-600 dark:border-blue-500 text-accent'
+        : 'border-zinc-500/30 dark:border-zinc-400/30 text-transparent',
     ),
   );
 

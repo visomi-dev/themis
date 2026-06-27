@@ -1,25 +1,35 @@
 # Themis UI Recipes
 
-## Auth Page (sign-in / sign-up / verify / forgotten-password)
+## Auth Shell (sign-in / sign-up / verify / forgotten-password / reset-password)
 
-All auth routes share the same `app-auth-layout` primitive. The brand column is projected into the left panel via `data-slot="brand"`, and the form content goes into the right panel.
+All auth routes share the same `app-auth-layout` primitive. The shell renders a sticky header (brand + language switcher + theme toggle) and a single-column main area for the card. The card is `app-auth-card` (max-width 440px, padded, surface + subtle border + shadow-sm). Both shell and card expose `data-od-id` hooks for visual e2e assertions (`auth-shell`, `brand`, `lang-menu`, `theme-toggle`, `auth-card`).
 
 ```html
 <app-auth-layout>
-  <div data-slot="brand" class="space-y-6">
-    <app-logo variant="wordmark" />
-    <app-text size="sm" tone="muted" i18n="@@signInEyebrow">AI-integrated technical access layer</app-text>
-    <app-heading class="hidden md:block" i18n="@@signInHeroTitle" level="1">
-      Human and agent execution, secured.
-    </app-heading>
-  </div>
+  <app-auth-card>
+    <header class="mb-7 space-y-2">
+      <p
+        data-slot="kicker"
+        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        i18n="@@signInKicker"
+      >
+        Account access
+      </p>
+      <h1
+        data-slot="title"
+        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        i18n="@@signInTitle"
+      >
+        Sign in
+      </h1>
+      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signInSub">
+        Welcome back. Use your work email to access your Themis workspace.
+      </p>
+    </header>
 
-  <div class="flex justify-end gap-3 pb-6">
-    <app-theme-switcher />
-  </div>
-
-  <app-card padding="lg" tone="raised">
-    <app-heading i18n="@@signInPanelTitle" level="2">Sign in</app-heading>
+    @if (errorMessage()) {
+    <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
+    }
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
       <app-field>
@@ -27,7 +37,7 @@ All auth routes share the same `app-auth-layout` primitive. The brand column is 
         <app-input
           autocomplete="email"
           formControlName="email"
-          id="sign-in-email"
+          [controlId]="'sign-in-email'"
           invalid="!!emailError()"
           name="email"
           placeholder="name@organization.com"
@@ -35,7 +45,7 @@ All auth routes share the same `app-auth-layout` primitive. The brand column is 
           (blur)="updateEmailError()"
         />
         @if (emailError(); as message) {
-        <app-error-message id="sign-in-email-error">{{ message }}</app-error-message>
+        <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
         }
       </app-field>
 
@@ -44,29 +54,64 @@ All auth routes share the same `app-auth-layout` primitive. The brand column is 
         <app-password-input
           autocomplete="current-password"
           formControlName="password"
-          id="sign-in-password"
+          [controlId]="'sign-in-password'"
           invalid="!!passwordError()"
           name="password"
           placeholder="***************"
           (blur)="updatePasswordError()"
         />
         @if (passwordError(); as message) {
-        <app-error-message id="sign-in-password-error">{{ message }}</app-error-message>
+        <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
         }
       </app-field>
 
-      <app-button i18n="@@signInSubmitButton" tone="blue" type="submit" [loading]="submitting()">Sign in</app-button>
+      <app-button data-slot="submit" i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+        >Sign in</app-button
+      >
     </form>
-  </app-card>
+
+    <p class="text-muted-fg mt-6 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
+    <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
+  </app-auth-card>
 </app-auth-layout>
 ```
 
 Notes:
 
-- Errors are kept in a `signal<string>` updated on `blur` and on `submit` so the template stays reactive without watching the form.
-- `app-password-input` already implements the visibility toggle; no PrimeNG `p-password` required.
-- Keep label and button copy as plain text nodes with `i18n` markers; the Angular compiler extracts them.
-- The submit button uses `tone="blue"`, the Catalyst primary color.
+- The auth chrome (brand, lang, theme toggle) is owned by `app-auth-layout`; routes only render the card and its form.
+- `app-password-input` defaults to `variant="text"` (mono "Show" / "Hide" with aria-label "Show password" / "Hide password"). Use `variant="icon"` for the eye / eye-off icon.
+- `app-error-message` prepends a circle-alert icon when `withIcon=true` (default).
+- Use `data-slot` markers (`kicker`, `title`, `sub`, `submit`, `footer`) for e2e copy assertions. Open Design copy is locked in the spec.
+- The submit button uses `tone="accent"` (the Catalyst `blue-600` brand color) and `app-alert` with `variant="auth"` for danger/success above the form.
+
+## Password Strength (sign-up, reset-password)
+
+`app-password-strength` mounts a 4-bar meter driven by a signal of the password value. The level is reflected on `data-level` (0..4) and the accessible label updates live.
+
+```html
+<app-field>
+  <app-label for="sign-up-password" i18n="@@signUpPasswordLabel">Password</app-label>
+  <app-password-input
+    autocomplete="new-password"
+    formControlName="password"
+    [controlId]="'sign-up-password'"
+    [invalid]="!!passwordError()"
+    name="password"
+    placeholder="***************"
+    (blur)="updatePasswordError()"
+  />
+  <app-password-strength [password]="passwordValue" />
+  @if (passwordError(); as message) {
+  <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
+  }
+</app-field>
+```
+
+The pure `computePasswordStrength(value)` helper is exported so unit tests can validate the level mapping without rendering.
+
+## Reset Password (single-screen OTP + password)
+
+`/app/reset-password` uses one card with internal step signal (otp -> password -> success). The OTP step exposes `data-od-id="pending-email"` for visual e2e. The password step reuses `app-password-strength`.
 
 ## PIN / Verification Code
 

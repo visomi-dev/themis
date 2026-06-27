@@ -1,9 +1,28 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { LangSwitcher, type LanguageOption } from '../lang-switcher/lang-switcher';
+import { ThemeSwitcher } from '../../../layout/theme-switcher/theme-switcher';
+import { Logo } from '../../../layout/logo/logo';
+
+const DEFAULT_LANGUAGES: ReadonlyArray<LanguageOption> = Object.freeze([
+  { code: 'EN', label: 'English' },
+  { code: 'ES', label: 'Español' },
+  { code: 'PT-BR', label: 'Português (Brasil)' },
+  { code: 'JA', label: '日本語' },
+  { code: 'DE', label: 'Deutsch' },
+  { code: 'ZH', label: '中文' },
+]);
 
 @Component({
-  host: { class: /* tw */ 'block min-h-full' },
+  host: {
+    class: /* tw */ 'flex min-h-full flex-col',
+  },
+  imports: [LangSwitcher, Logo, RouterLink, ThemeSwitcher],
   selector: 'app-auth-layout',
   templateUrl: './auth-layout.html',
   styleUrl: './auth-layout.css',
 })
-export class AuthLayout {}
+export class AuthLayout {
+  readonly languages = DEFAULT_LANGUAGES;
+}

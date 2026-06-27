@@ -1,29 +1,28 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { SIGN_IN_URL, VERIFY_EMAIL_URL } from '../../shared/constants/routes';
 import { controlError } from '../../shared/form/form-errors';
-import { Logo } from '../../shared/layout/logo/logo';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
+import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
-import { Card } from '../../shared/ui/layout/card/card';
 import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
-import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
 import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
+import { PasswordStrength } from '../../shared/ui/forms/password-strength/password-strength';
 
 type SignUpForm = FormGroup<{
   email: FormControl<string>;
   password: FormControl<string>;
+  confirmPassword: FormControl<string>;
 }>;
 
 @Component({
@@ -32,21 +31,19 @@ type SignUpForm = FormGroup<{
   },
   imports: [
     Alert,
+    AuthCard,
     AuthLayout,
     Button,
-    Card,
     Description,
     ErrorMessage,
     Field,
-    Heading,
     Input,
     Label,
     Link,
-    Logo,
     PasswordInput,
+    PasswordStrength,
     ReactiveFormsModule,
     RouterLink,
-    ThemeSwitcher,
   ],
   selector: 'app-sign-up',
   templateUrl: './sign-up.html',
@@ -65,6 +62,10 @@ export class SignUp {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(8)],
     }),
+    confirmPassword: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
   });
 
   readonly submitting = this.auth.submitting;
@@ -72,6 +73,9 @@ export class SignUp {
   readonly errorMessage = signal('');
   readonly emailError = signal('');
   readonly passwordError = signal('');
+  readonly confirmPasswordError = signal('');
+
+  readonly passwordValue = computed(() => this.form.controls.password.value);
 
   updateEmailError() {
     this.emailError.set(this.emailErrorMessage());
@@ -81,9 +85,13 @@ export class SignUp {
     this.passwordError.set(this.passwordErrorMessage());
   }
 
+  updateConfirmPasswordError() {
+    this.confirmPasswordError.set(this.confirmPasswordErrorMessage());
+  }
+
   emailErrorMessage() {
     return controlError(this.form.controls.email, {
-      email: $localize`:@@signUpEmailErrorInvalid:Enter a valid email address.`,
+      email: $localize`:@@signUpEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
       required: $localize`:@@signUpEmailErrorRequired:Enter your email address.`,
     });
   }
@@ -91,8 +99,23 @@ export class SignUp {
   passwordErrorMessage() {
     return controlError(this.form.controls.password, {
       minlength: $localize`:@@signUpPasswordErrorMinlength:Use at least 8 characters.`,
-      required: $localize`:@@signUpPasswordErrorRequired:Create a password before continuing.`,
+      required: $localize`:@@signUpPasswordErrorRequired:Choose a password.`,
     });
+  }
+
+  confirmPasswordErrorMessage() {
+    const control = this.form.controls.confirmPassword;
+    const expected = this.form.controls.password.value;
+
+    if (control.hasError('required')) {
+      return $localize`:@@signUpConfirmPasswordErrorRequired:Re-enter your new password.`;
+    }
+
+    if (expected && control.value !== expected) {
+      return $localize`:@@signUpConfirmPasswordErrorMismatch:Passwords don't match.`;
+    }
+
+    return '';
   }
 
   async submit() {
@@ -100,6 +123,13 @@ export class SignUp {
       this.form.markAllAsTouched();
       this.updateEmailError();
       this.updatePasswordError();
+      this.updateConfirmPasswordError();
+
+      return;
+    }
+
+    if (this.form.controls.password.value !== this.form.controls.confirmPassword.value) {
+      this.updateConfirmPasswordError();
 
       return;
     }
@@ -107,7 +137,10 @@ export class SignUp {
     this.errorMessage.set('');
 
     try {
-      await this.auth.signUp(this.form.getRawValue());
+      await this.auth.signUp({
+        email: this.form.controls.email.value,
+        password: this.form.controls.password.value,
+      });
       await this.router.navigate([VERIFY_EMAIL_URL]);
     } catch (error) {
       this.errorMessage.set(

@@ -11,7 +11,8 @@ type TableRow = Record<string, unknown> & {
 
 @Component({
   host: {
-    class: /* tw */ 'block overflow-hidden rounded-[var(--radius-panel)] border border-outline-variant/50 bg-panel',
+    class:
+      /* tw */ 'block overflow-hidden rounded-[var(--radius-panel)] border border-zinc-950/10 dark:border-white/10/50 bg-zinc-50 dark:bg-zinc-900',
   },
   imports: [NgTemplateOutlet],
   selector: 'app-table',
@@ -28,15 +29,19 @@ export class Table<T extends TableRow = TableRow> {
   readonly stickyHeaders = input(false, { transform: booleanAttribute });
 
   readonly declarative = computed(() => this.columns().length > 0);
-  readonly tableClasses = computed(() => uiClass('min-w-full text-left text-sm text-fg', this.dense() && 'text-xs'));
+  readonly tableClasses = computed(() =>
+    uiClass('min-w-full text-left text-sm text-zinc-950 dark:text-zinc-50', this.dense() && 'text-xs'),
+  );
   readonly headClasses = computed(() => uiClass(this.mobileCards() && 'hidden md:table-header-group'));
   readonly bodyClasses = computed(() =>
     uiClass('divide-y divide-outline-variant/50', this.mobileCards() && 'flex flex-col md:table-row-group'),
   );
   readonly rowClasses = computed(() =>
     uiClass(
-      'text-fg transition',
-      this.mobileCards() ? 'flex flex-col px-4 py-4 md:table-row md:px-0 md:py-0' : 'hover:bg-panel-raised',
+      'text-zinc-950 dark:text-zinc-50 transition',
+      this.mobileCards()
+        ? 'flex flex-col px-4 py-4 md:table-row md:px-0 md:py-0'
+        : 'hover:bg-zinc-100 dark:bg-zinc-800',
     ),
   );
   readonly templatesMap = computed(() => {
@@ -52,8 +57,8 @@ export class Table<T extends TableRow = TableRow> {
   headerClasses(column: TableColumn<T>): string {
     return uiClass(
       column.class,
-      this.stickyHeaders() && 'md:sticky md:top-0 md:z-10 md:bg-panel-raised',
-      'px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-fg',
+      this.stickyHeaders() && 'md:sticky md:top-0 md:z-10 md:bg-zinc-100 dark:bg-zinc-800',
+      'px-4 py-3 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400',
     );
   }
 

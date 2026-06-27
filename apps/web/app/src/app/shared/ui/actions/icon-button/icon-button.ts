@@ -25,17 +25,17 @@ const iconButtonSolid = /* tw */ [
   'disabled:before:shadow-none disabled:after:shadow-none',
 ].join(' ');
 
-const iconButtonOutline = /* tw */ 'border border-border bg-transparent';
+const iconButtonOutline = /* tw */ 'border border-zinc-950/10 dark:border-white/10 bg-transparent';
 const iconButtonPlain = /* tw */ 'bg-transparent shadow-none';
 
 const iconButtonTones = Object.freeze({
-  zinc: /* tw */ '[--btn-bg:var(--color-panel-raised)] [--btn-border:var(--color-border)] [--btn-fg:var(--color-fg)] [--btn-hover-overlay:rgb(9_9_11/0.06)] text-fg hover:[--btn-bg:var(--color-bg)]',
-  blue: /* tw */ '[--btn-bg:var(--color-accent)] [--btn-border:var(--color-accent)] [--btn-fg:var(--color-accent-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-accent-fg',
-  red: /* tw */ '[--btn-bg:var(--color-danger)] [--btn-border:var(--color-danger)] [--btn-fg:var(--color-danger-fg)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-danger-fg',
+  zinc: /* tw */ '[--btn-bg:var(--color-zinc-100)] [--btn-border:var(--color-zinc-200)] [--btn-fg:var(--color-zinc-950)] [--btn-hover-overlay:rgb(9_9_11/0.06)] text-zinc-950 dark:[--btn-bg:var(--color-zinc-800)] dark:[--btn-border:var(--color-zinc-700)] dark:[--btn-fg:var(--color-zinc-50)] dark:[--btn-hover-overlay:rgb(255_255_255/0.05)] dark:text-zinc-50',
+  blue: /* tw */ '[--btn-bg:var(--color-blue-600)] [--btn-border:var(--color-blue-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
+  red: /* tw */ '[--btn-bg:var(--color-red-600)] [--btn-border:var(--color-red-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
   green:
-    /* tw */ '[--btn-bg:var(--color-success)] [--btn-border:var(--color-success)] [--btn-fg:var(--color-on-success)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-success',
+    /* tw */ '[--btn-bg:var(--color-green-600)] [--btn-border:var(--color-green-700)] [--btn-fg:#ffffff] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-white',
   amber:
-    /* tw */ '[--btn-bg:var(--color-tertiary)] [--btn-border:var(--color-tertiary)] [--btn-fg:var(--color-on-tertiary)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-on-tertiary',
+    /* tw */ '[--btn-bg:var(--color-amber-500)] [--btn-border:var(--color-amber-600)] [--btn-fg:var(--color-zinc-950)] [--btn-hover-overlay:rgb(255_255_255/0.12)] text-zinc-950',
 });
 
 const iconButtonSizes = Object.freeze({

@@ -14,12 +14,15 @@ import {
   resendChallenge,
   requestPasswordReset,
   resolveAuthUser,
+  submitPasswordReset,
 } from './auth-service';
 import {
   authOpenApiPaths,
   challengeVerificationSchema,
   credentialsSchema,
   forgottenPasswordSchema,
+  passwordResetSchema,
+  passwordResetVerifySchema,
   resendVerificationSchema,
 } from './auth-schemas';
 
@@ -265,8 +268,84 @@ router.post(
   async function forgottenPasswordHandler(req, res) {
     const { email } = getValidated<{ body: typeof forgottenPasswordSchema }>(req).body!;
 
-    await requestPasswordReset(email);
-    httpResponse.json(res, { data: null, message: 'If an account exists for that email, a reset link has been sent.' });
+    const challenge = await requestPasswordReset(email);
+
+    if (!challenge) {
+      httpResponse.json(res, {
+        data: null,
+        message: 'If an account exists for that email, a reset link has been sent.',
+      });
+
+      return;
+    }
+
+    httpResponse.json(res, { data: challenge, message: 'Recovery code sent.' });
+  },
+);
+
+router.post(
+  '/password/reset/verify',
+  validateRequest({ body: passwordResetVerifySchema }),
+  async function passwordResetVerifyHandler(req, res) {
+    const { challengeId, pin } = getValidated<{ body: typeof passwordResetVerifySchema }>(req).body!;
+
+    const user = await verifyChallenge(challengeId, pin, 'password_reset');
+
+    if (req.session) {
+      req.session.resetPassword = {
+        challengeId,
+        email: user.email,
+        userId: user.id,
+      };
+    }
+
+    httpResponse.json(res, { data: { active: true, email: user.email }, message: 'Reset session established.' });
+  },
+);
+
+router.get('/password/reset/session', function passwordResetSessionHandler(req, res) {
+  const session = req.session?.resetPassword;
+
+  if (!session) {
+    httpResponse.json(res, { data: { active: false, email: null }, message: 'No active reset session.' });
+
+    return;
+  }
+
+  httpResponse.json(res, { data: { active: true, email: session.email }, message: 'Reset session active.' });
+});
+
+router.post(
+  '/password/reset',
+  validateRequest({ body: passwordResetSchema }),
+  async function passwordResetSubmitHandler(req, res, next) {
+    const session = req.session?.resetPassword;
+
+    if (!session) {
+      next(
+        new HttpError({
+          code: 'reset_session_missing',
+          message: 'The reset session has expired. Restart the recovery flow.',
+          statusCode: 401,
+        }),
+      );
+
+      return;
+    }
+
+    try {
+      const { password } = getValidated<{ body: typeof passwordResetSchema }>(req).body!;
+
+      await submitPasswordReset(session.userId, password);
+
+      if (req.session) {
+        delete req.session.resetPassword;
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
   },
 );
 

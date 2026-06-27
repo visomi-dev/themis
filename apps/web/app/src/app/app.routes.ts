@@ -12,6 +12,7 @@ import {
   PROJECTS_PATH,
   PROJECT_ID_PATH,
   PROJECT_NEW_PATH,
+  RESET_PASSWORD_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
   VERIFY_DEVICE_PATH,
@@ -55,6 +56,12 @@ export const appRoutes: Route[] = [
     data: { hideAppShell: true },
     loadComponent: () =>
       import('./auth/forgotten-password/forgotten-password').then((module) => module.ForgottenPassword),
+  },
+  {
+    path: RESET_PASSWORD_PATH,
+    canActivate: [anonymousGuard],
+    data: { hideAppShell: true },
+    loadComponent: () => import('./auth/reset-password/reset-password').then((module) => module.ResetPassword),
   },
 
   {

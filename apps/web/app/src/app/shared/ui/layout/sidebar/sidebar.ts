@@ -28,7 +28,7 @@ export class SidebarSection {}
 export class SidebarHeading {}
 
 @Component({
-  host: { class: /* tw */ 'my-2 h-px bg-outline-variant/50' },
+  host: { class: /* tw */ 'my-2 h-px bg-zinc-950/10 dark:bg-white/10/50' },
   selector: 'app-sidebar-divider',
   templateUrl: './sidebar-divider.html',
   styleUrl: './sidebar.css',
@@ -56,7 +56,7 @@ export class SidebarItem {
 
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring flex min-h-10 items-center gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-muted-fg transition hover:bg-panel hover:text-fg [&_[data-slot=icon]]:size-5',
+      'ui-focus-ring flex min-h-10 items-center gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 transition hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 [&_[data-slot=icon]]:size-5',
     ),
   );
 }

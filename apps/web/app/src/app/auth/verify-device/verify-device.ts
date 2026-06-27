@@ -4,21 +4,17 @@ import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { APP_URL, SIGN_IN_URL } from '../../shared/constants/routes';
-import { Logo } from '../../shared/layout/logo/logo';
-import { ThemeSwitcher } from '../../shared/layout/theme-switcher/theme-switcher';
+import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
-import { Card } from '../../shared/ui/layout/card/card';
-import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Link } from '../../shared/ui/typography/link/link';
-import { Text } from '../../shared/ui/typography/text/text';
 import { VerificationCodeForm } from '../verification-code-form/verification-code-form';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
+  imports: [AuthCard, AuthLayout, Link, RouterLink, VerificationCodeForm],
   selector: 'app-verify-device',
-  imports: [AuthLayout, Card, Heading, Link, Logo, RouterLink, Text, ThemeSwitcher, VerificationCodeForm],
   templateUrl: './verify-device.html',
   styleUrl: './verify-device.css',
 })
