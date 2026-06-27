@@ -47,9 +47,9 @@ export class PasswordInput implements ControlValueAccessor {
 
   readonly inputClasses = computed(() =>
     uiClass(
-      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-panel px-3 py-2.5 text-sm text-fg placeholder:text-muted-fg disabled:cursor-not-allowed disabled:opacity-50',
+      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50',
       this.isTextVariant() ? 'pr-16' : 'pr-12',
-      this.invalid() ? 'border-danger' : 'border-[color:var(--color-border)] focus-visible:border-accent',
+      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
       this.loading() && 'pointer-events-none !text-transparent',
     ),
   );
@@ -57,13 +57,13 @@ export class PasswordInput implements ControlValueAccessor {
   readonly toggleClasses = computed(() => {
     if (this.isTextVariant()) {
       return uiClass(
-        'ui-focus-ring ui-touch-target text-muted-fg hover:text-fg absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] px-2 font-mono text-[0.6875rem] font-semibold tracking-wider uppercase',
+        'ui-focus-ring ui-touch-target text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:text-zinc-50 absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] px-2 font-mono text-[0.6875rem] font-semibold tracking-wider uppercase',
         !this.value() && 'pointer-events-none opacity-0',
       );
     }
 
     return uiClass(
-      'ui-focus-ring ui-touch-target absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-muted-fg transition hover:text-fg',
+      'ui-focus-ring ui-touch-target absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-zinc-500 dark:text-zinc-400 transition hover:text-zinc-950 dark:text-zinc-50',
       !this.value() && 'pointer-events-none opacity-0',
     );
   });

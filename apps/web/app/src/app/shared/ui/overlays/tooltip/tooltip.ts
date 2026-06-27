@@ -19,7 +19,7 @@ export class Tooltip {
   readonly active = signal(false);
   readonly panelClasses = computed(() =>
     uiClass(
-      'absolute z-30 w-52 rounded-[var(--radius-panel)] bg-panel-raised p-3 text-sm font-normal text-fg shadow-panel after:absolute after:left-1/2 after:-translate-x-1/2 after:border-x-8 after:border-x-transparent',
+      'absolute z-30 w-52 rounded-[var(--radius-panel)] bg-zinc-100 dark:bg-zinc-800 p-3 text-sm font-normal text-zinc-950 dark:text-zinc-50 shadow-panel after:absolute after:left-1/2 after:-translate-x-1/2 after:border-x-8 after:border-x-transparent',
       this.position() === 'top' &&
         'bottom-[calc(100%+0.5rem)] after:top-full after:border-t-8 after:border-t-panel-raised',
       this.position() === 'bottom' &&

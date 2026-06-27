@@ -2,7 +2,7 @@
   <header class="flex flex-col gap-3">
     <p class="text-accent font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
     <app-heading i18n="@@activationTitle" level="1" [text]="'System activation'" />
-    <p class="text-muted-fg max-w-2xl text-sm leading-relaxed md:text-base">
+    <p class="max-w-2xl text-sm leading-relaxed text-zinc-500 md:text-base dark:text-zinc-400">
       Configure your API key, local workspace settings, and project seed prompt before entering the first projects
       surface.
     </p>
@@ -20,7 +20,7 @@
     <app-card padding="md" tone="raised">
       <div class="flex items-center gap-4">
         <app-loader />
-        <p class="text-muted-fg text-sm">Loading activation settings...</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">Loading activation settings...</p>
       </div>
     </app-card>
   } @else {
@@ -55,7 +55,7 @@
           <div class="mt-5 grid gap-3">
             @if ((activationData()?.apiKeys?.length ?? 0) === 0) {
               <div
-                class="border-outline-variant/20 bg-surface-container-low text-muted-fg rounded-sm border px-4 py-5 font-mono text-sm italic"
+                class="rounded-sm border border-zinc-950/10 bg-zinc-50 px-4 py-5 font-mono text-sm text-zinc-500 italic dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-400"
               >
                 ••••••••••••••••••••••••••••••••••••
               </div>
@@ -63,17 +63,17 @@
 
             @for (apiKey of activationData()?.apiKeys ?? []; track apiKey.id) {
               <article
-                class="border-outline-variant/20 bg-surface-container-low dark:bg-surface-container-high rounded-sm border p-4"
+                class="rounded-sm border border-zinc-950/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-200 dark:bg-zinc-700 dark:bg-zinc-900"
               >
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div class="min-w-0">
-                    <p class="text-fg text-sm font-semibold">{{ apiKey.label }}</p>
+                    <p class="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ apiKey.label }}</p>
                     @if (plaintextTokenFor(apiKey)) {
                       <p class="text-accent mt-1 font-mono text-xs break-all">
                         {{ plaintextTokenFor(apiKey) }}
                       </p>
                     } @else {
-                      <p class="text-muted-fg mt-1 font-mono text-xs">
+                      <p class="mt-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
                         {{ apiKey.tokenPrefix }}... created {{ keyCreatedAtLabel(apiKey) }}
                       </p>
                     }
@@ -98,10 +98,12 @@
               </article>
             }
 
-            <div class="border-error bg-error-container/20 border-l-2 px-4 py-3">
+            <div class="border-l-2 border-red-600 bg-red-600/5 px-4 py-3 dark:border-red-500 dark:bg-red-500/10">
               <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-                <p class="text-fg shrink-0 text-xs font-black tracking-widest uppercase">Caution</p>
-                <p class="text-muted-fg text-sm leading-relaxed">
+                <p class="shrink-0 text-xs font-black tracking-widest text-zinc-950 uppercase dark:text-zinc-50">
+                  Caution
+                </p>
+                <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
                   Each key is displayed only once. Copy it immediately before leaving this screen.
                 </p>
               </div>
@@ -117,15 +119,18 @@
         </div>
 
         <app-card padding="md" tone="default">
-          <div role="tablist" class="border-outline-variant/20 bg-surface-container-low flex flex-wrap border-b">
+          <div
+            role="tablist"
+            class="flex flex-wrap border-b border-zinc-950/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-900"
+          >
             <button
               type="button"
               role="tab"
               id="config-tab-themis"
               [attr.aria-selected]="selectedConfigTab() === 'themis'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
-              [class.bg-surface-container-lowest]="selectedConfigTab() === 'themis'"
+              class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
+              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'themis'"
               [class.text-accent]="selectedConfigTab() === 'themis'"
               (click)="selectConfigTab('themis')"
             >
@@ -137,8 +142,8 @@
               id="config-tab-opencode"
               [attr.aria-selected]="selectedConfigTab() === 'opencode'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
-              [class.bg-surface-container-lowest]="selectedConfigTab() === 'opencode'"
+              class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
+              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'opencode'"
               [class.text-accent]="selectedConfigTab() === 'opencode'"
               (click)="selectConfigTab('opencode')"
             >
@@ -150,8 +155,8 @@
               id="config-tab-env"
               [attr.aria-selected]="selectedConfigTab() === 'env'"
               aria-controls="config-tabpanel"
-              class="border-outline-variant/20 text-muted-fg cursor-pointer border-r px-5 py-3 font-mono text-xs focus:outline-none"
-              [class.bg-surface-container-lowest]="selectedConfigTab() === 'env'"
+              class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
+              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'env'"
               [class.text-accent]="selectedConfigTab() === 'env'"
               (click)="selectConfigTab('env')"
             >
@@ -163,16 +168,17 @@
             id="config-tabpanel"
             role="tabpanel"
             [attr.aria-labelledby]="'config-tab-' + selectedConfigTab()"
-            class="bg-surface-container-high p-6"
+            class="bg-zinc-200 p-6 dark:bg-zinc-700"
           >
             <div class="flex items-center justify-between gap-4">
-              <p class="text-muted-fg font-mono text-xs">{{ currentConfigPath() }}</p>
+              <p class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{{ currentConfigPath() }}</p>
               <app-button type="button" variant="outline" (click)="copySelectedConfig()">Copy config</app-button>
             </div>
 
-            <pre class="text-fg mt-5 overflow-x-auto font-mono text-sm leading-7 break-words whitespace-pre-wrap">{{
-              currentConfigText()
-            }}</pre>
+            <pre
+              class="mt-5 overflow-x-auto font-mono text-sm leading-7 break-words whitespace-pre-wrap text-zinc-950 dark:text-zinc-50"
+              >{{ currentConfigText() }}</pre
+            >
           </div>
         </app-card>
       </section>
@@ -184,13 +190,13 @@
         </div>
 
         <app-card padding="md" tone="default">
-          <p class="text-muted-fg font-semibold tracking-widest uppercase">System seed prompt</p>
-          <p class="text-muted-fg mt-2 max-w-2xl text-sm leading-relaxed">
+          <p class="font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">System seed prompt</p>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
             Use this prompt inside OpenCode to analyze the repository and seed the first project context into Themis.
           </p>
 
           <pre
-            class="border-outline-variant/20 bg-surface-container-low text-fg mt-5 overflow-x-auto border p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap"
+            class="mt-5 overflow-x-auto border border-zinc-950/10 bg-zinc-50 p-5 font-mono text-sm leading-7 break-words whitespace-pre-wrap text-zinc-950 dark:border-white/10 dark:bg-zinc-900 dark:text-zinc-50"
             >{{ activationData()?.seedPrompt }}</pre
           >
 
@@ -201,11 +207,11 @@
       </section>
 
       <footer
-        class="border-outline-variant/20 flex flex-col gap-6 border-t pt-6 md:flex-row md:items-center md:justify-between"
+        class="flex flex-col gap-6 border-t border-zinc-950/10 pt-6 md:flex-row md:items-center md:justify-between dark:border-white/10"
       >
         <div class="flex items-center gap-3">
-          <span class="bg-tertiary h-2 w-2 rounded-full"></span>
-          <span class="text-muted-fg font-mono text-xs tracking-widest uppercase">
+          <span class="h-2 w-2 rounded-full bg-amber-600 dark:bg-amber-500"></span>
+          <span class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
             @if (hasMilestone('activation_completed')) {
               Activation completed
             } @else if (hasMilestone('activation_skipped')) {

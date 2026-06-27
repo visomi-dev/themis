@@ -9,16 +9,21 @@ type AlertVariant = 'default' | 'auth';
 
 const alertTones = Object.freeze({
   auth: {
-    danger: /* tw */ 'border-danger/20 bg-danger/10 text-danger',
-    info: /* tw */ 'border-primary/20 bg-primary/10 text-primary',
-    success: /* tw */ 'border-success/20 bg-success/10 text-success',
+    danger:
+      /* tw */ 'border-red-600 dark:border-red-500/20 bg-red-600 dark:bg-red-500/10 text-red-600 dark:text-red-400',
+    info: /* tw */ 'border-blue-600 dark:border-blue-500/20 bg-blue-600 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    success:
+      /* tw */ 'border-green-600/20 dark:border-green-500/20 bg-green-600/5 dark:bg-green-500/10 text-green-600 dark:text-green-400',
     warning: /* tw */ 'border-warning/20 bg-warning/10 text-warning',
   },
   default: {
-    danger: /* tw */ 'border-danger/20 bg-error-container/20 text-fg',
-    info: /* tw */ 'border-primary/20 bg-primary-container/20 text-fg',
-    success: /* tw */ 'border-success/20 bg-success-container/20 text-fg',
-    warning: /* tw */ 'border-tertiary/20 bg-tertiary-container/20 text-fg',
+    danger:
+      /* tw */ 'border-red-600 dark:border-red-500/20 bg-red-600/5 dark:bg-red-500/10 text-zinc-950 dark:text-zinc-50',
+    info: /* tw */ 'border-blue-600 dark:border-blue-500/20 bg-blue-600/5 dark:bg-blue-500/10 text-zinc-950 dark:text-zinc-50',
+    success:
+      /* tw */ 'border-green-600/20 dark:border-green-500/20 bg-green-600/5 dark:bg-green-500/10 text-zinc-950 dark:text-zinc-50',
+    warning:
+      /* tw */ 'border-amber-600/20 dark:border-amber-500/20 bg-amber-600/5 dark:bg-amber-500/10 text-zinc-950 dark:text-zinc-50',
   },
 });
 

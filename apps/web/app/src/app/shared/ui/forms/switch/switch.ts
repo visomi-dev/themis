@@ -22,7 +22,7 @@ export class Switch implements ControlValueAccessor {
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring relative inline-flex h-7 w-12 items-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-50',
-      this.checked() ? 'bg-accent' : 'bg-outline-variant',
+      this.checked() ? 'bg-accent' : 'bg-zinc-950/10 dark:bg-white/10',
     ),
   );
   readonly thumbClasses = computed(() =>

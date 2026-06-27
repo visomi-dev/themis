@@ -3,19 +3,19 @@
     <header class="mb-7 space-y-2">
       <p
         data-slot="kicker"
-        class="text-muted-fg font-mono text-xs font-semibold tracking-widest uppercase"
+        class="text-zinc-500 dark:text-zinc-400 font-mono text-xs font-semibold tracking-widest uppercase"
         i18n="@@signUpKicker"
       >
         New account
       </p>
       <h1
         data-slot="title"
-        class="font-display text-fg text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        class="font-display text-zinc-950 dark:text-zinc-50 text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
         i18n="@@signUpTitle"
       >
         Create your account
       </h1>
-      <p data-slot="sub" class="text-muted-fg text-[0.9375rem] leading-6" i18n="@@signUpSub">
+      <p data-slot="sub" class="text-zinc-500 dark:text-zinc-400 text-[0.9375rem] leading-6" i18n="@@signUpSub">
         Use 8+ characters. Mix uppercase, lowercase, numbers, and symbols for the strongest result.
       </p>
     </header>
@@ -82,7 +82,7 @@
       >
     </form>
 
-    <p class="text-muted-fg mt-6 text-sm" i18n="@@signUpFooterPrompt">Already have an account?</p>
+    <p class="text-zinc-500 dark:text-zinc-400 mt-6 text-sm" i18n="@@signUpFooterPrompt">Already have an account?</p>
     <app-link data-slot="footer" i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />
   </app-auth-card>
 </app-auth-layout>

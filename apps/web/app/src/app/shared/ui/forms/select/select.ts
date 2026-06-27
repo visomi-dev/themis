@@ -22,8 +22,8 @@ export class Select implements ControlValueAccessor {
   readonly formDisabled = signal(false);
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-panel px-3 py-2.5 text-sm text-fg disabled:cursor-not-allowed disabled:opacity-50',
-      this.invalid() ? 'border-danger' : 'border-outline/30',
+      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 disabled:cursor-not-allowed disabled:opacity-50',
+      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-zinc-500/30 dark:border-zinc-400/30',
     ),
   );
 

@@ -1,6 +1,6 @@
 <details data-od-id="lang-menu" class="relative" [attr.open]="open() ? '' : null">
   <summary
-    class="ui-focus-ring text-fg hover:bg-surface-2 inline-flex cursor-pointer list-none items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-2 font-mono text-xs font-medium tracking-wide transition-colors"
+    class="ui-focus-ring inline-flex cursor-pointer list-none items-center gap-1.5 rounded-[var(--radius-control)] px-3 py-2 font-mono text-xs font-medium tracking-wide text-zinc-950 transition-colors hover:bg-zinc-100 dark:text-zinc-50 dark:hover:bg-zinc-800"
     aria-label="Language"
     tabindex="0"
     (click)="$event.preventDefault(); toggle()"
@@ -12,12 +12,12 @@
     <app-icon name="angle-down" class="size-3 opacity-60" aria-hidden="true" />
   </summary>
   <ul
-    class="bg-panel border-outline-variant/40 absolute top-full right-0 z-20 mt-1 min-w-[12rem] rounded-[var(--radius-panel)] border p-1.5 shadow-md"
+    class="absolute top-full right-0 z-20 mt-1 min-w-[12rem] rounded-[var(--radius-panel)] border border-zinc-950/10 bg-zinc-50 p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-900"
     role="listbox"
   >
     @for (option of options(); track option.code) {
       <li
-        class="ui-focus-ring text-fg hover:bg-surface-2 flex cursor-pointer items-center justify-between rounded-[var(--radius-control)] px-2.5 py-2 text-sm transition-colors"
+        class="ui-focus-ring flex cursor-pointer items-center justify-between rounded-[var(--radius-control)] px-2.5 py-2 text-sm text-zinc-950 transition-colors hover:bg-zinc-100 dark:text-zinc-50 dark:hover:bg-zinc-800"
         role="option"
         tabindex="0"
         [attr.data-lang]="option.code"
@@ -27,7 +27,7 @@
         (keydown.space)="$event.preventDefault(); select(option.code)"
       >
         <span>{{ option.label }}</span>
-        <code class="text-muted-fg font-mono text-xs">{{ option.code }}</code>
+        <code class="font-mono text-xs text-zinc-500 dark:text-zinc-400">{{ option.code }}</code>
       </li>
     }
   </ul>

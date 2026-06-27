@@ -22,8 +22,8 @@ export class Checkbox implements ControlValueAccessor {
   readonly formDisabled = signal(false);
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring ui-touch-target min-h-5 min-w-5 appearance-none rounded border bg-panel text-accent accent-[var(--color-accent)] disabled:cursor-not-allowed disabled:opacity-50',
-      this.invalid() ? 'border-danger' : 'border-outline/40',
+      'ui-focus-ring ui-touch-target min-h-5 min-w-5 appearance-none rounded border border-zinc-950/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-blue-600 accent-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-400 dark:accent-blue-500',
+      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-zinc-500/40 dark:border-zinc-400/40',
     ),
   );
 

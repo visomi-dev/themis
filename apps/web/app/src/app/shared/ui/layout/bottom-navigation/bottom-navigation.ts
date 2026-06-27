@@ -5,7 +5,7 @@ import { uiClass } from '../../classes';
 
 @Component({
   host: {
-    class: /* tw */ 'block border-t border-outline-variant/40 bg-bg/95 backdrop-blur md:hidden',
+    class: /* tw */ 'block border-t border-zinc-950/10 dark:border-white/10 bg-white dark:bg-zinc-950/95 backdrop-blur md:hidden',
   },
   selector: 'app-bottom-navigation',
   templateUrl: './bottom-navigation.html',
@@ -28,7 +28,7 @@ export class BottomNavigationItem {
 
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-muted-fg transition hover:bg-panel-raised hover:text-fg [&_[data-slot=icon]]:size-6',
+      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-zinc-500 dark:text-zinc-400 transition hover:bg-zinc-100 dark:bg-zinc-800 hover:text-zinc-950 dark:text-zinc-50 [&_[data-slot=icon]]:size-6',
     ),
   );
 }
@@ -47,7 +47,7 @@ export class BottomNavigationAction {
 
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-muted-fg transition hover:bg-panel-raised hover:text-fg [&_[data-slot=icon]]:size-6',
+      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-zinc-500 dark:text-zinc-400 transition hover:bg-zinc-100 dark:bg-zinc-800 hover:text-zinc-950 dark:text-zinc-50 [&_[data-slot=icon]]:size-6',
     ),
   );
 }

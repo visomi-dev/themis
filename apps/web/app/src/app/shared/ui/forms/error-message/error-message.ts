@@ -17,6 +17,6 @@ export class ErrorMessage {
   readonly withIcon = input(true, { transform: booleanAttribute });
 
   readonly classes = computed(() =>
-    uiClass('text-danger mt-1 inline-flex items-start gap-1.5 text-sm font-medium', this.withIcon() && 'pl-0'),
+    uiClass('text-red-600 dark:text-red-400 mt-1 inline-flex items-start gap-1.5 text-sm font-medium', this.withIcon() && 'pl-0'),
   );
 }

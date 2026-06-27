@@ -9,17 +9,17 @@
 }
 
 <aside
-  class="bg-surface-container-lowest text-on-surface shadow-panel lg:bg-surface-container fixed inset-y-0 left-0 z-50 flex min-h-dvh w-full max-w-120 shrink-0 flex-col p-6 transition-all duration-200 lg:static lg:z-auto lg:translate-x-0 lg:p-0 lg:shadow-none"
+  class="bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 shadow-panel lg:bg-zinc-100 dark:bg-zinc-800 fixed inset-y-0 left-0 z-50 flex min-h-dvh w-full max-w-120 shrink-0 flex-col p-6 transition-all duration-200 lg:static lg:z-auto lg:translate-x-0 lg:p-0 lg:shadow-none"
   [class.-translate-x-full]="!mobileMenuOpen()"
   [class.translate-x-0]="mobileMenuOpen()"
   [class.lg:w-16]="collapsed()"
   [class.lg:w-60]="!collapsed()"
 >
   <div class="mb-12 flex items-center justify-between gap-6 lg:hidden">
-    <h2 class="text-on-surface font-heading text-3xl font-bold" i18n="@@layoutMobileNavigationTitle">Navigation</h2>
+    <h2 class="text-zinc-950 dark:text-zinc-50 font-heading text-3xl font-bold" i18n="@@layoutMobileNavigationTitle">Navigation</h2>
     <button
       type="button"
-      class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
+      class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-200 dark:bg-zinc-700 flex h-9 w-9 items-center justify-center rounded-sm transition-colors"
       aria-label="Close navigation"
       i18n-aria-label="@@layoutCloseNavigation"
       (click)="closeMenu()"
@@ -29,22 +29,22 @@
   </div>
 
   <a
-    class="text-on-surface focus:outline-primary font-heading mb-12 flex items-center gap-4 text-xl font-bold tracking-tight no-underline focus:outline-2 focus:outline-offset-2 lg:mb-0 lg:px-4 lg:pt-8 lg:pb-9"
+    class="text-zinc-950 dark:text-zinc-50 focus:outline-primary font-heading mb-12 flex items-center gap-4 text-xl font-bold tracking-tight no-underline focus:outline-2 focus:outline-offset-2 lg:mb-0 lg:px-4 lg:pt-8 lg:pb-9"
     [class.lg:justify-center]="collapsed()"
     [routerLink]="DASHBOARD_URL"
     (click)="closeMenu()"
   >
     <span
-      class="bg-primary text-on-primary flex h-12 w-12 items-center justify-center rounded-sm text-2xl font-bold lg:hidden"
+      class="bg-blue-600 dark:bg-blue-500 text-white dark:text-zinc-950 flex h-12 w-12 items-center justify-center rounded-sm text-2xl font-bold lg:hidden"
       >T</span
     >
     <span [class.lg:hidden]="collapsed()">Themis</span
-    ><span class="text-primary" [class.lg:hidden]="collapsed()">.</span>
+    ><span class="text-blue-600 dark:text-blue-400" [class.lg:hidden]="collapsed()">.</span>
   </a>
 
   <button
     type="button"
-    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high mx-3 mb-6 hidden h-9 items-center justify-center rounded-sm transition-colors lg:flex"
+    class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-200 dark:bg-zinc-700 mx-3 mb-6 hidden h-9 items-center justify-center rounded-sm transition-colors lg:flex"
     [attr.aria-label]="collapsed() ? 'Expand navigation' : 'Collapse navigation'"
     (click)="toggleCollapsed.emit()"
   >
@@ -55,7 +55,7 @@
     @for (section of navSections; track section.label) {
       <div class="flex flex-col gap-1">
         <p
-          class="text-on-surface-variant px-2 text-xs font-semibold tracking-widest uppercase"
+          class="text-zinc-500 dark:text-zinc-400 px-2 text-xs font-semibold tracking-widest uppercase"
           [class.lg:sr-only]="collapsed()"
         >
           {{ section.label }}
@@ -64,8 +64,8 @@
         @for (item of section.items; track item.url) {
           <div class="flex flex-col gap-1">
             <a
-              class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-3 rounded-sm border-l-2 border-transparent px-2 py-2.5 text-base font-medium no-underline transition-colors duration-100 lg:gap-2.5 lg:py-2.25 lg:text-sm"
-              routerLinkActive="bg-surface-container-lowest text-primary shadow-panel border-primary dark:bg-surface-container-high"
+              class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-200 dark:bg-zinc-700 flex items-center gap-3 rounded-sm border-l-2 border-transparent px-2 py-2.5 text-base font-medium no-underline transition-colors duration-100 lg:gap-2.5 lg:py-2.25 lg:text-sm"
+              routerLinkActive="bg-white dark:bg-zinc-950 text-blue-600 dark:text-blue-400 shadow-panel border-blue-600 dark:border-blue-500 dark:bg-zinc-200 dark:bg-zinc-700"
               [routerLink]="item.url"
               [routerLinkActiveOptions]="{ exact: item.exact }"
               (click)="closeMenu()"
@@ -76,11 +76,11 @@
             </a>
 
             @if (item.children?.length && !collapsed()) {
-              <div class="border-outline-variant/25 ml-5 flex flex-col gap-1 border-l pl-3">
+              <div class="border-zinc-950/10 dark:border-white/10 ml-5 flex flex-col gap-1 border-l pl-3">
                 @for (child of item.children; track child.url) {
                   <a
-                    class="text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium no-underline transition-colors duration-100"
-                    routerLinkActive="bg-surface-container-lowest text-primary shadow-panel dark:bg-surface-container-high"
+                    class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-200 dark:bg-zinc-700 flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium no-underline transition-colors duration-100"
+                    routerLinkActive="bg-white dark:bg-zinc-950 text-blue-600 dark:text-blue-400 shadow-panel dark:bg-zinc-200 dark:bg-zinc-700"
                     [routerLink]="child.url"
                     [routerLinkActiveOptions]="{ exact: child.exact }"
                     (click)="closeMenu()"
@@ -97,31 +97,31 @@
     }
   </nav>
 
-  <div class="border-outline-variant/25 mt-auto border-t pt-3 lg:p-3">
+  <div class="border-zinc-950/10 dark:border-white/10 mt-auto border-t pt-3 lg:p-3">
     <app-dropdown (openChange)="!$event && closeMenu()">
       <button
         data-slot="trigger"
         type="button"
-        class="hover:bg-surface-container-low dark:hover:bg-surface-container-high flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left transition-colors"
+        class="hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-200 dark:bg-zinc-700 flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left transition-colors"
         [class.lg:justify-center]="collapsed()"
         aria-label="Open user menu"
         i18n-aria-label="@@layoutOpenUserMenu"
       >
         <app-avatar [initials]="userInitials()" size="sm" />
         <div class="min-w-0 flex-1" [class.lg:hidden]="collapsed()">
-          <p class="text-on-surface truncate text-sm font-semibold">{{ user()?.email }}</p>
-          <p class="text-on-surface-variant text-xs" i18n="@@layoutSignedInStatus">Signed in</p>
+          <p class="text-zinc-950 dark:text-zinc-50 truncate text-sm font-semibold">{{ user()?.email }}</p>
+          <p class="text-zinc-500 dark:text-zinc-400 text-xs" i18n="@@layoutSignedInStatus">Signed in</p>
         </div>
-        <app-icon name="angle-up" class="text-on-surface-variant ml-auto text-xs" [class.lg:hidden]="collapsed()" />
+        <app-icon name="angle-up" class="text-zinc-500 dark:text-zinc-400 ml-auto text-xs" [class.lg:hidden]="collapsed()" />
       </button>
 
       <app-listbox ariaLabel="User menu" [options]="userMenuOptions()" (valueChange)="handleUserMenuChange($event)" />
     </app-dropdown>
 
-    <div class="bg-surface-container mt-4 flex items-center justify-between gap-4 rounded-sm p-3 lg:hidden">
+    <div class="bg-zinc-100 dark:bg-zinc-800 mt-4 flex items-center justify-between gap-4 rounded-sm p-3 lg:hidden">
       <button
         type="button"
-        class="border-outline-variant/50 text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface dark:hover:bg-surface-container-high flex h-9 w-9 items-center justify-center rounded-sm border transition-colors"
+        class="border-zinc-950/10 dark:border-white/10/50 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:bg-zinc-900 hover:text-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-200 dark:bg-zinc-700 flex h-9 w-9 items-center justify-center rounded-sm border transition-colors"
         (click)="toggleTheme()"
       >
         <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>

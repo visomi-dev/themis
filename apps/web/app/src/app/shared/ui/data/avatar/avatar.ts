@@ -24,7 +24,7 @@ export class Avatar {
 
   readonly classes = computed(() =>
     uiClass(
-      'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-panel-raised font-semibold text-muted-fg',
+      'inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800 font-semibold text-zinc-500 dark:text-zinc-400',
       avatarSizes[this.size()],
     ),
   );

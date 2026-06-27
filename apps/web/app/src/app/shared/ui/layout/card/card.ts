@@ -12,9 +12,9 @@ const cardPadding = Object.freeze({
 });
 
 const cardTones = Object.freeze({
-  default: /* tw */ 'bg-panel',
+  default: /* tw */ 'bg-zinc-50 dark:bg-zinc-900',
   ghost: /* tw */ 'bg-transparent',
-  raised: /* tw */ 'bg-panel-raised shadow-panel',
+  raised: /* tw */ 'bg-zinc-100 dark:bg-zinc-800 shadow-panel',
 });
 
 @Component({
@@ -32,7 +32,7 @@ export class Card {
 
   readonly classes = computed(() =>
     uiClass(
-      'flex flex-col gap-4 rounded-[var(--radius-panel)] text-fg',
+      'flex flex-col gap-4 rounded-[var(--radius-panel)] text-zinc-950 dark:text-zinc-50',
       cardPadding[this.padding()],
       cardTones[this.tone()],
     ),

@@ -35,8 +35,8 @@ export class Input implements ControlValueAccessor {
 
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-panel px-3 py-2.5 text-sm text-fg placeholder:text-muted-fg disabled:cursor-not-allowed disabled:opacity-50',
-      this.invalid() ? 'border-danger' : 'border-[color:var(--color-border)] focus-visible:border-accent',
+      'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50',
+      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
     ),
   );
 
