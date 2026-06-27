@@ -43,10 +43,16 @@ export class PasswordStrength {
   readonly percent = computed(() => (this.level() / 4) * 100);
 
   readonly barClasses = (current: number) =>
-    uiClass('h-2 rounded-full transition-colors', current <= this.level() ? 'bg-accent' : 'bg-zinc-500 dark:bg-zinc-400/40');
+    uiClass(
+      'h-2 rounded-full transition-colors',
+      current <= this.level() ? 'bg-accent' : 'bg-zinc-500 dark:bg-zinc-400/40',
+    );
 
   readonly containerClasses = computed(() => 'space-y-1.5');
   readonly labelClasses = computed(() =>
-    uiClass('text-zinc-500 dark:text-zinc-400 block text-xs font-medium tracking-wide', this.level() === 0 ? 'opacity-60' : 'opacity-100'),
+    uiClass(
+      'text-zinc-500 dark:text-zinc-400 block text-xs font-medium tracking-wide',
+      this.level() === 0 ? 'opacity-60' : 'opacity-100',
+    ),
   );
 }

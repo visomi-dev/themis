@@ -8,7 +8,7 @@
       <app-card padding="md" tone="raised">
         <div class="flex items-center gap-4">
           <app-loader />
-          <p class="text-zinc-500 dark:text-zinc-400 text-sm">Loading project...</p>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">Loading project...</p>
         </div>
       </app-card>
     } @else if (project()) {
@@ -16,16 +16,18 @@
         <div>
           <div class="flex flex-wrap items-center gap-2">
             <app-badge [tone]="statusTone(project()!.status)">{{ statusLabel(project()!.status) }}</app-badge>
-            <span class="text-zinc-500 dark:text-zinc-400 text-xs">{{ project()!.sourceType }}</span>
+            <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ project()!.sourceType }}</span>
           </div>
 
           <app-heading class="mt-3" level="1" [text]="project()!.name" />
 
           @if (project()!.summary) {
-            <p class="text-zinc-500 dark:text-zinc-400 mt-3 max-w-2xl text-base leading-relaxed">{{ project()!.summary }}</p>
+            <p class="mt-3 max-w-2xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
+              {{ project()!.summary }}
+            </p>
           }
 
-          <p class="text-zinc-500 dark:text-zinc-400 mt-3 text-xs">Created {{ formatDate(project()!.createdAt) }}</p>
+          <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">Created {{ formatDate(project()!.createdAt) }}</p>
         </div>
 
         <app-link i18n="@@projectDetailProjectsLink" [routerLink]="projectsUrl" [text]="'Projects'" />
@@ -35,7 +37,7 @@
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <app-heading i18n="@@projectDetailSeedTitle" level="2" [text]="'Project seed'" />
-            <p class="text-zinc-500 dark:text-zinc-400 mt-2 text-sm leading-relaxed">
+            <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
               Start the base seed job to create the initial project context and overview document.
             </p>
           </div>
@@ -52,13 +54,13 @@
         </div>
 
         @if (currentSeedJob()) {
-          <div class="border-zinc-950/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 mt-5 rounded-sm border p-4">
+          <div class="mt-5 rounded-sm border border-zinc-950/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <p class="text-zinc-950 dark:text-zinc-50 text-sm font-semibold">{{ currentSeedJob()!.status }}</p>
-              <p class="text-zinc-500 dark:text-zinc-400 text-xs">{{ currentSeedJob()!.progress }}% complete</p>
+              <p class="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ currentSeedJob()!.status }}</p>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ currentSeedJob()!.progress }}% complete</p>
             </div>
             @if (currentSeedJob()!.errorMessage) {
-              <p class="text-red-600 dark:text-red-400 mt-2 text-sm">{{ currentSeedJob()!.errorMessage }}</p>
+              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ currentSeedJob()!.errorMessage }}</p>
             }
           </div>
         }
@@ -69,26 +71,30 @@
 
         @if (project()!.documents.length === 0) {
           <app-card padding="md" tone="raised">
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm">No documents yet. Run the seed job to create the first overview.</p>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+              No documents yet. Run the seed job to create the first overview.
+            </p>
           </app-card>
         } @else {
           <section class="space-y-3">
             @for (doc of project()!.documents; track doc.id) {
-              <article class="bg-white dark:bg-zinc-950 shadow-panel dark:bg-zinc-100 dark:bg-zinc-800 rounded-sm p-5">
+              <article class="shadow-panel rounded-sm bg-white p-5 dark:bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-950">
                 <div class="min-w-0">
                   <div class="flex flex-wrap items-center gap-2">
-                    <h3 class="text-zinc-950 dark:text-zinc-50 text-base font-semibold">{{ doc.title }}</h3>
+                    <h3 class="text-base font-semibold text-zinc-950 dark:text-zinc-50">{{ doc.title }}</h3>
                     <span
-                      class="border-zinc-950/10 dark:border-white/10 text-zinc-500 dark:text-zinc-400 rounded-sm border px-1.5 py-0.5 text-xs font-medium tracking-wide uppercase"
+                      class="rounded-sm border border-zinc-950/10 px-1.5 py-0.5 text-xs font-medium tracking-wide text-zinc-500 uppercase dark:border-white/10 dark:text-zinc-400"
                     >
                       {{ documentTypeLabel(doc.documentType) }}
                     </span>
                   </div>
 
-                  <p class="text-zinc-500 dark:text-zinc-400 mt-1 text-xs">{{ doc.source }} · {{ formatDate(doc.createdAt) }}</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    {{ doc.source }} · {{ formatDate(doc.createdAt) }}
+                  </p>
 
                   @if (doc.contentMarkdown) {
-                    <p class="text-zinc-500 dark:text-zinc-400 mt-3 line-clamp-3 text-sm">{{ doc.contentMarkdown }}</p>
+                    <p class="mt-3 line-clamp-3 text-sm text-zinc-500 dark:text-zinc-400">{{ doc.contentMarkdown }}</p>
                   }
                 </div>
               </article>

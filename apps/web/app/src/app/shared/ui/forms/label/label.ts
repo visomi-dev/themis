@@ -6,7 +6,8 @@ type LabelTone = 'plain' | 'mono-uppercase';
 
 const labelTones = Object.freeze({
   plain: /* tw */ 'text-zinc-950 dark:text-zinc-50 text-sm font-semibold',
-  'mono-uppercase': /* tw */ 'text-zinc-500 dark:text-zinc-400 font-mono text-xs font-semibold tracking-widest uppercase',
+  'mono-uppercase':
+    /* tw */ 'text-zinc-500 dark:text-zinc-400 font-mono text-xs font-semibold tracking-widest uppercase',
 });
 
 @Component({

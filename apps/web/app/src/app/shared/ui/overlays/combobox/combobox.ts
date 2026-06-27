@@ -62,7 +62,9 @@ export class Combobox implements ControlValueAccessor {
     return uiClass(
       'cursor-default rounded-[var(--radius-control)] px-3 py-2 text-sm',
       this.value() === option.value && 'bg-accent text-accent-fg',
-      this.value() !== option.value && index === this.activeIndex() && 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-zinc-50',
+      this.value() !== option.value &&
+        index === this.activeIndex() &&
+        'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-zinc-50',
       this.value() !== option.value && index !== this.activeIndex() && 'text-zinc-950 dark:text-zinc-50',
       option.disabled && 'pointer-events-none opacity-50',
     );

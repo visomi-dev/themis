@@ -1,5 +1,5 @@
 @if (showAppShell()) {
-  <div class="bg-white dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50 flex min-h-dvh">
+  <div class="flex min-h-dvh bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
     <app-sidebar-menu
       [collapsed]="sidebarCollapsed()"
       [mobileMenuOpen]="mobileMenuOpen()"
@@ -10,7 +10,9 @@
     <section class="flex min-w-0 flex-1 flex-col">
       <app-topbar (openMobileMenu)="openMobileMenu()" />
 
-      <main class="bg-white dark:bg-zinc-950 dark:bg-zinc-50 dark:bg-zinc-900 max-h-dvh min-w-0 flex-1 overflow-y-auto p-8">
+      <main
+        class="max-h-dvh min-w-0 flex-1 overflow-y-auto bg-white p-8 dark:bg-zinc-50 dark:bg-zinc-900 dark:bg-zinc-950"
+      >
         <router-outlet />
       </main>
     </section>

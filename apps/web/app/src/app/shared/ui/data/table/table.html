@@ -15,7 +15,9 @@
             @for (column of columns(); track column.key) {
               <td [class]="cellClasses(column)">
                 @if (mobileCards()) {
-                  <strong class="text-zinc-500 dark:text-zinc-400 mb-1 flex text-xs font-semibold tracking-wide uppercase md:hidden">
+                  <strong
+                    class="mb-1 flex text-xs font-semibold tracking-wide text-zinc-500 uppercase md:hidden dark:text-zinc-400"
+                  >
                     {{ column.label }}
                   </strong>
                 }

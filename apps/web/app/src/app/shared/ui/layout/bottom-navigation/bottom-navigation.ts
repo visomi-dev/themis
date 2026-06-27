@@ -5,7 +5,8 @@ import { uiClass } from '../../classes';
 
 @Component({
   host: {
-    class: /* tw */ 'block border-t border-zinc-950/10 dark:border-white/10 bg-white dark:bg-zinc-950/95 backdrop-blur md:hidden',
+    class:
+      /* tw */ 'block border-t border-zinc-950/10 dark:border-white/10 bg-white dark:bg-zinc-950/95 backdrop-blur md:hidden',
   },
   selector: 'app-bottom-navigation',
   templateUrl: './bottom-navigation.html',

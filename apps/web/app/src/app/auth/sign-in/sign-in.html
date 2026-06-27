@@ -3,19 +3,19 @@
     <header class="mb-7 space-y-2">
       <p
         data-slot="kicker"
-        class="text-zinc-500 dark:text-zinc-400 font-mono text-xs font-semibold tracking-widest uppercase"
+        class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
         i18n="@@signInKicker"
       >
         Account access
       </p>
       <h1
         data-slot="title"
-        class="font-display text-zinc-950 dark:text-zinc-50 text-[1.625rem] leading-tight font-bold tracking-[-0.025em]"
+        class="font-display text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
         i18n="@@signInTitle"
       >
         Sign in
       </h1>
-      <p data-slot="sub" class="text-zinc-500 dark:text-zinc-400 text-[0.9375rem] leading-6" i18n="@@signInSub">
+      <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signInSub">
         Welcome back. Use your work email to access your Themis workspace.
       </p>
     </header>
@@ -67,7 +67,10 @@
         }
       </app-field>
 
-      <label class="text-zinc-500 dark:text-zinc-400 flex items-start gap-3 text-sm leading-6" for="sign-in-remember-device">
+      <label
+        class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+        for="sign-in-remember-device"
+      >
         <app-checkbox formControlName="rememberDevice" [controlId]="'sign-in-remember-device'" name="rememberDevice" />
         <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
       </label>
@@ -77,7 +80,7 @@
       >
     </form>
 
-    <p class="text-zinc-500 dark:text-zinc-400 mt-6 text-sm" i18n="@@signInFooterPrompt">New to Themis?</p>
+    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
     <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
   </app-auth-card>
 </app-auth-layout>

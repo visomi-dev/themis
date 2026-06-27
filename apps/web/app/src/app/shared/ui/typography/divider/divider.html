@@ -1,9 +1,9 @@
 @if (label()) {
-  <div class="text-zinc-500 dark:text-zinc-400 flex items-center gap-3 text-sm font-medium">
-    <div class="bg-zinc-950/10 dark:bg-white/10/50 h-px flex-1"></div>
+  <div class="flex items-center gap-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+    <div class="dark:bg-white/10/50 h-px flex-1 bg-zinc-950/10"></div>
     <span>{{ label() }}</span>
-    <div class="bg-zinc-950/10 dark:bg-white/10/50 h-px flex-1"></div>
+    <div class="dark:bg-white/10/50 h-px flex-1 bg-zinc-950/10"></div>
   </div>
 } @else {
-  <hr class="border-zinc-950/10 dark:border-white/10/50 border-0 border-t" />
+  <hr class="dark:border-white/10/50 border-0 border-t border-zinc-950/10" />
 }
