@@ -25,7 +25,7 @@ All steps are driven through the UI (no `page.goto` after the cold-start bootstr
 
 ```bash
 # Boot the gateway first
-pnpm nx run server:build:production
+pnpm exec nx run-many -t build --projects server,realtime,worker,api,app,site --configuration production
 node dist/apps/web/server/main.js &
 
 # Run the capture (writes here)
@@ -33,3 +33,7 @@ node scripts/capture-auth-flow.cjs
 ```
 
 The recordings are deterministic relative to the seed (timestamp-based email + recordVideo) and will differ across runs.
+
+## Companion artifact
+
+The static-state snapshot grid for the same surfaces lives at [`../ui-snapshots/`](../ui-snapshots/). The recordings cover the interactive flow; the snapshot grid covers the static states at every viewport x theme.

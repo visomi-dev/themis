@@ -84,3 +84,18 @@ Replace the vendored Open Design prototypes and the inherited design-system skil
 - See spec: [`docs/specs/2026-06-26-ui-designer-app/`](./specs/2026-06-26-ui-designer-app/)
 - Branch: `feat/OC/ui-designer-app`
 - Version target: `1.4.0`
+
+## Post-Refactor UI Review
+
+Audit and polish the surfaces left inconsistent by the Catalyst utility-first refactor series (Catalyst Angular foundation, pure tokens alignment, site utility-first migration, UI designer app). The review follows the `web-design-reviewer` workflow: capture a baseline screenshot grid and an auth flow recording, audit visual drift at the source, apply focused fixes, re-capture, and ship the recordings as evidence. Concrete items in scope: replace the non-canonical `font-display` utility with `font-heading` across the auth routes, brand wordmark, and recipes doc; collapse duplicate background utilities in the `app-auth-layout` sticky header; replace the magic `min-h-[calc(100vh-64px)]` with `min-h-dvh`; tighten the `app-auth-card` mobile padding to a 24px outer floor; add `data-od-id` chrome hooks for visual e2e suites; add `scripts/capture-ui-snapshots.cjs` to drive the snapshot matrix; regenerate the auth flow recordings. No new tokens, no new primitives, no redesign. Out of scope for this spec: a `DESIGN.md` manuscript realignment (already documented as follow-up in the site spec), automated visual regression in CI, and any backend changes.
+
+- See spec: [`docs/specs/2026-06-27-post-refactor-ui-review/`](./specs/2026-06-27-post-refactor-ui-review/)
+- Branch: `feat/OC/post-refactor-ui-review`
+- Version target: `1.5.0`
+
+Slice plan:
+
+- [ ] PR1: replace `font-display` with `font-heading` in the auth routes, the brand wordmark, and `recipes.md`.
+- [ ] PR2: tighten the `app-auth-layout` sticky header (drop duplicate utilities, responsive height, sticky on mobile).
+- [ ] PR3: tighten `app-auth-card` mobile padding to `px-6 py-6` floor and add `data-od-id="submit"` to every auth route's primary CTA.
+- [ ] PR4: add `scripts/capture-ui-snapshots.cjs`, regenerate `media/auth-flow-videos/*.webm`, bump version to `1.5.0`, update the roadmap.

@@ -10,7 +10,7 @@
       </p>
       <h1
         data-slot="title"
-        class="font-display text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
+        class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
         i18n="@@signUpTitle"
       >
         Create your account
@@ -77,7 +77,13 @@
         }
       </app-field>
 
-      <app-button data-slot="submit" i18n="@@signUpSubmitButton" tone="accent" type="submit" [loading]="submitting()"
+      <app-button
+        data-od-id="submit"
+        data-slot="submit"
+        i18n="@@signUpSubmitButton"
+        tone="accent"
+        type="submit"
+        [loading]="submitting()"
         >Create account</app-button
       >
     </form>

@@ -1,6 +1,8 @@
 <section class="mx-auto flex max-w-6xl flex-col gap-8">
   <header class="flex flex-col gap-3">
-    <p class="text-accent font-mono text-xs font-semibold tracking-widest uppercase">v1.0.2_stable</p>
+    <p class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-500">
+      v1.0.2_stable
+    </p>
     <app-heading i18n="@@activationTitle" level="1" [text]="'System activation'" />
     <p class="max-w-2xl text-sm leading-relaxed text-zinc-500 md:text-base dark:text-zinc-400">
       Configure your API key, local workspace settings, and project seed prompt before entering the first projects
@@ -69,7 +71,7 @@
                   <div class="min-w-0">
                     <p class="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ apiKey.label }}</p>
                     @if (plaintextTokenFor(apiKey)) {
-                      <p class="text-accent mt-1 font-mono text-xs break-all">
+                      <p class="mt-1 font-mono text-xs break-all text-blue-600 dark:text-blue-500">
                         {{ plaintextTokenFor(apiKey) }}
                       </p>
                     } @else {
@@ -130,8 +132,10 @@
               [attr.aria-selected]="selectedConfigTab() === 'themis'"
               aria-controls="config-tabpanel"
               class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
-              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'themis'"
-              [class.text-accent]="selectedConfigTab() === 'themis'"
+              [class.bg-white]="selectedConfigTab() === 'themis'"
+              [class.dark:bg-zinc-950]="selectedConfigTab() === 'themis'"
+              [class.text-blue-600]="selectedConfigTab() === 'themis'"
+              [class.dark:text-blue-500]="selectedConfigTab() === 'themis'"
               (click)="selectConfigTab('themis')"
             >
               ~/.config/themis/core.json
@@ -143,8 +147,10 @@
               [attr.aria-selected]="selectedConfigTab() === 'opencode'"
               aria-controls="config-tabpanel"
               class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
-              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'opencode'"
-              [class.text-accent]="selectedConfigTab() === 'opencode'"
+              [class.bg-white]="selectedConfigTab() === 'opencode'"
+              [class.dark:bg-zinc-950]="selectedConfigTab() === 'opencode'"
+              [class.text-blue-600]="selectedConfigTab() === 'opencode'"
+              [class.dark:text-blue-500]="selectedConfigTab() === 'opencode'"
               (click)="selectConfigTab('opencode')"
             >
               ~/.config/opencode/opencode.json
@@ -156,8 +162,10 @@
               [attr.aria-selected]="selectedConfigTab() === 'env'"
               aria-controls="config-tabpanel"
               class="cursor-pointer border-r border-zinc-950/10 px-5 py-3 font-mono text-xs text-zinc-500 focus:outline-none dark:border-white/10 dark:text-zinc-400"
-              [class.bg-white dark:bg-zinc-950]="selectedConfigTab() === 'env'"
-              [class.text-accent]="selectedConfigTab() === 'env'"
+              [class.bg-white]="selectedConfigTab() === 'env'"
+              [class.dark:bg-zinc-950]="selectedConfigTab() === 'env'"
+              [class.text-blue-600]="selectedConfigTab() === 'env'"
+              [class.dark:text-blue-500]="selectedConfigTab() === 'env'"
               (click)="selectConfigTab('env')"
             >
               .env.production
