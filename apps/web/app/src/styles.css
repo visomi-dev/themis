@@ -1,11 +1,3 @@
-@import '@fontsource/jetbrains-mono';
-@import '@fontsource/inter';
-@import '@fontsource/manrope';
-@import '@fontsource/material-symbols-outlined';
-@import 'tailwindcss';
-
-@custom-variant dark (&:where(.dark, .dark *));
-
 @import '../../../../styles.base.css';
 
 html,
