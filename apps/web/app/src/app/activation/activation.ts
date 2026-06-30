@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -12,11 +13,14 @@ import type {
 } from '../shared/activation/activation.models';
 import { Clipboard } from '../shared/clipboard/clipboard';
 import { PROJECTS_URL } from '../shared/constants/routes';
+import { controlError } from '../shared/form/form-errors';
 import { Alert } from '../shared/ui/overlays/alert/alert';
 import { Badge } from '../shared/ui/data/badge/badge';
 import { Button } from '../shared/ui/actions/button/button';
 import { Card } from '../shared/ui/layout/card/card';
 import { ErrorMessage } from '../shared/ui/forms/error-message/error-message';
+import { Field } from '../shared/ui/forms/field/field';
+import { Form as AppForm } from '../shared/ui/forms/form/form';
 import { Heading } from '../shared/ui/typography/heading/heading';
 import { Input } from '../shared/ui/forms/input/input';
 import { Label } from '../shared/ui/forms/label/label';
@@ -32,7 +36,20 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, Badge, Button, Card, ErrorMessage, Heading, Input, Label, Loader, ReactiveFormsModule],
+  imports: [
+    Alert,
+    AppForm,
+    Badge,
+    Button,
+    Card,
+    ErrorMessage,
+    Field,
+    Heading,
+    Input,
+    Label,
+    Loader,
+    ReactiveFormsModule,
+  ],
   selector: 'app-activation',
   templateUrl: './activation.html',
   styleUrl: './activation.css',
@@ -49,16 +66,29 @@ export class Activation implements OnInit {
     }),
   });
 
+  private readonly labelValueChanges = toSignal(this.apiKeyForm.controls.label.valueChanges, {
+    initialValue: this.apiKeyForm.controls.label.status,
+  });
+
   readonly activationData = signal<ActivationState | null>(null);
   readonly continuing = signal(false);
   readonly copyMessage = signal('');
   readonly creatingKey = signal(false);
   readonly errorMessage = signal('');
   readonly generatedKey = signal<CreatedApiKey | null>(null);
-  readonly labelError = signal('');
   readonly loading = signal(true);
   readonly revokingKeyId = signal('');
   readonly selectedConfigTab = signal<ConfigTab>('themis');
+  readonly submitted = signal(false);
+
+  readonly labelError = computed(() => {
+    this.labelValueChanges();
+
+    return controlError(this.apiKeyForm.controls.label, {
+      required: 'Enter a label for the API key.',
+      maxlength: 'Use 80 characters or fewer.',
+    });
+  });
 
   async ngOnInit() {
     await this.loadActivationState();
@@ -66,9 +96,6 @@ export class Activation implements OnInit {
 
   async createApiKey() {
     if (this.apiKeyForm.invalid) {
-      this.apiKeyForm.markAllAsTouched();
-      this.updateLabelError();
-
       return;
     }
 
@@ -227,30 +254,6 @@ export class Activation implements OnInit {
 
   hasMilestone(milestone: ActivationMilestone) {
     return this.activationData()?.milestones.includes(milestone) ?? false;
-  }
-
-  updateLabelError() {
-    const control = this.apiKeyForm.controls.label;
-
-    if (!control.touched || !control.invalid) {
-      this.labelError.set('');
-
-      return;
-    }
-
-    if (control.hasError('required')) {
-      this.labelError.set('Enter a label for the API key.');
-
-      return;
-    }
-
-    if (control.hasError('maxlength')) {
-      this.labelError.set('Use 80 characters or fewer.');
-
-      return;
-    }
-
-    this.labelError.set('This field is invalid.');
   }
 
   private async loadActivationState() {

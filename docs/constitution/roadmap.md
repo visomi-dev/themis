@@ -99,3 +99,19 @@ Slice plan:
 - [ ] PR2: tighten the `app-auth-layout` sticky header (drop duplicate utilities, responsive height, sticky on mobile).
 - [ ] PR3: tighten `app-auth-card` mobile padding to `px-6 py-6` floor and add `data-od-id="submit"` to every auth route's primary CTA.
 - [ ] PR4: add `scripts/capture-ui-snapshots.cjs`, regenerate `media/auth-flow-videos/*.webm`, bump version to `1.5.0`, update the roadmap.
+
+## CSS-Driven Field Errors
+
+Replace the Angular UI-lib `control.touched` pipeline with the legacy `nive-web-app-old` typing-window reveal: native HTML5 validity (`:user-invalid`) drives the red border and message reveal through a global `:has()` rule in `styles.base.css`. The rule has two branches — native validity (post-blur, content, not focused, not autofilled) and a manual `data-manual-invalid` attribute on `<app-field>` for cross-field mismatches, OTP server errors, and HTTP per-field errors. A new `<app-form>` primitive exposes `[(submitted)]` so submit-time reveal works without per-route boilerplate. Every form primitive — `app-input`, `app-password-input`, `app-textarea`, `app-select`, `app-pin-input`, `app-checkbox`, `app-radio-group`, `app-radio-card`, `app-switch`, `app-color-picker` — accepts `pattern`, `required`, `minLength`, `maxLength`, `min`, `max` and forwards them to the DOM. No new dependencies, no backend changes, no copy edits. Author code drops `(blur)` handlers, `markAllAsTouched()`, and `@if (... as message) { ... }` wrappers around `<app-error-message>`.
+
+- See spec: [`docs/specs/2026-06-28-css-driven-field-errors/`](./specs/2026-06-28-css-driven-field-errors/)
+- Branch: `feat/OC/css-driven-field-errors`
+- Version target: `1.6.0`
+
+Slice plan:
+
+- [ ] PR1: design-system primitives migration (CSS rule + `<app-form>` + signal pass-throughs) + `sign-in` proof.
+- [ ] PR2a: `sign-up`, `verify-email`, `verify-device`.
+- [ ] PR2b: `forgotten-password`, `reset-password` (cross-field confirm-password via `[manualError]`).
+- [ ] PR2c: `activation`, `project-new`.
+- [ ] PR3: recipes doc rewrite (`app-form` section + Field With Error snippet) + version bump + roadmap entry.

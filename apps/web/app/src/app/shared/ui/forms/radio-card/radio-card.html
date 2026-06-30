@@ -1,7 +1,9 @@
 <label [class]="classes()" tabindex="0" (keydown)="handleKeydown($event)">
   <input
     class="absolute inset-0 size-full opacity-0"
+    data-slot="control"
     type="radio"
+    [attr.aria-invalid]="invalid()"
     [checked]="checked()"
     [disabled]="disabled() || formDisabled()"
     [id]="inputId()"

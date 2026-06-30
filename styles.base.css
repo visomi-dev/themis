@@ -93,6 +93,80 @@
   line-height: 1.7;
 }
 
+@layer utilities {
+  /* `app-error-message` is a grandchild of `<app-field data-control>` (it's wrapped
+   * by field.html's inner `<div class="gap-2 grid">`). Use the descendant
+   * combinator (space), not the child combinator (`>`), so the selector matches. */
+  [data-control] app-error-message {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0;
+    transition:
+      max-height var(--motion-base),
+      opacity var(--motion-base),
+      margin-top var(--motion-base);
+  }
+
+  /* Red border. The universal hook `data-slot="control"` is set on every primitive's
+   * inner form control. One selector per reveal source covers all primitives.
+   * Lives in @layer utilities so it overrides the per-input Tailwind border utilities. */
+  [data-control]:not(:focus-within):has([data-slot='control']:user-invalid:not(:placeholder-shown):not(:autofill))
+    [data-slot='control'],
+  [data-control][data-manual-invalid] [data-slot='control'],
+  [data-submitted] [data-control]:has([data-slot='control']:invalid) [data-slot='control'],
+  /* Binary controls with label borders (radio-group, radio-card): paint the option labels. */
+  [data-control][data-manual-invalid] app-radio-group label,
+  [data-control][data-manual-invalid] app-radio-card label,
+  [data-submitted] [data-control]:has(app-radio-group input:invalid) app-radio-group label,
+  [data-submitted] [data-control]:has(app-radio-card input:invalid) app-radio-card label {
+    border-color: var(--color-red-600);
+  }
+
+  /* Dark mode (mirror of the light selectors). */
+  html.dark
+    [data-control]:not(:focus-within):has([data-slot='control']:user-invalid:not(:placeholder-shown):not(:autofill))
+    [data-slot='control'],
+  html.dark [data-control][data-manual-invalid] [data-slot='control'],
+  html.dark [data-submitted] [data-control]:has([data-slot='control']:invalid) [data-slot='control'],
+  html.dark [data-control][data-manual-invalid] app-radio-group label,
+  html.dark [data-control][data-manual-invalid] app-radio-card label,
+  html.dark [data-submitted] [data-control]:has(app-radio-group input:invalid) app-radio-group label,
+  html.dark [data-submitted] [data-control]:has(app-radio-card input:invalid) app-radio-card label {
+    border-color: var(--color-red-500);
+  }
+
+  /* Error message reveal. Every branch applies three guard clauses that mirror the
+   * legacy `nive` CSS pattern: hide while the user is focusing the field, hide
+   * while the field is empty (placeholder shown), and only reveal while a real
+   * error is present (`:invalid` / `user-invalid` / `data-manual-invalid`). */
+  [data-control]:not(:focus-within):has([data-slot='control']:user-invalid:not(:placeholder-shown):not(:autofill))
+    app-error-message,
+  [data-control]:not(:focus-within):not(:has([data-slot='control']:placeholder-shown))
+    [data-manual-invalid]
+    app-error-message,
+  [data-submitted]
+    [data-control]:not(:focus-within):not(:has([data-slot='control']:placeholder-shown))
+    :has([data-slot='control']:invalid)
+    app-error-message,
+  [data-control]:not(:focus-within):not(:has(app-radio-group input:placeholder-shown))
+    :has(app-radio-group input:invalid)
+    app-error-message,
+  [data-control]:not(:focus-within):not(:has(app-radio-card input:placeholder-shown))
+    :has(app-radio-card input:invalid)
+    app-error-message {
+    max-height: 6rem;
+    opacity: 1;
+    margin-top: 0.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-control] app-error-message {
+      transition: none;
+    }
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

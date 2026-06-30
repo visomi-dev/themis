@@ -21,7 +21,9 @@ const defaultOptions: readonly ColorPickerOption[] = Object.freeze([
 @Component({
   host: {
     class: /* tw */ 'block',
+    'data-control': '',
   },
+  imports: [],
   providers: [
     {
       multi: true,

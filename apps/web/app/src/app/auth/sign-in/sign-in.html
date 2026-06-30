@@ -26,22 +26,21 @@
       }}</app-alert>
     }
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
+    <app-form class="grid gap-5" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
       <app-field>
         <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
         <app-input
           autocomplete="email"
           formControlName="email"
-          [controlId]="'sign-in-email'"
-          [invalid]="!!emailError()"
-          name="email"
-          placeholder="name@organization.com"
+          required
           type="email"
-          (blur)="updateEmailError()"
+          placeholder="name@organization.com"
+          controlId="sign-in-email"
+          name="email"
         />
-        @if (emailError(); as message) {
-          <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
-        }
+        <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid">{{
+          emailError()
+        }}</app-error-message>
       </app-field>
 
       <app-field>
@@ -56,22 +55,22 @@
         <app-password-input
           autocomplete="current-password"
           formControlName="password"
-          [controlId]="'sign-in-password'"
-          [invalid]="!!passwordError()"
-          name="password"
+          required
+          minlength="8"
           placeholder="***************"
-          (blur)="updatePasswordError()"
+          controlId="sign-in-password"
+          name="password"
         />
-        @if (passwordError(); as message) {
-          <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
-        }
+        <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength">{{
+          passwordError()
+        }}</app-error-message>
       </app-field>
 
       <label
         class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
         for="sign-in-remember-device"
       >
-        <app-checkbox formControlName="rememberDevice" [controlId]="'sign-in-remember-device'" name="rememberDevice" />
+        <app-checkbox formControlName="rememberDevice" controlId="sign-in-remember-device" name="rememberDevice" />
         <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
       </label>
 
@@ -84,7 +83,7 @@
         [loading]="submitting()"
         >Sign in</app-button
       >
-    </form>
+    </app-form>
 
     <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
     <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />

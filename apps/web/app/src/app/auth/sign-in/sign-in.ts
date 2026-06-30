@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -13,6 +14,7 @@ import { Button } from '../../shared/ui/actions/button/button';
 import { Checkbox } from '../../shared/ui/forms/checkbox/checkbox';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
+import { Form as AppForm } from '../../shared/ui/forms/form/form';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
@@ -30,6 +32,7 @@ type SignInForm = FormGroup<{
   },
   imports: [
     Alert,
+    AppForm,
     AuthCard,
     AuthLayout,
     Button,
@@ -65,41 +68,37 @@ export class SignIn {
     }),
   });
 
-  readonly submitting = this.auth.submitting;
+  private readonly emailValueChanges = toSignal(this.form.controls.email.valueChanges, {
+    initialValue: this.form.controls.email.value,
+  });
+  private readonly passwordValueChanges = toSignal(this.form.controls.password.valueChanges, {
+    initialValue: this.form.controls.password.value,
+  });
 
+  readonly submitting = this.auth.submitting;
+  readonly submitted = signal(false);
   readonly errorMessage = signal('');
 
-  readonly emailError = signal('');
-  readonly passwordError = signal('');
+  readonly emailError = computed(() => {
+    this.emailValueChanges();
 
-  emailErrorMessage() {
     return controlError(this.form.controls.email, {
       email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
       required: $localize`:@@signInEmailErrorRequired:Enter your email address.`,
     });
-  }
+  });
 
-  passwordErrorMessage() {
+  readonly passwordError = computed(() => {
+    this.passwordValueChanges();
+
     return controlError(this.form.controls.password, {
       minlength: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.`,
       required: $localize`:@@signInPasswordErrorRequired:Enter your password.`,
     });
-  }
-
-  updateEmailError() {
-    this.emailError.set(this.emailErrorMessage());
-  }
-
-  updatePasswordError() {
-    this.passwordError.set(this.passwordErrorMessage());
-  }
+  });
 
   async submit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.updateEmailError();
-      this.updatePasswordError();
-
       return;
     }
 

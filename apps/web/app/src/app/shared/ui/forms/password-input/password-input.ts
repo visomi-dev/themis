@@ -1,4 +1,13 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  forwardRef,
+  input,
+  numberAttribute,
+  output,
+  signal,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Icon } from '../../media/icon/icon';
@@ -29,9 +38,12 @@ export class PasswordInput implements ControlValueAccessor {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
+  readonly maxLength = input(64, { transform: numberAttribute });
+  readonly minLength = input(8, { transform: numberAttribute });
   readonly name = input<string | null>(null);
   readonly pattern = input("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[._\\-'@$!%*#?&])[A-Za-z0-9._\\-'@$!%*#?&]{8,}$");
   readonly placeholder = input('');
+  readonly required = input(false, { transform: booleanAttribute });
   readonly variant = input<PasswordVariant>('text');
   readonly valueChange = output<string>();
 
@@ -49,9 +61,7 @@ export class PasswordInput implements ControlValueAccessor {
     uiClass(
       'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50',
       this.isTextVariant() ? 'pr-16' : 'pr-12',
-      this.invalid()
-        ? 'border-red-600 dark:border-red-500'
-        : 'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
+      'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
       this.loading() && 'pointer-events-none !text-transparent',
     ),
   );

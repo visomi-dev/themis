@@ -7,6 +7,8 @@ import { uiClass } from '../../classes';
 @Component({
   host: {
     class: /* tw */ 'block',
+    'data-control': '',
+    '[attr.data-invalid]': 'invalid() ? "" : null',
   },
   imports: [Icon],
   providers: [
@@ -23,6 +25,7 @@ import { uiClass } from '../../classes';
 export class RadioCard implements ControlValueAccessor {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly inputId = input<string | null>(null);
+  readonly invalid = input(false, { transform: booleanAttribute });
   readonly name = input('radio-card');
   readonly optionValue = input.required<string>();
   readonly required = input(false, { transform: booleanAttribute });

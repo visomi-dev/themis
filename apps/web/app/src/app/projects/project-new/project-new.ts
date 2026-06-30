@@ -1,8 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { PROJECTS_URL } from '../../shared/constants/routes';
+import { controlError } from '../../shared/form/form-errors';
 import { ProjectsApi } from '../../shared/projects/projects';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Button } from '../../shared/ui/actions/button/button';
@@ -11,6 +13,7 @@ import { Container } from '../../shared/ui/layout/container/container';
 import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
+import { Form as AppForm } from '../../shared/ui/forms/form/form';
 import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
@@ -29,6 +32,7 @@ type NewProjectForm = FormGroup<{
   },
   imports: [
     Alert,
+    AppForm,
     Button,
     Card,
     Container,
@@ -63,58 +67,37 @@ export class ProjectNew {
     }),
   });
 
-  readonly nameError = signal('');
-  readonly summaryError = signal('');
+  private readonly nameValueChanges = toSignal(this.form.controls.name.valueChanges, {
+    initialValue: this.form.controls.name.status,
+  });
+  private readonly summaryValueChanges = toSignal(this.form.controls.summary.valueChanges, {
+    initialValue: this.form.controls.summary.status,
+  });
+
   readonly submitting = signal(false);
+  readonly submitted = signal(false);
   readonly errorMessage = signal('');
   readonly projectsUrl = PROJECTS_URL;
 
-  updateNameError() {
-    this.nameError.set(this.nameErrorMessage());
-  }
+  readonly nameError = computed(() => {
+    this.nameValueChanges();
 
-  updateSummaryError() {
-    this.summaryError.set(this.summaryErrorMessage());
-  }
+    return controlError(this.form.controls.name, {
+      required: 'Enter a project name.',
+      maxlength: 'Use 120 characters or fewer.',
+    });
+  });
 
-  nameErrorMessage() {
-    const control = this.form.controls.name;
+  readonly summaryError = computed(() => {
+    this.summaryValueChanges();
 
-    if (!control.touched || !control.invalid) {
-      return '';
-    }
-
-    if (control.hasError('required')) {
-      return 'Enter a project name.';
-    }
-
-    if (control.hasError('maxlength')) {
-      return 'Use 120 characters or fewer.';
-    }
-
-    return 'This field is invalid.';
-  }
-
-  summaryErrorMessage() {
-    const control = this.form.controls.summary;
-
-    if (!control.touched || !control.invalid) {
-      return '';
-    }
-
-    if (control.hasError('maxlength')) {
-      return 'Use 500 characters or fewer.';
-    }
-
-    return 'This field is invalid.';
-  }
+    return controlError(this.form.controls.summary, {
+      maxlength: 'Use 500 characters or fewer.',
+    });
+  });
 
   async submit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.updateNameError();
-      this.updateSummaryError();
-
       return;
     }
 

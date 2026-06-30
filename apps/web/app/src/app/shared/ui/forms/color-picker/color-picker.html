@@ -10,6 +10,7 @@
         <span [class]="optionClasses(option)"></span>
         <input
           class="absolute inset-0 size-full cursor-pointer opacity-0"
+          data-slot="control"
           type="radio"
           [checked]="value() === option.value"
           [name]="name()"
