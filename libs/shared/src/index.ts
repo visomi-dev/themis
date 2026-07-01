@@ -2,6 +2,7 @@ export * from './lib/db/account-context';
 export * from './lib/db/client';
 export * from './lib/db/migrate';
 export * from './lib/db/pool';
+export * from './lib/db/safe-insert';
 export * from './lib/db/schema';
 export * from './lib/env';
 export * from './lib/http';

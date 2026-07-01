@@ -60,6 +60,10 @@ export class VerificationCodeForm {
   readonly resolvedPinError = computed(() => this.pinError() || this.pinManualError() || '');
 
   submit() {
+    if (this.submitting()) {
+      return;
+    }
+
     if (this.form.invalid) {
       return;
     }

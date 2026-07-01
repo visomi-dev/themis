@@ -98,6 +98,10 @@ export class SignIn {
   });
 
   async submit() {
+    if (this.submitting()) {
+      return;
+    }
+
     if (this.form.invalid) {
       return;
     }

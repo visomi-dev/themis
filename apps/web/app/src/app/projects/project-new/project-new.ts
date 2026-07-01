@@ -97,6 +97,10 @@ export class ProjectNew {
   });
 
   async submit() {
+    if (this.submitting()) {
+      return;
+    }
+
     if (this.form.invalid) {
       return;
     }

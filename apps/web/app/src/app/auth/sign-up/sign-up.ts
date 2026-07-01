@@ -72,10 +72,13 @@ export class SignUp {
   });
 
   private readonly emailValueChanges = toSignal(this.form.controls.email.valueChanges, {
-    initialValue: this.form.controls.email.status,
+    initialValue: this.form.controls.email.value,
   });
   private readonly passwordValueChanges = toSignal(this.form.controls.password.valueChanges, {
-    initialValue: this.form.controls.password.status,
+    initialValue: this.form.controls.password.value,
+  });
+  private readonly confirmPasswordValueChanges = toSignal(this.form.controls.confirmPassword.valueChanges, {
+    initialValue: this.form.controls.confirmPassword.value,
   });
 
   readonly submitting = this.auth.submitting;
@@ -104,6 +107,7 @@ export class SignUp {
 
   readonly confirmPasswordError = computed(() => {
     this.passwordValueChanges();
+    this.confirmPasswordValueChanges();
     const control = this.form.controls.confirmPassword;
     const expected = this.form.controls.password.value;
 
@@ -119,6 +123,14 @@ export class SignUp {
   });
 
   async submit() {
+    // Re-entrant guard. `auth.signUp` flips the shared `submitting` signal
+    // synchronously, so a second click before the disable propagates still
+    // sees `submitting() === true` and exits early instead of issuing a
+    // duplicate POST (which the server would reject with a 409).
+    if (this.submitting()) {
+      return;
+    }
+
     if (this.form.invalid || this.form.controls.password.value !== this.form.controls.confirmPassword.value) {
       return;
     }

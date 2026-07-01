@@ -76,13 +76,17 @@ export class ResetPassword {
   });
 
   private readonly passwordValueChanges = toSignal(this.passwordForm.controls.password.valueChanges, {
-    initialValue: this.passwordForm.controls.password.status,
+    initialValue: this.passwordForm.controls.password.value,
+  });
+  private readonly confirmPasswordValueChanges = toSignal(this.passwordForm.controls.confirmPassword.valueChanges, {
+    initialValue: this.passwordForm.controls.confirmPassword.value,
   });
 
   readonly passwordValue = computed(() => this.passwordForm.controls.password.value);
 
   readonly confirmPasswordError = computed(() => {
     this.passwordValueChanges();
+    this.confirmPasswordValueChanges();
     const control = this.passwordForm.controls.confirmPassword;
     const expected = this.passwordForm.controls.password.value;
 
@@ -98,6 +102,10 @@ export class ResetPassword {
   });
 
   async onOtpSubmit(pin: string) {
+    if (this.submitting()) {
+      return;
+    }
+
     const challenge = this.challenge();
 
     this.pinManualError.set(null);
@@ -129,6 +137,10 @@ export class ResetPassword {
   }
 
   async onPasswordSubmit() {
+    if (this.submitting()) {
+      return;
+    }
+
     if (
       this.passwordForm.invalid ||
       this.passwordForm.controls.password.value !== this.passwordForm.controls.confirmPassword.value

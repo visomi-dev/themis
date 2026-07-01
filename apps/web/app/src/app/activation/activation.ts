@@ -95,6 +95,10 @@ export class Activation implements OnInit {
   }
 
   async createApiKey() {
+    if (this.creatingKey()) {
+      return;
+    }
+
     if (this.apiKeyForm.invalid) {
       return;
     }
