@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, minLength, required, validate, type FieldTree } from '@angular/forms/signals';
+import { FormField, FormRoot } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
@@ -21,10 +21,10 @@ import { VerificationCodeForm } from '../verification-code-form/verification-cod
 
 type ResetStep = 'otp' | 'password' | 'success';
 
-type PasswordForm = FormGroup<{
-  password: FormControl<string>;
-  confirmPassword: FormControl<string>;
-}>;
+type PasswordModel = {
+  password: string;
+  confirmPassword: string;
+};
 
 @Component({
   host: {
@@ -38,11 +38,12 @@ type PasswordForm = FormGroup<{
     Button,
     ErrorMessage,
     Field,
+    FormField,
+    FormRoot,
     Label,
     Link,
     PasswordInput,
     PasswordStrength,
-    ReactiveFormsModule,
     RouterLink,
     VerificationCodeForm,
   ],
@@ -56,7 +57,6 @@ export class ResetPassword {
 
   readonly step = signal<ResetStep>('otp');
   readonly submitting = signal(false);
-  readonly submitted = signal(false);
   readonly errorMessage = signal('');
   readonly pinManualError = signal<string | null>(null);
 
@@ -64,44 +64,45 @@ export class ResetPassword {
   readonly pendingEmail = computed(() => this.challenge()?.email ?? null);
   readonly verificationSubmitting = this.auth.verificationSubmitting;
 
-  readonly passwordForm: PasswordForm = new FormGroup({
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
-    }),
-    confirmPassword: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
+  readonly passwordModel = signal<PasswordModel>({
+    password: '',
+    confirmPassword: '',
   });
 
-  private readonly passwordValueChanges = toSignal(this.passwordForm.controls.password.valueChanges, {
-    initialValue: this.passwordForm.controls.password.value,
-  });
-  private readonly confirmPasswordValueChanges = toSignal(this.passwordForm.controls.confirmPassword.valueChanges, {
-    initialValue: this.passwordForm.controls.confirmPassword.value,
-  });
+  readonly passwordForm: FieldTree<PasswordModel> = form(
+    this.passwordModel,
+    (p) => {
+      required(p.password, { message: $localize`:@@resetPasswordPasswordErrorRequired:Choose a new password.` });
+      minLength(p.password, 8, {
+        message: $localize`:@@resetPasswordPasswordErrorMinlength:Use at least 8 characters.`,
+      });
+      required(p.confirmPassword, {
+        message: $localize`:@@resetPasswordConfirmErrorRequired:Re-enter your new password.`,
+      });
+      validate(p.confirmPassword, ({ value, valueOf }) => {
+        const password = valueOf(p.password)();
+        const current = value();
 
-  readonly passwordValue = computed(() => this.passwordForm.controls.password.value);
+        return current && password && current !== password
+          ? {
+              kind: 'passwordMismatch',
+              message: $localize`:@@resetPasswordConfirmErrorMismatch:Passwords don't match.`,
+            }
+          : null;
+      });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          await this.onPasswordSubmit(field);
+        },
+      },
+    },
+  );
 
-  readonly confirmPasswordError = computed(() => {
-    this.passwordValueChanges();
-    this.confirmPasswordValueChanges();
-    const control = this.passwordForm.controls.confirmPassword;
-    const expected = this.passwordForm.controls.password.value;
+  readonly passwordValue = computed(() => this.passwordForm.password().value());
 
-    if (control.hasError('required')) {
-      return $localize`:@@resetPasswordConfirmErrorRequired:Re-enter your new password.`;
-    }
-
-    if (expected && control.value !== expected) {
-      return $localize`:@@resetPasswordConfirmErrorMismatch:Passwords don't match.`;
-    }
-
-    return '';
-  });
-
-  async onOtpSubmit(pin: string) {
+  async onOtpSubmit(pin: string): Promise<void> {
     if (this.submitting()) {
       return;
     }
@@ -136,15 +137,8 @@ export class ResetPassword {
     }
   }
 
-  async onPasswordSubmit() {
+  private async onPasswordSubmit(field: FieldTree<PasswordModel>): Promise<void> {
     if (this.submitting()) {
-      return;
-    }
-
-    if (
-      this.passwordForm.invalid ||
-      this.passwordForm.controls.password.value !== this.passwordForm.controls.confirmPassword.value
-    ) {
       return;
     }
 
@@ -152,7 +146,7 @@ export class ResetPassword {
     this.errorMessage.set('');
 
     try {
-      await this.auth.submitPasswordReset(this.passwordForm.controls.password.value);
+      await this.auth.submitPasswordReset(field().value().password);
       this.auth.clearPendingChallenge();
       this.step.set('success');
     } catch (error) {
