@@ -115,3 +115,20 @@ Slice plan:
 - [ ] PR2b: `forgotten-password`, `reset-password` (cross-field confirm-password via `[manualError]`).
 - [ ] PR2c: `activation`, `project-new`.
 - [ ] PR3: recipes doc rewrite (`app-form` section + Field With Error snippet) + version bump + roadmap entry.
+
+## Signal Forms Migration
+
+Lift every Themis form to Angular v22's `form()` / `[formField]` / `[formRoot]` API. Reactive Forms (`FormGroup`, `FormControl`, `Validators.*`, `[formGroup]`, `formControlName`) is retired; `compatForm` and `SignalFormControl` from `@angular/forms/signals/compat` stay available for future interop but are not used in production code. The design-system primitives and the `<app-form>` wrapper accept a `Field<T>` (the `FormField` directive binds `invalid`, `disabled`, `pattern`, `minLength`, `maxLength` automatically to the host's inputs) and the route drives the schema with per-rule `{message: $localize…}` options. Cross-field mismatches use `validate(path, ({value, valueOf}) => …)`; per-field server errors return `{kind, fieldTree, message}` from the `submission.action`. The CSS reveal rule from the previous spec and the `<app-form [(submitted)]>` primitive carry over unchanged. The controlError() translator at `apps/web/app/src/app/shared/form/form-errors.ts` is removed; every i18n key (`@@signInEmailErrorInvalid`, etc.) survives in the schema's `{message}` options.
+
+- See spec: [`docs/specs/2026-07-04-signal-forms-migration/`](./specs/2026-07-04-signal-forms-migration/)
+- Branch: `feat/OC/signal-forms-migration`
+- Version target: `1.7.0`
+
+Slice plan:
+
+- [x] PR1: design-system primitives migrated to `[formField]`; `<app-form>` rewritten with `[formRoot]`; `form-errors.ts` removed; `sign-in` as the reference consumer.
+- [x] PR2a: `sign-up`, `forgotten-password` (sign-up uses `validate()` for the cross-field `confirmPassword` mismatch).
+- [x] PR2b: `reset-password` (two `FieldTree`s — pin + password — cross-field rule in step 2).
+- [x] PR2c: `verification-code-form` (used by `verify-email` and `verify-device`; `pinManualError` preserved for the per-field server error path).
+- [x] PR2d: `activation`, `project-new` (async per-field errors via `<app-field [manualError]>`).
+- [x] PR3: recipes doc rewritten (`Signal Forms` section + every snippet uses `[formField]`); version bumped to `1.7.0`; roadmap entry added.
