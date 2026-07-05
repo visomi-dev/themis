@@ -110,7 +110,15 @@
 
   /* Red border. The universal hook `data-slot="control"` is set on every primitive's
    * inner form control. One selector per reveal source covers all primitives.
-   * Lives in @layer utilities so it overrides the per-input Tailwind border utilities. */
+   * Lives in @layer utilities so it overrides the per-input Tailwind border utilities.
+   * Native (typing-window) uses `:user-invalid` (not `:invalid`) — the
+   * field must actually be invalid AFTER user interaction. This keeps the
+   * page clean on first load (empty required fields don't flash "this field
+   * is required" before the user has touched them) while still revealing
+   * the error the moment the user types something invalid. The
+   * `[data-submitted]` branch uses bare `:invalid` so an empty required
+   * field still reveals its "this field is required" error right after
+   * the user clicks submit. */
   [data-control]:not(:focus-within):has([data-slot='control']:user-invalid:not(:placeholder-shown):not(:autofill))
     [data-slot='control'],
   [data-control][data-manual-invalid] [data-slot='control'],
