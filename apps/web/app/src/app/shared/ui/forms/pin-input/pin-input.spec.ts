@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, type FieldTree } from '@angular/forms/signals';
 
 import { PinInput } from './pin-input';
 
 @Component({
-  imports: [PinInput, ReactiveFormsModule],
-  template: '<app-pin-input idPrefix="pin" [digits]="6" [formControl]="control" />',
+  imports: [FormField, PinInput],
+  template: '<app-pin-input idPrefix="pin" [digits]="6" [formField]="f.pin" />',
 })
 class Host {
-  readonly control = new FormControl('123456', { nonNullable: true });
+  readonly model = signal({ pin: '123456' });
+  readonly f: FieldTree<{ pin: string }> = form(this.model, () => undefined);
 }
 
 describe('PinInput', () => {
@@ -21,7 +22,7 @@ describe('PinInput', () => {
     await fixture.whenStable();
   });
 
-  it('renders one input per digit from a reactive form value', () => {
+  it('renders one input per digit from a signal form value', () => {
     const inputs = fixture.nativeElement.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
 
     expect(inputs.length).toBe(6);

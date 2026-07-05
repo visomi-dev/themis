@@ -2,24 +2,27 @@ import {
   booleanAttribute,
   Component,
   computed,
-  forwardRef,
+  effect,
+  ElementRef,
   input,
   numberAttribute,
   output,
-  signal,
+  viewChild,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import type { Field } from '@angular/forms/signals';
 
 import { uiClass } from '../../classes';
 
 @Component({
   host: { class: /* tw */ 'block' },
-  providers: [{ multi: true, provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Textarea) }],
   selector: 'app-textarea',
   templateUrl: './textarea.html',
   styleUrl: './textarea.css',
 })
-export class Textarea implements ControlValueAccessor {
+export class Textarea {
+  private readonly textareaRef = viewChild<ElementRef<HTMLTextAreaElement>>('textareaEl');
+
+  readonly formField = input.required<Field<string>>();
   readonly ariaDescribedBy = input<string | null>(null);
   readonly controlId = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -33,8 +36,6 @@ export class Textarea implements ControlValueAccessor {
   readonly rows = input(4);
   readonly valueChange = output<string>();
 
-  readonly value = signal('');
-  readonly formDisabled = signal(false);
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring min-h-28 w-full resize-y rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50',
@@ -42,34 +43,23 @@ export class Textarea implements ControlValueAccessor {
     ),
   );
 
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
+  private readonly syncEffect = effect(() => {
+    const ref = this.textareaRef();
+    const value = this.formField()().value();
 
-  writeValue(value: string | null): void {
-    this.value.set(value ?? '');
-  }
+    if (ref) {
+      ref.nativeElement.value = value ?? '';
+    }
+  });
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
-
-  updateValue(event: Event): void {
+  onInput(event: Event): void {
     const nextValue = (event.target as HTMLTextAreaElement).value;
 
-    this.value.set(nextValue);
-    this.onChange(nextValue);
+    this.formField()().value.set(nextValue);
     this.valueChange.emit(nextValue);
   }
 
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

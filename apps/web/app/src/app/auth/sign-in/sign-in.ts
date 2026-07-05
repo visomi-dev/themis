@@ -1,12 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { FormField, FormRoot, email, form, minLength, required, type FieldTree } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { APP_URL, FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_DEVICE_URL } from '../../shared/constants/routes';
-import { controlError } from '../../shared/form/form-errors';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
@@ -20,11 +18,11 @@ import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
 import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
 
-type SignInForm = FormGroup<{
-  email: FormControl<string>;
-  password: FormControl<string>;
-  rememberDevice: FormControl<boolean>;
-}>;
+type SignInModel = {
+  email: string;
+  password: string;
+  rememberDevice: boolean;
+};
 
 @Component({
   host: {
@@ -39,12 +37,12 @@ type SignInForm = FormGroup<{
     Checkbox,
     ErrorMessage,
     Field,
+    FormField,
+    FormRoot,
     Input,
     Label,
     Link,
     PasswordInput,
-    ReactiveFormsModule,
-    RouterLink,
   ],
   selector: 'app-sign-in',
   templateUrl: './sign-in.html',
@@ -54,62 +52,52 @@ export class SignIn {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
 
-  readonly form: SignInForm = new FormGroup({
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.email],
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
-    }),
-    rememberDevice: new FormControl(true, {
-      nonNullable: true,
-    }),
+  readonly signInModel = signal<SignInModel>({
+    email: '',
+    password: '',
+    rememberDevice: true,
   });
 
-  private readonly emailValueChanges = toSignal(this.form.controls.email.valueChanges, {
-    initialValue: this.form.controls.email.value,
-  });
-  private readonly passwordValueChanges = toSignal(this.form.controls.password.valueChanges, {
-    initialValue: this.form.controls.password.value,
-  });
+  readonly signInForm: FieldTree<SignInModel> = form(
+    this.signInModel,
+    (p) => {
+      required(p.email, { message: $localize`:@@signInEmailErrorRequired:Enter your email address.` });
+      email(p.email, {
+        message: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
+      });
+      required(p.password, { message: $localize`:@@signInPasswordErrorRequired:Enter your password.` });
+      minLength(p.password, 8, { message: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.` });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          await this.submit(field);
+        },
+      },
+    },
+  );
 
   readonly submitting = this.auth.submitting;
-  readonly submitted = signal(false);
   readonly errorMessage = signal('');
 
-  readonly emailError = computed(() => {
-    this.emailValueChanges();
+  readonly emailError = computed(() => this.signInForm.email().errors()[0]?.message ?? '');
+  readonly passwordError = computed(() => this.signInForm.password().errors()[0]?.message ?? '');
 
-    return controlError(this.form.controls.email, {
-      email: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
-      required: $localize`:@@signInEmailErrorRequired:Enter your email address.`,
-    });
-  });
-
-  readonly passwordError = computed(() => {
-    this.passwordValueChanges();
-
-    return controlError(this.form.controls.password, {
-      minlength: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.`,
-      required: $localize`:@@signInPasswordErrorRequired:Enter your password.`,
-    });
-  });
-
-  async submit() {
+  private async submit(field: FieldTree<SignInModel>): Promise<void> {
     if (this.submitting()) {
-      return;
-    }
-
-    if (this.form.invalid) {
       return;
     }
 
     this.errorMessage.set('');
 
+    const value = field().value();
+
     try {
-      const result = await this.auth.signInWithPassword(this.form.getRawValue());
+      const result = await this.auth.signInWithPassword({
+        email: value.email,
+        password: value.password,
+        rememberDevice: value.rememberDevice,
+      });
 
       if ('authenticated' in result) {
         await this.router.navigate([APP_URL]);

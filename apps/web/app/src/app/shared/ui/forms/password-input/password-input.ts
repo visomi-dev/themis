@@ -2,13 +2,15 @@ import {
   booleanAttribute,
   Component,
   computed,
-  forwardRef,
+  effect,
+  ElementRef,
   input,
   numberAttribute,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import type { Field } from '@angular/forms/signals';
 
 import { Icon } from '../../media/icon/icon';
 import { uiClass } from '../../classes';
@@ -20,18 +22,14 @@ type PasswordVariant = 'icon' | 'text';
     class: /* tw */ 'block',
   },
   imports: [Icon],
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PasswordInput),
-    },
-  ],
   selector: 'app-password-input',
   templateUrl: './password-input.html',
   styleUrl: './password-input.css',
 })
-export class PasswordInput implements ControlValueAccessor {
+export class PasswordInput {
+  private readonly inputRef = viewChild<ElementRef<HTMLInputElement>>('inputEl');
+
+  readonly formField = input.required<Field<string>>();
   readonly ariaDescribedBy = input<string | null>(null);
   readonly autocomplete = input<string | null>(null);
   readonly controlId = input<string | null>(null);
@@ -47,12 +45,11 @@ export class PasswordInput implements ControlValueAccessor {
   readonly variant = input<PasswordVariant>('text');
   readonly valueChange = output<string>();
 
-  readonly formDisabled = signal(false);
   readonly type = signal<'password' | 'text'>('password');
-  readonly value = signal('');
 
   readonly isTextVariant = computed(() => this.variant() === 'text');
   readonly isVisible = computed(() => this.type() === 'text');
+  readonly isFilled = signal(false);
 
   readonly ariaLabel = computed(() => (this.isVisible() ? 'Hide password' : 'Show password'));
   readonly toggleLabel = computed(() => (this.isVisible() ? 'Hide' : 'Show'));
@@ -70,40 +67,30 @@ export class PasswordInput implements ControlValueAccessor {
     if (this.isTextVariant()) {
       return uiClass(
         'ui-focus-ring ui-touch-target text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:text-zinc-50 absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] px-2 font-mono text-[0.6875rem] font-semibold tracking-wider uppercase',
-        !this.value() && 'pointer-events-none opacity-0',
+        !this.isFilled() && 'pointer-events-none opacity-0',
       );
     }
 
     return uiClass(
       'ui-focus-ring ui-touch-target absolute right-2 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-[var(--radius-control)] text-zinc-500 dark:text-zinc-400 transition hover:text-zinc-950 dark:text-zinc-50',
-      !this.value() && 'pointer-events-none opacity-0',
+      !this.isFilled() && 'pointer-events-none opacity-0',
     );
   });
 
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
+  private readonly syncEffect = effect(() => {
+    const ref = this.inputRef();
+    const value = this.formField()().value();
 
-  writeValue(value: string | null): void {
-    this.value.set(value ?? '');
-  }
+    if (ref) {
+      ref.nativeElement.value = value ?? '';
+      this.isFilled.set((value ?? '').length > 0);
+    }
+  });
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
-
-  updateValue(event: Event): void {
+  onInput(event: Event): void {
     const nextValue = (event.target as HTMLInputElement).value;
 
-    this.value.set(nextValue);
-    this.onChange(nextValue);
+    this.formField()().value.set(nextValue);
     this.valueChange.emit(nextValue);
   }
 
@@ -111,7 +98,7 @@ export class PasswordInput implements ControlValueAccessor {
     this.type.update((type) => (type === 'password' ? 'text' : 'password'));
   }
 
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, type FieldTree } from '@angular/forms/signals';
 
 import { PasswordInput } from './password-input';
 
 @Component({
-  imports: [PasswordInput, ReactiveFormsModule],
-  template: '<app-password-input [formControl]="control" />',
+  imports: [FormField, PasswordInput],
+  template: '<app-password-input [formField]="f.password" />',
 })
 class Host {
-  readonly control = new FormControl('secret123!', { nonNullable: true });
+  readonly model = signal({ password: 'secret123!' });
+  readonly f: FieldTree<{ password: string }> = form(this.model, () => undefined);
 }
 
 describe('PasswordInput', () => {
@@ -21,7 +22,7 @@ describe('PasswordInput', () => {
     await fixture.whenStable();
   });
 
-  it('renders a password control value', () => {
+  it('reflects the signal form value onto the inner input', () => {
     const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
 
     expect(input.value).toBe('secret123!');
