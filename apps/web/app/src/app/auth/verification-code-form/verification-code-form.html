@@ -5,14 +5,14 @@
   <app-alert tone="success">{{ statusMessage() }}</app-alert>
 }
 
-<app-form class="grid gap-6" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
+<app-form class="grid gap-6" [form]="verificationForm">
   <app-field [manualError]="pinManualError() ?? ''">
     <app-label for="verification-pin-1" i18n="@@verificationCodeLabel">Verification code</app-label>
     <app-pin-input
       [digits]="6"
       digitPattern="[0-9]{1}"
       [loading]="submitting()"
-      formControlName="pin"
+      [formField]="verificationForm.pin"
       idPrefix="verification-pin"
     />
     <app-description i18n="@@verificationCodeHelp">Enter the 6-digit code from your email.</app-description>

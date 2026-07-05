@@ -80,7 +80,7 @@ export class ResetPassword {
         message: $localize`:@@resetPasswordConfirmErrorRequired:Re-enter your new password.`,
       });
       validate(p.confirmPassword, ({ value, valueOf }) => {
-        const password = valueOf(p.password)();
+        const password = valueOf(p.password);
         const current = value();
 
         return current && password && current !== password
