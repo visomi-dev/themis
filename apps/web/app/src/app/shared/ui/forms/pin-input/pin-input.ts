@@ -42,6 +42,7 @@ const navigationKeys = Object.freeze(['Backspace', 'ArrowLeft', 'ArrowRight', 'D
 @Component({
   host: {
     class: /* tw */ 'block',
+    'data-control': '',
   },
   providers: [
     {
@@ -80,9 +81,7 @@ export class PinInput implements ControlValueAccessor {
   readonly inputClasses = computed(() =>
     uiClass(
       'ui-focus-ring h-14 w-full appearance-none rounded-[var(--radius-control)] border-2 bg-transparent px-3 py-2 text-center font-mono text-lg font-semibold text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 md:h-16',
-      this.invalid()
-        ? 'border-red-600 dark:border-red-500'
-        : 'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
+      'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
       this.loading() &&
         'pointer-events-none relative flex items-center justify-center bg-zinc-50 dark:bg-zinc-900/90 !text-transparent after:absolute after:block after:size-[1em] after:animate-spin after:rounded-full after:border-2 after:border-current after:border-r-transparent after:border-t-transparent',
     ),

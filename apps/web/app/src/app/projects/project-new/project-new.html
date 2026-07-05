@@ -15,21 +15,21 @@
     }
 
     <app-card padding="md" tone="raised">
-      <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
+      <app-form class="grid gap-6" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
         <app-field>
           <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
           <app-input
             formControlName="name"
-            [controlId]="'project-name'"
-            invalid="!!nameError()"
+            required
+            maxLength="120"
+            controlId="project-name"
             name="name"
             placeholder="My application"
             type="text"
-            (blur)="updateNameError()"
           />
-          @if (nameError(); as message) {
-            <app-error-message controlId="project-name-error">{{ message }}</app-error-message>
-          }
+          <app-error-message controlId="project-name-error" i18n="@@projectNewNameRequiredError">{{
+            nameError()
+          }}</app-error-message>
         </app-field>
 
         <app-field>
@@ -39,16 +39,15 @@
           >
           <app-textarea
             formControlName="summary"
-            [controlId]="'project-summary'"
-            invalid="!!summaryError()"
+            maxLength="500"
+            controlId="project-summary"
             name="summary"
             placeholder="A short description of the project"
             [rows]="3"
-            (blur)="updateSummaryError()"
           />
-          @if (summaryError(); as message) {
-            <app-error-message controlId="project-summary-error">{{ message }}</app-error-message>
-          }
+          <app-error-message controlId="project-summary-error" i18n="@@projectNewSummaryError">{{
+            summaryError()
+          }}</app-error-message>
         </app-field>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
@@ -57,7 +56,7 @@
             Create project
           </app-button>
         </div>
-      </form>
+      </app-form>
     </app-card>
   </div>
 </app-container>

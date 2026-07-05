@@ -16,6 +16,7 @@ export class Select implements ControlValueAccessor {
   readonly id = input<string | null>(null);
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly name = input<string | null>(null);
+  readonly required = input(false, { transform: booleanAttribute });
   readonly valueChange = output<string>();
 
   readonly value = signal('');
@@ -23,7 +24,7 @@ export class Select implements ControlValueAccessor {
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring w-full rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 disabled:cursor-not-allowed disabled:opacity-50',
-      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-zinc-500/30 dark:border-zinc-400/30',
+      'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
     ),
   );
 

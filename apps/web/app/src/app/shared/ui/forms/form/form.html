@@ -1,0 +1,8 @@
+<form
+  [class]="className()"
+  [formGroup]="formGroup()"
+  (ngSubmit)="onSubmit($event)"
+  [attr.novalidate]="novalidate() ? '' : null"
+>
+  <ng-content />
+</form>

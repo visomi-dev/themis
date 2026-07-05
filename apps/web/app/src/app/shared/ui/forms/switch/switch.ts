@@ -4,8 +4,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { uiClass } from '../../classes';
 
 @Component({
-  host: { class: /* tw */ 'inline-flex' },
-  providers: [{ multi: true, provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Switch) }],
+  host: {
+    class: /* tw */ 'inline-flex',
+    'data-control': '',
+    '[attr.data-invalid]': 'invalid() ? "" : null',
+  },
+  imports: [],
+  providers: [
+    {
+      multi: true,
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => Switch),
+    },
+  ],
   selector: 'app-switch',
   templateUrl: './switch.html',
   styleUrl: './switch.css',
@@ -15,6 +26,8 @@ export class Switch implements ControlValueAccessor {
   readonly ariaLabel = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly id = input<string | null>(null);
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
   readonly checkedChange = output<boolean>();
 
   readonly checked = signal(false);

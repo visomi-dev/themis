@@ -4,7 +4,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { uiClass } from '../../classes';
 
 @Component({
-  host: { class: /* tw */ 'inline-flex' },
+  host: {
+    class: /* tw */ 'inline-flex',
+    'data-control': '',
+    '[attr.data-invalid]': 'invalid() ? "" : null',
+  },
+  imports: [],
   providers: [{ multi: true, provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Checkbox) }],
   selector: 'app-checkbox',
   templateUrl: './checkbox.html',
@@ -16,6 +21,7 @@ export class Checkbox implements ControlValueAccessor {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly name = input<string | null>(null);
+  readonly required = input(false, { transform: booleanAttribute });
   readonly checkedChange = output<boolean>();
 
   readonly checked = signal(false);
@@ -23,7 +29,6 @@ export class Checkbox implements ControlValueAccessor {
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring ui-touch-target min-h-5 min-w-5 appearance-none rounded border border-zinc-950/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-blue-600 accent-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-400 dark:accent-blue-500',
-      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-zinc-500/40 dark:border-zinc-400/40',
     ),
   );
 

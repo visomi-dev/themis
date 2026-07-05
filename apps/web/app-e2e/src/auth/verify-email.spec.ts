@@ -20,7 +20,11 @@ test.describe('/app/verify-email', () => {
     await page.getByRole('button', { name: 'Verify and continue' }).click();
 
     await expect(page).toHaveURL(verifyEmailUrlPattern);
-    await expect(page.getByRole('alert')).toContainText('The verification code is invalid.');
+    // `getByRole('alert')` matches both the top-level `<app-alert>` banner and
+    // the inline `<p role="alert">` from `<app-error-message>`. The inline one
+    // is the per-field error and is the contract we care about for the CSS-
+    // driven reveal pattern. Asserting on its id is unambiguous.
+    await expect(page.locator('#verification-pin-error')).toContainText('The code didn');
   });
 
   test('shows cooldown feedback when resend is requested too early', async ({ page, request }) => {

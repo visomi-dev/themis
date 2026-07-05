@@ -1,28 +1,25 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { SIGN_IN_URL } from '../../shared/constants/routes';
-import { controlError } from '../../shared/form/form-errors';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
-import { Input as TextInput } from '../../shared/ui/forms/input/input';
+import { Form as AppForm } from '../../shared/ui/forms/form/form';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
 import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
 import { PasswordStrength } from '../../shared/ui/forms/password-strength/password-strength';
+import { VerificationCodeForm } from '../verification-code-form/verification-code-form';
 
 type ResetStep = 'otp' | 'password' | 'success';
-
-type OtpForm = FormGroup<{
-  pin: FormControl<string>;
-}>;
 
 type PasswordForm = FormGroup<{
   password: FormControl<string>;
@@ -35,6 +32,7 @@ type PasswordForm = FormGroup<{
   },
   imports: [
     Alert,
+    AppForm,
     AuthCard,
     AuthLayout,
     Button,
@@ -46,7 +44,7 @@ type PasswordForm = FormGroup<{
     PasswordStrength,
     ReactiveFormsModule,
     RouterLink,
-    TextInput,
+    VerificationCodeForm,
   ],
   selector: 'app-reset-password',
   templateUrl: './reset-password.html',
@@ -58,20 +56,13 @@ export class ResetPassword {
 
   readonly step = signal<ResetStep>('otp');
   readonly submitting = signal(false);
+  readonly submitted = signal(false);
   readonly errorMessage = signal('');
-  readonly passwordError = signal('');
-  readonly confirmPasswordError = signal('');
-  readonly pinError = signal('');
+  readonly pinManualError = signal<string | null>(null);
 
   readonly challenge = this.auth.pendingChallenge;
   readonly pendingEmail = computed(() => this.challenge()?.email ?? null);
-
-  readonly otpForm: OtpForm = new FormGroup({
-    pin: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(6), Validators.maxLength(6)],
-    }),
-  });
+  readonly verificationSubmitting = this.auth.verificationSubmitting;
 
   readonly passwordForm: PasswordForm = new FormGroup({
     password: new FormControl('', {
@@ -84,22 +75,45 @@ export class ResetPassword {
     }),
   });
 
+  private readonly passwordValueChanges = toSignal(this.passwordForm.controls.password.valueChanges, {
+    initialValue: this.passwordForm.controls.password.value,
+  });
+  private readonly confirmPasswordValueChanges = toSignal(this.passwordForm.controls.confirmPassword.valueChanges, {
+    initialValue: this.passwordForm.controls.confirmPassword.value,
+  });
+
   readonly passwordValue = computed(() => this.passwordForm.controls.password.value);
 
-  async submitOtp() {
-    const pin = this.otpForm.controls.pin.value;
+  readonly confirmPasswordError = computed(() => {
+    this.passwordValueChanges();
+    this.confirmPasswordValueChanges();
+    const control = this.passwordForm.controls.confirmPassword;
+    const expected = this.passwordForm.controls.password.value;
+
+    if (control.hasError('required')) {
+      return $localize`:@@resetPasswordConfirmErrorRequired:Re-enter your new password.`;
+    }
+
+    if (expected && control.value !== expected) {
+      return $localize`:@@resetPasswordConfirmErrorMismatch:Passwords don't match.`;
+    }
+
+    return '';
+  });
+
+  async onOtpSubmit(pin: string) {
+    if (this.submitting()) {
+      return;
+    }
+
     const challenge = this.challenge();
+
+    this.pinManualError.set(null);
 
     if (!challenge) {
       this.errorMessage.set(
         $localize`:@@resetPasswordMissingChallenge:The recovery session has expired. Please request a new code.`,
       );
-
-      return;
-    }
-
-    if (!/^\d{6}$/.test(pin)) {
-      this.pinError.set($localize`:@@resetPasswordPinErrorRequired:Enter the 6-digit code.`);
 
       return;
     }
@@ -116,18 +130,21 @@ export class ResetPassword {
           ? (error.error?.message ?? $localize`:@@resetPasswordVerifyFailed:That code didn't work. Try again.`)
           : $localize`:@@resetPasswordVerifyFailed:That code didn't work. Try again.`,
       );
+      this.pinManualError.set($localize`:@@resetPasswordPinErrorMismatch:That code didn't work. Try again.`);
     } finally {
       this.submitting.set(false);
     }
   }
 
-  async submitPassword() {
-    this.passwordError.set(this.passwordErrorMessage());
-    this.confirmPasswordError.set(this.confirmPasswordErrorMessage());
+  async onPasswordSubmit() {
+    if (this.submitting()) {
+      return;
+    }
 
-    if (this.passwordForm.invalid || this.passwordError() || this.confirmPasswordError()) {
-      this.passwordForm.markAllAsTouched();
-
+    if (
+      this.passwordForm.invalid ||
+      this.passwordForm.controls.password.value !== this.passwordForm.controls.confirmPassword.value
+    ) {
       return;
     }
 
@@ -147,36 +164,6 @@ export class ResetPassword {
     } finally {
       this.submitting.set(false);
     }
-  }
-
-  passwordErrorMessage() {
-    return controlError(this.passwordForm.controls.password, {
-      minlength: $localize`:@@resetPasswordPasswordErrorMinlength:Use at least 8 characters.`,
-      required: $localize`:@@resetPasswordPasswordErrorRequired:Choose a new password.`,
-    });
-  }
-
-  confirmPasswordErrorMessage() {
-    const control = this.passwordForm.controls.confirmPassword;
-    const expected = this.passwordForm.controls.password.value;
-
-    if (control.hasError('required')) {
-      return $localize`:@@resetPasswordConfirmErrorRequired:Re-enter your new password.`;
-    }
-
-    if (expected && control.value !== expected) {
-      return $localize`:@@resetPasswordConfirmErrorMismatch:Passwords don't match.`;
-    }
-
-    return '';
-  }
-
-  pinErrorMessage() {
-    return controlError(this.otpForm.controls.pin, {
-      minlength: $localize`:@@resetPasswordPinErrorLength:Enter the 6-digit code.`,
-      maxlength: $localize`:@@resetPasswordPinErrorLength:Enter the 6-digit code.`,
-      required: $localize`:@@resetPasswordPinErrorRequired:Enter the 6-digit code.`,
-    });
   }
 
   protected readonly signInUrl = SIGN_IN_URL;

@@ -31,44 +31,59 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
     <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
     }
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
-      <app-field>
-        <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
-        <app-input
-          autocomplete="email"
-          formControlName="email"
-          [controlId]="'sign-in-email'"
-          invalid="!!emailError()"
-          name="email"
-          placeholder="name@organization.com"
-          type="email"
-          (blur)="updateEmailError()"
-        />
-        @if (emailError(); as message) {
-        <app-error-message controlId="sign-in-email-error">{{ message }}</app-error-message>
-        }
-      </app-field>
+    <app-form class="grid gap-5" [(submitted)]="submitted">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="contents" novalidate>
+        <app-field>
+          <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
+          <app-input
+            autocomplete="email"
+            formControlName="email"
+            required
+            type="email"
+            placeholder="name@organization.com"
+            controlId="sign-in-email"
+            name="email"
+          />
+          <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid"
+            >{{ emailError() }}</app-error-message
+          >
+        </app-field>
 
-      <app-field>
-        <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
-        <app-password-input
-          autocomplete="current-password"
-          formControlName="password"
-          [controlId]="'sign-in-password'"
-          invalid="!!passwordError()"
-          name="password"
-          placeholder="***************"
-          (blur)="updatePasswordError()"
-        />
-        @if (passwordError(); as message) {
-        <app-error-message controlId="sign-in-password-error">{{ message }}</app-error-message>
-        }
-      </app-field>
+        <app-field>
+          <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
+          <app-password-input
+            autocomplete="current-password"
+            formControlName="password"
+            required
+            minlength="8"
+            placeholder="***************"
+            controlId="sign-in-password"
+            name="password"
+          />
+          <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength"
+            >{{ passwordError() }}</app-error-message
+          >
+        </app-field>
 
-      <app-button data-slot="submit" i18n="@@signInSubmitButton" tone="accent" type="submit" [loading]="submitting()"
-        >Sign in</app-button
-      >
-    </form>
+        <label
+          class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+          for="sign-in-remember-device"
+        >
+          <app-checkbox formControlName="rememberDevice" controlId="sign-in-remember-device" name="rememberDevice" />
+          <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
+        </label>
+
+        <app-button
+          data-slot="submit"
+          data-od-id="submit"
+          i18n="@@signInSubmitButton"
+          tone="accent"
+          type="submit"
+          [loading]="submitting()"
+          >Sign in</app-button
+        >
+      </form>
+    </app-form>
 
     <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
     <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
@@ -83,6 +98,51 @@ Notes:
 - `app-error-message` prepends a circle-alert icon when `withIcon=true` (default).
 - Use `data-slot` markers (`kicker`, `title`, `sub`, `submit`, `footer`) for e2e copy assertions. Open Design copy is locked in the spec.
 - The submit button uses `tone="accent"` (the Catalyst `blue-600` brand color) and `app-alert` with `variant="auth"` for danger/success above the form.
+- Field error reveal is CSS-driven: the global rule in `styles.base.css` toggles `data-invalid` + `:user-invalid` + `[data-submitted]`. No `(blur)` handlers or `@if (... as message) { ... }` wrappers remain.
+- Cross-field errors (e.g. password vs confirm) ride `<app-field [manualError]="...">`, not the touched gate.
+
+## Form
+
+`app-form` wraps a native `<form>` and exposes `[(submitted)]` (model signal) on the host as `data-submitted`. The global CSS rule consumes `[data-submitted]` to reveal every required field's error after submit, including empty inputs that were never touched.
+
+```html
+<app-form class="grid gap-5" [(submitted)]="submitted">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="contents" novalidate>
+    <app-field>
+      <app-label for="recovery-email" i18n="@@recoveryEmailLabel">Email</app-label>
+      <app-input
+        autocomplete="email"
+        formControlName="email"
+        required
+        type="email"
+        placeholder="name@organization.com"
+        controlId="recovery-email"
+        name="email"
+      />
+      <app-error-message controlId="recovery-email-error" i18n="@@recoveryEmailError"
+        >{{ emailError() }}</app-error-message
+      >
+    </app-field>
+
+    <app-button
+      data-od-id="submit"
+      data-slot="submit"
+      i18n="@@recoverySubmitButton"
+      tone="accent"
+      type="submit"
+      [loading]="submitting()"
+      >Send recovery link</app-button
+    >
+  </form>
+</app-form>
+```
+
+Notes:
+
+- Pass `[novalidate]` to forward `novalidate` to the inner `<form>` and skip native browser validation (default behavior in Themis).
+- The host attribute `data-submitted` flips the moment the inner `<form>` dispatches `submit` (bubbled via `@HostListener`). Consumers wire `[(submitted)]="submitted"` to a local signal; no manual write is required.
+- Use `class="contents"` on the inner `<form>` so the layout grid stays on `<app-form>`.
+- Forms that opt out of `app-form` (no submit-time reveal needed) keep the raw `<form>` element directly.
 
 ## Password Strength (sign-up, reset-password)
 
@@ -94,16 +154,16 @@ Notes:
   <app-password-input
     autocomplete="new-password"
     formControlName="password"
-    [controlId]="'sign-up-password'"
-    [invalid]="!!passwordError()"
-    name="password"
+    required
+    minlength="8"
     placeholder="***************"
-    (blur)="updatePasswordError()"
+    controlId="sign-up-password"
+    name="password"
   />
   <app-password-strength [password]="passwordValue" />
-  @if (passwordError(); as message) {
-  <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
-  }
+  <app-error-message controlId="sign-up-password-error" i18n="@@signUpPasswordErrorMinlength"
+    >{{ passwordError() }}</app-error-message
+  >
 </app-field>
 ```
 
@@ -111,43 +171,68 @@ The pure `computePasswordStrength(value)` helper is exported so unit tests can v
 
 ## Reset Password (single-screen OTP + password)
 
-`/app/reset-password` uses one card with internal step signal (otp -> password -> success). The OTP step exposes `data-od-id="pending-email"` for visual e2e. The password step reuses `app-password-strength`.
+`/app/reset-password` uses one card with internal step signal (otp -> password -> success). The OTP step delegates to `app-verification-code-form` and threads a `pinManualError` signal for the inline mismatch on server rejects. The password step reuses `app-password-strength` and `app-form` for the cross-field confirm-password mismatch via `[manualError]`.
 
 ## PIN / Verification Code
 
 ```html
-<app-field>
+<app-field [manualError]="pinManualError() ?? ''">
   <app-label for="verification-pin-1" i18n="@@verificationCodeLabel">Verification code</app-label>
   <app-pin-input
     [digits]="6"
-    [invalid]="!!pinError"
+    digitPattern="[0-9]{1}"
     [loading]="submitting()"
     formControlName="pin"
     idPrefix="verification-pin"
-    pattern="[0-9]{1}"
   />
   <app-description i18n="@@verificationCodeHelp">Enter the 6-digit code from your email.</app-description>
-  @if (pinError; as message) {
-  <app-error-message id="verification-pin-error">{{ message }}</app-error-message>
-  }
+  <app-error-message controlId="verification-pin-error" i18n="@@verificationCodeErrorLength"
+    >{{ resolvedPinError() }}</app-error-message
+  >
 </app-field>
 ```
 
 The pin input renders a wrapper with `data-slot="pin-input"`; e2e helpers target `[data-slot=pin-input] input` to fill each cell.
 
+The native per-cell `:user-invalid` reveals the surrounding field's red border post-blur. The field-level `pinManualError` is set by the consumer (verify-email, verify-device, reset-password) when the server returns an invalid-code response.
+
 ## Field With Error
 
 ```html
-<app-field [invalid]="nameInvalid">
-  <app-label for="project-name">Project name</app-label>
-  <app-input id="project-name" formControlName="name" ariaDescribedBy="project-name-error" />
-  @if (nameInvalid) {
-  <app-error-message id="project-name-error">Project name is required.</app-error-message>
-  }
+<!-- Native: pure CSS reveal -->
+<app-field>
+  <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
+  <app-input
+    formControlName="name"
+    required
+    maxLength="120"
+    controlId="project-name"
+    name="name"
+    placeholder="My application"
+  />
+  <app-error-message controlId="project-name-error" i18n="@@projectNewNameRequiredError"
+    >{{ nameError() }}</app-error-message
+  >
+</app-field>
+
+<!-- Manual: cross-field mismatch -->
+<app-field [manualError]="confirmPasswordError() ?? ''">
+  <app-label for="confirm-password" i18n="@@confirmPasswordLabel">Confirm password</app-label>
+  <app-password-input
+    autocomplete="new-password"
+    formControlName="confirmPassword"
+    required
+    minlength="8"
+    controlId="confirm-password"
+    name="confirmPassword"
+  />
+  <app-error-message controlId="confirm-password-error" i18n="@@confirmPasswordMismatchError"
+    >{{ confirmPasswordError() }}</app-error-message
+  >
 </app-field>
 ```
 
-The `Field` propagates `data-invalid` to its children. `Input` reads the attribute to switch `border-zinc-950/15` to `border-red-600` (`dark:border-red-500`).
+The reveal rule is global (in `styles.base.css`); author code never toggles red borders or wraps `<app-error-message>` in `@if`. Both inputs and binary controls (checkbox / switch / radio-group / radio-card / color-picker) follow the same hybrid: pass `required` on the inner control, the browser owns validity, the CSS rule owns visibility.
 
 ## App Shell (auth routes excluded)
 

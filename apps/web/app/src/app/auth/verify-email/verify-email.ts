@@ -25,9 +25,11 @@ export class VerifyEmail {
   readonly challenge = this.auth.pendingChallenge;
   readonly verificationSubmitting = this.auth.verificationSubmitting;
   readonly errorMessage = signal('');
+  readonly pinManualError = signal<string | null>(null);
   readonly statusMessage = signal('');
 
   async submit(pin: string) {
+    this.pinManualError.set(null);
     this.errorMessage.set('');
     this.statusMessage.set('');
 
@@ -40,10 +42,16 @@ export class VerifyEmail {
           ? (error.error?.message ?? $localize`:@@verifyEmailFailed:Verification failed.`)
           : $localize`:@@verifyEmailFailed:Verification failed.`,
       );
+      this.pinManualError.set(
+        error instanceof HttpErrorResponse
+          ? $localize`:@@verifyEmailPinMismatch:The code didn't match. Try again.`
+          : $localize`:@@verifyEmailPinMismatch:The code didn't match. Try again.`,
+      );
     }
   }
 
   async resend() {
+    this.pinManualError.set(null);
     this.errorMessage.set('');
     this.statusMessage.set('');
 

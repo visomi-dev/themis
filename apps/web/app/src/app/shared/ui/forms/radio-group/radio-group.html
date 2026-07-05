@@ -8,6 +8,9 @@
       <span class="flex items-start gap-3">
         <input
           class="ui-focus-ring mt-0.5 size-4 accent-blue-600 dark:accent-blue-500"
+          data-slot="control"
+          [attr.aria-invalid]="invalid()"
+          [attr.required]="required() && $first ? '' : null"
           [checked]="value() === option.value"
           [name]="name()"
           [value]="option.value"

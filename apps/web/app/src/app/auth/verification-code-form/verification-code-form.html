@@ -5,21 +5,20 @@
   <app-alert tone="success">{{ statusMessage() }}</app-alert>
 }
 
-<form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6" novalidate>
-  <app-field>
+<app-form class="grid gap-6" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
+  <app-field [manualError]="pinManualError() ?? ''">
     <app-label for="verification-pin-1" i18n="@@verificationCodeLabel">Verification code</app-label>
     <app-pin-input
       [digits]="6"
       digitPattern="[0-9]{1}"
-      [invalid]="!!pinError"
       [loading]="submitting()"
       formControlName="pin"
       idPrefix="verification-pin"
     />
     <app-description i18n="@@verificationCodeHelp">Enter the 6-digit code from your email.</app-description>
-    @if (pinError; as message) {
-      <app-error-message controlId="verification-pin-error">{{ message }}</app-error-message>
-    }
+    <app-error-message controlId="verification-pin-error" i18n="@@verificationCodeErrorLength">{{
+      resolvedPinError()
+    }}</app-error-message>
   </app-field>
 
   <div class="flex flex-wrap items-center gap-3">
@@ -30,4 +29,4 @@
       Resend code
     </app-button>
   </div>
-</form>
+</app-form>

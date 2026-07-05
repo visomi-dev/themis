@@ -26,22 +26,21 @@
       }}</app-alert>
     }
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-5" novalidate>
+    <app-form class="grid gap-5" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
       <app-field>
         <app-label for="sign-up-email" i18n="@@signUpEmailLabel">Email</app-label>
         <app-input
           autocomplete="email"
           formControlName="email"
-          [controlId]="'sign-up-email'"
-          [invalid]="!!emailError()"
-          name="email"
-          placeholder="name@organization.com"
+          required
           type="email"
-          (blur)="updateEmailError()"
+          placeholder="name@organization.com"
+          controlId="sign-up-email"
+          name="email"
         />
-        @if (emailError(); as message) {
-          <app-error-message controlId="sign-up-email-error">{{ message }}</app-error-message>
-        }
+        <app-error-message controlId="sign-up-email-error" i18n="@@signUpEmailErrorInvalid">{{
+          emailError()
+        }}</app-error-message>
       </app-field>
 
       <app-field>
@@ -49,32 +48,32 @@
         <app-password-input
           autocomplete="new-password"
           formControlName="password"
-          [controlId]="'sign-up-password'"
-          [invalid]="!!passwordError()"
-          name="password"
+          required
+          minlength="8"
           placeholder="***************"
-          (blur)="updatePasswordError()"
+          controlId="sign-up-password"
+          name="password"
         />
         <app-password-strength [password]="passwordValue" />
-        @if (passwordError(); as message) {
-          <app-error-message controlId="sign-up-password-error">{{ message }}</app-error-message>
-        }
+        <app-error-message controlId="sign-up-password-error" i18n="@@signUpPasswordErrorMinlength">{{
+          passwordError()
+        }}</app-error-message>
       </app-field>
 
-      <app-field>
+      <app-field [manualError]="confirmPasswordError() ?? ''">
         <app-label for="sign-up-confirm-password" i18n="@@signUpConfirmPasswordLabel">Confirm password</app-label>
         <app-password-input
           autocomplete="new-password"
           formControlName="confirmPassword"
-          [controlId]="'sign-up-confirm-password'"
-          [invalid]="!!confirmPasswordError()"
-          name="confirmPassword"
+          required
+          minlength="8"
           placeholder="***************"
-          (blur)="updateConfirmPasswordError()"
+          controlId="sign-up-confirm-password"
+          name="confirmPassword"
         />
-        @if (confirmPasswordError(); as message) {
-          <app-error-message controlId="sign-up-confirm-password-error">{{ message }}</app-error-message>
-        }
+        <app-error-message controlId="sign-up-confirm-password-error" i18n="@@signUpConfirmPasswordErrorMismatch">{{
+          confirmPasswordError()
+        }}</app-error-message>
       </app-field>
 
       <app-button
@@ -86,7 +85,7 @@
         [loading]="submitting()"
         >Create account</app-button
       >
-    </form>
+    </app-form>
 
     <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signUpFooterPrompt">Already have an account?</p>
     <app-link data-slot="footer" i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />

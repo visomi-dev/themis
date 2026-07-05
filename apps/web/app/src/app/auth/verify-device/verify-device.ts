@@ -25,9 +25,11 @@ export class VerifyDevice {
   readonly challenge = this.auth.pendingChallenge;
   readonly verificationSubmitting = this.auth.verificationSubmitting;
   readonly errorMessage = signal('');
+  readonly pinManualError = signal<string | null>(null);
   readonly statusMessage = signal('');
 
   async submit(pin: string) {
+    this.pinManualError.set(null);
     this.errorMessage.set('');
     this.statusMessage.set('');
 
@@ -40,10 +42,16 @@ export class VerifyDevice {
           ? (error.error?.message ?? $localize`:@@verifyDeviceFailed:Device verification failed.`)
           : $localize`:@@verifyDeviceFailed:Device verification failed.`,
       );
+      this.pinManualError.set(
+        error instanceof HttpErrorResponse
+          ? $localize`:@@verifyDevicePinMismatch:The code didn't match. Try again.`
+          : $localize`:@@verifyDevicePinMismatch:The code didn't match. Try again.`,
+      );
     }
   }
 
   async resend() {
+    this.pinManualError.set(null);
     this.errorMessage.set('');
     this.statusMessage.set('');
 

@@ -24,6 +24,7 @@
 
     <app-verification-code-form
       [errorMessage]="errorMessage()"
+      [pinManualError]="pinManualError()"
       [statusMessage]="statusMessage()"
       [submitting]="verificationSubmitting()"
       (verify)="submit($event)"

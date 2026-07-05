@@ -16,7 +16,16 @@ import {
 import { sendVerificationMessage } from './auth-mail';
 import { authUserSchema, challengeSchema } from './auth-schemas';
 
-import { accountMemberships, accounts, authVerificationChallenges, db, HttpError, userDevices, users } from 'shared';
+import {
+  accountMemberships,
+  accounts,
+  authVerificationChallenges,
+  db,
+  HttpError,
+  safeInsert,
+  userDevices,
+  users,
+} from 'shared';
 
 type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
 type AuthUser = z.infer<typeof authUserSchema>;
@@ -127,17 +136,28 @@ export async function createChallenge(
       ),
     );
 
-  await db.insert(authVerificationChallenges).values({
-    attemptCount: 0,
-    createdAt: now,
-    expiresAt,
-    id: challengeId,
-    lastSentAt: now,
-    pinHash: await hashSecret(pin),
-    purpose,
-    updatedAt: now,
-    userId: user.id,
-  });
+  const pinHash = await hashSecret(pin);
+
+  await safeInsert(
+    () =>
+      db.insert(authVerificationChallenges).values({
+        attemptCount: 0,
+        createdAt: now,
+        expiresAt,
+        id: challengeId,
+        lastSentAt: now,
+        pinHash,
+        purpose,
+        updatedAt: now,
+        userId: user.id,
+      }),
+    'auth_verification_challenges_pkey',
+    {
+      code: 'challenge_already_exists',
+      message: 'A verification challenge with that id already exists.',
+      statusCode: 409,
+    },
+  );
 
   await sendVerificationMessage({
     challengeId,
@@ -174,14 +194,23 @@ export async function createUserDevice(userId: string) {
   const token = generateUserDeviceToken();
   const now = new Date();
 
-  await db.insert(userDevices).values({
-    createdAt: now,
-    expiresAt: new Date(now.getTime() + env.REMEMBERED_DEVICE_MAX_AGE_MS),
-    id: randomUUID(),
-    tokenHash: hashUserDeviceToken(token),
-    updatedAt: now,
-    userId,
-  });
+  await safeInsert(
+    () =>
+      db.insert(userDevices).values({
+        createdAt: now,
+        expiresAt: new Date(now.getTime() + env.REMEMBERED_DEVICE_MAX_AGE_MS),
+        id: randomUUID(),
+        tokenHash: hashUserDeviceToken(token),
+        updatedAt: now,
+        userId,
+      }),
+    'user_devices_token_hash_idx',
+    {
+      code: 'device_token_collision',
+      message: 'A device with that token already exists.',
+      statusCode: 409,
+    },
+  );
 
   return token;
 }
@@ -244,16 +273,27 @@ export async function signUp(email: string, password: string) {
 
   const now = new Date();
 
-  const [user] = await db
-    .insert(users)
-    .values({
-      createdAt: now,
-      email: normalizedEmail,
-      id: randomUUID(),
-      passwordHash: await hashSecret(password),
-      updatedAt: now,
-    })
-    .returning();
+  const passwordHash = await hashSecret(password);
+
+  const [user] = (await safeInsert(
+    () =>
+      db
+        .insert(users)
+        .values({
+          createdAt: now,
+          email: normalizedEmail,
+          id: randomUUID(),
+          passwordHash,
+          updatedAt: now,
+        })
+        .returning(),
+    'users_email_idx',
+    {
+      code: 'email_already_registered',
+      message: 'An account already exists for this email address.',
+      statusCode: 409,
+    },
+  )) as Array<typeof users.$inferSelect>;
 
   const accountId = randomUUID();
 
@@ -261,25 +301,43 @@ export async function signUp(email: string, password: string) {
 
   const [existingAccount] = await db.select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
 
-  const accountSlug = existingAccount ? `${baseSlug}-${user.id.slice(0, 8)}` : baseSlug;
+  const accountSlug = existingAccount ? `${baseSlug}-${accountId.slice(0, 8)}` : baseSlug;
 
-  await db.insert(accounts).values({
-    createdAt: now,
-    id: accountId,
-    name: normalizedEmail.split('@')[0],
-    ownerUserId: user.id,
-    slug: accountSlug,
-    updatedAt: now,
-  });
+  await safeInsert(
+    () =>
+      db.insert(accounts).values({
+        createdAt: now,
+        id: accountId,
+        name: normalizedEmail.split('@')[0],
+        ownerUserId: user.id,
+        slug: accountSlug,
+        updatedAt: now,
+      }),
+    'accounts_slug_idx',
+    {
+      code: 'account_slug_taken',
+      message: 'An account with that slug already exists.',
+      statusCode: 409,
+    },
+  );
 
-  await db.insert(accountMemberships).values({
-    accountId,
-    createdAt: now,
-    id: randomUUID(),
-    role: 'owner',
-    updatedAt: now,
-    userId: user.id,
-  });
+  await safeInsert(
+    () =>
+      db.insert(accountMemberships).values({
+        accountId,
+        createdAt: now,
+        id: randomUUID(),
+        role: 'owner',
+        updatedAt: now,
+        userId: user.id,
+      }),
+    'account_memberships_account_user_idx',
+    {
+      code: 'membership_already_exists',
+      message: 'The account membership already exists.',
+      statusCode: 409,
+    },
+  );
 
   return createChallenge(user, 'sign_up');
 }

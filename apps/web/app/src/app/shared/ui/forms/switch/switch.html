@@ -1,7 +1,9 @@
 <button
   [attr.aria-checked]="checked()"
   [attr.aria-describedby]="ariaDescribedBy()"
+  [attr.aria-invalid]="invalid()"
   [attr.aria-label]="ariaLabel()"
+  [attr.aria-required]="required() ? '' : null"
   [class]="classes()"
   [disabled]="disabled() || formDisabled()"
   [id]="id()"

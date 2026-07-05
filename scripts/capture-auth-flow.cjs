@@ -196,7 +196,7 @@ async function runFlow(viewport) {
     await typeOtp(page, resetPin);
     await pause(page);
 
-    await page.getByRole('button', { name: 'Verify code' }).click();
+    await page.getByRole('button', { name: 'Verify and continue' }).click();
     await page.waitForSelector('[data-slot="title"]');
     // wait for the password step (title stays Reset your password but a new field appears)
     await page.getByRole('textbox', { name: 'New password', exact: true }).waitFor();

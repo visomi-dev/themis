@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { assertOpenDesignChrome } from '../support/auth-layout';
+import { fillOtp } from '../support/otp';
 import { forgottenPasswordRoute, resetPasswordRoute } from '../support/routes';
 
 const TEST_API_BASE = '/api/test';
@@ -42,7 +43,7 @@ async function provisionVerifiedUser(request, email, password) {
     data: { challengeId, pin },
   });
 
-  expect(verify.ok(), `sign-up verify status ${verify.status()}`).toBeTruthy();
+  expect(verify.ok(), `sign-up verify status ${verify.status}`).toBeTruthy();
 }
 
 test.describe('/app/reset-password', () => {
@@ -78,18 +79,14 @@ test.describe('/app/reset-password', () => {
   test('reveals the password step after OTP verification', async ({ page, request }) => {
     await page.goto(resetPasswordRoute);
 
-    const pinField = page.getByRole('textbox', { name: 'Verification code' });
-
-    await expect(pinField).toBeEditable();
-
     const pin = await readLatestPin(request, email, 'password_reset');
 
     if (!pin) {
       throw new Error('expected a password_reset pin in the mailbox');
     }
 
-    await pinField.fill(pin);
-    await page.getByRole('button', { name: 'Verify code' }).click();
+    await fillOtp(page, pin);
+    await page.getByRole('button', { name: 'Verify and continue' }).click();
 
     await expect(page.getByRole('textbox', { name: 'New password', exact: true })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Confirm new password', exact: true })).toBeVisible();
@@ -103,8 +100,8 @@ test.describe('/app/reset-password', () => {
 
     if (!pin) throw new Error('expected a password_reset pin in the mailbox');
 
-    await page.getByRole('textbox', { name: 'Verification code' }).fill(pin);
-    await page.getByRole('button', { name: 'Verify code' }).click();
+    await fillOtp(page, pin);
+    await page.getByRole('button', { name: 'Verify and continue' }).click();
 
     await page.getByRole('textbox', { name: 'New password', exact: true }).fill('Strong-Pass-12!');
     await page.getByRole('textbox', { name: 'Confirm new password', exact: true }).fill('DifferentPass12!');
@@ -121,8 +118,8 @@ test.describe('/app/reset-password', () => {
 
     if (!pin) throw new Error('expected a password_reset pin in the mailbox');
 
-    await page.getByRole('textbox', { name: 'Verification code' }).fill(pin);
-    await page.getByRole('button', { name: 'Verify code' }).click();
+    await fillOtp(page, pin);
+    await page.getByRole('button', { name: 'Verify and continue' }).click();
 
     await page.getByRole('textbox', { name: 'New password', exact: true }).fill('Strong-Pass-12!');
     await page.getByRole('textbox', { name: 'Confirm new password', exact: true }).fill('Strong-Pass-12!');

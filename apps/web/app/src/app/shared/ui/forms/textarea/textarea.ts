@@ -1,4 +1,13 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  forwardRef,
+  input,
+  numberAttribute,
+  output,
+  signal,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { uiClass } from '../../classes';
@@ -15,8 +24,12 @@ export class Textarea implements ControlValueAccessor {
   readonly controlId = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
+  readonly maxLength = input<string | number | null>(null, { transform: numberAttribute });
+  readonly minLength = input<string | number | null>(null, { transform: numberAttribute });
   readonly name = input<string | null>(null);
+  readonly pattern = input<string | null>(null);
   readonly placeholder = input('');
+  readonly required = input(false, { transform: booleanAttribute });
   readonly rows = input(4);
   readonly valueChange = output<string>();
 
@@ -25,7 +38,7 @@ export class Textarea implements ControlValueAccessor {
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring min-h-28 w-full resize-y rounded-[var(--radius-control)] border bg-zinc-50 dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-500 dark:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50',
-      this.invalid() ? 'border-red-600 dark:border-red-500' : 'border-zinc-500/30 dark:border-zinc-400/30',
+      'border-[color:var(--color-border)] focus-visible:border-blue-600 dark:border-blue-500',
     ),
   );
 

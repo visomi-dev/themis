@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -13,6 +14,7 @@ import { Button } from '../../shared/ui/actions/button/button';
 import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
+import { Form as AppForm } from '../../shared/ui/forms/form/form';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
@@ -31,6 +33,7 @@ type SignUpForm = FormGroup<{
   },
   imports: [
     Alert,
+    AppForm,
     AuthCard,
     AuthLayout,
     Button,
@@ -68,42 +71,43 @@ export class SignUp {
     }),
   });
 
-  readonly submitting = this.auth.submitting;
+  private readonly emailValueChanges = toSignal(this.form.controls.email.valueChanges, {
+    initialValue: this.form.controls.email.value,
+  });
+  private readonly passwordValueChanges = toSignal(this.form.controls.password.valueChanges, {
+    initialValue: this.form.controls.password.value,
+  });
+  private readonly confirmPasswordValueChanges = toSignal(this.form.controls.confirmPassword.valueChanges, {
+    initialValue: this.form.controls.confirmPassword.value,
+  });
 
+  readonly submitting = this.auth.submitting;
+  readonly submitted = signal(false);
   readonly errorMessage = signal('');
-  readonly emailError = signal('');
-  readonly passwordError = signal('');
-  readonly confirmPasswordError = signal('');
 
   readonly passwordValue = computed(() => this.form.controls.password.value);
 
-  updateEmailError() {
-    this.emailError.set(this.emailErrorMessage());
-  }
+  readonly emailError = computed(() => {
+    this.emailValueChanges();
 
-  updatePasswordError() {
-    this.passwordError.set(this.passwordErrorMessage());
-  }
-
-  updateConfirmPasswordError() {
-    this.confirmPasswordError.set(this.confirmPasswordErrorMessage());
-  }
-
-  emailErrorMessage() {
     return controlError(this.form.controls.email, {
       email: $localize`:@@signUpEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
       required: $localize`:@@signUpEmailErrorRequired:Enter your email address.`,
     });
-  }
+  });
 
-  passwordErrorMessage() {
+  readonly passwordError = computed(() => {
+    this.passwordValueChanges();
+
     return controlError(this.form.controls.password, {
       minlength: $localize`:@@signUpPasswordErrorMinlength:Use at least 8 characters.`,
       required: $localize`:@@signUpPasswordErrorRequired:Choose a password.`,
     });
-  }
+  });
 
-  confirmPasswordErrorMessage() {
+  readonly confirmPasswordError = computed(() => {
+    this.passwordValueChanges();
+    this.confirmPasswordValueChanges();
     const control = this.form.controls.confirmPassword;
     const expected = this.form.controls.password.value;
 
@@ -116,21 +120,18 @@ export class SignUp {
     }
 
     return '';
-  }
+  });
 
   async submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.updateEmailError();
-      this.updatePasswordError();
-      this.updateConfirmPasswordError();
-
+    // Re-entrant guard. `auth.signUp` flips the shared `submitting` signal
+    // synchronously, so a second click before the disable propagates still
+    // sees `submitting() === true` and exits early instead of issuing a
+    // duplicate POST (which the server would reject with a 409).
+    if (this.submitting()) {
       return;
     }
 
-    if (this.form.controls.password.value !== this.form.controls.confirmPassword.value) {
-      this.updateConfirmPasswordError();
-
+    if (this.form.invalid || this.form.controls.password.value !== this.form.controls.confirmPassword.value) {
       return;
     }
 
