@@ -15,11 +15,11 @@
     }
 
     <app-card padding="md" tone="raised">
-      <app-form class="grid gap-6" [formGroup]="form" [(submitted)]="submitted" (ngSubmit)="submit()">
+      <app-form class="grid gap-6" [form]="newProjectForm">
         <app-field>
           <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
           <app-input
-            formControlName="name"
+            [formField]="newProjectForm.name"
             required
             maxLength="120"
             controlId="project-name"
@@ -38,7 +38,7 @@
             >A short description of the project (optional).</app-description
           >
           <app-textarea
-            formControlName="summary"
+            [formField]="newProjectForm.summary"
             maxLength="500"
             controlId="project-summary"
             name="summary"

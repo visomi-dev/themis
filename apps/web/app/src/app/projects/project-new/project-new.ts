@@ -1,10 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, maxLength, required, type FieldTree } from '@angular/forms/signals';
+import { FormField, FormRoot } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { PROJECTS_URL } from '../../shared/constants/routes';
-import { controlError } from '../../shared/form/form-errors';
 import { ProjectsApi } from '../../shared/projects/projects';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Button } from '../../shared/ui/actions/button/button';
@@ -21,10 +20,10 @@ import { Link } from '../../shared/ui/typography/link/link';
 import { LinkButton } from '../../shared/ui/actions/link-button/link-button';
 import { Textarea } from '../../shared/ui/forms/textarea/textarea';
 
-type NewProjectForm = FormGroup<{
-  name: FormControl<string>;
-  summary: FormControl<string>;
-}>;
+type NewProjectModel = {
+  name: string;
+  summary: string;
+};
 
 @Component({
   host: {
@@ -39,12 +38,13 @@ type NewProjectForm = FormGroup<{
     Description,
     ErrorMessage,
     Field,
+    FormField,
+    FormRoot,
     Heading,
     Input,
     Label,
     Link,
     LinkButton,
-    ReactiveFormsModule,
     RouterLink,
     Textarea,
   ],
@@ -56,52 +56,33 @@ export class ProjectNew {
   private readonly projectsApi = inject(ProjectsApi);
   private readonly router = inject(Router);
 
-  readonly form: NewProjectForm = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(120)],
-    }),
-    summary: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.maxLength(500)],
-    }),
-  });
+  readonly newProjectModel = signal<NewProjectModel>({ name: '', summary: '' });
 
-  private readonly nameValueChanges = toSignal(this.form.controls.name.valueChanges, {
-    initialValue: this.form.controls.name.status,
-  });
-  private readonly summaryValueChanges = toSignal(this.form.controls.summary.valueChanges, {
-    initialValue: this.form.controls.summary.status,
-  });
+  readonly newProjectForm: FieldTree<NewProjectModel> = form(
+    this.newProjectModel,
+    (p) => {
+      required(p.name, { message: 'Enter a project name.' });
+      maxLength(p.name, 120, { message: 'Use 120 characters or fewer.' });
+      maxLength(p.summary, 500, { message: 'Use 500 characters or fewer.' });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          await this.submit(field);
+        },
+      },
+    },
+  );
 
   readonly submitting = signal(false);
-  readonly submitted = signal(false);
   readonly errorMessage = signal('');
   readonly projectsUrl = PROJECTS_URL;
 
-  readonly nameError = computed(() => {
-    this.nameValueChanges();
+  readonly nameError = computed(() => this.newProjectForm.name().errors()[0]?.message ?? '');
+  readonly summaryError = computed(() => this.newProjectForm.summary().errors()[0]?.message ?? '');
 
-    return controlError(this.form.controls.name, {
-      required: 'Enter a project name.',
-      maxlength: 'Use 120 characters or fewer.',
-    });
-  });
-
-  readonly summaryError = computed(() => {
-    this.summaryValueChanges();
-
-    return controlError(this.form.controls.summary, {
-      maxlength: 'Use 500 characters or fewer.',
-    });
-  });
-
-  async submit() {
+  private async submit(field: FieldTree<NewProjectModel>): Promise<void> {
     if (this.submitting()) {
-      return;
-    }
-
-    if (this.form.invalid) {
       return;
     }
 
@@ -109,7 +90,7 @@ export class ProjectNew {
     this.errorMessage.set('');
 
     try {
-      const project = await this.projectsApi.createProject(this.form.getRawValue());
+      const project = await this.projectsApi.createProject(field().value());
 
       await this.router.navigate(['/projects', project.id]);
     } catch {
