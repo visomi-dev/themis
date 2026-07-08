@@ -1,21 +1,31 @@
 @if (showAppShell()) {
-  <div class="flex min-h-dvh bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
-    <app-sidebar-menu
-      [collapsed]="sidebarCollapsed()"
-      [mobileMenuOpen]="mobileMenuOpen()"
-      (closed)="closeMobileMenu()"
-      (toggleCollapsed)="toggleSidebarCollapsed()"
-    />
+  <div
+    class="flex h-dvh min-h-0 flex-col overflow-hidden bg-white text-zinc-950 [--bottom-nav-height:4rem] [--topbar-height:4rem] md:[--bottom-nav-height:0] dark:bg-zinc-950 dark:text-zinc-50"
+  >
+    <div class="flex min-h-0 flex-1">
+      <app-sidebar-menu
+        [collapsed]="sidebarCollapsed()"
+        [mobileMenuOpen]="mobileMenuOpen()"
+        (closed)="closeMobileMenu()"
+        (toggleCollapsed)="toggleSidebarCollapsed()"
+      />
 
-    <section class="flex min-w-0 flex-1 flex-col">
-      <app-topbar (openMobileMenu)="openMobileMenu()" />
+      <section class="flex min-h-0 min-w-0 flex-1 flex-col">
+        <app-topbar (openMobileMenu)="openMobileMenu()" />
 
-      <main
-        class="max-h-dvh min-w-0 flex-1 overflow-y-auto bg-white p-8 dark:bg-zinc-50 dark:bg-zinc-900 dark:bg-zinc-950"
-      >
-        <router-outlet />
-      </main>
-    </section>
+        <main class="min-h-0 min-w-0 flex-1 overflow-y-auto bg-white dark:bg-zinc-950">
+          <router-outlet />
+        </main>
+
+        <app-bottom-navigation>
+          @for (item of bottomNavItems; track item.url) {
+            <app-bottom-navigation-item [ariaLabel]="item.ariaLabel" [routerLink]="item.url" [exact]="item.exact">
+              <app-icon data-slot="icon" [name]="item.icon" />
+            </app-bottom-navigation-item>
+          }
+        </app-bottom-navigation>
+      </section>
+    </div>
   </div>
 } @else {
   <router-outlet />

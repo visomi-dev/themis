@@ -1,15 +1,32 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 
 import { Auth } from '../auth/auth';
+import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL } from '../constants/routes';
+import { BottomNavigation, BottomNavigationItem } from '../ui/layout/bottom-navigation/bottom-navigation';
+import { Icon } from '../ui/media/icon/icon';
+import { type IconName } from '../ui/media/icon/icon-paths';
 
 import { SidebarMenu } from './sidebar-menu/sidebar-menu';
 import { Topbar } from './topbar/topbar';
 
+type BottomNavItem = {
+  ariaLabel: string;
+  exact: boolean;
+  icon: IconName;
+  url: string;
+};
+
+const BOTTOM_NAV_ITEMS: ReadonlyArray<BottomNavItem> = Object.freeze([
+  { ariaLabel: $localize`:@@layoutBottomNavOverview:Overview`, exact: true, icon: 'grid', url: DASHBOARD_URL },
+  { ariaLabel: $localize`:@@layoutBottomNavProjects:Projects`, exact: false, icon: 'folder', url: PROJECTS_URL },
+  { ariaLabel: $localize`:@@layoutBottomNavNewProject:New project`, exact: true, icon: 'plus', url: PROJECT_NEW_URL },
+]);
+
 @Component({
-  imports: [RouterOutlet, SidebarMenu, Topbar],
+  imports: [BottomNavigation, BottomNavigationItem, Icon, RouterLink, RouterOutlet, SidebarMenu, Topbar],
   selector: 'app-layout',
   templateUrl: './layout.html',
   styleUrl: './layout.css',
@@ -41,6 +58,8 @@ export class Layout {
   });
 
   readonly showAppShell = computed(() => this.auth.isAuthenticated() && !this.hideAppShell());
+
+  readonly bottomNavItems = BOTTOM_NAV_ITEMS;
 
   openMobileMenu() {
     this.mobileMenuOpen.set(true);

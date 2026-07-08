@@ -26,10 +26,11 @@ export class BottomNavigation {}
 export class BottomNavigationItem {
   readonly ariaLabel = input.required<string>();
   readonly routerLink = input.required<unknown[] | string>();
+  readonly exact = input(true);
 
   readonly classes = computed(() =>
     uiClass(
-      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-zinc-500 dark:text-zinc-400 transition hover:bg-zinc-100 dark:bg-zinc-800 hover:text-zinc-950 dark:text-zinc-50 [&_[data-slot=icon]]:size-6',
+      'ui-focus-ring flex min-h-12 min-w-12 items-center justify-center rounded-[var(--radius-control)] p-2 text-zinc-500 dark:text-zinc-400 transition aria-[current=page]:bg-zinc-100 aria-[current=page]:text-blue-600 aria-[current=page]:dark:bg-zinc-800 aria-[current=page]:dark:text-blue-400 hover:bg-zinc-100 dark:bg-zinc-800 hover:text-zinc-950 dark:text-zinc-50 [&_[data-slot=icon]]:size-6',
     ),
   );
 }

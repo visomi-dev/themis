@@ -16,7 +16,8 @@ const DEFAULT_LANGUAGES: ReadonlyArray<LanguageOption> = Object.freeze([
 
 @Component({
   host: {
-    class: /* tw */ 'flex min-h-full flex-col',
+    class:
+      /* tw */ 'flex h-dvh min-h-0 flex-col overflow-hidden bg-white [--topbar-height:3rem] sm:[--topbar-height:3.5rem] dark:bg-zinc-950',
   },
   imports: [LangSwitcher, Logo, RouterLink, ThemeSwitcher],
   selector: 'app-auth-layout',
