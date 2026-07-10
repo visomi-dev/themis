@@ -62,6 +62,7 @@ const buttonSizes = Object.freeze({
 @Component({
   host: {
     class: /* tw */ 'inline-block',
+    '[class]': 'hostClass()',
   },
   selector: 'app-button',
   templateUrl: './button.html',
@@ -69,25 +70,29 @@ const buttonSizes = Object.freeze({
 })
 export class Button {
   readonly disabled = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
   readonly size = input<ButtonSize>('md');
   readonly tone = input<string>('zinc');
   readonly type = input<'button' | 'reset' | 'submit'>('button');
   readonly variant = input<ButtonVariant>('solid');
 
+  readonly hostClass = computed(() => (this.fullWidth() ? 'block w-full' : 'inline-block'));
+
   readonly classes = computed(() => {
     const variant = this.variant();
     const tone = resolveTone(this.tone());
+    const widthClass = this.fullWidth() ? 'w-full' : '';
 
     if (variant === 'solid') {
-      return uiClass(buttonBase, buttonSolid, buttonTones[tone], buttonSizes[this.size()]);
+      return uiClass(buttonBase, buttonSolid, buttonTones[tone], buttonSizes[this.size()], widthClass);
     }
 
     if (variant === 'outline') {
-      return uiClass(buttonBase, buttonOutline, buttonTones[tone], buttonSizes[this.size()]);
+      return uiClass(buttonBase, buttonOutline, buttonTones[tone], buttonSizes[this.size()], widthClass);
     }
 
-    return uiClass(buttonBase, buttonPlain, buttonTones[tone], buttonSizes[this.size()]);
+    return uiClass(buttonBase, buttonPlain, buttonTones[tone], buttonSizes[this.size()], widthClass);
   });
 }
 

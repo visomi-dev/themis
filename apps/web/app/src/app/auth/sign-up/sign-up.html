@@ -26,7 +26,7 @@
       }}</app-alert>
     }
 
-    <app-form class="grid gap-5" [form]="signUpForm">
+    <app-form class="grid w-full max-w-sm grid-cols-1 gap-8" [form]="signUpForm">
       <app-field>
         <app-label for="sign-up-email" i18n="@@signUpEmailLabel">Email</app-label>
         <app-input
@@ -82,12 +82,22 @@
         i18n="@@signUpSubmitButton"
         tone="accent"
         type="submit"
+        size="lg"
+        fullWidth
         [loading]="submitting()"
         >Create account</app-button
       >
     </app-form>
 
-    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signUpFooterPrompt">Already have an account?</p>
-    <app-link data-slot="footer" i18n="@@signUpFooterLink" [routerLink]="footerLink" [text]="'Back to sign in'" />
+    <p class="mt-2 text-center text-sm text-zinc-500 dark:text-zinc-400">
+      <span i18n="@@signUpFooterPrompt">Already have an account?</span>
+      <app-link
+        data-slot="footer"
+        class="ml-2 font-semibold"
+        i18n="@@signUpFooterLink"
+        [routerLink]="footerLink"
+        [text]="'Back to sign in'"
+      />
+    </p>
   </app-auth-card>
 </app-auth-layout>
