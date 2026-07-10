@@ -38,7 +38,6 @@ type NewProjectModel = {
     ErrorMessage,
     Field,
     FormField,
-   ,
     Heading,
     Input,
     Label,
