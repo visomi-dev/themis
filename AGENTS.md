@@ -35,6 +35,7 @@ Themis is an Nx monorepo with Angular frontend apps and Node backend runtimes. K
 - Use TypeScript strict patterns, avoid `any`, prefer `unknown` when type shape is uncertain, and use `type` instead of `interface`.
 - Keep imports at the top. Use `import type` for type-only imports. Do not use dynamic `import()` outside the documented `Deps` service exception and Angular route `loadComponent` callbacks.
 - All filenames must be kebab-case. Component and service files use the bare name without suffixes. Test files use `.spec.ts`.
+- **Never bypass git hooks.** `git commit --no-verify`, `git push --no-verify` / `--force-with-lease` (to skip the pre-push hook), or any equivalent that skips `lint-staged` / `lint` / `test` (pre-commit) or `pnpm exec nx e2e app-e2e` (pre-push) is forbidden. The hooks exist to catch lint, formatting, unit-test, and full-gateway e2e regressions before they reach the remote CI runner. If a hook fails, fix the underlying issue (re-run `pnpm exec prettier --write <file>`, address the lint error, repair the failing test). If the hook is too expensive for the current turn or the environment can not boot the gateway (missing Redis, stale `dist/apps/web/server` process, etc.), follow the playbook in `docs/agents/e2e.md` ("When a test is genuinely hard to run"): note the failure, leave the worktree clean, and stop - do not commit or push. Push only after the pre-push hook has actually run green on the commit you are about to send.
 
 ## Context Loading
 
