@@ -1,21 +1,22 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, required, type FieldTree } from '@angular/forms/signals';
 
 import { Form } from './form';
 
 @Component({
-  imports: [Form, ReactiveFormsModule],
+  imports: [Form, FormField],
   template: `
-    <app-form [(submitted)]="submitted" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <input formControlName="email" required />
+    <app-form [(submitted)]="submitted" [form]="f" (ngSubmit)="onSubmit()">
+      <input [formField]="f.email" required />
     </app-form>
   `,
 })
 class Host {
   readonly submitted = signal(false);
-  readonly form = new FormBuilder().nonNullable.group({
-    email: ['', []],
+  readonly model = signal({ email: '' });
+  readonly f: FieldTree<{ email: string }> = form(this.model, (p) => {
+    required(p.email);
   });
   onSubmit(): void {
     // counted as an emission indicator; no DOM work required.

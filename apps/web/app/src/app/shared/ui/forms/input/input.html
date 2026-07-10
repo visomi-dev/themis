@@ -1,4 +1,5 @@
 <input
+  #inputEl
   [attr.aria-describedby]="ariaDescribedBy()"
   [attr.aria-invalid]="invalid()"
   [attr.autocomplete]="autocomplete()"
@@ -13,9 +14,7 @@
   [attr.required]="required() ? '' : null"
   [attr.type]="type()"
   [class]="classes()"
-  [disabled]="disabled() || formDisabled()"
-  [value]="value()"
   data-slot="control"
-  (blur)="markTouched()"
-  (input)="updateValue($event)"
+  (blur)="onBlur()"
+  (input)="onInput($event)"
 />

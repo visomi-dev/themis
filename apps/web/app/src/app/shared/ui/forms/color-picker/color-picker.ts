@@ -1,5 +1,5 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
+import type { Field } from '@angular/forms/signals';
 
 import { uiClass } from '../../classes';
 
@@ -24,18 +24,12 @@ const defaultOptions: readonly ColorPickerOption[] = Object.freeze([
     'data-control': '',
   },
   imports: [],
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => ColorPicker),
-    },
-  ],
   selector: 'app-color-picker',
   templateUrl: './color-picker.html',
   styleUrl: './color-picker.css',
 })
-export class ColorPicker implements ControlValueAccessor {
+export class ColorPicker {
+  readonly formField = input.required<Field<string>>();
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly label = input('');
   readonly name = input('color');
@@ -43,30 +37,9 @@ export class ColorPicker implements ControlValueAccessor {
   readonly required = input(false, { transform: booleanAttribute });
   readonly valueChange = output<string>();
 
-  readonly formDisabled = signal(false);
-  readonly value = signal('');
-  readonly groupClasses = computed(() =>
-    uiClass('flex items-center gap-2', (this.disabled() || this.formDisabled()) && 'opacity-50'),
-  );
+  readonly value = computed(() => this.formField()().value() ?? '');
 
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: string | null): void {
-    this.value.set(value ?? '');
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
+  readonly groupClasses = computed(() => uiClass('flex items-center gap-2', this.disabled() && 'opacity-50'));
 
   optionClasses(option: ColorPickerOption): string {
     return uiClass(
@@ -77,17 +50,16 @@ export class ColorPicker implements ControlValueAccessor {
     );
   }
 
-  choose(value: string): void {
-    if (this.disabled() || this.formDisabled()) {
+  choose(optionValue: string): void {
+    if (this.disabled()) {
       return;
     }
 
-    this.value.set(value);
-    this.onChange(value);
-    this.valueChange.emit(value);
+    this.formField()().value.set(optionValue);
+    this.valueChange.emit(optionValue);
   }
 
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

@@ -1,5 +1,5 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { booleanAttribute, Component, computed, effect, ElementRef, input, output, viewChild } from '@angular/core';
+import type { Field } from '@angular/forms/signals';
 
 import { uiClass } from '../../classes';
 
@@ -10,12 +10,14 @@ import { uiClass } from '../../classes';
     '[attr.data-invalid]': 'invalid() ? "" : null',
   },
   imports: [],
-  providers: [{ multi: true, provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Checkbox) }],
   selector: 'app-checkbox',
   templateUrl: './checkbox.html',
   styleUrl: './checkbox.css',
 })
-export class Checkbox implements ControlValueAccessor {
+export class Checkbox {
+  private readonly inputRef = viewChild<ElementRef<HTMLInputElement>>('inputEl');
+
+  readonly formField = input.required<Field<boolean>>();
   readonly ariaDescribedBy = input<string | null>(null);
   readonly controlId = input<string | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -24,42 +26,31 @@ export class Checkbox implements ControlValueAccessor {
   readonly required = input(false, { transform: booleanAttribute });
   readonly checkedChange = output<boolean>();
 
-  readonly checked = signal(false);
-  readonly formDisabled = signal(false);
+  readonly checked = computed(() => this.formField()().value() === true);
+
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring ui-touch-target min-h-5 min-w-5 appearance-none rounded border border-zinc-950/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 text-blue-600 accent-blue-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-400 dark:accent-blue-500',
     ),
   );
 
-  private onChange: (value: boolean) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
+  private readonly syncEffect = effect(() => {
+    const ref = this.inputRef();
+    const checked = this.formField()().value();
 
-  writeValue(value: boolean | null): void {
-    this.checked.set(value === true);
-  }
+    if (ref) {
+      ref.nativeElement.checked = checked === true;
+    }
+  });
 
-  registerOnChange(fn: (value: boolean) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
-
-  updateChecked(event: Event): void {
+  onChangeEvent(event: Event): void {
     const nextValue = (event.target as HTMLInputElement).checked;
 
-    this.checked.set(nextValue);
-    this.onChange(nextValue);
+    this.formField()().value.set(nextValue);
     this.checkedChange.emit(nextValue);
   }
 
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

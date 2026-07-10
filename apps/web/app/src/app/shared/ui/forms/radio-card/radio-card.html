@@ -5,12 +5,12 @@
     type="radio"
     [attr.aria-invalid]="invalid()"
     [checked]="checked()"
-    [disabled]="disabled() || formDisabled()"
+    [disabled]="disabled()"
     [id]="inputId()"
     [name]="name()"
     [required]="required()"
     [value]="optionValue()"
-    (blur)="markTouched()"
+    (blur)="onBlur()"
     (click)="select()"
   />
 

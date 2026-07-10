@@ -36,16 +36,11 @@
         <app-card padding="md" tone="default">
           <app-label for="activation-api-key-label" i18n="@@activationApiKeyLabel">Named API access keys</app-label>
 
-          <app-form
-            class="flex flex-col gap-3 md:flex-row"
-            [formGroup]="apiKeyForm"
-            [(submitted)]="submitted"
-            (ngSubmit)="createApiKey()"
-          >
+          <app-form class="flex flex-col gap-3 md:flex-row" [form]="apiKeyForm">
             <app-field class="w-full md:flex-1">
               <app-input
                 class="w-full"
-                formControlName="label"
+                [formField]="apiKeyForm.label"
                 required
                 maxLength="80"
                 controlId="activation-api-key-label"

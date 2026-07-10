@@ -1,5 +1,5 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
+import type { Field } from '@angular/forms/signals';
 
 import { uiClass } from '../../classes';
 
@@ -15,18 +15,12 @@ export type RadioOption = {
     'data-control': '',
   },
   imports: [],
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RadioGroup),
-    },
-  ],
   selector: 'app-radio-group',
   templateUrl: './radio-group.html',
   styleUrl: './radio-group.css',
 })
-export class RadioGroup implements ControlValueAccessor {
+export class RadioGroup {
+  readonly formField = input.required<Field<string>>();
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly legend = input('');
@@ -35,40 +29,20 @@ export class RadioGroup implements ControlValueAccessor {
   readonly required = input(false, { transform: booleanAttribute });
   readonly valueChange = output<string>();
 
-  readonly value = signal('');
-  readonly formDisabled = signal(false);
+  readonly value = computed(() => this.formField()().value() ?? '');
+
   readonly optionClasses = computed(() =>
     uiClass(
       'grid gap-2 rounded-[var(--radius-control)] border border-zinc-500/30 dark:border-zinc-400/30 bg-zinc-50 dark:bg-zinc-900 p-3 text-sm text-zinc-950 dark:text-zinc-50',
     ),
   );
 
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: string | null): void {
-    this.value.set(value ?? '');
+  selectValue(optionValue: string): void {
+    this.formField()().value.set(optionValue);
+    this.valueChange.emit(optionValue);
   }
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
-
-  selectValue(value: string): void {
-    this.value.set(value);
-    this.onChange(value);
-    this.valueChange.emit(value);
-  }
-
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

@@ -1,12 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { email, form, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
 import { RESET_PASSWORD_URL, SIGN_IN_URL } from '../../shared/constants/routes';
-import { controlError } from '../../shared/form/form-errors';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
@@ -18,15 +16,15 @@ import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
 import { Link } from '../../shared/ui/typography/link/link';
 
-type ForgottenPasswordForm = FormGroup<{
-  email: FormControl<string>;
-}>;
+type ForgottenPasswordModel = {
+  email: string;
+};
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, AppForm, AuthCard, AuthLayout, Button, ErrorMessage, Field, Input, Label, Link, ReactiveFormsModule],
+  imports: [Alert, AppForm, AuthCard, AuthLayout, Button, ErrorMessage, Field, FormField, FormRoot, Input, Label, Link],
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.html',
   styleUrl: './forgotten-password.css',
@@ -35,51 +33,49 @@ export class ForgottenPassword {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
 
-  readonly form: ForgottenPasswordForm = new FormGroup({
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.email],
-    }),
-  });
+  readonly forgottenPasswordModel = signal<ForgottenPasswordModel>({ email: '' });
 
-  private readonly emailValueChanges = toSignal(this.form.controls.email.valueChanges, {
-    initialValue: this.form.controls.email.status,
-  });
+  readonly forgottenPasswordForm: FieldTree<ForgottenPasswordModel> = form(
+    this.forgottenPasswordModel,
+    (p) => {
+      required(p.email, { message: $localize`:@@forgottenPasswordEmailErrorRequired:Enter your email address.` });
+      email(p.email, {
+        message: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
+      });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          await this.submit(field);
+        },
+      },
+    },
+  );
 
   readonly submitting = signal(false);
-  readonly submitted = signal(false);
   readonly successEmail = signal('');
   readonly errorMessage = signal('');
 
-  readonly emailError = computed(() => {
-    this.emailValueChanges();
+  readonly emailError = computed(() => this.forgottenPasswordForm.email().errors()[0]?.message ?? '');
 
-    return controlError(this.form.controls.email, {
-      email: $localize`:@@forgottenPasswordEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
-      required: $localize`:@@forgottenPasswordEmailErrorRequired:Enter your email address.`,
-    });
-  });
-
-  async submit() {
+  private async submit(field: FieldTree<ForgottenPasswordModel>): Promise<void> {
     if (this.submitting()) {
-      return;
-    }
-
-    if (this.form.invalid) {
       return;
     }
 
     this.errorMessage.set('');
     this.submitting.set(true);
 
+    const email = field().value().email;
+
     try {
-      const challenge = await this.auth.requestPasswordReset(this.form.getRawValue().email);
+      const challenge = await this.auth.requestPasswordReset(email);
 
       if (challenge) {
-        this.successEmail.set(this.form.getRawValue().email);
+        this.successEmail.set(email);
         await this.router.navigate([RESET_PASSWORD_URL]);
       } else {
-        this.successEmail.set(this.form.getRawValue().email);
+        this.successEmail.set(email);
       }
     } catch (error) {
       this.errorMessage.set(

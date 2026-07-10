@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, maxLength, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Activation as ActivationService } from '../shared/activation/activation';
@@ -13,7 +12,6 @@ import type {
 } from '../shared/activation/activation.models';
 import { Clipboard } from '../shared/clipboard/clipboard';
 import { PROJECTS_URL } from '../shared/constants/routes';
-import { controlError } from '../shared/form/form-errors';
 import { Alert } from '../shared/ui/overlays/alert/alert';
 import { Badge } from '../shared/ui/data/badge/badge';
 import { Button } from '../shared/ui/actions/button/button';
@@ -26,9 +24,9 @@ import { Input } from '../shared/ui/forms/input/input';
 import { Label } from '../shared/ui/forms/label/label';
 import { Loader } from '../shared/ui/feedback/loader/loader';
 
-type ApiKeyForm = FormGroup<{
-  label: FormControl<string>;
-}>;
+type ApiKeyModel = {
+  label: string;
+};
 
 type ConfigTab = 'env' | 'opencode' | 'themis';
 
@@ -44,11 +42,12 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
     Card,
     ErrorMessage,
     Field,
+    FormField,
+    FormRoot,
     Heading,
     Input,
     Label,
     Loader,
-    ReactiveFormsModule,
   ],
   selector: 'app-activation',
   templateUrl: './activation.html',
@@ -59,16 +58,22 @@ export class Activation implements OnInit {
   private readonly clipboard = inject(Clipboard);
   private readonly router = inject(Router);
 
-  readonly apiKeyForm: ApiKeyForm = new FormGroup({
-    label: new FormControl('Primary workspace key', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(80)],
-    }),
-  });
+  readonly apiKeyModel = signal<ApiKeyModel>({ label: 'Primary workspace key' });
 
-  private readonly labelValueChanges = toSignal(this.apiKeyForm.controls.label.valueChanges, {
-    initialValue: this.apiKeyForm.controls.label.status,
-  });
+  readonly apiKeyForm: FieldTree<ApiKeyModel> = form(
+    this.apiKeyModel,
+    (p) => {
+      required(p.label, { message: 'Enter a label for the API key.' });
+      maxLength(p.label, 80, { message: 'Use 80 characters or fewer.' });
+    },
+    {
+      submission: {
+        action: async (field) => {
+          await this.createApiKey(field);
+        },
+      },
+    },
+  );
 
   readonly activationData = signal<ActivationState | null>(null);
   readonly continuing = signal(false);
@@ -79,35 +84,25 @@ export class Activation implements OnInit {
   readonly loading = signal(true);
   readonly revokingKeyId = signal('');
   readonly selectedConfigTab = signal<ConfigTab>('themis');
-  readonly submitted = signal(false);
+  readonly labelManualError = signal<string | null>(null);
 
-  readonly labelError = computed(() => {
-    this.labelValueChanges();
-
-    return controlError(this.apiKeyForm.controls.label, {
-      required: 'Enter a label for the API key.',
-      maxlength: 'Use 80 characters or fewer.',
-    });
-  });
+  readonly labelError = computed(() => this.apiKeyForm.label().errors()[0]?.message ?? this.labelManualError() ?? '');
 
   async ngOnInit() {
     await this.loadActivationState();
   }
 
-  async createApiKey() {
+  private async createApiKey(field: FieldTree<ApiKeyModel>): Promise<void> {
     if (this.creatingKey()) {
-      return;
-    }
-
-    if (this.apiKeyForm.invalid) {
       return;
     }
 
     this.creatingKey.set(true);
     this.errorMessage.set('');
+    this.labelManualError.set(null);
 
     try {
-      const createdKey = await this.activation.createApiKey(this.apiKeyForm.getRawValue());
+      const createdKey = await this.activation.createApiKey(field().value());
 
       this.generatedKey.set(createdKey);
       await this.loadActivationState();
@@ -117,6 +112,7 @@ export class Activation implements OnInit {
           ? (error.error?.message ?? 'The API key could not be created.')
           : 'The API key could not be created.',
       );
+      this.labelManualError.set('The API key could not be created.');
     } finally {
       this.creatingKey.set(false);
     }

@@ -4,15 +4,13 @@ import {
   computed,
   effect,
   ElementRef,
-  forwardRef,
   input,
   numberAttribute,
   output,
-  signal,
   untracked,
   viewChildren,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import type { Field } from '@angular/forms/signals';
 
 import { uiClass } from '../../classes';
 
@@ -44,20 +42,14 @@ const navigationKeys = Object.freeze(['Backspace', 'ArrowLeft', 'ArrowRight', 'D
     class: /* tw */ 'block',
     'data-control': '',
   },
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PinInput),
-    },
-  ],
   selector: 'app-pin-input',
   templateUrl: './pin-input.html',
   styleUrl: './pin-input.css',
 })
-export class PinInput implements ControlValueAccessor {
+export class PinInput {
   private readonly inputs = viewChildren<ElementRef<HTMLInputElement>>('inputs');
 
+  readonly formField = input.required<Field<string>>();
   readonly ariaDescribedBy = input<string | null>(null);
   readonly digits = input(6, { transform: numberAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -70,12 +62,7 @@ export class PinInput implements ControlValueAccessor {
   readonly completed = output<PinValue>();
   readonly valueChanges = output<PinValue>();
 
-  readonly formDisabled = signal(false);
-  readonly touched = signal(false);
-  readonly values = signal<readonly string[]>([]);
-
   readonly indexes = computed(() => Array.from({ length: this.digits() }, (_value, index) => index));
-  readonly value = computed(() => this.values().join(''));
   readonly labelFor = computed(() => this.id(0));
   readonly gridClass = computed(() => gridSizes[this.gridSize()] ?? 'grid-cols-6');
   readonly inputClasses = computed(() =>
@@ -87,36 +74,26 @@ export class PinInput implements ControlValueAccessor {
     ),
   );
 
-  readonly valueEffect = effect(() => {
-    const value = this.value();
+  private readonly syncEffect = effect(() => {
+    const value = this.formField()().value();
+    const normalized = this.normalizeValue(value);
 
     untracked(() => {
-      this.valueChanges.emit({ code: value });
+      const inputs = this.inputs();
 
-      if (value.length === this.digits()) {
-        this.completed.emit({ code: value });
+      for (let index = 0; index < inputs.length; index++) {
+        const cell = inputs[index];
+
+        if (!cell) {
+          continue;
+        }
+
+        cell.nativeElement.value = normalized[index] ?? '';
       }
+
+      this.valueChanges.emit({ code: value });
     });
   });
-
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: string | null): void {
-    this.values.set(this.normalizeValue(value ?? ''));
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
 
   id(index: number): string {
     return `${this.idPrefix()}-${index + 1}`;
@@ -127,11 +104,11 @@ export class PinInput implements ControlValueAccessor {
   }
 
   valueAt(index: number): string {
-    return this.values()[index] ?? '';
+    return this.normalizeValue(this.formField()().value())[index] ?? '';
   }
 
   onFocus(event: FocusEvent, index: number): void {
-    const value = this.value();
+    const value = this.formField()().value();
 
     if (!value) {
       event.preventDefault();
@@ -163,13 +140,13 @@ export class PinInput implements ControlValueAccessor {
       return;
     }
 
-    const nextValues = [...this.normalizeValue(this.value())];
+    const nextValues = [...this.normalizeValue(this.formField()().value())];
 
     for (const [offset, value] of pastedValues.entries()) {
       nextValues[index + offset] = value;
     }
 
-    this.values.set(nextValues.slice(0, this.digits()));
+    this.commitValues(nextValues);
     this.focusInput(Math.min(index + pastedValues.length, this.digits() - 1));
   }
 
@@ -197,7 +174,7 @@ export class PinInput implements ControlValueAccessor {
   onKeyUp(event: KeyboardEvent, index: number): void {
     event.preventDefault();
 
-    const value = this.value();
+    const value = this.formField()().value();
 
     if (!this.acceptsKey(event.key) && !navigationKeys.includes(event.key)) {
       return;
@@ -234,11 +211,8 @@ export class PinInput implements ControlValueAccessor {
     }
   }
 
-  markTouched(): void {
-    if (!this.touched()) {
-      this.touched.set(true);
-      this.onTouched();
-    }
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 
   private clearPreviousValue(index: number): void {
@@ -250,13 +224,21 @@ export class PinInput implements ControlValueAccessor {
   }
 
   private setValueAt(index: number, value: string): void {
-    const nextValues = [...this.normalizeValue(this.value())];
+    const nextValues = [...this.normalizeValue(this.formField()().value())];
 
     nextValues[index] = value.slice(0, 1);
-    const limitedValues = nextValues.slice(0, this.digits());
+    this.commitValues(nextValues);
+  }
 
-    this.values.set(limitedValues);
-    this.onChange(limitedValues.join(''));
+  private commitValues(nextValues: readonly string[]): void {
+    const limited = nextValues.slice(0, this.digits());
+    const joined = limited.join('');
+
+    this.formField()().value.set(joined);
+
+    if (joined.length === this.digits()) {
+      this.completed.emit({ code: joined });
+    }
   }
 
   private normalizeValue(value: string): string[] {

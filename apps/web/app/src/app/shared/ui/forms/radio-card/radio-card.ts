@@ -1,5 +1,5 @@
-import { booleanAttribute, Component, computed, forwardRef, input, output, signal } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
+import type { Field } from '@angular/forms/signals';
 
 import { Icon } from '../../media/icon/icon';
 import { uiClass } from '../../classes';
@@ -11,18 +11,12 @@ import { uiClass } from '../../classes';
     '[attr.data-invalid]': 'invalid() ? "" : null',
   },
   imports: [Icon],
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RadioCard),
-    },
-  ],
   selector: 'app-radio-card',
   templateUrl: './radio-card.html',
   styleUrl: './radio-card.css',
 })
-export class RadioCard implements ControlValueAccessor {
+export class RadioCard {
+  readonly formField = input.required<Field<string>>();
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly inputId = input<string | null>(null);
   readonly invalid = input(false, { transform: booleanAttribute });
@@ -32,16 +26,16 @@ export class RadioCard implements ControlValueAccessor {
   readonly toggleable = input(true, { transform: booleanAttribute });
   readonly valueChange = output<string>();
 
-  readonly formDisabled = signal(false);
-  readonly value = signal('');
+  readonly value = computed(() => this.formField()().value() ?? '');
   readonly checked = computed(() => this.value() === this.optionValue());
+
   readonly classes = computed(() =>
     uiClass(
       'ui-focus-ring relative flex min-h-24 cursor-pointer flex-col rounded-[var(--radius-panel)] border bg-zinc-50 dark:bg-zinc-900 p-4 text-zinc-950 dark:text-zinc-50 transition',
       this.checked()
         ? 'border-blue-600 dark:border-blue-500 ring-2 ring-blue-500/20'
         : 'border-zinc-500/30 dark:border-zinc-400/30 hover:bg-zinc-100 dark:bg-zinc-800',
-      (this.disabled() || this.formDisabled()) && 'pointer-events-none opacity-50',
+      this.disabled() && 'pointer-events-none opacity-50',
     ),
   );
   readonly markerClasses = computed(() =>
@@ -53,34 +47,14 @@ export class RadioCard implements ControlValueAccessor {
     ),
   );
 
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: string | null): void {
-    this.value.set(value ?? '');
-  }
-
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
-  }
-
   select(): void {
-    if (this.disabled() || this.formDisabled()) {
+    if (this.disabled()) {
       return;
     }
 
     const nextValue = this.checked() && this.toggleable() ? '' : this.optionValue();
 
-    this.value.set(nextValue);
-    this.onChange(nextValue);
+    this.formField()().value.set(nextValue);
     this.valueChange.emit(nextValue);
   }
 
@@ -91,7 +65,7 @@ export class RadioCard implements ControlValueAccessor {
     }
   }
 
-  markTouched(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.formField()().markAsTouched();
   }
 }

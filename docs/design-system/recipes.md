@@ -31,58 +31,60 @@ All auth routes share the same `app-auth-layout` primitive. The shell renders a 
     <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
     }
 
-    <app-form class="grid gap-5" [(submitted)]="submitted">
-      <form [formGroup]="form" (ngSubmit)="submit()" class="contents" novalidate>
-        <app-field>
-          <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
-          <app-input
-            autocomplete="email"
-            formControlName="email"
-            required
-            type="email"
-            placeholder="name@organization.com"
-            controlId="sign-in-email"
-            name="email"
-          />
-          <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid"
-            >{{ emailError() }}</app-error-message
-          >
-        </app-field>
-
-        <app-field>
-          <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
-          <app-password-input
-            autocomplete="current-password"
-            formControlName="password"
-            required
-            minlength="8"
-            placeholder="***************"
-            controlId="sign-in-password"
-            name="password"
-          />
-          <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength"
-            >{{ passwordError() }}</app-error-message
-          >
-        </app-field>
-
-        <label
-          class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
-          for="sign-in-remember-device"
+    <app-form class="grid gap-5" [form]="signInForm">
+      <app-field>
+        <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
+        <app-input
+          autocomplete="email"
+          [formField]="signInForm.email"
+          required
+          type="email"
+          placeholder="name@organization.com"
+          controlId="sign-in-email"
+          name="email"
+        />
+        <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid"
+          >{{ emailError() }}</app-error-message
         >
-          <app-checkbox formControlName="rememberDevice" controlId="sign-in-remember-device" name="rememberDevice" />
-          <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
-        </label>
+      </app-field>
 
-        <app-button
-          data-slot="submit"
-          data-od-id="submit"
-          i18n="@@signInSubmitButton"
-          tone="accent"
-          type="submit"
-          [loading]="submitting()"
-          >Sign in</app-button
+      <app-field>
+        <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
+        <app-password-input
+          autocomplete="current-password"
+          [formField]="signInForm.password"
+          required
+          minLength="8"
+          placeholder="***************"
+          controlId="sign-in-password"
+          name="password"
+        />
+        <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength"
+          >{{ passwordError() }}</app-error-message
         >
-      </form>
+      </app-field>
+
+      <label
+        class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
+        for="sign-in-remember-device"
+      >
+        <app-checkbox
+          [formField]="signInForm.rememberDevice"
+          controlId="sign-in-remember-device"
+          name="rememberDevice"
+        />
+        <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
+      </label>
+
+      <app-button
+        data-slot="submit"
+        data-od-id="submit"
+        i18n="@@signInSubmitButton"
+        tone="accent"
+        type="submit"
+        [loading]="submitting()"
+        >Sign in</app-button
+      >
     </app-form>
 
     <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
@@ -100,49 +102,48 @@ Notes:
 - The submit button uses `tone="accent"` (the Catalyst `blue-600` brand color) and `app-alert` with `variant="auth"` for danger/success above the form.
 - Field error reveal is CSS-driven: the global rule in `styles.base.css` toggles `data-invalid` + `:user-invalid` + `[data-submitted]`. No `(blur)` handlers or `@if (... as message) { ... }` wrappers remain.
 - Cross-field errors (e.g. password vs confirm) ride `<app-field [manualError]="...">`, not the touched gate.
+- The form uses Signal Forms: `[form]="signInForm"` (a `FieldTree<SignInModel>`) plus `[formField]="signInForm.email"` on every inner control. The submit lifecycle runs through `submission: { action: ... }` inside the `form()` call.
 
 ## Form
 
-`app-form` wraps a native `<form>` and exposes `[(submitted)]` (model signal) on the host as `data-submitted`. The global CSS rule consumes `[data-submitted]` to reveal every required field's error after submit, including empty inputs that were never touched.
+`app-form` wraps a native `<form>` (with `FormRoot` from `@angular/forms/signals`) and exposes `[(submitted)]` (model signal) on the host as `data-submitted`. The global CSS rule consumes `[data-submitted]` to reveal every required field's error after submit, including empty inputs that were never touched. The wrapper binds the Signal-Forms root via `[form]`.
 
 ```html
-<app-form class="grid gap-5" [(submitted)]="submitted">
-  <form [formGroup]="form" (ngSubmit)="submit()" class="contents" novalidate>
-    <app-field>
-      <app-label for="recovery-email" i18n="@@recoveryEmailLabel">Email</app-label>
-      <app-input
-        autocomplete="email"
-        formControlName="email"
-        required
-        type="email"
-        placeholder="name@organization.com"
-        controlId="recovery-email"
-        name="email"
-      />
-      <app-error-message controlId="recovery-email-error" i18n="@@recoveryEmailError"
-        >{{ emailError() }}</app-error-message
-      >
-    </app-field>
-
-    <app-button
-      data-od-id="submit"
-      data-slot="submit"
-      i18n="@@recoverySubmitButton"
-      tone="accent"
-      type="submit"
-      [loading]="submitting()"
-      >Send recovery link</app-button
+<app-form class="grid gap-5" [form]="recoveryForm">
+  <app-field>
+    <app-label for="recovery-email" i18n="@@recoveryEmailLabel">Email</app-label>
+    <app-input
+      autocomplete="email"
+      [formField]="recoveryForm.email"
+      required
+      type="email"
+      placeholder="name@organization.com"
+      controlId="recovery-email"
+      name="email"
+    />
+    <app-error-message controlId="recovery-email-error" i18n="@@recoveryEmailError"
+      >{{ emailError() }}</app-error-message
     >
-  </form>
+  </app-field>
+
+  <app-button
+    data-od-id="submit"
+    data-slot="submit"
+    i18n="@@recoverySubmitButton"
+    tone="accent"
+    type="submit"
+    [loading]="submitting()"
+    >Send recovery link</app-button
+  >
 </app-form>
 ```
 
 Notes:
 
-- Pass `[novalidate]` to forward `novalidate` to the inner `<form>` and skip native browser validation (default behavior in Themis).
-- The host attribute `data-submitted` flips the moment the inner `<form>` dispatches `submit` (bubbled via `@HostListener`). Consumers wire `[(submitted)]="submitted"` to a local signal; no manual write is required.
-- Use `class="contents"` on the inner `<form>` so the layout grid stays on `<app-form>`.
-- Forms that opt out of `app-form` (no submit-time reveal needed) keep the raw `<form>` element directly.
+- The host attribute `data-submitted` flips the moment the inner `<form>` dispatches `submit`. Consumers wire `[(submitted)]="submitted"` to a local signal; no manual write is required.
+- `[novalidate]` defaults to `true`; pass `false` to opt in to browser-native validation.
+- The submit lifecycle is driven by `form(model, schema, { submission: { action: ... } })`. The `action` only runs after the schema's rules pass. It receives the field tree, calls `field().value()` to read the model, and returns validation errors per field if needed (via `{kind, fieldTree, message}`).
+- Forms that opt out of `app-form` (no submit-time reveal needed) keep the raw `<form>` element with `[formRoot]="formRoot"` directly from `@angular/forms/signals`.
 
 ## Password Strength (sign-up, reset-password)
 
@@ -153,9 +154,9 @@ Notes:
   <app-label for="sign-up-password" i18n="@@signUpPasswordLabel">Password</app-label>
   <app-password-input
     autocomplete="new-password"
-    formControlName="password"
+    [formField]="signUpForm.password"
     required
-    minlength="8"
+    minLength="8"
     placeholder="***************"
     controlId="sign-up-password"
     name="password"
@@ -167,7 +168,7 @@ Notes:
 </app-field>
 ```
 
-The pure `computePasswordStrength(value)` helper is exported so unit tests can validate the level mapping without rendering.
+`passwordValue` is a `computed(() => signUpForm.password().value())` on the route. The pure `computePasswordStrength(value)` helper is exported so unit tests can validate the level mapping without rendering.
 
 ## Reset Password (single-screen OTP + password)
 
@@ -182,7 +183,7 @@ The pure `computePasswordStrength(value)` helper is exported so unit tests can v
     [digits]="6"
     digitPattern="[0-9]{1}"
     [loading]="submitting()"
-    formControlName="pin"
+    [formField]="verificationForm.pin"
     idPrefix="verification-pin"
   />
   <app-description i18n="@@verificationCodeHelp">Enter the 6-digit code from your email.</app-description>
@@ -194,16 +195,16 @@ The pure `computePasswordStrength(value)` helper is exported so unit tests can v
 
 The pin input renders a wrapper with `data-slot="pin-input"`; e2e helpers target `[data-slot=pin-input] input` to fill each cell.
 
-The native per-cell `:user-invalid` reveals the surrounding field's red border post-blur. The field-level `pinManualError` is set by the consumer (verify-email, verify-device, reset-password) when the server returns an invalid-code response.
+The native per-cell `:user-invalid` reveals the surrounding field's red border post-blur. The field-level `pinManualError` is set by the consumer (verify-email, verify-device, reset-password) when the server returns an invalid-code response. The joined `pin` field is validated with `required` + `pattern(/^\d{6}$/)` (or `minLength` + `maxLength` of 6) in the route's `form()` schema.
 
 ## Field With Error
 
 ```html
-<!-- Native: pure CSS reveal -->
+<!-- Native: pure CSS reveal via the form's required rule -->
 <app-field>
   <app-label for="project-name" i18n="@@projectNewNameLabel">Project name</app-label>
   <app-input
-    formControlName="name"
+    [formField]="newProjectForm.name"
     required
     maxLength="120"
     controlId="project-name"
@@ -215,24 +216,70 @@ The native per-cell `:user-invalid` reveals the surrounding field's red border p
   >
 </app-field>
 
-<!-- Manual: cross-field mismatch -->
-<app-field [manualError]="confirmPasswordError() ?? ''">
+<!-- Manual: cross-field mismatch via [manualError] on <app-field> -->
+<app-field [manualError]="signUpForm.confirmPassword().errors()[0]?.message ?? ''">
   <app-label for="confirm-password" i18n="@@confirmPasswordLabel">Confirm password</app-label>
   <app-password-input
     autocomplete="new-password"
-    formControlName="confirmPassword"
+    [formField]="signUpForm.confirmPassword"
     required
-    minlength="8"
+    minLength="8"
     controlId="confirm-password"
     name="confirmPassword"
   />
   <app-error-message controlId="confirm-password-error" i18n="@@confirmPasswordMismatchError"
-    >{{ confirmPasswordError() }}</app-error-message
+    >{{ signUpForm.confirmPassword().errors()[0]?.message ?? '' }}</app-error-message
   >
 </app-field>
 ```
 
-The reveal rule is global (in `styles.base.css`); author code never toggles red borders or wraps `<app-error-message>` in `@if`. Both inputs and binary controls (checkbox / switch / radio-group / radio-card / color-picker) follow the same hybrid: pass `required` on the inner control, the browser owns validity, the CSS rule owns visibility.
+The reveal rule is global (in `styles.base.css`); author code never toggles red borders or wraps `<app-error-message>` in `@if`. Both inputs and binary controls (checkbox / switch / radio-group / radio-card / color-picker) follow the same hybrid: pass `required` on the inner control, the browser owns validity, the CSS rule owns visibility. Cross-field mismatches use `validate(p.confirmPassword, ({value, valueOf}) => …)` in the route's `form()` schema; the resulting error attaches to the dependent field and surfaces via the same `f.confirmPassword().errors()` read.
+
+## Signal Forms
+
+Every form in Themis uses `@angular/forms/signals` (Signal Forms). Reactive Forms is retired; the `FormGroup` / `FormControl` / `[formGroup]` / `formControlName` / `Validators.*` API surface no longer appears in app code.
+
+```ts
+import { form, required, email, minLength, validate, type FieldTree } from '@angular/forms/signals';
+
+readonly signInModel = signal({ email: '', password: '' });
+
+readonly signInForm: FieldTree<SignInModel> = form(
+  this.signInModel,
+  (p) => {
+    required(p.email, { message: $localize`:@@signInEmailErrorRequired:Enter your email address.` });
+    email(p.email, { message: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).` });
+    required(p.password, { message: $localize`:@@signInPasswordErrorRequired:Enter your password.` });
+    minLength(p.password, 8, { message: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.` });
+  },
+  {
+    submission: {
+      action: async (field) => {
+        await this.submit(field);
+      },
+    },
+  },
+);
+```
+
+```html
+<app-form [form]="signInForm">
+  <app-input [formField]="signInForm.email" required type="email" controlId="sign-in-email" />
+  <app-error-message controlId="sign-in-email-error"
+    >{{ signInForm.email().errors()[0]?.message ?? '' }}</app-error-message
+  >
+  <app-button type="submit" [loading]="signInForm().submitting()">Sign in</app-button>
+</app-form>
+```
+
+Notes:
+
+- `form(model, schema, options?)` returns a `FieldTree<Model>`. The schema callback receives a `SchemaPath<Model>` proxy and registers per-field rules. Each rule takes a `{message: '…'}` option (typically a `$localize` template) that becomes the first entry in `f.x().errors()`.
+- Template bindings use `[formField]="f.x"` (alias for the `FormField` directive) on inner controls and `[form]="f"` (alias for the `FormRoot` directive) on `<app-form>` or the native `<form>`. Both directives are imported from `@angular/forms/signals` and added to the consumer's `imports`.
+- Built-in rules: `required`, `email`, `minLength`, `maxLength`, `min`, `max`, `pattern`, `disabled`, `applyWhen`. Cross-field rules use `validate(path, ({value, valueOf}) => ErrorKind | null)`.
+- Submission runs through `submission: { action }`. The action receives the field tree and is invoked only when the schema passes. It returns `{kind, message, fieldTree}` for per-field server errors or `null` / `undefined` for success.
+- For per-cell `pattern` on a `pin-input`, the cell is the unit. The field-level `pinManualError` is set by the route when the server returns an invalid code and is bound to `<app-field [manualError]="…">`.
+- `compatForm` and `SignalFormControl` from `@angular/forms/signals/compat` are not used in production code. They are kept available for legacy interop with libraries that still use Reactive Forms.
 
 ## App Shell (auth routes excluded)
 

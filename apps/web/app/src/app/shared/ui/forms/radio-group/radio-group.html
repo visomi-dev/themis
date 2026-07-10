@@ -1,4 +1,4 @@
-<fieldset class="grid gap-3" [disabled]="disabled() || formDisabled()">
+<fieldset class="grid gap-3" [disabled]="disabled()">
   @if (legend()) {
     <legend class="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ legend() }}</legend>
   }
@@ -15,7 +15,7 @@
           [name]="name()"
           [value]="option.value"
           type="radio"
-          (blur)="markTouched()"
+          (blur)="onBlur()"
           (change)="selectValue(option.value)"
         />
         <span class="grid gap-1">

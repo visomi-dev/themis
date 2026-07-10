@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, type FieldTree } from '@angular/forms/signals';
 
 import { RadioCard } from './radio-card';
 
 @Component({
-  imports: [RadioCard, ReactiveFormsModule],
-  template: '<app-radio-card optionValue="standard" [formControl]="control">Standard</app-radio-card>',
+  imports: [FormField, RadioCard],
+  template: '<app-radio-card optionValue="standard" [formField]="f.plan">Standard</app-radio-card>',
 })
 class Host {
-  readonly control = new FormControl('standard', { nonNullable: true });
+  readonly model = signal({ plan: 'standard' });
+  readonly f: FieldTree<{ plan: string }> = form(this.model, () => undefined);
 }
 
 describe('RadioCard', () => {
@@ -21,8 +22,8 @@ describe('RadioCard', () => {
     await fixture.whenStable();
   });
 
-  it('renders a checked radio card', () => {
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+  it('renders a checked radio card when the signal form value matches', () => {
+    const input = fixture.nativeElement.querySelector('input[type="radio"]') as HTMLInputElement;
 
     expect(input.checked).toBe(true);
   });
