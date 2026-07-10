@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { form, FormField, FormRoot, minLength, required, validate, type FieldTree } from '@angular/forms/signals';
+import { form, FormField, minLength, required, validate, type FieldTree } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
@@ -38,7 +38,7 @@ type PasswordModel = {
     ErrorMessage,
     Field,
     FormField,
-    FormRoot,
+   ,
     Label,
     Link,
     PasswordInput,

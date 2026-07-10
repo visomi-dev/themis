@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormField, FormRoot, email, form, minLength, required, type FieldTree } from '@angular/forms/signals';
+import { FormField, email, form, minLength, required, type FieldTree } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
@@ -38,7 +38,6 @@ type SignInModel = {
     ErrorMessage,
     Field,
     FormField,
-    FormRoot,
     Input,
     Label,
     Link,

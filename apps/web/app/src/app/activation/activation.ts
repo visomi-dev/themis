@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { form, maxLength, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
+import { form, maxLength, required, type FieldTree, FormField } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Activation as ActivationService } from '../shared/activation/activation';
@@ -43,7 +43,7 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
     ErrorMessage,
     Field,
     FormField,
-    FormRoot,
+   ,
     Heading,
     Input,
     Label,
