@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { form, maxLength, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
+import { form, maxLength, required, type FieldTree, FormField } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Activation as ActivationService } from '../shared/activation/activation';
@@ -34,21 +34,7 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [
-    Alert,
-    AppForm,
-    Badge,
-    Button,
-    Card,
-    ErrorMessage,
-    Field,
-    FormField,
-    FormRoot,
-    Heading,
-    Input,
-    Label,
-    Loader,
-  ],
+  imports: [Alert, AppForm, Badge, Button, Card, ErrorMessage, Field, FormField, Heading, Input, Label, Loader],
   selector: 'app-activation',
   templateUrl: './activation.html',
   styleUrl: './activation.css',

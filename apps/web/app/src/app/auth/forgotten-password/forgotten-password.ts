@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { email, form, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
+import { email, form, required, type FieldTree, FormField } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
@@ -24,7 +24,7 @@ type ForgottenPasswordModel = {
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, AppForm, AuthCard, AuthLayout, Button, ErrorMessage, Field, FormField, FormRoot, Input, Label, Link],
+  imports: [Alert, AppForm, AuthCard, AuthLayout, Button, ErrorMessage, Field, FormField, Input, Label, Link],
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.html',
   styleUrl: './forgotten-password.css',

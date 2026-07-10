@@ -1,5 +1,5 @@
 import { Component, computed, input, output, signal } from '@angular/core';
-import { form, FormField, FormRoot, maxLength, minLength, required, type FieldTree } from '@angular/forms/signals';
+import { form, FormField, maxLength, minLength, required, type FieldTree } from '@angular/forms/signals';
 
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Button } from '../../shared/ui/actions/button/button';
@@ -19,7 +19,7 @@ type VerificationModel = {
     class: /* tw */ 'block',
   },
   selector: 'app-verification-code-form',
-  imports: [Alert, AppForm, Button, Description, ErrorMessage, Field, FormField, FormRoot, Label, PinInput],
+  imports: [Alert, AppForm, Button, Description, ErrorMessage, Field, FormField, Label, PinInput],
   templateUrl: './verification-code-form.html',
   styleUrl: './verification-code-form.css',
 })
