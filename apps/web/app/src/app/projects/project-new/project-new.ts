@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { form, maxLength, required, type FieldTree } from '@angular/forms/signals';
-import { FormField, FormRoot } from '@angular/forms/signals';
+import { form, maxLength, required, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { PROJECTS_URL } from '../../shared/constants/routes';

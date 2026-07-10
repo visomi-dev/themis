@@ -1,6 +1,5 @@
 import { Component, computed, input, output, signal } from '@angular/core';
-import { form, maxLength, minLength, required, type FieldTree } from '@angular/forms/signals';
-import { FormField, FormRoot } from '@angular/forms/signals';
+import { form, FormField, FormRoot, maxLength, minLength, required, type FieldTree } from '@angular/forms/signals';
 
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Button } from '../../shared/ui/actions/button/button';
