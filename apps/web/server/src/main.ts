@@ -36,7 +36,7 @@ type AngularHandler = RequestHandler & {
   upgrade?: UpgradeHandler;
 };
 
-const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
 
 const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
 
