@@ -45,7 +45,7 @@ export class PasswordStrength {
   readonly barClasses = (current: number) =>
     uiClass(
       'h-2 rounded-full transition-colors',
-      current <= this.level() ? 'bg-accent' : 'bg-zinc-500 dark:bg-zinc-400/40',
+      current <= this.level() ? 'bg-accent' : 'bg-zinc-300 dark:bg-zinc-700',
     );
 
   readonly containerClasses = computed(() => 'space-y-1.5');
