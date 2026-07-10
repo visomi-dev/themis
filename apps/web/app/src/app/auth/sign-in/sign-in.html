@@ -26,7 +26,7 @@
       }}</app-alert>
     }
 
-    <app-form class="grid gap-5" [form]="signInForm">
+    <app-form class="grid w-full max-w-sm grid-cols-1 gap-8" [form]="signInForm">
       <app-field>
         <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
         <app-input
@@ -44,14 +44,7 @@
       </app-field>
 
       <app-field>
-        <div class="flex items-center justify-between gap-3">
-          <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
-          <app-link
-            i18n="@@signInForgottenPasswordLink"
-            [routerLink]="forgottenPasswordUrl"
-            [text]="'Forgotten password?'"
-          />
-        </div>
+        <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
         <app-password-input
           autocomplete="current-password"
           [formField]="signInForm.password"
@@ -66,17 +59,24 @@
         }}</app-error-message>
       </app-field>
 
-      <label
-        class="flex items-start gap-3 text-sm leading-6 text-zinc-500 dark:text-zinc-400"
-        for="sign-in-remember-device"
-      >
-        <app-checkbox
-          [formField]="signInForm.rememberDevice"
-          controlId="sign-in-remember-device"
-          name="rememberDevice"
+      <div class="flex items-center justify-between gap-3">
+        <label
+          for="sign-in-remember-device"
+          class="flex items-center gap-3 text-sm leading-6 font-medium text-zinc-950 select-none dark:text-zinc-50"
+        >
+          <app-checkbox
+            [formField]="signInForm.rememberDevice"
+            controlId="sign-in-remember-device"
+            name="rememberDevice"
+          />
+          <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
+        </label>
+        <app-link
+          i18n="@@signInForgottenPasswordLink"
+          [routerLink]="forgottenPasswordUrl"
+          [text]="'Forgotten password?'"
         />
-        <span i18n="@@signInRememberDeviceLabel">Remember this device.</span>
-      </label>
+      </div>
 
       <app-button
         data-od-id="submit"
@@ -84,12 +84,22 @@
         i18n="@@signInSubmitButton"
         tone="accent"
         type="submit"
+        size="lg"
+        fullWidth
         [loading]="submitting()"
         >Sign in</app-button
       >
-    </app-form>
 
-    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@signInFooterPrompt">New to Themis?</p>
-    <app-link data-slot="footer" i18n="@@signInFooterLink" [routerLink]="footerLink" [text]="'Create an account'" />
+      <p class="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        <span i18n="@@signInFooterPrompt">New to Themis?</span>
+        <app-link
+          data-slot="footer"
+          class="ml-2 font-semibold"
+          i18n="@@signInFooterLink"
+          [routerLink]="footerLink"
+          [text]="'Create an account'"
+        />
+      </p>
+    </app-form>
   </app-auth-card>
 </app-auth-layout>
