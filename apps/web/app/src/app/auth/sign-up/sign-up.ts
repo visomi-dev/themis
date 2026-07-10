@@ -1,6 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { email, form, minLength, required, validate, type FieldTree, FormField, FormRoot } from '@angular/forms/signals';
+import {
+  email,
+  form,
+  minLength,
+  required,
+  validate,
+  type FieldTree,
+  FormField,
+  FormRoot,
+} from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
