@@ -22,7 +22,7 @@ export default defineConfig({
       HOST: '127.0.0.1',
       MAIL_TRANSPORT: 'memory',
       NG_ALLOWED_HOSTS: '127.0.0.1',
-      PORT: '8081',
+      GATEWAY_PORT: '8081',
       SESSION_SECRET: 'themis-app-e2e-secret',
     },
     reuseExistingServer: false,

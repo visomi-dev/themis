@@ -15,7 +15,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Debug App",
-      "url": "http://localhost:4200",
+      "url": "http://localhost:4200/app",
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.(m|c|)js", "!**/node_modules/**"],
