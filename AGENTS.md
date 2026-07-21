@@ -41,7 +41,7 @@ Themis is an Nx monorepo with Angular frontend apps and Node backend runtimes. K
 
 OpenCode does not automatically expand file references from this document. Before editing, read the relevant guidance files on a need-to-know basis and treat them as mandatory instructions for that area.
 
-- Frontend Angular work: read `docs/agents/frontend.md`.
+- Frontend Angular work: read and follow `docs/agents/frontend.md` as the canonical Angular v22 ruleset. It incorporates the official Angular AI guidance from `https://angular.dev/ai`, including the repository's Signal Forms, services, dependency injection, signals, effects, templates, accessibility, routing, and testing conventions.
 - Backend, API, worker, realtime, validation, or tenancy work: read `docs/agents/backend.md`.
 - Playwright, end-to-end, route-flow, or auth-flow testing work: read `docs/agents/e2e.md`. For e2e work that needs the full gateway (api + app + site + worker + realtime) running, follow the "Full-Server E2E Playbook" section there before changing tests or hooks.
 - Tailwind, UI polish, visual design, accessibility, or design-token work: read `docs/agents/design-system.md`.

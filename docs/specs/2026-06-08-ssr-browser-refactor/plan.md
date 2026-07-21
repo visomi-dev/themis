@@ -22,12 +22,12 @@
 
 ## Group 3 — Settings / theme domain (abstract + browser + server)
 
-1. Create `shared/settings.ts` as `export abstract class Settings` with `theme`, `isDark`, `setTheme`, `toggleTheme`.
-2. Create `shared/browser-settings.ts` with `localStorage` / `matchMedia` logic.
-3. Create `shared/server-settings.ts` as a no-op with a stable default of `'light'`.
-4. Create `shared/layout/theme-init/theme-init.ts` + `.html` + `.css`. Component declares `readonly applyThemeEffect = afterNextRender(() => { readonly syncClassEffect = effect(() => { document.documentElement.classList.toggle('dark', settings.isDark()); }); })`. (Nested effects: the outer `afterNextRender` registers a one-shot browser-only setup that creates the inner effect. The inner effect toggles the class on every theme change.)
-5. Mount `<app-theme-init />` in `app.html` before `<app-layout />`.
-6. Update `shared/settings.spec.ts` to inject the abstract + browser impl and assert behaviour; add a server-side test asserting no DOM access.
+1. Create `shared/settings.ts` as `export abstract class Settings` with `theme`, `isDark`, `setTheme`, `toggleTheme`, and `applyTheme`.
+2. Create `shared/browser-settings.ts` with `localStorage` / `matchMedia` logic and an `applyTheme()` that toggles the `dark` class on `document.documentElement`.
+3. Create `shared/server-settings.ts` as a no-op with a stable default of `'light'` and an `applyTheme()` that does nothing on the server.
+4. Have `Layout` inject `Settings` and declare `readonly applyThemeEffect = effect(() => settings.applyTheme())`. The effect tracks `isDark()` through `applyTheme()` and re-runs on every theme change; the server call is a no-op.
+5. Mount `<app-layout />` in `app.html` (no `<app-theme-init />`).
+6. Update `shared/settings.spec.ts` to inject the abstract + browser impl and assert behaviour; add a server-side test asserting no DOM access; add coverage for `applyTheme()` on both impls.
 
 ## Group 4 — Clipboard capability for the activation page
 
@@ -47,7 +47,7 @@
    - Override the four services with `ServerAuth`, `ServerRealtime`, `ServerSettings`, `ServerClipboard`.
    - Provide `AUTH_REQUEST_CONTEXT` with a `useFactory` that reads the existing `REQUEST_CONTEXT` and extracts `user` (typed as `AuthUser | null`).
 3. `app.routes.server.ts`: leave as-is for this iteration. Add a `// TODO(spec: 2026-06-08-ssr-browser-refactor)` comment noting deferred prerender.
-4. `app.ts`: import `ThemeInit` and add it to `imports`. Update providers list (no concrete class — the abstract is bound through the providers above).
+4. `app.ts`: keep `Layout` as the only mounted shell component. Update providers list (no concrete class — the abstract is bound through the providers above).
 
 ## Group 6 — Server wiring
 

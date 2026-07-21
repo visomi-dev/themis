@@ -1,9 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 
 import { Auth } from '../auth/auth';
+import { Settings } from '../settings';
 import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL } from '../constants/routes';
 import { BottomNavigation, BottomNavigationItem } from '../ui/layout/bottom-navigation/bottom-navigation';
 import { Icon } from '../ui/media/icon/icon';
@@ -34,6 +35,7 @@ const BOTTOM_NAV_ITEMS: ReadonlyArray<BottomNavItem> = Object.freeze([
 export class Layout {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  private readonly settings = inject(Settings);
 
   private readonly navigationEnd = toSignal(
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)),
@@ -58,6 +60,10 @@ export class Layout {
   });
 
   readonly showAppShell = computed(() => this.auth.isAuthenticated() && !this.hideAppShell());
+
+  readonly applyThemeEffect = effect(() => {
+    this.settings.applyTheme();
+  });
 
   readonly bottomNavItems = BOTTOM_NAV_ITEMS;
 
