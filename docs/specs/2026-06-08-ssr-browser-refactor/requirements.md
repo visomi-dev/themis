@@ -79,9 +79,11 @@ Behaviour:
 
 ### DOM side effects in `Settings`
 
-- The mutation of `document.documentElement.classList` is moved out of the `Settings` effect.
-- A new `AppThemeInit` component (standalone, hidden host) is mounted in `app.html` once. Its `constructor` declares `readonly applyThemeEffect = afterNextRender(() => ...)` which uses an `effect` over `settings.theme` to toggle the class.
-- `BrowserSettings` mutates only its own signal; it never touches the DOM directly. `ServerSettings` is a no-op.
+- The mutation of `document.documentElement.classList` is moved out of `Settings`'s own signal updates and exposed as `Settings.applyTheme()`.
+- `BrowserSettings.applyTheme()` is the single browser-side implementation: it toggles the `dark` class on `document.documentElement` based on the current `isDark()` signal. It reads the signal so callers do not need to pass the theme.
+- `ServerSettings.applyTheme()` is a no-op because the server never paints a DOM tree.
+- `Layout` injects `Settings` and keeps `readonly applyThemeEffect = effect(() => settings.applyTheme())` as a `readonly` class field. The effect tracks `isDark()` through `applyTheme()` and re-runs on every theme change; on the server the call is a no-op.
+- No dedicated renderless controller component is introduced. `ThemeInit` is not part of the architecture.
 
 ## Context
 

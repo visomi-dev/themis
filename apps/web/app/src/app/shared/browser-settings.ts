@@ -13,6 +13,10 @@ export class BrowserSettings extends Settings {
   readonly isDark: Signal<boolean> = computed(() => this.$theme() === 'dark');
   readonly theme: Signal<Theme> = this.$theme.asReadonly();
 
+  applyTheme(): void {
+    this.document.documentElement.classList.toggle('dark', this.isDark());
+  }
+
   setTheme(theme: Theme): void {
     this.$theme.set(theme);
     this.persist(theme);

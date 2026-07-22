@@ -9,6 +9,10 @@ export class ServerSettings extends Settings {
   readonly isDark: Signal<boolean> = signal(false).asReadonly();
   readonly theme: Signal<Theme> = this.$theme.asReadonly();
 
+  applyTheme(): void {
+    // No-op on the server.
+  }
+
   setTheme(_theme: Theme): void {
     // No-op on the server.
   }

@@ -24,10 +24,28 @@ describe('BrowserSettings', () => {
     expect(settings.isDark()).toBe(!initialDark);
     expect(localStorage.getItem('themis.theme')).toBe(initialDark ? 'light' : 'dark');
   });
+
+  it('applyTheme syncs the dark class on <html> with the current theme', () => {
+    document.documentElement.classList.remove('dark');
+    const settings = TestBed.inject(Settings);
+
+    settings.applyTheme();
+    expect(document.documentElement.classList.contains('dark')).toBe(settings.isDark());
+
+    settings.setTheme('dark');
+    settings.applyTheme();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+
+    settings.setTheme('light');
+    settings.applyTheme();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
 });
 
 describe('ServerSettings', () => {
   beforeEach(() => {
+    document.documentElement.classList.remove('dark');
+
     TestBed.configureTestingModule({
       providers: [ServerSettings, { provide: Settings, useExisting: ServerSettings }],
     });
@@ -38,6 +56,9 @@ describe('ServerSettings', () => {
 
     expect(settings.theme()).toBe('light');
     expect(settings.isDark()).toBe(false);
+
+    settings.applyTheme();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
 
     settings.toggleTheme();
 

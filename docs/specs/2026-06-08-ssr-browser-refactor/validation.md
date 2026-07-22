@@ -9,7 +9,7 @@
 - Grep invariants (run from repo root):
   - `rg "isPlatformBrowser|PLATFORM_ID" apps/web/app/src/app` returns **0** matches.
   - `rg "isPlatformServer" apps/web/app/src/app` returns matches only inside `http-interceptor.ts` and its spec (the interceptor legitimately needs to distinguish server-side URL rewriting from browser-side pass-through).
-  - `rg "window\.|navigator\.|document\." apps/web/app/src/app` returns matches only inside `browser-*.ts` and `theme-init.ts` (the latter only inside `afterNextRender`).
+  - `rg "window\.|navigator\.|document\." apps/web/app/src/app` returns matches only inside `browser-*.ts` (no `theme-init` file exists; theme application lives in `BrowserSettings.applyTheme()` and is invoked by `Layout`).
 - `apps/web/app/src/server.ts` no longer contains `as unknown as`.
 - `apps/web/app/src/app/shared/http-interceptor.ts` no longer contains `as unknown as`.
 
@@ -34,12 +34,11 @@
 - 0 occurrences of `isPlatformBrowser` or `PLATFORM_ID` inside `apps/web/app/src/app/`.
 - `isPlatformServer` is allowed only in `http-interceptor.ts` (and its spec) where the interceptor legitimately needs to distinguish the server-side URL rewrite path.
 - 0 direct `window.*`, `navigator.*`, `document.*` reads outside of:
-  - `browser-*.ts` files,
-  - `theme-init.ts` (inside `afterNextRender` only).
+  - `browser-*.ts` files (the `BrowserSettings.applyTheme()` toggle lives here).
 - 0 `as unknown as` casts in `apps/web/app/src/server.ts` and `shared/http-interceptor.ts`.
 - `provideClientHydration` is called with `withHttpTransferCacheOptions` and an explicit filter excluding `/api/auth/`.
 - `AUTH_REQUEST_CONTEXT` token exists, is registered in `app.config.server.ts`, and is consumed by `ServerAuth`.
-- `AppThemeInit` is mounted in `app.html` and toggles the `dark` class via `afterNextRender`.
+- `Layout` is mounted in `app.html`, injects `Settings`, and keeps `readonly applyThemeEffect = effect(() => settings.applyTheme())` so the `dark` class stays in sync with the theme.
 - `apps/web/app/version.json` exists with `version: 1.1.0`.
 - `docs/constitution/roadmap.md` links to this spec.
 - All tests pass; build succeeds.
