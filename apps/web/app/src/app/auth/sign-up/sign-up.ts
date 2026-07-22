@@ -1,15 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import {
-  email,
-  form,
-  minLength,
-  required,
-  validate,
-  type FieldTree,
-  FormField,
-  FormRoot,
-} from '@angular/forms/signals';
+import { email, form, minLength, required, validate, type FieldTree, FormField } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
@@ -18,7 +9,7 @@ import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
-import { Description } from '../../shared/ui/forms/description/description';
+import {} from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
 import { Form as AppForm } from '../../shared/ui/forms/form/form';
@@ -44,11 +35,9 @@ type SignUpModel = {
     AuthCard,
     AuthLayout,
     Button,
-    Description,
     ErrorMessage,
     Field,
     FormField,
-    FormRoot,
     Input,
     Label,
     Link,

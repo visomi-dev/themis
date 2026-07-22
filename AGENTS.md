@@ -53,12 +53,11 @@ If a task touches multiple areas, read each relevant file before editing. Do not
 
 ## Development Workflow
 
-- Prefer small, vertical, reviewable changes over broad layer-based PRs.
-- A PR should usually contain one user-visible behavior slice, one API contract change, one route/page state, one E2E scenario group, or one enabling refactor.
+- Prefer self-contained PRs that base on `main` (or on a branch that is already merged into `main`). A PR that bases on a sibling feature branch is a **stacked PR**: if `main` is rewritten (force-push, history cleanup, branch-protection rebase) between the stack-base merge and the stacked PR's merge, the stacked PR's merge commit disappears and its changes are silently dropped from `main`. This happened in this repo with PRs #22 and #23, which stacked on the Signal Forms migration (#19); the `main` force-push after #19 merged dropped both. Self-contained PRs that rebase onto `main` and are merged in order survive `main` rewrites.
+- When a stack is genuinely required (a feature whose parts cannot land independently), document the merge order in each PR's description, and after the stack-base merges, rebase the remaining stacked PRs onto the current `main` before they are merged. Do not assume the stack base is still in `main` at merge time.
+- A PR should usually contain one user-visible behavior slice, one API contract change, one route/page state, one E2E scenario group, or one enabling refactor. The 500/1000 line split guidance is a soft heuristic, not a hard rule; if a PR must touch several areas to be reviewable end-to-end (e.g., a UI polish whose effect can only be seen together with the migration it depends on), prefer one self-contained PR over a fragile stack.
 - Avoid combining infrastructure, product behavior, broad refactors, and E2E coverage in one PR unless the work cannot be reviewed independently.
-- If a change exceeds roughly 500 changed lines, consider splitting it. If it exceeds roughly 1000 changed lines, document why it cannot be split.
 - Separate enabling test utilities, fixtures, schemas, or shared helpers from feature behavior when practical.
-- Use stacked PRs or an integration branch for large features that cannot land independently.
 - Each completed change should include focused verification through the relevant Nx target when feasible.
 - Leave handoff notes when work is incomplete or when another agent will continue the feature.
 
