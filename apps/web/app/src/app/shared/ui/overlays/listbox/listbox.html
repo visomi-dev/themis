@@ -1,24 +1,20 @@
-<div
-  class="ui-focus-ring grid gap-1 rounded-[var(--radius-panel)] bg-zinc-50 p-1 dark:bg-zinc-900"
-  role="listbox"
-  tabindex="0"
-  [attr.aria-activedescendant]="activeId()"
+<ul
+  cdkListbox
+  [id]="generatedId"
   [attr.aria-label]="ariaLabel()"
-  (blur)="markTouched()"
-  (keydown)="handleKeydown($event)"
+  [cdkListboxMultiple]="false"
+  (cdkListboxValueChange)="handleValueChange($any($event))"
+  (blur)="handleBlur()"
+  class="ui-focus-ring grid gap-1 rounded-[var(--radius-panel)] bg-zinc-50 p-1 dark:bg-zinc-900"
 >
-  @for (option of options(); track option.value; let index = $index) {
-    <div
-      [attr.aria-disabled]="option.disabled"
-      [attr.aria-selected]="value() === option.value"
-      [class]="optionClasses(index, option)"
-      [id]="'listbox-option-' + index"
-      role="option"
-      tabindex="-1"
-      (click)="choose(option, index)"
-      (keydown)="chooseFromOptionKeydown($event, option, index)"
+  @for (option of options(); track option.value) {
+    <li
+      cdkOption
+      [cdkOption]="option.value"
+      [cdkOptionDisabled]="option.disabled ?? false"
+      [class]="optionClasses(option.value, option)"
     >
       {{ option.label }}
-    </div>
+    </li>
   }
-</div>
+</ul>

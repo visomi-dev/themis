@@ -99,39 +99,60 @@
     }
   </nav>
 
-  <div class="mt-auto border-t border-zinc-950/10 pt-3 lg:p-3 dark:border-white/10">
-    <app-dropdown (openChange)="!$event && closeMenu()">
+  <div class="mt-auto border-t border-zinc-950/10 pt-3 lg:p-3 dark:border-white/10" data-od-id="sidebar-footer">
+    <div
+      class="flex items-center gap-2.5 rounded-sm px-2 py-2.5"
+      [class.lg:justify-center]="collapsed()"
+      [attr.title]="collapsed() ? userEmail() : null"
+    >
+      <app-avatar [initials]="userInitials()" size="sm" />
+      <div class="min-w-0 flex-1" [class.lg:hidden]="collapsed()">
+        <p class="truncate text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ userEmail() }}</p>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400" i18n="@@layoutSignedInStatus">Signed in</p>
+      </div>
+    </div>
+
+    <div class="mt-2 flex flex-col gap-1" [class.lg:items-center]="collapsed()">
       <button
-        data-slot="trigger"
         type="button"
-        class="flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left transition-colors hover:bg-zinc-50 dark:bg-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-200"
+        class="flex w-full items-center gap-2.5 rounded-sm px-2 py-2.5 text-left text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-50 hover:text-zinc-950 lg:py-2 dark:bg-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-200"
         [class.lg:justify-center]="collapsed()"
-        aria-label="Open user menu"
-        i18n-aria-label="@@layoutOpenUserMenu"
+        [class.lg:w-auto]="collapsed()"
+        (click)="toggleTheme()"
+        [attr.aria-label]="'Toggle light/dark theme'"
+        i18n-aria-label="@@themeSwitcherToggleTheme"
+        [attr.data-od-id]="'theme-toggle-sidebar'"
       >
-        <app-avatar [initials]="userInitials()" size="sm" />
-        <div class="min-w-0 flex-1" [class.lg:hidden]="collapsed()">
-          <p class="truncate text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ user()?.email }}</p>
-          <p class="text-xs text-zinc-500 dark:text-zinc-400" i18n="@@layoutSignedInStatus">Signed in</p>
-        </div>
-        <app-icon
-          name="angle-up"
-          class="ml-auto text-xs text-zinc-500 dark:text-zinc-400"
-          [class.lg:hidden]="collapsed()"
-        />
+        <app-icon [name]="isDark() ? 'sun' : 'moon'" class="shrink-0 text-base" />
+        <span [class.lg:hidden]="collapsed()">
+          @if (isDark()) {
+            <ng-container i18n="@@themeSwitcherLight">Light mode</ng-container>
+          } @else {
+            <ng-container i18n="@@themeSwitcherDark">Dark mode</ng-container>
+          }
+        </span>
       </button>
 
-      <app-listbox ariaLabel="User menu" [options]="userMenuOptions()" (valueChange)="handleUserMenuChange($event)" />
-    </app-dropdown>
-
-    <div class="mt-4 flex items-center justify-between gap-4 rounded-sm bg-zinc-100 p-3 lg:hidden dark:bg-zinc-800">
       <button
         type="button"
-        class="dark:border-white/10/50 flex h-9 w-9 items-center justify-center rounded-sm border border-zinc-950/10 text-zinc-500 transition-colors hover:bg-zinc-50 hover:text-zinc-950 dark:bg-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-200"
-        (click)="toggleTheme()"
+        class="flex w-full items-center gap-2.5 rounded-sm border-t border-zinc-950/10 px-2 py-2.5 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50 lg:mt-1 lg:border-t lg:py-2 dark:border-white/10 dark:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-300"
+        [class.lg:justify-center]="collapsed()"
+        [class.lg:w-auto]="collapsed()"
+        [disabled]="signingOut()"
+        (click)="signOut()"
+        i18n-aria-label="@@layoutSignOutLabel"
+        [attr.aria-label]="'Sign out'"
+        [attr.data-od-id]="'sidebar-sign-out'"
       >
-        <span class="sr-only" i18n="@@themeSwitcherToggleTheme">Toggle theme</span>
-        <app-icon [name]="isDark() ? 'sun' : 'moon'" />
+        @if (signingOut()) {
+          <span
+            class="inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+            aria-hidden="true"
+          ></span>
+        } @else {
+          <app-icon name="sign-out" class="shrink-0 text-base" />
+        }
+        <span [class.lg:hidden]="collapsed()" i18n="@@layoutSignOutLabel">Sign out</span>
       </button>
     </div>
   </div>

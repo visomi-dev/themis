@@ -8,6 +8,7 @@ export const verifyDeviceRoute = '/app/en/verify-device';
 export const forgottenPasswordRoute = '/app/en/forgotten-password';
 export const projectsRoute = '/app/en/projects';
 export const projectNewRoute = '/app/en/projects/new';
+export const galleryRoute = '/app/en/gallery';
 
 export const appUrlPattern = /\/app\/en\/dashboard$/;
 export const activationUrlPattern = /\/app\/en\/activation$/;
@@ -20,3 +21,4 @@ export const resetPasswordRoute = '/app/en/reset-password';
 export const resetPasswordUrlPattern = /\/app\/en\/reset-password$/;
 export const projectsUrlPattern = /\/app\/en\/projects$/;
 export const projectNewUrlPattern = /\/app\/en\/projects\/new$/;
+export const galleryUrlPattern = /\/app\/en\/gallery$/;
