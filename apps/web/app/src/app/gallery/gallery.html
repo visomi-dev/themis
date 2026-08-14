@@ -1,9 +1,9 @@
-<div class="border-border-subtle bg-bg min-h-full text-zinc-950 dark:text-zinc-50">
-  <header class="border-border-subtle bg-panel sticky top-0 z-10 border-b">
+<div class="bg-bg min-h-full text-zinc-950 dark:text-zinc-50">
+  <header class="border-border-subtle bg-panel sticky top-0 z-20 border-b">
     <div
-      class="mx-auto flex max-w-screen-2xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:px-8"
+      class="mx-auto flex max-w-screen-2xl flex-col gap-4 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between md:px-8"
     >
-      <div>
+      <div class="min-w-0">
         <h1 class="font-heading text-2xl font-bold tracking-tight md:text-3xl" data-od-id="gallery-title">
           Themis UI Gallery
         </h1>
@@ -13,7 +13,7 @@
           this to compose new screens without guessing the API.
         </p>
       </div>
-      <label class="flex items-center gap-2">
+      <label class="flex shrink-0 items-center gap-2">
         <span class="sr-only" i18n="@@galleryFilterLabel">Filter components</span>
         <input
           type="search"
@@ -27,12 +27,14 @@
     </div>
   </header>
 
-  <div class="mx-auto flex max-w-screen-2xl flex-col gap-8 px-4 py-8 md:flex-row md:px-8 md:py-12">
+  <div
+    class="mx-auto flex max-w-screen-2xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 md:flex-row md:gap-10 md:px-8 md:py-10"
+  >
     <aside class="md:w-56 md:shrink-0">
       <nav
         aria-label="Gallery sections"
         i18n-aria-label="@@gallerySectionsNav"
-        class="sticky top-32 flex flex-row gap-2 overflow-x-auto md:flex-col md:gap-1"
+        class="sticky top-28 flex flex-row gap-2 overflow-x-auto md:flex-col md:gap-1"
       >
         @for (section of filteredSections(); track section.id) {
           <button
@@ -52,10 +54,14 @@
 
     <main class="min-w-0 flex-1 space-y-16">
       @for (section of filteredSections(); track section.id) {
-        <section [id]="'section-' + section.id" class="space-y-6" [attr.data-od-id]="'gallery-section-' + section.id">
-          <header>
+        <section
+          [id]="'section-' + section.id"
+          class="scroll-mt-32 space-y-6"
+          [attr.data-od-id]="'gallery-section-' + section.id"
+        >
+          <header class="space-y-1">
             <h2 class="font-heading text-xl font-bold tracking-tight md:text-2xl">{{ section.title }}</h2>
-            <p class="text-muted-fg mt-1 text-sm md:text-base">{{ section.description }}</p>
+            <p class="text-muted-fg text-sm md:text-base">{{ section.description }}</p>
           </header>
 
           <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
@@ -123,6 +129,7 @@
                             [name]="'plan-card'"
                             [optionValue]="option.value"
                           >
+                            >
                             <span class="font-heading text-sm font-semibold">{{ option.label }}</span>
                             <span class="text-muted-fg text-xs">{{ option.description }}</span>
                           </app-radio-card>
@@ -179,7 +186,7 @@
                       </div>
                     }
                     @case ('icon') {
-                      <div class="grid grid-cols-6 gap-3 sm:grid-cols-8">
+                      <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
                         @for (name of filteredIconNames(); track name) {
                           <div class="flex flex-col items-center gap-1 rounded-md p-2 text-center text-xs">
                             <app-icon [name]="$any(name)" class="text-xl" />

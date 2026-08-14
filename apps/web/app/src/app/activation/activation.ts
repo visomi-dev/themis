@@ -16,6 +16,7 @@ import { Alert } from '../shared/ui/overlays/alert/alert';
 import { Badge } from '../shared/ui/data/badge/badge';
 import { Button } from '../shared/ui/actions/button/button';
 import { Card } from '../shared/ui/layout/card/card';
+import { Container } from '../shared/ui/layout/container/container';
 import { ErrorMessage } from '../shared/ui/forms/error-message/error-message';
 import { Field } from '../shared/ui/forms/field/field';
 import { Form as AppForm } from '../shared/ui/forms/form/form';
@@ -34,7 +35,21 @@ type ConfigTab = 'env' | 'opencode' | 'themis';
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, AppForm, Badge, Button, Card, ErrorMessage, Field, FormField, Heading, Input, Label, Loader],
+  imports: [
+    Alert,
+    AppForm,
+    Badge,
+    Button,
+    Card,
+    Container,
+    ErrorMessage,
+    Field,
+    FormField,
+    Heading,
+    Input,
+    Label,
+    Loader,
+  ],
   selector: 'app-activation',
   templateUrl: './activation.html',
   styleUrl: './activation.css',
