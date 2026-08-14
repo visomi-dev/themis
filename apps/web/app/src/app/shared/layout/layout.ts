@@ -56,7 +56,16 @@ export class Layout {
       route = route.firstChild;
     }
 
-    return route.data['hideAppShell'] === true;
+    const routeData = route.data ?? {};
+    const mergedData = { ...routeData };
+    let parent = route.parent;
+
+    while (parent) {
+      Object.assign(mergedData, parent.data ?? {});
+      parent = parent.parent;
+    }
+
+    return mergedData['hideAppShell'] === true;
   });
 
   readonly showAppShell = computed(() => this.auth.isAuthenticated() && !this.hideAppShell());

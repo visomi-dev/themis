@@ -9,6 +9,7 @@ import {
   APP_PATH,
   DASHBOARD_PATH,
   FORGOTTEN_PASSWORD_PATH,
+  GALLERY_PATH,
   PROJECTS_PATH,
   PROJECT_ID_PATH,
   PROJECT_NEW_PATH,
@@ -89,6 +90,13 @@ export const appRoutes: Route[] = [
     path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}`,
     canActivate: [activatedGuard],
     loadComponent: () => import('./projects/project-detail/project-detail').then((module) => module.ProjectDetail),
+  },
+
+  {
+    path: GALLERY_PATH,
+    canActivate: [authenticatedGuard],
+    data: { hideAppShell: true },
+    loadComponent: () => import('./gallery/gallery').then((module) => module.Gallery),
   },
 
   {

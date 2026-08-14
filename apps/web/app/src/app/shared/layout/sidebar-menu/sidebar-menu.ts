@@ -2,13 +2,11 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Auth } from '../../auth/auth';
-import { DASHBOARD_URL, PROJECT_NEW_URL, PROJECTS_URL, SIGN_IN_URL } from '../../constants/routes';
+import { DASHBOARD_URL, PROJECTS_URL, PROJECT_NEW_URL, SIGN_IN_URL } from '../../constants/routes';
 import { Settings } from '../../settings';
 import { Avatar } from '../../ui/data/avatar/avatar';
-import { Dropdown } from '../../ui/overlays/dropdown/dropdown';
 import { Icon } from '../../ui/media/icon/icon';
 import { type IconName } from '../../ui/media/icon/icon-paths';
-import { Listbox, type ListboxOption } from '../../ui/overlays/listbox/listbox';
 
 type LayoutNavItem = {
   children?: LayoutNavItem[];
@@ -24,7 +22,7 @@ type LayoutNavSection = {
 };
 
 @Component({
-  imports: [Avatar, Dropdown, Icon, Listbox, RouterLink, RouterLinkActive],
+  imports: [Avatar, Icon, RouterLink, RouterLinkActive],
   selector: 'app-sidebar-menu',
   templateUrl: './sidebar-menu.html',
   styleUrl: './sidebar-menu.css',
@@ -48,6 +46,9 @@ export class SidebarMenu {
 
     return email.slice(0, 2).toUpperCase();
   });
+
+  readonly userEmail = computed(() => this.user()?.email ?? '');
+
   readonly navSections: LayoutNavSection[] = [
     {
       label: $localize`:@@layoutWorkspaceTitle:Workspace`,
@@ -76,14 +77,6 @@ export class SidebarMenu {
     },
   ];
 
-  readonly userMenuOptions = computed<ListboxOption[]>(() => [
-    {
-      disabled: this.signingOut(),
-      label: $localize`:@@layoutSignOutLabel:Sign out`,
-      value: 'sign-out',
-    },
-  ]);
-
   closeMenu() {
     this.closed.emit();
   }
@@ -101,12 +94,6 @@ export class SidebarMenu {
     } finally {
       this.signingOut.set(false);
       this.closeMenu();
-    }
-  }
-
-  async handleUserMenuChange(value: string) {
-    if (value === 'sign-out') {
-      await this.signOut();
     }
   }
 }
