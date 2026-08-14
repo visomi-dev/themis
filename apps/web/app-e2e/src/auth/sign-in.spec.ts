@@ -22,6 +22,36 @@ test.describe('/app/sign-in', () => {
     await expect(page.locator('[data-slot="sub"]')).toContainText('Welcome back.');
   });
 
+  test('places recovery below password and toggles remember-device from its label', async ({ page }) => {
+    await page.goto(signInRoute);
+
+    const password = page.getByRole('textbox', { name: 'Password' });
+    const forgottenPassword = page.getByRole('link', { name: 'Forgotten password?' });
+    const rememberDevice = page.getByRole('checkbox', { name: 'Remember this device' });
+    const rememberLabel = page.locator('label').filter({ hasText: 'Remember this device' });
+
+    await expect(forgottenPassword).toBeVisible();
+    await expect(rememberDevice).toBeVisible();
+    await expect(rememberDevice).not.toBeChecked();
+
+    const passwordBox = await password.boundingBox();
+    const forgottenBox = await forgottenPassword.boundingBox();
+    const rememberBox = await rememberDevice.boundingBox();
+
+    expect(passwordBox).not.toBeNull();
+    expect(forgottenBox).not.toBeNull();
+    expect(rememberBox).not.toBeNull();
+    expect(forgottenBox?.y).toBeGreaterThan(passwordBox?.y ?? 0);
+    expect(forgottenBox?.x).toBeGreaterThan((passwordBox?.x ?? 0) + (passwordBox?.width ?? 0) / 2);
+    expect(rememberBox?.y).toBeGreaterThan(forgottenBox?.y ?? 0);
+
+    await rememberLabel.click();
+    await expect(rememberDevice).toBeChecked();
+
+    await rememberLabel.click();
+    await expect(rememberDevice).not.toBeChecked();
+  });
+
   test('signs an existing user in through email verification', async ({ page, request }) => {
     const credentials = createCredentials();
 

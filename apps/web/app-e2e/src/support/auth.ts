@@ -141,6 +141,7 @@ export const signIn = async (page: Page, email: string, password: string) => {
   await expect(page).toHaveURL(signInUrlPattern);
   await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
   await fillCredentials(page, email, password);
+  await page.getByRole('checkbox', { name: 'Remember this device' }).check();
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(verifyDeviceUrlPattern, { timeout: 15000 });
@@ -152,6 +153,7 @@ export const signInWithRememberedDevice = async (page: Page, email: string, pass
   await expect(page).toHaveURL(signInUrlPattern);
   await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
   await fillCredentials(page, email, password);
+  await page.getByRole('checkbox', { name: 'Remember this device' }).check();
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });

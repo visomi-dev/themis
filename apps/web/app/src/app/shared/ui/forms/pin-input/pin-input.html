@@ -10,6 +10,7 @@
     [class]="gridClass()"
     data-slot="pin-input"
     role="group"
+    [attr.aria-label]="ariaLabel()"
     [attr.aria-describedby]="ariaDescribedBy()"
   >
     @for (index of indexes(); track index) {
@@ -22,6 +23,9 @@
         placeholder="#"
         type="text"
         required
+        [attr.aria-posinset]="index + 1"
+        [attr.aria-setsize]="digits()"
+        [attr.aria-required]="true"
         [attr.aria-invalid]="invalid()"
         [attr.aria-label]="label() ? null : 'PIN digit ' + (index + 1)"
         [attr.id]="id(index)"

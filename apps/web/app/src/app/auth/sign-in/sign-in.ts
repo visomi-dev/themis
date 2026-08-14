@@ -54,7 +54,7 @@ export class SignIn {
   readonly signInModel = signal<SignInModel>({
     email: '',
     password: '',
-    rememberDevice: true,
+    rememberDevice: false,
   });
 
   readonly signInForm: FieldTree<SignInModel> = form(

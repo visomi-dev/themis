@@ -31,7 +31,9 @@
       (resend)="resend()"
     />
 
-    <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400" i18n="@@verifyDeviceFooterPrompt">Need to start over?</p>
-    <app-link data-slot="footer" i18n="@@verifyDeviceFooterLink" [routerLink]="signInUrl" [text]="'Start again'" />
+    <div class="mt-8 flex flex-col gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+      <p i18n="@@verifyDeviceFooterPrompt">Need to start over?</p>
+      <app-link data-slot="footer" i18n="@@verifyDeviceFooterLink" [routerLink]="signInUrl" [text]="'Start again'" />
+    </div>
   </app-auth-card>
 </app-auth-layout>

@@ -51,6 +51,7 @@ export class PinInput {
 
   readonly formField = input.required<Field<string>>();
   readonly ariaDescribedBy = input<string | null>(null);
+  readonly ariaLabel = input('Verification code');
   readonly digits = input(6, { transform: numberAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly idPrefix = input('pin');

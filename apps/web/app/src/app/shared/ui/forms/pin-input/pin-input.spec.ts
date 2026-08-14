@@ -28,4 +28,16 @@ describe('PinInput', () => {
     expect(inputs.length).toBe(6);
     expect([...inputs].map((inputElement) => inputElement.value).join('')).toBe('123456');
   });
+
+  it('exposes the OTP group and digit positions to assistive technology', () => {
+    const group = fixture.nativeElement.querySelector('[data-slot="pin-input"]') as HTMLElement;
+    const inputs = fixture.nativeElement.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
+
+    expect(group.getAttribute('role')).toBe('group');
+    expect(group.getAttribute('aria-label')).toBe('Verification code');
+    expect(inputs[0]?.getAttribute('aria-posinset')).toBe('1');
+    expect(inputs[0]?.getAttribute('aria-setsize')).toBe('6');
+    expect(inputs[5]?.getAttribute('aria-posinset')).toBe('6');
+    expect(inputs[0]?.getAttribute('aria-required')).toBe('true');
+  });
 });

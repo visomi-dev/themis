@@ -6,10 +6,11 @@ import { Checkbox } from './checkbox';
 
 @Component({
   imports: [FormField, Checkbox],
-  template: '<app-checkbox controlId="remember" [formField]="f.remember" />',
+  template: '<app-checkbox controlId="remember" [formField]="f.remember" [disabled]="disabled()" />',
 })
 class Host {
   readonly model = signal({ remember: true });
+  readonly disabled = signal(false);
   readonly f: FieldTree<{ remember: boolean }> = form(this.model, () => undefined);
 }
 
@@ -26,5 +27,14 @@ describe('Checkbox', () => {
     const input = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
 
     expect(input.checked).toBe(true);
+  });
+
+  it('forwards disabled state to the native checkbox', () => {
+    const input = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
+
+    fixture.componentInstance.disabled.set(true);
+    fixture.detectChanges();
+
+    expect(input.disabled).toBe(true);
   });
 });
