@@ -21,11 +21,23 @@
     }}</app-error-message>
   </app-field>
 
-  <div class="flex flex-wrap items-center gap-3">
-    <app-button i18n="@@verificationCodeSubmitButton" tone="accent" type="submit" [loading]="submitting()">
+  <div class="grid gap-3">
+    <app-button
+      i18n="@@verificationCodeSubmitButton"
+      tone="accent"
+      type="submit"
+      [fullWidth]="true"
+      [loading]="submitting()"
+    >
       Verify and continue
     </app-button>
-    <app-button i18n="@@verificationCodeResendButton" type="button" variant="plain" (click)="resend.emit()">
+    <app-button
+      i18n="@@verificationCodeResendButton"
+      type="button"
+      variant="plain"
+      [fullWidth]="true"
+      (click)="resend.emit()"
+    >
       Resend code
     </app-button>
   </div>

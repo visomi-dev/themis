@@ -57,10 +57,55 @@ async function bootstrapUser(email, password, purpose) {
 }
 
 async function primeVerifyContext(page, route) {
-  // For OTP screens the page reads Auth.pendingChallenge from the session
-  // exposed by the SSR transfer state. We can't manipulate session from
-  // here, so we only capture the static state of these routes.
-  return;
+  const request = page.context().request;
+  const email = `engineer+visual-${Date.now()}-${Math.floor(Math.random() * 10000)}@themis.visomi.dev`;
+  const password = 'Strong-Pass-12!';
+
+  if (route.purpose === 'sign_up') {
+    await page.goto(`${BASE_URL}/app/en/sign-up`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('textbox', { name: 'Email' }).fill(email);
+    await page.getByRole('textbox', { name: 'Password', exact: true }).fill(password);
+    await page.getByRole('textbox', { name: 'Confirm password' }).fill(password);
+    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.waitForURL(/\/app\/en\/verify-email$/, { timeout: 15000, waitUntil: 'commit' });
+
+    return true;
+  }
+
+  await request.delete(`${BASE_URL}/api/test/mailbox`);
+  const signUp = await request.post(`${BASE_URL}/api/auth/sign-up`, { data: { email, password } });
+  if (!signUp.ok()) throw new Error(`sign-up failed: ${signUp.status()}`);
+
+  const signUpData = await signUp.json();
+  const signUpPin = (
+    await fetchJson(
+      `${BASE_URL}/api/test/mailbox/latest?${new URLSearchParams({ email, purpose: 'sign_up' }).toString()}`,
+    )
+  ).pin;
+
+  const verify = await request.post(`${BASE_URL}/api/auth/sign-up/verify`, {
+    data: { challengeId: signUpData.data.challengeId, pin: signUpPin },
+  });
+  if (!verify.ok()) throw new Error(`sign-up verification failed: ${verify.status()}`);
+
+  await request.post(`${BASE_URL}/api/auth/sign-out`);
+
+  if (route.purpose === 'sign_in') {
+    await page.goto(`${BASE_URL}/app/en/sign-in`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('textbox', { name: 'Email' }).fill(email);
+    await page.getByRole('textbox', { name: 'Password', exact: true }).fill(password);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.waitForURL(/\/app\/en\/verify-device$/, { timeout: 15000, waitUntil: 'commit' });
+
+    return true;
+  }
+
+  await page.goto(`${BASE_URL}/app/en/forgotten-password`, { waitUntil: 'domcontentloaded' });
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('button', { name: 'Send recovery link' }).click();
+  await page.waitForURL(/\/app\/en\/reset-password$/, { timeout: 15000, waitUntil: 'commit' });
+
+  return true;
 }
 
 async function captureRoute(browser, route, viewport, theme) {
@@ -73,7 +118,9 @@ async function captureRoute(browser, route, viewport, theme) {
   const page = await context.newPage();
   const url = `${BASE_URL}${route.path}`;
   try {
-    const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    const prepared = route.needsUser ? await primeVerifyContext(page, route) : false;
+
+    const response = prepared ? null : await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
     await page.waitForSelector('[data-od-id="auth-shell"]', { timeout: 10000 }).catch(() => undefined);
     await page.waitForTimeout(400);
     const filename = `${route.label}-${viewport.label}-${theme}.png`;
