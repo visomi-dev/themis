@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "workItems": [
+    {
+      "id": "THM-001",
+      "title": "Create local repository adapter",
+      "summary": "Create the adapter used by the local workflow fixture.",
+      "acceptanceCriteria": ["The adapter can be invoked by the fixture"],
+      "scopeIn": [".themis/fixtures/**"],
+      "scopeOut": ["apps/**", "libs/**"],
+      "verificationStrategy": ["node --experimental-strip-types --test scripts/themis-core.test.ts"]
+    },
+    {
+      "id": "THM-002",
+      "title": "Add repository adapter tests",
+      "summary": "Verify the adapter behavior after implementation.",
+      "acceptanceCriteria": ["The adapter behavior is covered by tests"],
+      "scopeIn": [".opencode/tools/**"],
+      "scopeOut": ["apps/**"],
+      "verificationStrategy": ["node --experimental-strip-types --test scripts/themis-core.test.ts"]
+    },
+    {
+      "id": "THM-003",
+      "title": "Document adapter behavior",
+      "summary": "Document the local adapter workflow and evidence expectations.",
+      "acceptanceCriteria": ["The local workflow is documented"],
+      "scopeIn": ["planning/**"],
+      "scopeOut": ["apps/**", "libs/**"],
+      "verificationStrategy": ["pnpm exec prettier --check ."]
+    }
+  ],
+  "dependencies": [
+    { "from": "THM-001", "to": "THM-002", "relation": "blocks" },
+    { "from": "THM-001", "to": "THM-003", "relation": "blocks" }
+  ]
+}

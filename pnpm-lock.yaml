@@ -47,6 +47,12 @@ importers:
       '@astrojs/node':
         specifier: ^10.1.4
         version: 10.1.4(astro@6.4.8(@azure/identity@4.13.1)(@types/node@26.0.0)(ioredis@5.11.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.46.2)(yaml@2.9.0))
+      '@drizzle-team/brocli':
+        specifier: 0.12.0
+        version: 0.12.0
+      '@earendil-works/pi-tui':
+        specifier: 0.84.2
+        version: 0.84.2
       '@electric-sql/pglite':
         specifier: 0.5.3
         version: 0.5.3
@@ -1719,6 +1725,13 @@ packages:
 
   '@drizzle-team/brocli@0.11.0':
     resolution: {integrity: sha512-hD3pekGiPg0WPCCGAZmusBBJsDqGUR66Y452YgQsZOnkdQ7ViEPKuyP4huUGEZQefp8g34RRodXYmJ2TbCH+tg==}
+
+  '@drizzle-team/brocli@0.12.0':
+    resolution: {integrity: sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ==}
+
+  '@earendil-works/pi-tui@0.84.2':
+    resolution: {integrity: sha512-ds2TLihOnM5sLJB3VpXV6y0uR5efVuHf4MN7yDpsty6hA2DUO/EDVzjp/0od0G2JslzVLMjT8T8zavtxVb+qbg==}
+    engines: {node: '>=22.19.0'}
 
   '@electric-sql/pglite@0.5.3':
     resolution: {integrity: sha512-iTTYbA5Uesrl+N7zss0J5LopT7KE4j9aymYo+EZZh+rZbARQCUQOs+n2pay64JRUpc3fCkpfrniTNJnvYzOE+g==}
@@ -8143,6 +8156,11 @@ packages:
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
 
+  marked@18.0.5:
+    resolution: {integrity: sha512-S6GcvALHg6K4ohtu4E7x0a1AqhAjp6cV8KhLSyN9qVapnzJkusVBxZRcIU9AeYsbe6P1hKDusSbEOzGyyuce6w==}
+    engines: {node: '>= 20'}
+    hasBin: true
+
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -13215,6 +13233,13 @@ snapshots:
   '@discoveryjs/json-ext@1.1.0': {}
 
   '@drizzle-team/brocli@0.11.0': {}
+
+  '@drizzle-team/brocli@0.12.0': {}
+
+  '@earendil-works/pi-tui@0.84.2':
+    dependencies:
+      get-east-asian-width: 1.6.0
+      marked: 18.0.5
 
   '@electric-sql/pglite@0.5.3': {}
 
@@ -20101,6 +20126,8 @@ snapshots:
       tmpl: 1.0.5
 
   markdown-table@3.0.4: {}
+
+  marked@18.0.5: {}
 
   math-intrinsics@1.1.0: {}
 

@@ -19,6 +19,7 @@ minimumReleaseAgeExclude:
   - astro-eslint-parser@2.0.0
   - bullmq@5.79.1
   - eslint-plugin-astro@2.0.0
+  - '@earendil-works/pi-tui@0.84.2'
 
 overrides:
   '@electric-sql/pglite': 0.5.3
