@@ -95,6 +95,10 @@ Spec-driven development specs. Each feature has requirements, implementation pla
 
 - [Auth Testing Strategy](testing/auth-testing.md)
 
+## Guides
+
+- [Local OpenCode Control Plane](guides/local-opencode-control-plane.md)
+
 ## Sessions
 
 Working notes from architecture reviews, tool assessments, and PR reviews. Not formal specs.
