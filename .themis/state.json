@@ -1,0 +1,908 @@
+{
+  "schemaVersion": 2,
+  "projects": [
+    {
+      "id": "agent-tracking",
+      "name": "Agent Tracking",
+      "summary": "Enable Themis to sync agent-side activation and project foundation with the web app, while making agent effort, progress, activity, and durable project context visible across authorized tenants.",
+      "status": "active",
+      "createdAt": "2026-08-17T03:49:39.992Z"
+    }
+  ],
+  "epics": [
+    {
+      "id": "agent-sync-foundation",
+      "projectId": "agent-tracking",
+      "title": "Agent Sync Foundation",
+      "summary": "Establish the authorized API and runtime foundation for syncing agent-side activation and project foundation with the web app.",
+      "goal": "A tenant-safe foundation exists for bidirectional agent/web synchronization without coupling the product to external tracking systems.",
+      "status": "active",
+      "createdAt": "2026-08-17T03:49:46.387Z"
+    },
+    {
+      "id": "agent-activity-progress",
+      "projectId": "agent-tracking",
+      "title": "Agent Activity and Progress",
+      "summary": "Make agent effort, progress, and activity visible in the product through a small vertical read/write experience.",
+      "goal": "Users can understand what agents are doing and how work is progressing from the web app.",
+      "status": "active",
+      "createdAt": "2026-08-17T03:49:46.404Z"
+    },
+    {
+      "id": "durable-project-context",
+      "projectId": "agent-tracking",
+      "title": "Durable Project Context",
+      "summary": "Make project context established by agents durable and visible to authorized web users.",
+      "goal": "Agent-established project context can be retained, retrieved, and understood as part of the product foundation.",
+      "status": "active",
+      "createdAt": "2026-08-17T03:49:46.415Z"
+    },
+    {
+      "id": "zk-trust-foundation",
+      "projectId": "agent-tracking",
+      "title": "Zero-Knowledge Trust and Data Foundation",
+      "summary": "Define the zero-knowledge trust model, data classification, repository seams, and versioned cryptographic envelope contracts that constrain all later implementation.",
+      "goal": "The architecture has an agreed local root of trust and testable contracts proving that cloud services orchestrate ciphertext rather than hold plaintext authority.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:15.829Z"
+    },
+    {
+      "id": "local-agent-vault",
+      "projectId": "agent-tracking",
+      "title": "Local Agent Root of Trust and Vault",
+      "summary": "Build the themis-agent local encrypted storage and key hierarchy needed for local-first project context, credentials, and execution state.",
+      "goal": "A local agent can securely lock, unlock, recover, and use encrypted project data without making the cloud a plaintext authority.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:15.863Z"
+    },
+    {
+      "id": "opaque-sync-device-security",
+      "projectId": "agent-tracking",
+      "title": "Opaque Sync and Device Security",
+      "summary": "Synchronize encrypted envelopes through an opaque cloud orchestrator while supporting device identity, enrollment, revocation, and client-side conflict handling.",
+      "goal": "Authorized devices can exchange ciphertext safely and resolve state locally without server-readable project content.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:15.916Z"
+    },
+    {
+      "id": "encrypted-product-migration",
+      "projectId": "agent-tracking",
+      "title": "Encrypted Product Context and Visibility Migration",
+      "summary": "Migrate server-readable project context and activity toward encrypted local-agent ownership, then expose approved product visibility through local-agent-mediated reads.",
+      "goal": "The authenticated Angular product shows authorized encrypted state without preserving server-readable context or activity as the end state.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:15.986Z"
+    },
+    {
+      "id": "capability-secure-execution",
+      "projectId": "agent-tracking",
+      "title": "Capability Security and Trusted Execution",
+      "summary": "Define scoped sharing, capability-based access, MCP and secret-broker boundaries, local execution, and explicit external-AI trust profiles.",
+      "goal": "Agents and tools can act locally under explicit capabilities and trust policies without turning broad credentials or external AI into implicit authority.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:15.995Z"
+    },
+    {
+      "id": "release-security-assurance",
+      "projectId": "agent-tracking",
+      "title": "Release Supply Chain and Security Assurance",
+      "summary": "Harden signed releases, dependency and supply-chain review, threat-model verification, and security review for the zero-knowledge architecture.",
+      "goal": "The shipped agent and services can be trusted through reproducible release controls and independent security validation.",
+      "status": "active",
+      "createdAt": "2026-08-17T04:08:16.003Z"
+    }
+  ],
+  "workItems": [
+    {
+      "id": "AT-001",
+      "projectId": "agent-tracking",
+      "epicId": "agent-sync-foundation",
+      "title": "Define the tenant-safe agent sync contract",
+      "summary": "Establish the smallest documented contract and authorization boundary for agent-side activation/project foundation updates and web reads, so later slices share stable semantics without introducing external tracker integrations.",
+      "acceptanceCriteria": [
+        "The contract identifies the minimum request and response information needed for activation, project foundation, and context synchronization.",
+        "The authorization boundary identifies the tenant and project ownership checks required for agent-originated writes and web reads.",
+        "The contract defines observable handling for invalid, unauthorized, and stale/conflicting updates at a level implementers can test.",
+        "The contract is documented in the repository's existing architecture conventions and does not add an external tracking-system dependency."
+      ],
+      "scopeIn": [
+        "API/gateway boundary and shared contract definitions needed by the first vertical slices",
+        "Multi-tenant authorization expectations",
+        "Versioning or conflict semantics only to the extent required by the first milestone"
+      ],
+      "scopeOut": [
+        "Implementing the complete sync runtime",
+        "External tracking-system integrations",
+        "Final UI design"
+      ],
+      "verificationStrategy": [
+        "Run the focused Nx lint/typecheck/test targets for touched contract or API projects.",
+        "Add focused tests or contract checks covering valid, invalid, unauthorized, and stale/conflicting inputs where the existing architecture supports them."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "AT-002",
+      "projectId": "agent-tracking",
+      "epicId": "agent-sync-foundation",
+      "title": "Sync agent activation and project foundation",
+      "summary": "Deliver a vertical write path from the agent side through the existing API/runtime boundaries into PostgreSQL-backed project foundation state, with tenant-safe authorization and a response the agent can use to confirm synchronization.",
+      "acceptanceCriteria": [
+        "An authorized agent-side caller can create or update the first milestone's project foundation and activation state through the defined contract.",
+        "The write path preserves tenant and project isolation and rejects unauthorized access without leaking another tenant's state.",
+        "Successful writes are durable in the existing PostgreSQL/Drizzle data boundary or an explicitly documented existing persistence boundary.",
+        "The response communicates whether the synchronization was accepted and provides enough identity/version information for a subsequent web read.",
+        "The implementation does not add integrations with another tracking system."
+      ],
+      "scopeIn": [
+        "Existing API/gateway, worker, or realtime boundaries as needed for the write path",
+        "PostgreSQL/Drizzle schema and persistence changes required for this milestone",
+        "Redis or realtime publication only when required by the existing runtime pattern"
+      ],
+      "scopeOut": ["Web UI implementation", "Broad agent orchestration redesign", "External tracker integrations"],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for touched backend/runtime projects.",
+        "Exercise authorized, unauthorized, create, and update cases with focused tests against the existing test strategy.",
+        "Verify persisted state through the supported application boundary rather than direct ad hoc database inspection alone."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "AT-003",
+      "projectId": "agent-tracking",
+      "epicId": "durable-project-context",
+      "title": "Persist and retrieve durable project context",
+      "summary": "Make the project context established during agent activation durable and retrievable as a coherent foundation for the web app, while keeping the first version intentionally small and tenant-safe.",
+      "acceptanceCriteria": [
+        "The system stores the agreed minimum durable project context associated with the correct tenant and project.",
+        "An authorized product caller can retrieve that context through a stable application boundary.",
+        "Context retrieval distinguishes missing context from an empty or valid context according to the agreed contract.",
+        "Unauthorized callers cannot read or mutate context belonging to another tenant or project.",
+        "The first version records enough metadata to support later activity/progress interpretation without inventing a larger project-management model."
+      ],
+      "scopeIn": [
+        "Persistence and retrieval behavior for the minimum confirmed project context",
+        "Tenant/project authorization and validation",
+        "Necessary API or shared contract updates"
+      ],
+      "scopeOut": [
+        "Rich context editing workflows",
+        "Search, import, export, or integrations",
+        "Unconfirmed context fields beyond the minimum needed for the milestone"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for touched backend/runtime projects.",
+        "Add tests for create/update/read, missing context, and cross-tenant or cross-project authorization failures.",
+        "Verify the retrieval response is compatible with the web foundation view work item."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "AT-004",
+      "projectId": "agent-tracking",
+      "epicId": "durable-project-context",
+      "title": "Show project foundation in the product app",
+      "summary": "Give authorized product users a focused Angular view of the synchronized project foundation and durable context, completing the first agent-to-web visibility slice.",
+      "acceptanceCriteria": [
+        "An authorized user can open the relevant product-app project experience and see the synchronized activation and project foundation state.",
+        "The view presents durable project context in a readable way and distinguishes loading, missing, unavailable, and error states.",
+        "The view respects tenant/project authorization and does not expose another tenant's foundation.",
+        "The UI uses the existing Angular product-app patterns and accessible interaction semantics.",
+        "The view does not require a new public Astro website surface unless an existing route or architecture decision establishes that dependency."
+      ],
+      "scopeIn": [
+        "Angular product-app route/component/state integration",
+        "Consumption of the stable application boundary from AT-002 and AT-003",
+        "Focused loading, empty, error, and unauthorized states"
+      ],
+      "scopeOut": [
+        "Public marketing/site redesign",
+        "Rich editing of project context",
+        "Activity/progress timeline UI"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for the touched Angular project and libraries.",
+        "Add component/service tests for loading, populated, missing, error, and unauthorized states.",
+        "Run the narrowest applicable Nx end-to-end or route verification if configured for the product app."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "AT-005",
+      "projectId": "agent-tracking",
+      "epicId": "agent-activity-progress",
+      "title": "Capture agent effort and progress activity",
+      "summary": "Record the minimum agent activity and progress signals needed to explain work effort in the product, using existing runtime boundaries and durable storage patterns.",
+      "acceptanceCriteria": [
+        "An authorized agent-side operation can record the first milestone's minimum activity/progress signal against the correct tenant, project, and agent context.",
+        "Stored activity includes enough timestamp, identity, status/progress, and correlation information to support a web visibility query.",
+        "Invalid, unauthorized, and malformed activity cannot create cross-tenant records.",
+        "The persistence and publication behavior follows existing PostgreSQL/Drizzle, Redis, worker, or realtime conventions rather than creating a parallel runtime model.",
+        "The initial signal set remains limited to confirmed agent effort/progress/activity needs and excludes external tracker synchronization."
+      ],
+      "scopeIn": [
+        "Minimum activity/progress event or record model",
+        "Existing API/runtime ingestion boundary",
+        "Durable storage and optional existing realtime publication needed by the first view"
+      ],
+      "scopeOut": [
+        "Comprehensive analytics",
+        "Notifications, automation, or external integrations",
+        "Unconfirmed detailed taxonomy of agent events"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for touched backend/runtime projects.",
+        "Add tests for valid ingestion, malformed input, unauthorized access, tenant isolation, and queryable timestamps/correlation.",
+        "Verify the resulting records can be consumed by AT-006 through the supported application boundary."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "AT-006",
+      "projectId": "agent-tracking",
+      "epicId": "agent-activity-progress",
+      "title": "Show agent activity and progress",
+      "summary": "Expose a focused product-app activity and progress view so users can understand current agent effort and recent work without introducing a full tracking system.",
+      "acceptanceCriteria": [
+        "An authorized user can see the available agent activity/progress for the selected project in the Angular product app.",
+        "The view communicates current or latest progress and recent activity using only fields defined by the agreed contract.",
+        "Loading, empty, stale/unavailable, error, and unauthorized states are represented accessibly.",
+        "The view preserves tenant/project isolation and handles a project with no activity without failing.",
+        "The implementation remains a focused first milestone surface and does not add integrations with other tracking systems."
+      ],
+      "scopeIn": [
+        "Angular product-app view and state/query integration",
+        "Accessible rendering of the minimum activity/progress data",
+        "Focused tests for populated and non-populated states"
+      ],
+      "scopeOut": [
+        "Full issue/task management",
+        "Cross-project analytics or dashboards",
+        "Public Astro website changes unless separately confirmed"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for the touched Angular project and libraries.",
+        "Add component/service tests for populated, empty, loading, error, stale/unavailable, and unauthorized states.",
+        "Run the narrowest applicable Nx end-to-end or route verification if configured for the product app."
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "ZK-001",
+      "projectId": "agent-tracking",
+      "epicId": "zk-trust-foundation",
+      "title": "Establish Phase 0 trust model and data classification",
+      "summary": "Produce the confirmed zero-knowledge threat model and classify every current and planned data flow by plaintext authority, ciphertext custody, trust boundary, retention, and recovery responsibility.",
+      "acceptanceCriteria": [
+        "A Phase 0 decision record names themis-agent as the local root of trust and cloud services as ciphertext orchestrators, not plaintext authority.",
+        "Project context, activity, credentials, keys, envelopes, metadata, telemetry, and recovery data are classified with explicit allowed readers and custody.",
+        "Threat actors, compromise assumptions, recovery expectations, and explicit external-AI trust boundary are documented.",
+        "Current server-readable project context/activity is recorded as migration risk and not accepted as the target state.",
+        "Open decisions are listed rather than silently resolved, including metadata visibility, recovery actors, and product read architecture."
+      ],
+      "scopeIn": [
+        "Threat model and data classification for agent, cloud, product app, MCP, secret broker, and external-AI boundaries",
+        "Migration risks from the starter implementation",
+        "Decision log for unresolved architecture choices"
+      ],
+      "scopeOut": [
+        "Production cryptography implementation",
+        "External tracking-system integrations",
+        "Final product UI design"
+      ],
+      "verificationStrategy": [
+        "Peer-review the threat model against the proposal and repository architecture.",
+        "Run repository searches/architecture inspection to confirm all known context and activity paths are classified.",
+        "Record explicit unresolved decisions and acceptance sign-off criteria for Phase 0."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-002",
+      "projectId": "agent-tracking",
+      "epicId": "zk-trust-foundation",
+      "title": "Map repository seams for the zero-knowledge migration",
+      "summary": "Map the starter repository's Astro, Angular, agent/runtime, API, persistence, and test seams so implementation lands in the right boundaries without treating existing server-readable flows as architecture.",
+      "acceptanceCriteria": [
+        "The map identifies public Astro website surfaces separately from authenticated Angular product surfaces.",
+        "The map identifies current project context/activity persistence and read/write paths as migration targets or transition risks.",
+        "The map identifies the intended themis-agent, cloud orchestrator, crypto, sync, device, capability, and release seams without inventing missing modules as implemented.",
+        "The map lists focused Nx projects/targets and likely test boundaries for each later work item.",
+        "The map records gaps and decisions needing confirmation."
+      ],
+      "scopeIn": [
+        "Read-only repository architecture mapping",
+        "Astro-versus-Angular product boundary",
+        "Current data, runtime, and test seams relevant to migration"
+      ],
+      "scopeOut": [
+        "Product code changes",
+        "New integrations",
+        "Choosing cryptographic algorithms or key storage mechanisms"
+      ],
+      "verificationStrategy": [
+        "Use repository inspection and Nx project graph/configuration queries.",
+        "Cross-check the map against ZK-001 data classifications.",
+        "Review that no Astro vault UI is planned for v1 unless separately confirmed."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-003",
+      "projectId": "agent-tracking",
+      "epicId": "zk-trust-foundation",
+      "title": "Define canonical versioned encrypted envelope contract",
+      "summary": "Specify the canonical, versioned envelope and serialization contract for local encrypted data and opaque synchronization, leaving algorithm choices and metadata exposure explicit where unconfirmed.",
+      "acceptanceCriteria": [
+        "The contract defines canonical serialization, versioning, envelope identity, associated data, payload boundaries, and upgrade behavior.",
+        "The contract distinguishes local encrypted records from opaque append-only sync objects.",
+        "The contract states which metadata may remain visible to the orchestrator and which remains encrypted, with unresolved choices marked.",
+        "Malformed, unsupported-version, replay, and integrity-failure handling is observable and testable.",
+        "The contract is consumable by local vault, sync, migration, and product visibility work without requiring plaintext cloud authority."
+      ],
+      "scopeIn": [
+        "Envelope schema and serialization semantics",
+        "Versioning, canonicalization, integrity/error behavior",
+        "Metadata and compatibility decision points"
+      ],
+      "scopeOut": ["Production key management", "Cloud sync implementation", "External tracker integrations"],
+      "verificationStrategy": [
+        "Add schema/serialization contract tests or fixtures where repository conventions support them.",
+        "Verify deterministic canonicalization and rejection behavior for malformed/unsupported envelopes.",
+        "Review compatibility with ZK-001 and later vault/sync consumers."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-004",
+      "projectId": "agent-tracking",
+      "epicId": "zk-trust-foundation",
+      "title": "Prove cryptographic primitives with test vectors",
+      "summary": "Validate the selected AEAD and key-derivation/key-wrapping design with reproducible test vectors before production vault implementation, keeping algorithm decisions tied to the approved threat model.",
+      "acceptanceCriteria": [
+        "The chosen primitive set and parameter rationale are documented or explicitly marked pending confirmation.",
+        "Known-answer vectors cover encryption/decryption, associated-data authentication, tamper detection, and wrong-key failure.",
+        "Key hierarchy vectors cover VMK and workspace-key derivation or wrapping behavior without exposing secrets in fixtures.",
+        "Negative tests cover nonce misuse handling assumptions, version mismatch, corrupted ciphertext, and invalid key material as applicable.",
+        "Test vectors are deterministic, reviewable, and suitable for future cross-runtime implementation."
+      ],
+      "scopeIn": [
+        "Cryptographic proof harness and test vectors",
+        "AEAD and key hierarchy behavior required by the proposal",
+        "Security-focused negative cases"
+      ],
+      "scopeOut": [
+        "Production vault UX",
+        "Cloud sync endpoints",
+        "Hardware-backed key storage unless separately confirmed"
+      ],
+      "verificationStrategy": [
+        "Run the focused Nx test target for the crypto/contract project once mapped.",
+        "Compare outputs against an independent reference implementation or vetted library vectors.",
+        "Security review must confirm fixtures contain no live secrets."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-005",
+      "projectId": "agent-tracking",
+      "epicId": "local-agent-vault",
+      "title": "Build the local themis-agent encrypted vault proof",
+      "summary": "Implement the smallest local encrypted SQLite/envelope proof with VMK and workspace-key hierarchy plus lock, unlock, and recovery behavior, using the approved contracts rather than cloud persistence.",
+      "acceptanceCriteria": [
+        "themis-agent can initialize a local vault and persist encrypted records using the versioned envelope contract.",
+        "VMK and workspace-key responsibilities and storage boundaries match the approved Phase 0 design; plaintext project data is not required by the cloud.",
+        "Lock prevents protected reads/writes and unlock restores authorized local operation.",
+        "Recovery behavior is represented by a tested flow or an explicit blocked decision with no unsafe fallback.",
+        "The proof includes focused tests for round-trip, tamper failure, lock/unlock, wrong credentials/key material, and vault version handling."
+      ],
+      "scopeIn": [
+        "Local encrypted SQLite/envelope proof",
+        "VMK/workspace-key hierarchy integration",
+        "Lock, unlock, and recovery boundary"
+      ],
+      "scopeOut": [
+        "Production cloud sync",
+        "Full device enrollment",
+        "Capability broker and external-AI integrations",
+        "Authenticated product UI"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for the mapped agent/vault projects.",
+        "Exercise the proof with test vectors from ZK-004 and verify no plaintext persistence in the vault path.",
+        "Review recovery and lock semantics against ZK-001 before treating the proof as a milestone."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-006",
+      "projectId": "agent-tracking",
+      "epicId": "opaque-sync-device-security",
+      "title": "Implement opaque append-only ciphertext synchronization",
+      "summary": "Provide the cloud orchestrator path that stores and relays versioned ciphertext envelopes without parsing project plaintext, while clients retain conflict decisions.",
+      "acceptanceCriteria": [
+        "A client can append and retrieve authorized opaque envelopes through a documented cloud boundary.",
+        "The service does not require plaintext project context/activity to accept, store, or relay envelopes.",
+        "Append-only identity, ordering/cursor, duplicate, replay, and retention behavior are documented and tested.",
+        "Client-side conflict handling inputs are preserved; the server does not become the source of plaintext merge authority.",
+        "Unauthorized access and tenant/workspace isolation are enforced without revealing protected content."
+      ],
+      "scopeIn": [
+        "Cloud API/storage/orchestration for opaque envelopes",
+        "Append-only cursor and envelope metadata semantics",
+        "Client-visible conflict inputs"
+      ],
+      "scopeOut": [
+        "Client merge UX",
+        "Device enrollment implementation",
+        "Plaintext server-side indexing or analytics",
+        "External integrations"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx backend/contract lint, test, and build targets.",
+        "Test ciphertext round-trip, malformed envelope rejection, replay/duplicate handling, authorization, and tenant isolation.",
+        "Inspect logs/errors to ensure protected payloads are not emitted."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-007",
+      "projectId": "agent-tracking",
+      "epicId": "opaque-sync-device-security",
+      "title": "Add device identity, enrollment, and revocation",
+      "summary": "Establish device identity lifecycle and revocation semantics so encrypted workspaces can be shared only with explicitly enrolled devices.",
+      "acceptanceCriteria": [
+        "A device identity can be created, enrolled, listed, and revoked through the approved trust boundary.",
+        "Revocation prevents new authorized sync/use according to documented propagation semantics.",
+        "Enrollment does not expose VMK or workspace plaintext to the cloud service.",
+        "Recovery and re-enrollment behavior is documented for lost, replaced, or compromised devices.",
+        "The lifecycle is auditable without logging secret material."
+      ],
+      "scopeIn": [
+        "Device identity, enrollment, revocation, and audit semantics",
+        "Integration points with workspace-key distribution",
+        "Compromise and recovery behavior"
+      ],
+      "scopeOut": [
+        "Broad account redesign",
+        "Hardware-backed identity unless confirmed",
+        "External tracking integrations"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx tests for lifecycle and authorization paths.",
+        "Test enrollment, duplicate identity, revocation, stale device, and recovery cases.",
+        "Review protocol against ZK-001 and ZK-006."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-008",
+      "projectId": "agent-tracking",
+      "epicId": "encrypted-product-migration",
+      "title": "Migrate project context and activity to encrypted ownership",
+      "summary": "Replace the starter server-readable project context/activity path with an explicit encrypted local-agent ownership and migration strategy, preserving only bounded transition behavior.",
+      "acceptanceCriteria": [
+        "A migration inventory identifies existing server-readable context/activity fields, readers, writers, retention, and deletion implications.",
+        "The target path stores protected context/activity as encrypted envelopes owned or produced by the local agent.",
+        "Transition behavior is explicit, bounded, observable, and does not silently preserve server plaintext as the end state.",
+        "Migration handles unavailable, malformed, duplicate, and partially migrated records without data leaks.",
+        "The plan names rollback/recovery limits and unresolved product visibility decisions."
+      ],
+      "scopeIn": [
+        "Context/activity data migration and transition boundary",
+        "Encrypted envelope production/consumption",
+        "Removal or containment of server-readable authority"
+      ],
+      "scopeOut": [
+        "Full historical migration execution before approval",
+        "New activity taxonomy",
+        "External integrations"
+      ],
+      "verificationStrategy": [
+        "Run focused contract and migration tests against representative starter data.",
+        "Verify server logs, persistence, and API responses do not require protected plaintext after the transition boundary.",
+        "Review migration plan with ZK-001, ZK-003, and ZK-006."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-009",
+      "projectId": "agent-tracking",
+      "epicId": "encrypted-product-migration",
+      "title": "Expose authenticated product visibility through the local agent",
+      "summary": "Define and implement the smallest Angular authenticated product visibility path that reads approved decrypted views through themis-agent, while keeping Astro public-only.",
+      "acceptanceCriteria": [
+        "The authenticated Angular product can display an approved project context/activity view sourced through the local-agent trust boundary.",
+        "The cloud/API path does not become plaintext authority for the displayed protected content.",
+        "Loading, locked, unavailable, stale, error, and unauthorized states are explicit and accessible.",
+        "The public Astro website remains limited to public website responsibilities; no Astro vault UI is added for v1.",
+        "Displayed fields and metadata match approved visibility and sharing decisions."
+      ],
+      "scopeIn": [
+        "Angular authenticated product integration",
+        "Local-agent-mediated read boundary",
+        "Accessible state handling and visibility policy"
+      ],
+      "scopeOut": ["Astro vault UI", "Rich editing or analytics", "Broad product redesign"],
+      "verificationStrategy": [
+        "Run focused Nx Angular lint, test, build, and applicable route checks.",
+        "Test locked/unlocked, unavailable agent, authorized/unauthorized, empty, and stale states.",
+        "Verify the browser-facing contract cannot fetch protected plaintext from an unauthoritative cloud endpoint."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-010",
+      "projectId": "agent-tracking",
+      "epicId": "capability-secure-execution",
+      "title": "Define scoped sharing and capability security",
+      "summary": "Specify workspace sharing, capability issuance, least privilege, expiry, revocation, and delegation rules for agents, users, tools, and local execution.",
+      "acceptanceCriteria": [
+        "Capabilities are scoped to the minimum workspace/project/action/resource boundary and have documented issuance, expiry, and revocation semantics.",
+        "Workspace sharing distinguishes authorized devices/users from cloud service authority.",
+        "Capability misuse, replay, confused-deputy, and escalation threats are covered by the threat model.",
+        "The design identifies what can be delegated to MCP/tools and what must remain local-agent controlled.",
+        "Open decisions around capability format, user consent, and offline behavior are explicit."
+      ],
+      "scopeIn": [
+        "Capability model and scoped sharing policy",
+        "Delegation, revocation, and threat cases",
+        "Interfaces for local execution and MCP"
+      ],
+      "scopeOut": ["Implementing every tool integration", "Broad IAM replacement", "External tracker integrations"],
+      "verificationStrategy": [
+        "Review against ZK-001 threat model and ZK-007 device lifecycle.",
+        "Create policy tests/examples for allow, deny, expiry, revocation, and scope escalation.",
+        "Security review the capability boundaries before implementation."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-011",
+      "projectId": "agent-tracking",
+      "epicId": "capability-secure-execution",
+      "title": "Implement the MCP and secret-broker boundary",
+      "summary": "Create the smallest local secret-broker and MCP/tool boundary that exposes capabilities without exporting broad secrets or bypassing themis-agent policy.",
+      "acceptanceCriteria": [
+        "A local broker can authorize a narrowly scoped capability and return only the operation/result permitted by policy.",
+        "Secrets remain broker-controlled and are not included in general agent prompts, cloud payloads, or untrusted tool context.",
+        "MCP/tool requests are authenticated, bounded, auditable, and denied when locked, revoked, expired, or out of scope.",
+        "The design explicitly handles external-AI calls as a separate trust boundary with redaction/consent rules.",
+        "No cloud endpoint can impersonate the local broker as plaintext secret authority."
+      ],
+      "scopeIn": ["Local secret broker", "MCP/tool request boundary", "Redaction, consent, audit, and denial behavior"],
+      "scopeOut": [
+        "Provider-specific external-AI integrations",
+        "Unbounded tool catalog",
+        "Credential migration from all existing systems"
+      ],
+      "verificationStrategy": [
+        "Run focused Nx tests for authorization, redaction, denial, lock, expiry, and revocation.",
+        "Use adversarial fixtures for prompt/tool injection and confused-deputy cases.",
+        "Review against ZK-010 and record any blocked decisions."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-012",
+      "projectId": "agent-tracking",
+      "epicId": "capability-secure-execution",
+      "title": "Define execution trust profiles and local execution policy",
+      "summary": "Define explicit trust profiles for local execution and external-AI assistance so agents can operate with least privilege and users can understand the resulting authority.",
+      "acceptanceCriteria": [
+        "Trust profiles define allowed local actions, filesystem/network boundaries, secret access, approval requirements, and logging expectations.",
+        "External-AI usage is explicitly classified by data exposure and consent, with protected plaintext excluded by default.",
+        "Execution policy covers locked, offline, degraded, revoked, and recovery states.",
+        "The policy maps cleanly to capabilities and the secret broker rather than relying on implicit agent authority.",
+        "Open decisions about sandboxing and user confirmation are documented."
+      ],
+      "scopeIn": ["Execution trust profiles", "Local execution policy", "External-AI trust boundary and consent"],
+      "scopeOut": ["Building a full sandbox runtime", "Provider integrations", "Product-wide automation"],
+      "verificationStrategy": [
+        "Policy review against ZK-001 and ZK-010.",
+        "Create executable policy fixtures covering allowed, denied, approval-required, and degraded cases.",
+        "Security review before implementation of high-risk execution paths."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-013",
+      "projectId": "agent-tracking",
+      "epicId": "release-security-assurance",
+      "title": "Harden signed releases and supply-chain review",
+      "summary": "Establish release provenance, signing, dependency review, and update verification for themis-agent and supporting services before production distribution.",
+      "acceptanceCriteria": [
+        "Release artifacts, provenance, signing, verification, and failure behavior are documented for the agent and relevant services.",
+        "Dependency, build, plugin, and generated-artifact review identifies supply-chain risks and ownership.",
+        "Updates reject invalid or unverifiable signatures according to an explicit recovery policy.",
+        "Secrets and plaintext protected data are excluded from build logs, artifacts, and telemetry.",
+        "The release design distinguishes public Astro deployment from authenticated Angular and agent distribution."
+      ],
+      "scopeIn": [
+        "Build/release provenance and signing",
+        "Dependency and supply-chain review",
+        "Artifact/update verification"
+      ],
+      "scopeOut": [
+        "Changing product architecture",
+        "Unreviewed automatic update rollout",
+        "External tracker integrations"
+      ],
+      "verificationStrategy": [
+        "Run configured Nx build/release checks and dependency audits.",
+        "Verify signatures and intentional tamper/failure cases in a controlled fixture.",
+        "Record review findings and remediation owners."
+      ],
+      "status": "ready"
+    },
+    {
+      "id": "ZK-014",
+      "projectId": "agent-tracking",
+      "epicId": "release-security-assurance",
+      "title": "Conduct independent zero-knowledge security review",
+      "summary": "Review the implemented contracts and milestones against the threat model, with explicit checks for plaintext authority leaks, key misuse, capability escalation, migration flaws, and release risks.",
+      "acceptanceCriteria": [
+        "An independent review covers Phase 0 decisions, envelope/crypto proof, local vault, sync, device, migration, visibility, capabilities, execution, and release controls in scope.",
+        "Findings are severity-ranked with reproducible evidence and remediation or accepted-risk decisions.",
+        "The review verifies cloud components cannot become silent plaintext authority for protected project context/activity.",
+        "The review verifies recovery, revocation, external-AI boundaries, and telemetry/logging assumptions.",
+        "Release of production architecture is blocked on unresolved critical findings."
+      ],
+      "scopeIn": [
+        "Cross-cutting security review and evidence",
+        "Threat-model validation and remediation tracking",
+        "Production readiness gate"
+      ],
+      "scopeOut": [
+        "Implementing all remediations inside this item",
+        "Compliance certification not required by the proposal",
+        "External integrations"
+      ],
+      "verificationStrategy": [
+        "Use independent threat-model, code, contract, and adversarial test review.",
+        "Run focused Nx security/test/build checks for all completed slices.",
+        "Publish a signed-off findings report or explicit blocked status."
+      ],
+      "status": "ready"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "AT-001",
+      "to": "AT-002",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-001",
+      "to": "AT-003",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-002",
+      "to": "AT-003",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-001",
+      "to": "AT-004",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-003",
+      "to": "AT-004",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-001",
+      "to": "AT-005",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-005",
+      "to": "AT-006",
+      "relation": "blocks"
+    },
+    {
+      "from": "AT-001",
+      "to": "AT-006",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-001",
+      "to": "ZK-002",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-001",
+      "to": "ZK-003",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-003",
+      "to": "ZK-004",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-004",
+      "to": "ZK-005",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-005",
+      "to": "ZK-006",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-006",
+      "to": "ZK-007",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-006",
+      "to": "ZK-008",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-007",
+      "to": "ZK-008",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-008",
+      "to": "ZK-009",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-001",
+      "to": "ZK-010",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-007",
+      "to": "ZK-010",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-010",
+      "to": "ZK-011",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-010",
+      "to": "ZK-012",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-012",
+      "to": "ZK-011",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-005",
+      "to": "ZK-013",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-006",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-007",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-008",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-009",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-011",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-012",
+      "to": "ZK-014",
+      "relation": "blocks"
+    },
+    {
+      "from": "ZK-013",
+      "to": "ZK-014",
+      "relation": "blocks"
+    }
+  ],
+  "sprints": [
+    {
+      "id": "agent-tracking-2026-08",
+      "projectId": "agent-tracking",
+      "goal": "In one month, deliver a tenant-safe first vertical slice that synchronizes agent activation and project foundation into Themis and makes durable context, agent effort, progress, and activity visible in the product app.",
+      "status": "approved",
+      "createdAt": "2026-08-17T03:51:06.970Z"
+    }
+  ],
+  "sprintItems": [],
+  "revisions": [
+    {
+      "projectId": "agent-tracking",
+      "sprintId": "agent-tracking-2026-08",
+      "epicIds": ["agent-sync-foundation", "durable-project-context", "agent-activity-progress"],
+      "goal": "In one month, deliver a tenant-safe first vertical slice that synchronizes agent activation and project foundation into Themis and makes durable context, agent effort, progress, and activity visible in the product app.",
+      "why": "Agent tracking is the confirmed first product goal. A focused end-to-end slice creates usable web visibility while establishing the authorization, persistence, and runtime boundaries needed for later agent workflows.",
+      "what": "Define the sync contract; implement agent-side activation/project-foundation synchronization; persist and retrieve minimum durable project context; show project foundation in the Angular product app; capture minimum agent effort/progress activity; and show that activity and progress in the product app.",
+      "how": "Deliver the six small vertical work items in dependency order. Reuse the documented API/gateway/worker/realtime, PostgreSQL/Drizzle, Redis, multi-tenant authorization, Angular, Astro, and Nx architecture boundaries as applicable; keep public Astro changes out unless repository architecture or a confirmed requirement makes them necessary.",
+      "workItemIds": ["AT-001", "AT-002", "AT-003", "AT-004", "AT-005", "AT-006"],
+      "nonGoals": [
+        "Integrations with any other tracking system",
+        "A full issue/task management product",
+        "Comprehensive analytics, notifications, or automation",
+        "A public Astro website redesign or new public surface without explicit confirmation",
+        "Rich project-context editing beyond the minimum first-milestone foundation"
+      ],
+      "definitionOfDone": [
+        "The six selected work items meet their acceptance criteria and dependency order is respected.",
+        "Agent-originated writes and product reads enforce tenant and project isolation.",
+        "Activation, project foundation, and minimum durable context are synchronized and retrievable through supported application boundaries.",
+        "The Angular product app visibly communicates project foundation plus agent effort/progress/activity with loading, empty, error, unavailable, and unauthorized states as applicable.",
+        "Focused Nx lint, test, and build verification has been run for touched projects, with the narrowest applicable route or end-to-end checks.",
+        "No external tracking-system integration is introduced."
+      ],
+      "verificationStrategy": [
+        "Run focused Nx lint, test, and build targets for each touched backend/runtime, contract, and Angular project.",
+        "Use focused tests for contract validation, persistence, authorization isolation, activity ingestion, and UI state handling.",
+        "Run the narrowest applicable Nx route or end-to-end verification for the product-app flows.",
+        "Review the final slice against the documented architecture and confirm Astro is only changed if a later-confirmed public-experience requirement requires it."
+      ],
+      "id": "REV-001",
+      "version": 1,
+      "status": "proposed",
+      "createdAt": "2026-08-17T03:51:06.970Z"
+    },
+    {
+      "projectId": "agent-tracking",
+      "sprintId": "agent-tracking-2026-08",
+      "epicIds": ["zk-trust-foundation", "local-agent-vault"],
+      "workItemIds": ["ZK-001", "ZK-002", "ZK-003", "ZK-004", "ZK-005"],
+      "goal": "In one month, complete Phase 0 zero-knowledge trust decisions and demonstrate the smallest local themis-agent encrypted-vault proof.",
+      "why": "The starter implementation assumes server-readable project state, so production work must first establish the local root of trust, classify data, and prove the envelope and crypto seams before cloud sync or product visibility work begins.",
+      "what": "Deliver ZK-001 Phase 0 trust/data classification, ZK-002 repository seam map, ZK-003 canonical versioned envelope contract, ZK-004 reproducible crypto test vectors, and ZK-005 the smallest local encrypted SQLite/envelope proof with lock, unlock, key hierarchy, and bounded recovery behavior.",
+      "how": "Work in dependency order: approve the threat/data model and repository map, specify the envelope contract, validate primitives with vectors, then integrate those contracts into a local-only themis-agent vault proof. Keep cloud services out of plaintext authority and keep Astro limited to the public website.",
+      "nonGoals": [
+        "Opaque cloud synchronization or server-side envelope orchestration",
+        "Device enrollment, revocation, or multi-device sharing",
+        "Migration of server-readable project context/activity",
+        "Angular authenticated visibility UI or any Astro vault UI",
+        "MCP, secret broker, execution trust profiles, external-AI integration, or broad capability implementation",
+        "Production release signing, supply-chain rollout, or final independent security review",
+        "External tracking-system integrations"
+      ],
+      "definitionOfDone": [
+        "ZK-001 through ZK-005 are implemented or documented with all acceptance criteria satisfied.",
+        "The Phase 0 threat model explicitly names themis-agent as local root of trust and cloud as ciphertext orchestrator only.",
+        "Envelope serialization and crypto vectors are deterministic, reviewed, and contain no live secrets.",
+        "The local vault proof passes round-trip, tamper, wrong-key, lock/unlock, version, and recovery-boundary checks.",
+        "Focused Nx verification for mapped projects is recorded, with unresolved decisions and risks handed off before the next sprint."
+      ],
+      "verificationStrategy": [
+        "Run repository/Nx mapping checks from ZK-002 before selecting implementation targets.",
+        "Run focused Nx lint, test, and build targets for each touched contract, crypto, and agent/vault project.",
+        "Review test vectors independently and verify no protected plaintext is persisted or emitted by the local proof.",
+        "Conduct a Phase 0 threat-model review and record unresolved decisions; do not treat the proof as production-ready until later security work is complete."
+      ],
+      "id": "REV-002",
+      "version": 2,
+      "status": "approved",
+      "createdAt": "2026-08-17T04:10:20.348Z",
+      "approvedAt": "2026-08-17T04:17:06.705Z"
+    }
+  ],
+  "runs": [],
+  "evidence": [],
+  "reviews": []
+}

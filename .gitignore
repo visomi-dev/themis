@@ -75,6 +75,4 @@ core.*
 .nx/migrate-runs.opencode/snapshots/
 
 # Local Themis workflow runtime state
-.themis/state.json
 .themis/state.json.tmp
-.themis/events.ndjson
