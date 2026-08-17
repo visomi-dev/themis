@@ -79,6 +79,7 @@
     "zod-openapi": "^6.0.0"
   },
   "devDependencies": {
+    "@opencode-ai/plugin": "1.18.18",
     "@analogjs/vite-plugin-angular": "2.6.1",
     "@analogjs/vitest-angular": "2.6.1",
     "@angular-devkit/build-angular": "22.0.3",

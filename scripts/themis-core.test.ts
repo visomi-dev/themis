@@ -203,6 +203,53 @@ describe('local Themis workflow', () => {
     assert.equal(validateState(root).valid, true);
   });
 
+  it('requires the latest completed run after rework', () => {
+    const root = createFixture();
+    const item = createWorkItem(root, itemInput('Reworkable item'), 'agent:planner', clock);
+    transitionWorkItem(root, item.id, 'ready', 'agent:planner', clock);
+    const revision = proposeSprint(
+      root,
+      {
+        goal: 'Exercise current run review binding',
+        why: 'Reviews must use evidence from the latest implementation attempt',
+        what: 'A review bound to the current run',
+        how: 'Reject the first run and complete a second run',
+        workItemIds: [item.id],
+        nonGoals: [],
+        definitionOfDone: ['Stale evidence is rejected'],
+        verificationStrategy: ['node --test'],
+      },
+      'agent:planner',
+      clock,
+    );
+    approveSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+    activateSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+    claimWorkItem(root, item.id, 'themis-executor', 'agent:executor', clock);
+
+    const firstRun = startRun(root, item.id, 'themis-executor', 'agent:executor', clock);
+    addEvidence(
+      root,
+      firstRun.id,
+      'implementation-diff',
+      'First diff exists',
+      'commit fixture-first',
+      'agent:executor',
+      clock,
+    );
+    addEvidence(root, firstRun.id, 'verification', 'First checks passed', 'node --test: PASS', 'agent:verifier', clock);
+    finishRun(root, firstRun.id, 'completed', 'First checks passed', 'agent:verifier', clock);
+    const firstReview = requestReview(root, item.id, 'themis-reviewer', 'agent:executor', clock);
+    submitReview(root, firstReview.id, 'rejected', 'Rework required', 'agent:reviewer', clock);
+
+    transitionWorkItem(root, item.id, 'claimed', 'agent:executor', clock);
+    const secondRun = startRun(root, item.id, 'themis-executor', 'agent:executor', clock);
+    finishRun(root, secondRun.id, 'completed', 'Second run failed to record evidence', 'agent:verifier', clock);
+    assert.throws(
+      () => requestReview(root, item.id, 'themis-reviewer', 'agent:executor', clock),
+      /missing verification evidence/,
+    );
+  });
+
   it('rejects transitions outside the state machine', () => {
     const root = createFixture();
     const item = createWorkItem(root, itemInput('Invalid transition'), 'agent:planner', clock);

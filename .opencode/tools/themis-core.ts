@@ -1102,9 +1102,11 @@ const requestReview = (
     (state) => {
       const item = requireWorkItem(state, workItemId);
       if (item.status !== 'in_progress') throw new ThemisError(`${workItemId} must be in progress before review`);
-      const run = state.runs.find(
-        (candidate) => candidate.workItemId === workItemId && candidate.status === 'completed',
-      );
+      if (state.runs.some((candidate) => candidate.workItemId === workItemId && candidate.status === 'running'))
+        throw new ThemisError(`${workItemId} has a running execution`);
+      const run = state.runs
+        .filter((candidate) => candidate.workItemId === workItemId && candidate.status === 'completed')
+        .at(-1);
       if (!run) throw new ThemisError(`${workItemId} has no completed run`);
       const evidence = state.evidence.filter((entry) => entry.runId === run.id);
       if (!evidence.some((entry) => entry.kind === 'verification'))
