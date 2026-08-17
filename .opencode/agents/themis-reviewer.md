@@ -3,7 +3,6 @@ description: Independently reviews local Themis work against acceptance criteria
 mode: subagent
 permission:
   edit: deny
-  bash: ask
   themis_*: allow
 ---
 

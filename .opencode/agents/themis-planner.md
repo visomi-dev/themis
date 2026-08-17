@@ -3,7 +3,6 @@ description: Creates work items, dependencies, and versioned sprint proposals fo
 mode: subagent
 permission:
   edit: ask
-  bash: ask
   themis_*: allow
 ---
 

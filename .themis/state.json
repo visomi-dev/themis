@@ -295,7 +295,10 @@
         "Run repository searches/architecture inspection to confirm all known context and activity paths are classified.",
         "Record explicit unresolved decisions and acceptance sign-off criteria for Phase 0."
       ],
-      "status": "ready"
+      "status": "done",
+      "sprintId": "agent-tracking-2026-08",
+      "claimedBy": "agent:themis-executor",
+      "claimedAt": "2026-08-17T04:33:45.307Z"
     },
     {
       "id": "ZK-002",
@@ -325,7 +328,10 @@
         "Cross-check the map against ZK-001 data classifications.",
         "Review that no Astro vault UI is planned for v1 unless separately confirmed."
       ],
-      "status": "ready"
+      "status": "done",
+      "sprintId": "agent-tracking-2026-08",
+      "claimedBy": "agent:themis-executor-zk002",
+      "claimedAt": "2026-08-17T18:15:32.476Z"
     },
     {
       "id": "ZK-003",
@@ -351,7 +357,10 @@
         "Verify deterministic canonicalization and rejection behavior for malformed/unsupported envelopes.",
         "Review compatibility with ZK-001 and later vault/sync consumers."
       ],
-      "status": "ready"
+      "status": "done",
+      "sprintId": "agent-tracking-2026-08",
+      "claimedBy": "agent:themis-executor-zk003",
+      "claimedAt": "2026-08-17T18:15:32.485Z"
     },
     {
       "id": "ZK-004",
@@ -381,7 +390,10 @@
         "Compare outputs against an independent reference implementation or vetted library vectors.",
         "Security review must confirm fixtures contain no live secrets."
       ],
-      "status": "ready"
+      "status": "done",
+      "sprintId": "agent-tracking-2026-08",
+      "claimedBy": "agent:themis-executor-zk004",
+      "claimedAt": "2026-08-17T18:34:21.741Z"
     },
     {
       "id": "ZK-005",
@@ -412,7 +424,10 @@
         "Exercise the proof with test vectors from ZK-004 and verify no plaintext persistence in the vault path.",
         "Review recovery and lock semantics against ZK-001 before treating the proof as a milestone."
       ],
-      "status": "ready"
+      "status": "done",
+      "sprintId": "agent-tracking-2026-08",
+      "claimedBy": "agent:themis-executor-zk005",
+      "claimedAt": "2026-08-17T18:42:03.111Z"
     },
     {
       "id": "ZK-006",
@@ -823,11 +838,38 @@
       "id": "agent-tracking-2026-08",
       "projectId": "agent-tracking",
       "goal": "In one month, deliver a tenant-safe first vertical slice that synchronizes agent activation and project foundation into Themis and makes durable context, agent effort, progress, and activity visible in the product app.",
-      "status": "approved",
-      "createdAt": "2026-08-17T03:51:06.970Z"
+      "status": "active",
+      "createdAt": "2026-08-17T03:51:06.970Z",
+      "activeRevisionId": "REV-002"
     }
   ],
-  "sprintItems": [],
+  "sprintItems": [
+    {
+      "sprintId": "agent-tracking-2026-08",
+      "workItemId": "ZK-001",
+      "addedAt": "2026-08-17T04:33:34.860Z"
+    },
+    {
+      "sprintId": "agent-tracking-2026-08",
+      "workItemId": "ZK-002",
+      "addedAt": "2026-08-17T04:33:34.860Z"
+    },
+    {
+      "sprintId": "agent-tracking-2026-08",
+      "workItemId": "ZK-003",
+      "addedAt": "2026-08-17T04:33:34.860Z"
+    },
+    {
+      "sprintId": "agent-tracking-2026-08",
+      "workItemId": "ZK-004",
+      "addedAt": "2026-08-17T04:33:34.860Z"
+    },
+    {
+      "sprintId": "agent-tracking-2026-08",
+      "workItemId": "ZK-005",
+      "addedAt": "2026-08-17T04:33:34.860Z"
+    }
+  ],
   "revisions": [
     {
       "projectId": "agent-tracking",
@@ -902,7 +944,388 @@
       "approvedAt": "2026-08-17T04:17:06.705Z"
     }
   ],
-  "runs": [],
-  "evidence": [],
-  "reviews": []
+  "runs": [
+    {
+      "id": "RUN-001",
+      "workItemId": "ZK-001",
+      "agent": "agent:themis-executor",
+      "status": "completed",
+      "startedAt": "2026-08-17T04:33:47.368Z",
+      "terminationReason": "Implemented the scoped Phase 0 trust model and data classification ADR, indexed it, inspected current repository paths, and recorded implementation, observation, and verification evidence. No production cryptography, integrations, or UI changes were made.",
+      "finishedAt": "2026-08-17T05:17:14.117Z"
+    },
+    {
+      "id": "RUN-002",
+      "workItemId": "ZK-002",
+      "agent": "agent:themis-executor-zk002",
+      "status": "completed",
+      "startedAt": "2026-08-17T18:15:36.160Z",
+      "terminationReason": "Implemented the approved read-only repository architecture map in docs/architecture/system/zero-knowledge-repository-map.md and recorded implementation, verification, and run-state evidence. No product code or Themis state files were edited.",
+      "finishedAt": "2026-08-17T18:19:07.140Z"
+    },
+    {
+      "id": "RUN-003",
+      "workItemId": "ZK-003",
+      "agent": "agent:themis-executor-zk003",
+      "status": "completed",
+      "startedAt": "2026-08-17T18:15:36.168Z",
+      "terminationReason": "Implemented the scoped version-1 encrypted envelope contract, canonical serialization and rejection semantics, local-record versus sync-object distinction, replay/integrity error boundaries, ADR documentation, and focused shared-library fixtures/tests. Nx test, lint, build, and git diff --check passed. Work item remains in progress for review; it was not marked done.",
+      "finishedAt": "2026-08-17T18:20:31.528Z"
+    },
+    {
+      "id": "RUN-004",
+      "workItemId": "ZK-003",
+      "agent": "agent:themis-executor-zk003",
+      "status": "completed",
+      "startedAt": "2026-08-17T18:30:53.679Z",
+      "terminationReason": "Addressed reviewer feedback by replacing locale-sensitive key sorting with explicit locale-independent UTF-16 code-unit ordering, updated ADR 005, added case/non-ASCII ordering and alternate-order rejection tests, and passed focused shared test/lint/build plus git diff --check. ZK-003 remains in progress and was not marked done.",
+      "finishedAt": "2026-08-17T18:32:11.180Z"
+    },
+    {
+      "id": "RUN-005",
+      "workItemId": "ZK-004",
+      "agent": "agent:themis-executor-zk004",
+      "status": "completed",
+      "startedAt": "2026-08-17T18:34:24.084Z",
+      "terminationReason": "Implemented the scoped cryptographic proof harness, deterministic AES-256-GCM/HKDF/workspace-key wrapping vectors, security negative cases, and ADR 006. Focused shared Nx test, lint, build, Prettier, and git diff --check passed. No production vault, cloud sync, hardware storage, or UI changes were made; work item was not marked done.",
+      "finishedAt": "2026-08-17T18:38:46.739Z"
+    },
+    {
+      "id": "RUN-006",
+      "workItemId": "ZK-005",
+      "agent": "agent:themis-executor-zk005",
+      "status": "completed",
+      "startedAt": "2026-08-17T18:42:06.253Z",
+      "terminationReason": "Implemented the scoped local encrypted SQLite/envelope proof with VMK-wrapped workspace-key hierarchy, authenticated version-1 local records, lock/unlock behavior, explicit blocked recovery, and focused safety tests. Shared test (20 tests), lint, build, Prettier check, and git diff --check passed. No cloud sync, device enrollment, capability broker, external-AI integration, or UI changes were made; ZK-005 was not marked done.",
+      "finishedAt": "2026-08-17T18:45:49.784Z"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-001",
+      "runId": "RUN-001",
+      "kind": "implementation-diff",
+      "summary": "Added Phase 0 zero-knowledge trust model ADR and indexed it in the ADR README.",
+      "value": "Changed docs/architecture/adr/004-zero-knowledge-trust-foundation.md and docs/architecture/adr/README.md. The ADR defines themis-agent as local root of trust, cloud as ciphertext orchestrator, data classifications for context/activity/credentials/keys/envelopes/metadata/telemetry/recovery, runtime boundaries, threats, migration risks, and open decisions.",
+      "createdAt": "2026-08-17T05:17:10.092Z"
+    },
+    {
+      "id": "EVD-002",
+      "runId": "RUN-001",
+      "kind": "observation",
+      "summary": "Repository inspection confirmed the starter plaintext and runtime paths addressed by the ADR.",
+      "value": "Inspection found project documents and async jobs in libs/shared/src/lib/db/schema.ts, project document/job reads in libs/projects/src/lib/projects-service.ts and async-job-records.ts, seed progress/event publication in libs/projects/src/lib/seed/service.ts and events.ts, API project routes in apps/web/api/src/projects/projects-router.ts, and browser realtime job events in apps/web/app/src/app/shared/realtime/browser-realtime.ts. Existing account/session/API-key mechanisms do not establish local-agent key authority.",
+      "createdAt": "2026-08-17T05:17:10.124Z"
+    },
+    {
+      "id": "EVD-003",
+      "runId": "RUN-001",
+      "kind": "verification",
+      "summary": "Documentation diff and whitespace verification passed.",
+      "value": "Command: git diff --check -- docs/architecture/adr/004-zero-knowledge-trust-foundation.md docs/architecture/adr/README.md. Result: passed with no whitespace errors. Repository search checks also returned the current project context/document, async job, seed event, API route, realtime, credential, and runtime paths referenced by the ADR.",
+      "createdAt": "2026-08-17T05:17:10.140Z"
+    },
+    {
+      "id": "EVD-004",
+      "runId": "RUN-001",
+      "kind": "verification",
+      "summary": "Independent repository and document verification for ZK-001 passed with one corrected checker attempt and no source changes.",
+      "value": "Commands/results: `git diff --check && git diff --stat && git log --oneline -10` — diff check passed; implementation is limited to the ADR/index plus Themis runtime metadata, with unrelated untracked `deep-research-report.md` present. `pnpm nx show projects` — passed, listed api/app/projects/shared/worker/realtime/server and e2e projects. `pnpm nx run-many -t lint --projects=api,app,projects,shared,worker,realtime,server --parallel=3` — passed for all 7 projects. `pnpm nx run-many -t test --projects=api,app,projects,shared,worker,realtime,server --parallel=3` — Nx reported app has no test target; remaining 6 targets completed successfully: shared 1 suite/1 test, server 1/4, projects 1/1, api/worker/realtime no tests with exit 0. First case-sensitive ADR marker checker failed because its expected cloud phrase used lowercase while the document starts the sentence with `Cloud`; this was a checker expectation error, not an ADR failure. Corrected case-insensitive checker then passed: ADR exists, 16/16 required trust/classification/threat/migration/open-decision markers present, ADR index entry present. Repository searches confirmed current context/API, project/job, seed progress/event, and realtime paths referenced by the ADR. `themis_validate` — valid=true, errors=[], counts workItems=20, runs=1, evidence=4 before this entry. Acceptance assessment: criteria 1-5 are supported by ADR 004 lines 7-10, 38-59, 61-81, 83-119; Phase 0 sign-off remains proposed and is not claimed as complete.",
+      "createdAt": "2026-08-17T18:13:42.904Z"
+    },
+    {
+      "id": "EVD-005",
+      "runId": "RUN-002",
+      "kind": "implementation-diff",
+      "summary": "Added the repository architecture map for the zero-knowledge migration.",
+      "value": "Created docs/architecture/system/zero-knowledge-repository-map.md. It documents the Astro/Angular boundary, current API/persistence/worker/realtime paths, intended but absent themis-agent/crypto/sync/device/capability/release seams, Nx targets and test boundaries, migration risks, gaps, and explicit non-goals.",
+      "createdAt": "2026-08-17T18:19:03.488Z"
+    },
+    {
+      "id": "EVD-006",
+      "runId": "RUN-002",
+      "kind": "verification",
+      "summary": "Architecture-map verification completed.",
+      "value": "Repository inspection cross-checked the map against docs/architecture/adr/004-zero-knowledge-trust-foundation.md and current source seams. `pnpm nx show projects --json` listed 16 projects; `pnpm nx graph --print` completed and confirmed runtime/library dependencies. `pnpm exec prettier --check docs/architecture/system/zero-knowledge-repository-map.md` passed. `git diff --check` passed.",
+      "createdAt": "2026-08-17T18:19:03.524Z"
+    },
+    {
+      "id": "EVD-007",
+      "runId": "RUN-002",
+      "kind": "observation",
+      "summary": "Existing run state was already active when execution began.",
+      "value": "ZK-002 was already claimed by agent:themis-executor-zk002 and RUN-002 was already running; the ready queue returned no items for project agent-tracking and sprint agent-tracking-2026-08. No local Themis state files were edited.",
+      "createdAt": "2026-08-17T18:19:03.537Z"
+    },
+    {
+      "id": "EVD-008",
+      "runId": "RUN-003",
+      "kind": "implementation-diff",
+      "summary": "Implemented the versioned encrypted envelope contract and ADR.",
+      "value": "Added docs/architecture/adr/005-versioned-encrypted-envelope-contract.md and indexed ADR 005; added libs/shared/src/lib/crypto/encrypted-envelope.ts with version-1 schema, canonical JSON serializer/deserializer, stable contract errors, integrity-verification boundary, and replay guard; exported it from libs/shared/src/index.ts; added focused fixtures/tests in encrypted-envelope.spec.ts.",
+      "createdAt": "2026-08-17T18:20:26.957Z"
+    },
+    {
+      "id": "EVD-009",
+      "runId": "RUN-003",
+      "kind": "verification",
+      "summary": "Focused shared-library verification passed.",
+      "value": "pnpm nx test shared: passed, 2 suites and 7 tests. pnpm nx lint shared: passed. pnpm nx build shared: passed. git diff --check: passed with no output.",
+      "createdAt": "2026-08-17T18:20:26.977Z"
+    },
+    {
+      "id": "EVD-010",
+      "runId": "RUN-003",
+      "kind": "observation",
+      "summary": "Contract boundaries and unresolved decisions are explicit.",
+      "value": "The contract separates local-record and sync-object kinds, keeps ciphertext/nonce/authTag opaque, rejects malformed/unsupported/non-canonical input, exposes replay and integrity-failure codes, and documents algorithm selection, cloud metadata visibility, retention, tombstones, and product-read decisions as pending follow-up rather than silently resolving them.",
+      "createdAt": "2026-08-17T18:20:26.988Z"
+    },
+    {
+      "id": "EVD-011",
+      "runId": "RUN-003",
+      "kind": "verification",
+      "summary": "Independent focused verification of ZK-003 shared contract",
+      "value": "Commands run from repository root: `pnpm nx test shared` — PASS, Nx successfully ran shared:test from local cache; Jest reported 2 test suites passed, 7 tests passed, 0 snapshots. `pnpm nx lint shared` — PASS, Nx successfully ran shared:lint from existing cached outputs; eslint completed with no reported errors. `pnpm nx build shared` — PASS, Nx successfully ran shared:build from local cache; TypeScript compilation completed (`Done compiling TypeScript files for project \"shared\"`). `git diff --check` — PASS, no output. Independent scope/criteria inspection found the added shared envelope schema/serializer/spec and ADR 005 cover canonicalization, version and identity, associated data/payload boundaries, local-record versus sync-object distinction, explicit metadata visibility decisions, malformed/unsupported/non-canonical/replay/integrity error codes, and explicit upgrade behavior. The implementation stays within ZK-003 scope; no cloud sync, production key management, or tracker integration was added.",
+      "createdAt": "2026-08-17T18:24:36.771Z"
+    },
+    {
+      "id": "EVD-012",
+      "runId": "RUN-002",
+      "kind": "verification",
+      "summary": "Independent verification of ZK-002 repository map passed.",
+      "value": "Commands/results on 2026-08-17: `pnpm exec nx show projects --json` passed and listed 16 projects, including site/app/api/server/worker/realtime/projects/shared and their e2e projects. `pnpm exec nx show project <site|app|api|server|worker|realtime|projects|shared> --json` passed; resolved roots and targets match the map, including site typecheck/lint/test/build, app typecheck/lint/vite:test/build, backend/library lint/test/build targets. `pnpm exec nx graph --print | jq ...` passed; dependencies were realtime -> projects, shared; server -> shared; api -> projects, shared; app -> projects; worker -> projects, shared. Repository seam existence checks passed for Astro, Angular, schema, projects service/router, worker, and realtime paths; `apps/themis-agent` was absent as expected for an intended-but-not-implemented seam. `pnpm exec prettier --check docs/architecture/system/zero-knowledge-repository-map.md` passed. `git diff --check -- docs/architecture/system/zero-knowledge-repository-map.md` passed. No source files were modified by this verification.",
+      "createdAt": "2026-08-17T18:29:42.930Z"
+    },
+    {
+      "id": "EVD-013",
+      "runId": "RUN-002",
+      "kind": "observation",
+      "summary": "Acceptance and sprint-scope assessment for ZK-002.",
+      "value": "Independent read of docs/architecture/system/zero-knowledge-repository-map.md against ZK-002 and active sprint REV-002 found all five acceptance criteria supported: public Astro and authenticated Angular surfaces are separated; current readable project/document/job and seed/realtime paths are named as migration risks; themis-agent, crypto, opaque sync/cloud, device, capability/broker, mediated product-read, and release seams are explicitly marked intended/absent where applicable; focused Nx targets and e2e/test boundaries are listed; gaps/open decisions are recorded. The map explicitly excludes product code, integrations, algorithm selection, and Astro vault UI, matching REV-002 non-goals. Cross-check against ADR 004 confirms the local-agent root-of-trust/cloud-ciphertext-orchestrator direction and eight data-classification expectations. ZK-002 remains in_progress; no done transition was made.",
+      "createdAt": "2026-08-17T18:29:42.939Z"
+    },
+    {
+      "id": "EVD-014",
+      "runId": "RUN-004",
+      "kind": "implementation-diff",
+      "summary": "Reworked canonical key ordering per reviewer feedback.",
+      "value": "Replaced localeCompare with an explicit UTF-16 code-unit comparator in libs/shared/src/lib/crypto/encrypted-envelope.ts. Added tests for case/non-ASCII ordering and deserialize rejection of alternate key ordering in encrypted-envelope.spec.ts. Updated ADR 005 to document locale-independent UTF-16 ordering.",
+      "createdAt": "2026-08-17T18:31:58.691Z"
+    },
+    {
+      "id": "EVD-015",
+      "runId": "RUN-004",
+      "kind": "verification",
+      "summary": "Focused shared verification passed after rework.",
+      "value": "pnpm nx test shared: passed, 2 suites and 9 tests. pnpm nx lint shared: passed. pnpm nx build shared: passed. git diff --check: passed with no output.",
+      "createdAt": "2026-08-17T18:32:02.085Z"
+    },
+    {
+      "id": "EVD-016",
+      "runId": "RUN-004",
+      "kind": "observation",
+      "summary": "Reviewer-requested locale determinism is now explicit and covered.",
+      "value": "Canonicalization compares each UTF-16 code unit directly and uses string length as the tie-breaker; tests cover uppercase/lowercase and Å/ä/é keys, and deserialize rejects a valid envelope encoded in alternate key order.",
+      "createdAt": "2026-08-17T18:32:07.509Z"
+    },
+    {
+      "id": "EVD-017",
+      "runId": "RUN-004",
+      "kind": "verification",
+      "summary": "Independent verification of ZK-003 RUN-004 rework: focused shared test, lint, build, and whitespace checks passed.",
+      "value": "Commands and observed results: `pnpm nx run shared:test -- --runInBand` — PASS; 2 test suites passed, 9 tests passed, 0 snapshots. `pnpm nx run shared:lint` — PASS; Nx reported successful target (output served from local cache). `pnpm nx run shared:build` — PASS; TypeScript compilation completed successfully (output served from local cache). `git diff --check` — PASS; no whitespace errors. Reviewed REVW-003 feedback and the rework diff: localeCompare was replaced with explicit UTF-16 code-unit ordering; ADR 005 documents the rule; tests cover case/non-ASCII ordering and rejection of alternate ordering. No source files modified by verifier.",
+      "createdAt": "2026-08-17T18:33:07.463Z"
+    },
+    {
+      "id": "EVD-018",
+      "runId": "RUN-005",
+      "kind": "implementation-diff",
+      "summary": "Implemented the scoped cryptographic proof harness and deterministic vectors only.",
+      "value": "Added libs/shared/src/lib/crypto/crypto-proof-harness.ts and crypto-proof-harness.spec.ts, plus docs/architecture/adr/006-cryptographic-proof-vectors.md. The harness proves provisional AES-256-GCM, HKDF-SHA-256 workspace derivation, VMK wrapping, associated-data authentication, wrong-key/tamper failures, key/nonce validation, version-domain mismatch, and nonce reuse guarding. No production vault, cloud sync, hardware storage, or UI code was added.",
+      "createdAt": "2026-08-17T18:38:41.541Z"
+    },
+    {
+      "id": "EVD-019",
+      "runId": "RUN-005",
+      "kind": "verification",
+      "summary": "Focused shared Nx test target passed with all crypto proof vectors.",
+      "value": "Command: pnpm nx test shared --runInBand\nResult: PASS — 3 test suites passed, 16 tests passed, 0 failed.",
+      "createdAt": "2026-08-17T18:38:41.572Z"
+    },
+    {
+      "id": "EVD-020",
+      "runId": "RUN-005",
+      "kind": "verification",
+      "summary": "Focused shared Nx lint and build targets passed.",
+      "value": "Commands: pnpm nx lint shared; pnpm nx build shared\nResults: PASS — ESLint completed successfully; TypeScript compilation completed successfully.",
+      "createdAt": "2026-08-17T18:38:41.628Z"
+    },
+    {
+      "id": "EVD-021",
+      "runId": "RUN-005",
+      "kind": "verification",
+      "summary": "Formatting and whitespace checks passed; fixtures use synthetic values only.",
+      "value": "Command: pnpm exec prettier --check libs/shared/src/lib/crypto/crypto-proof-harness.ts libs/shared/src/lib/crypto/crypto-proof-harness.spec.ts docs/architecture/adr/006-cryptographic-proof-vectors.md && git diff --check\nResult: PASS — all files match Prettier style and git diff has no whitespace errors. Test constants are synthetic zero/filled bytes and fixed public labels; no live secrets are present.",
+      "createdAt": "2026-08-17T18:38:41.658Z"
+    },
+    {
+      "id": "EVD-022",
+      "runId": "RUN-005",
+      "kind": "observation",
+      "summary": "Approved ZK-001/ZK-003 decisions constrained the implementation.",
+      "value": "ADR 004 keeps themis-agent as local root of trust and cloud as ciphertext orchestrator; ADR 005 supplies the version-1 canonical envelope and leaves algorithm/key hierarchy choices to ZK-004. ADR 006 records the provisional proof choices and explicitly leaves password-to-VMK KDF, nonce generation, hardware storage, rotation, recovery, and cloud protocol pending.",
+      "createdAt": "2026-08-17T18:38:41.694Z"
+    },
+    {
+      "id": "EVD-023",
+      "runId": "RUN-005",
+      "kind": "verification",
+      "summary": "Independent focused verification passed for shared crypto proof vectors.",
+      "value": "Commands/results: `pnpm nx test shared --runInBand` passed (3 suites, 16 tests); `pnpm nx lint shared` passed; `pnpm nx build shared` passed; `git diff --check` passed. The shared test run includes AES-GCM known-answer, AAD/tamper/wrong-key failures, HKDF/workspace wrapping, nonce reuse, version mismatch, and invalid material cases.",
+      "createdAt": "2026-08-17T18:40:44.189Z"
+    },
+    {
+      "id": "EVD-024",
+      "runId": "RUN-005",
+      "kind": "verification",
+      "summary": "Independent reference implementation matched AES-GCM, HKDF, and workspace-key wrapping vectors.",
+      "value": "Python `cryptography` independently reproduced the AES-256-GCM ciphertext/auth-tag vector, HKDF-SHA-256 workspace derivation vector, and AES-GCM VMK workspace-key wrapping vector. All assertions passed; synthetic test inputs only.",
+      "createdAt": "2026-08-17T18:40:44.229Z"
+    },
+    {
+      "id": "EVD-025",
+      "runId": "RUN-005",
+      "kind": "observation",
+      "summary": "Reviewed ZK-004 fixtures and scope for live secrets and prohibited changes.",
+      "value": "Inspected `libs/shared/src/lib/crypto/crypto-proof-harness.ts`, its spec, and ADR 006. Fixture inputs are fixed zero/7/3 synthetic bytes and fixed nonces; a marker scan found no live-secret patterns. Changes are confined to crypto proof harness/tests plus ADR/index context; no production vault UX, cloud sync, or hardware-backed storage changes observed.",
+      "createdAt": "2026-08-17T18:40:44.287Z"
+    },
+    {
+      "id": "EVD-026",
+      "runId": "RUN-005",
+      "kind": "command",
+      "summary": "Focused test-path command was corrected after a Jest CLI incompatibility.",
+      "value": "Initial `pnpm nx test shared --runInBand --testPathPattern=crypto-proof-harness.spec.ts` failed because this Jest version replaced `--testPathPattern` with `--testPathPatterns`. The required focused shared target was then run successfully as `pnpm nx test shared --runInBand` with 3 suites and 16 tests passing.",
+      "createdAt": "2026-08-17T18:40:44.334Z"
+    },
+    {
+      "id": "EVD-027",
+      "runId": "RUN-006",
+      "kind": "implementation-diff",
+      "summary": "Implemented local encrypted SQLite/envelope vault proof and focused tests.",
+      "value": "Added libs/shared/src/lib/crypto/local-encrypted-vault.ts and local-encrypted-vault.spec.ts; exported LocalEncryptedVault from libs/shared/src/index.ts. The proof stores only vault metadata and serialized version-1 local-record envelopes in SQLite, wraps the workspace key under the VMK, enforces lock/unlock, and blocks recovery without configured recovery material.",
+      "createdAt": "2026-08-17T18:45:44.885Z"
+    },
+    {
+      "id": "EVD-028",
+      "runId": "RUN-006",
+      "kind": "verification",
+      "summary": "Focused shared verification passed.",
+      "value": "pnpm nx run shared:test --runInBand: 4 test suites and 20 tests passed. pnpm nx run shared:lint: passed. pnpm nx run shared:build: passed. pnpm exec prettier --check libs/shared/src/lib/crypto/local-encrypted-vault.ts libs/shared/src/lib/crypto/local-encrypted-vault.spec.ts libs/shared/src/index.ts: passed. git diff --check: passed.",
+      "createdAt": "2026-08-17T18:45:44.900Z"
+    },
+    {
+      "id": "EVD-029",
+      "runId": "RUN-006",
+      "kind": "observation",
+      "summary": "Focused vault tests cover required safety boundaries.",
+      "value": "Tests cover persisted encrypted-record round-trip with plaintext absence in raw rows, tamper failure, lock preventing reads/writes, unlock restoration, wrong VMK rejection, explicit blocked recovery, and unsupported vault version rejection. The vault authenticates envelope record type and associated data through AES-256-GCM.",
+      "createdAt": "2026-08-17T18:45:44.908Z"
+    },
+    {
+      "id": "EVD-030",
+      "runId": "RUN-006",
+      "kind": "verification",
+      "summary": "Independent fresh shared Nx checks passed.",
+      "value": "Commands run with cache bypass: `pnpm nx run shared:test --runInBand --skip-nx-cache` — 4 suites and 20 tests passed; `pnpm nx run shared:lint --skip-nx-cache` — ESLint passed; `pnpm nx run shared:build --skip-nx-cache` — TypeScript compilation completed successfully.",
+      "createdAt": "2026-08-17T18:49:04.761Z"
+    },
+    {
+      "id": "EVD-031",
+      "runId": "RUN-006",
+      "kind": "verification",
+      "summary": "Direct SQLite vault audit found no plaintext sentinel and recovery is blocked.",
+      "value": "A temporary vault created from the built shared output was written with a unique sentinel payload. Direct SQLite queries returned one metadata row and one record row; sentinel absent from serialized SQLite rows and raw vault file UTF-8 scan. Metadata columns were schema_version, workspace_id, salt, wrapped_workspace_key. Calling recover() produced VaultRecoveryBlockedError. Temporary vault was under /tmp and closed after inspection.",
+      "createdAt": "2026-08-17T18:49:04.796Z"
+    },
+    {
+      "id": "EVD-032",
+      "runId": "RUN-006",
+      "kind": "observation",
+      "summary": "Acceptance and recovery-boundary review against ZK-001 supports the bounded proof, with recovery intentionally unresolved.",
+      "value": "Reviewed ZK-005 implementation/tests and ADR 004. VMK-wrapped workspace-key storage, authenticated version-1 envelopes, lock/unlock, wrong-key rejection, tamper/version failures, and explicit no-fallback recovery are within scope. ADR 004 requires local-agent plaintext authority, opaque cloud custody, and explicit recovery actors; the implementation's VaultRecoveryBlockedError is safe for the unresolved recovery-actor decision and does not claim production recovery.",
+      "createdAt": "2026-08-17T18:49:04.803Z"
+    },
+    {
+      "id": "EVD-033",
+      "runId": "RUN-006",
+      "kind": "command",
+      "summary": "Initial source-level audit invocation was incompatible with Node strip-only TypeScript mode, then rerun against built output.",
+      "value": "Initial `node --experimental-strip-types ... local-encrypted-vault.ts` failed before execution with `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` because Node strip-only mode does not support the source's parameter property. No source was changed. The same audit was rerun against `dist/libs/shared/src/lib/crypto/local-encrypted-vault.js` and passed; see EVD-031.",
+      "createdAt": "2026-08-17T18:49:10.118Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "REVW-001",
+      "workItemId": "ZK-001",
+      "runId": "RUN-001",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:15:12.751Z",
+      "verdict": "accepted",
+      "feedback": "Accepted. ADR 004 and its index satisfy ZK-001: they name themis-agent as the local root of trust, classify all eight required data classes with readers/custody/retention/recovery, document threats and the external-AI boundary, identify server-readable context/activity as migration risk, and list the required open decisions. RUN-001 evidence plus independent verification supports the repository inspection and focused Nx checks. The ADR remains Proposed as intended; its explicit sign-off gate and unresolved decisions must be addressed before later cryptography or migration work proceeds.",
+      "decidedAt": "2026-08-17T18:15:22.706Z"
+    },
+    {
+      "id": "REVW-002",
+      "workItemId": "ZK-002",
+      "runId": "RUN-002",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:29:56.324Z",
+      "verdict": "accepted",
+      "feedback": "Accepted. The implementation is limited to the scoped read-only repository map and satisfies all ZK-002 acceptance criteria: it separates public Astro from authenticated Angular, traces current readable project/document/job and seed/worker/realtime paths as migration risks, identifies intended themis-agent, envelope/crypto, opaque cloud sync, device, capability/broker, mediated product-read, and release seams without claiming absent modules exist, lists focused Nx targets and test/E2E boundaries, and records explicit gaps and decisions. The map cross-checks ADR 004/ZK-001 and explicitly excludes product changes, integrations, algorithm/key-storage choices, and Astro vault UI, matching REV-002 non-goals. RUN-002 implementation, Nx graph/project inspection, formatting, and diff-check evidence (including independent EVD-012/EVD-013) support the result. Sprint-level DoD remains contingent on ZK-003 through ZK-005 and is not being claimed complete by this item.",
+      "decidedAt": "2026-08-17T18:30:30.258Z"
+    },
+    {
+      "id": "REVW-003",
+      "workItemId": "ZK-003",
+      "runId": "RUN-003",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:29:56.343Z",
+      "verdict": "rejected",
+      "feedback": "Rejected pending rework: canonical key ordering is implemented with `localeCompare` in `libs/shared/src/lib/crypto/encrypted-envelope.ts:64`. Locale-sensitive comparison is not a stable canonical JSON ordering across runtimes/locales, especially for arbitrary associatedData/metadata keys, so deterministic canonical serialization and non-canonical rejection are not fully supported. Replace it with an explicit locale-independent ordering (for example, direct UTF-16/code-unit comparison matching the documented canonical rule) and add fixtures/tests using keys that expose locale/case/non-ASCII ordering differences, including deserialize rejection of an alternate ordering. The ADR and scope are otherwise aligned: version-1 schema, identity, payload/AD boundaries, local-record vs sync-object, unresolved metadata choices, stable error categories, and upgrade behavior are documented; focused Nx evidence supports the current implementation.",
+      "decidedAt": "2026-08-17T18:30:41.845Z"
+    },
+    {
+      "id": "REVW-004",
+      "workItemId": "ZK-003",
+      "runId": "RUN-003",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:33:17.365Z",
+      "verdict": "accepted",
+      "feedback": "Accepted after RUN-004 rework. The implementation now uses explicit locale-independent UTF-16 code-unit ordering at every object depth, matching ADR 005, and the added tests cover case/non-ASCII ordering plus rejection of an alternate valid key order. Focused shared test (9 tests), lint, build, and git diff --check all pass, including independent EVD-017. The schema/serializer and ADR cover versioning, identity, associated-data and ciphertext boundaries, local-record versus append-only sync-object semantics, unresolved metadata visibility, stable malformed/unsupported/non-canonical/replay/integrity errors, and explicit upgrade behavior. Scope remains within ZK-003 and excludes production key management, cloud sync implementation, and tracker integrations. REV-002 Definition of Done is supported for this work item; remaining sprint items are not claimed complete.",
+      "decidedAt": "2026-08-17T18:34:11.817Z"
+    },
+    {
+      "id": "REVW-005",
+      "workItemId": "ZK-004",
+      "runId": "RUN-005",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:41:03.987Z",
+      "verdict": "accepted",
+      "feedback": "Accepted. RUN-005 and independent EVD-023–EVD-026 support the ZK-004 acceptance criteria: ADR 006 documents the provisional AES-256-GCM/HKDF-SHA-256 primitive set and rationale while explicitly leaving password KDF, nonce generation, rotation, recovery, hardware storage, and production commitment pending; deterministic vectors cover encryption/decryption, AAD authentication, tamper detection, wrong-key failure, VMK/workspace derivation and VMK wrapping; negative cases cover nonce reuse, version/domain mismatch, corrupted ciphertext, and invalid key/nonce material. Independent Python cryptography reproduction matches the AES-GCM, HKDF, and wrapping outputs. Fixtures use synthetic bytes/fixed nonces only, with no live secrets or plaintext persistence, and the implementation remains confined to the proof harness, tests, and ADR—no vault UX, cloud sync, hardware storage, or UI changes. Focused shared Nx test (16 tests), lint, build, Prettier, and diff checks pass. This is appropriately a provisional proof and does not claim REV-002’s production vault or full sprint Definition of Done complete.",
+      "decidedAt": "2026-08-17T18:41:52.630Z"
+    },
+    {
+      "id": "REVW-006",
+      "workItemId": "ZK-005",
+      "runId": "RUN-006",
+      "reviewer": "agent:themis-reviewer",
+      "createdAt": "2026-08-17T18:49:27.052Z",
+      "verdict": "accepted",
+      "feedback": "Accepted. RUN-006 implementation and independent evidence support all ZK-005 criteria within active sprint REV-002: LocalEncryptedVault persists version-1 authenticated envelopes in SQLite, stores only vault metadata plus wrapped workspace key and ciphertext, derives a workspace key under the VMK, and excludes plaintext from persisted records; lock blocks protected read/write APIs and unlock restores access; wrong VMK, tampering, and unsupported vault versions fail safely; recovery is explicitly blocked without an unsafe fallback; focused tests cover round-trip, plaintext absence, tamper failure, lock/unlock, wrong key material, recovery boundary, and version handling. Independent cache-bypassed Nx shared test (4 suites/20 tests), lint, build, Prettier, diff checks, and direct SQLite/raw-file audit passed. Scope excludes all REV-002 non-goals. Recovery actors/password KDF/production key storage remain intentionally unresolved and are appropriately documented rather than claimed production-ready.",
+      "decidedAt": "2026-08-17T18:50:04.449Z"
+    }
+  ]
 }

@@ -3,7 +3,6 @@ description: Implements one claimed local Themis work item inside its approved s
 mode: subagent
 permission:
   edit: allow
-  bash: ask
   themis_*: allow
 ---
 

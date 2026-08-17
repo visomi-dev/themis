@@ -3,7 +3,6 @@ description: Runs the required verification commands for a local Themis executio
 mode: subagent
 permission:
   edit: deny
-  bash: ask
   themis_*: allow
 ---
 

@@ -3,7 +3,6 @@ description: Coordinates the local Themis workflow without implementing code or 
 mode: primary
 permission:
   edit: deny
-  bash: ask
   question: allow
   themis_*: allow
 ---

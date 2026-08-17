@@ -326,6 +326,14 @@ themis-evidence
 themis-review
 ```
 
+Command execution permissions are inherited from the active OpenCode
+workspace. The role definitions only constrain editing where required:
+executors may edit scoped implementation files, while coordinators, verifiers,
+and reviewers cannot edit implementation files. Configure the workspace's
+`bash` permission once instead of adding per-agent `bash: ask` overrides; this
+allows verification agents to run tests, builds, lint, and E2E checks without a
+prompt for every command.
+
 The underlying tools are available to OpenCode as names such as
 `themis_workitem_create`, `themis_sprint_activate`, `themis_ready_queue`,
 `themis_run_start`, `themis_evidence_add`, and `themis_review_submit`.

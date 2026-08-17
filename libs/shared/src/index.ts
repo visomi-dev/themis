@@ -4,6 +4,8 @@ export * from './lib/db/migrate';
 export * from './lib/db/pool';
 export * from './lib/db/safe-insert';
 export * from './lib/db/schema';
+export * from './lib/crypto/encrypted-envelope';
+export * from './lib/crypto/local-encrypted-vault';
 export * from './lib/env';
 export * from './lib/http';
 export * from './lib/http/auth-runtime';
