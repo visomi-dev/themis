@@ -6,16 +6,24 @@ import {
   addEvidence,
   approveSprint,
   claimWorkItem,
+  createEpic,
+  createProject,
   createWorkItem,
   finishRun,
   proposeSprint,
   readState,
   readyQueue,
   requestReview,
+  listEpics,
+  listProjects,
+  listSprints,
+  listWorkItems,
   startRun,
   submitReview,
+  timeline,
   transitionWorkItem,
   validateState,
+  workspaceStatus,
 } from './themis-core.ts';
 
 const output = (value: unknown): string => JSON.stringify(value, null, 2);
@@ -23,6 +31,8 @@ const output = (value: unknown): string => JSON.stringify(value, null, 2);
 export const workitem_create = tool({
   description: 'Create a local Themis work item in draft state.',
   args: {
+    projectId: tool.schema.string().describe('Owning project identifier'),
+    epicId: tool.schema.string().optional().describe('Optional epic identifier'),
     title: tool.schema.string().describe('Short work item title'),
     summary: tool.schema.string().describe('Problem and expected outcome'),
     acceptanceCriteria: tool.schema.array(tool.schema.string()).describe('Observable acceptance criteria'),
@@ -89,6 +99,8 @@ export const dependency_add = tool({
 export const sprint_propose = tool({
   description: 'Create a versioned local sprint proposal from existing work items.',
   args: {
+    projectId: tool.schema.string().describe('Project identifier'),
+    epicIds: tool.schema.array(tool.schema.string()).optional().describe('Epics included in this sprint'),
     goal: tool.schema.string().describe('Sprint Goal'),
     why: tool.schema.string().describe('Why the sprint matters'),
     what: tool.schema.string().describe('What outcome the sprint delivers'),
@@ -129,9 +141,90 @@ export const sprint_activate = tool({
 
 export const ready_queue = tool({
   description: 'Return only sprint work items with all blocking dependencies completed.',
-  args: { sprintId: tool.schema.string().describe('Active sprint identifier') },
+  args: {
+    projectId: tool.schema.string().describe('Project identifier'),
+    sprintId: tool.schema.string().describe('Active sprint identifier'),
+  },
   async execute(args, context) {
-    return output(readyQueue(context.worktree, args.sprintId));
+    return output(readyQueue(context.worktree, args.sprintId, args.projectId));
+  },
+});
+
+export const project_create = tool({
+  description: 'Create a local Themis project portfolio entry.',
+  args: {
+    id: tool.schema.string().describe('Project identifier'),
+    name: tool.schema.string().describe('Project name'),
+    summary: tool.schema.string().describe('Project summary'),
+  },
+  async execute(args, context) {
+    return output(createProject(context.worktree, args, `agent:${context.agent}`));
+  },
+});
+
+export const project_list = tool({
+  description: 'List projects in the local Themis portfolio.',
+  args: {},
+  async execute(_args, context) {
+    return output(listProjects(context.worktree));
+  },
+});
+
+export const workspace_status = tool({
+  description: 'Detect whether the current workspace is new or already initialized.',
+  args: {},
+  async execute(_args, context) {
+    return output(workspaceStatus(context.worktree));
+  },
+});
+
+export const timeline_list = tool({
+  description: 'Show the append-only project timeline, optionally scoped to a project.',
+  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  async execute(args, context) {
+    return output(timeline(context.worktree, args.projectId));
+  },
+});
+
+export const workitem_list = tool({
+  description: 'List work items scoped by project, epic, or sprint.',
+  args: {
+    projectId: tool.schema.string().optional().describe('Optional project identifier'),
+    epicId: tool.schema.string().optional().describe('Optional epic identifier'),
+    sprintId: tool.schema.string().optional().describe('Optional sprint identifier'),
+  },
+  async execute(args, context) {
+    return output(listWorkItems(context.worktree, args));
+  },
+});
+
+export const epic_create = tool({
+  description: 'Create an epic within a project.',
+  args: {
+    id: tool.schema.string().describe('Epic identifier'),
+    projectId: tool.schema.string().describe('Owning project identifier'),
+    title: tool.schema.string().describe('Epic title'),
+    summary: tool.schema.string().describe('Epic summary'),
+    goal: tool.schema.string().describe('Epic goal'),
+  },
+  async execute(args, context) {
+    return output(createEpic(context.worktree, args, `agent:${context.agent}`));
+  },
+});
+
+export const epic_list = tool({
+  description: 'List epics, optionally scoped to a project.',
+  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  async execute(args, context) {
+    return output(listEpics(context.worktree, args.projectId));
+  },
+});
+
+export const sprint_list = tool({
+  description: 'List sprints, optionally scoped to a project.',
+  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  async execute(args, context) {
+    return output(listSprints(context.worktree, args.projectId));
   },
 });
 

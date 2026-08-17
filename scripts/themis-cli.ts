@@ -8,17 +8,26 @@ import {
   addEvidence,
   approveSprint,
   claimWorkItem,
+  createEpic,
+  createProject,
   createWorkItem,
   finishRun,
+  listEpics,
+  listProjects,
+  listSprints,
+  listWorkItems,
   paths,
+  portfolio,
   proposeSprint,
   readState,
   readyQueue,
   requestReview,
   startRun,
   submitReview,
+  timeline,
   transitionWorkItem,
   validateState,
+  workspaceStatus,
 } from '../.opencode/tools/themis-core.ts';
 import { formatSummary, summarizeSprint } from './themis-view.ts';
 import { startTui } from './themis-tui.ts';
@@ -45,9 +54,13 @@ const baseOptions = () => ({
 const status = command({
   name: 'status',
   desc: 'Show the current sprint and operational work state',
-  options: { ...baseOptions(), sprint: string().desc('Sprint identifier').default('') },
+  options: {
+    ...baseOptions(),
+    project: string().desc('Project identifier').default(''),
+    sprint: string().desc('Sprint identifier').default(''),
+  },
   handler: (options) => {
-    const summary = summarizeSprint(options.root, options.sprint || undefined);
+    const summary = summarizeSprint(options.root, options.sprint || undefined, options.project || undefined);
     print(options.json ? summary : formatSummary(summary), options.json);
   },
 });
@@ -55,10 +68,16 @@ const status = command({
 const ready = command({
   name: 'ready',
   desc: 'Show work items whose dependencies are complete',
-  options: { ...baseOptions(), sprint: string().desc('Active sprint identifier').required() },
+  options: {
+    ...baseOptions(),
+    project: string().desc('Project identifier').default(''),
+    sprint: string().desc('Active sprint identifier').required(),
+  },
   handler: (options) => {
     const state = readState(options.root);
-    const readyIds = new Set(readyQueue(options.root, options.sprint).map((item) => item.id));
+    const readyIds = new Set(
+      readyQueue(options.root, options.sprint, options.project || undefined).map((item) => item.id),
+    );
     const result = state.workItems.filter((item) => readyIds.has(item.id));
     print(
       options.json
@@ -101,11 +120,119 @@ const events = command({
   },
 });
 
+const workspace = command({
+  name: 'workspace-status',
+  desc: 'Detect whether the workspace is new or already initialized',
+  options: { ...baseOptions() },
+  handler: (options) => print(workspaceStatus(options.root), options.json),
+});
+
+const timelineCommand = command({
+  name: 'timeline',
+  desc: 'Show the append-only project timeline',
+  options: { ...baseOptions(), project: string().desc('Optional project identifier').default('') },
+  handler: (options) => print(timeline(options.root, options.project || undefined), options.json),
+});
+
+const projectCreate = command({
+  name: 'project-create',
+  desc: 'Create a project in the local portfolio',
+  options: {
+    ...baseOptions(),
+    id: string().desc('Project identifier').required(),
+    name: string().desc('Project name').required(),
+    summary: string().desc('Project summary').default(''),
+  },
+  handler: (options) =>
+    print(
+      createProject(options.root, { id: options.id, name: options.name, summary: options.summary }, 'human:cli'),
+      options.json,
+    ),
+});
+
+const projectList = command({
+  name: 'project-list',
+  desc: 'List projects in the local portfolio',
+  options: { ...baseOptions() },
+  handler: (options) => print(listProjects(options.root), options.json),
+});
+
+const epicCreate = command({
+  name: 'epic-create',
+  desc: 'Create an epic inside a project',
+  options: {
+    ...baseOptions(),
+    id: string().desc('Epic identifier').required(),
+    project: string().desc('Owning project identifier').required(),
+    title: string().desc('Epic title').required(),
+    summary: string().desc('Epic summary').default(''),
+    goal: string().desc('Epic goal').required(),
+  },
+  handler: (options) =>
+    print(
+      createEpic(
+        options.root,
+        {
+          id: options.id,
+          projectId: options.project,
+          title: options.title,
+          summary: options.summary,
+          goal: options.goal,
+        },
+        'human:cli',
+      ),
+      options.json,
+    ),
+});
+
+const epicList = command({
+  name: 'epic-list',
+  desc: 'List epics, optionally scoped to a project',
+  options: { ...baseOptions(), project: string().desc('Project identifier').default('') },
+  handler: (options) => print(listEpics(options.root, options.project || undefined), options.json),
+});
+
+const workList = command({
+  name: 'work-list',
+  desc: 'List work items scoped by project, epic, or sprint',
+  options: {
+    ...baseOptions(),
+    project: string().desc('Optional project identifier').default(''),
+    epic: string().desc('Optional epic identifier').default(''),
+    sprint: string().desc('Optional sprint identifier').default(''),
+  },
+  handler: (options) =>
+    print(
+      listWorkItems(options.root, {
+        projectId: options.project || undefined,
+        epicId: options.epic || undefined,
+        sprintId: options.sprint || undefined,
+      }),
+      options.json,
+    ),
+});
+
+const sprintList = command({
+  name: 'sprint-list',
+  desc: 'List sprints, optionally scoped to a project',
+  options: { ...baseOptions(), project: string().desc('Project identifier').default('') },
+  handler: (options) => print(listSprints(options.root, options.project || undefined), options.json),
+});
+
+const portfolioCommand = command({
+  name: 'portfolio',
+  desc: 'Show project-level operational summaries',
+  options: { ...baseOptions() },
+  handler: (options) => print(portfolio(options.root), options.json),
+});
+
 const workCreate = command({
   name: 'work-create',
   desc: 'Create a draft work item',
   options: {
     ...baseOptions(),
+    project: string().desc('Project identifier').default(''),
+    epic: string().desc('Optional epic identifier').default(''),
     title: string().desc('Work item title').required(),
     summary: string().desc('Work item summary').required(),
     acceptance: string().desc('Comma-separated acceptance criteria').required(),
@@ -119,6 +246,8 @@ const workCreate = command({
       options.root,
       {
         id: options.id || undefined,
+        projectId: options.project || undefined,
+        epicId: options.epic || undefined,
         title: options.title,
         summary: options.summary,
         acceptanceCriteria: split(options.acceptance),
@@ -178,6 +307,8 @@ const sprintPropose = command({
     why: string().desc('Why this sprint matters').required(),
     what: string().desc('What the sprint delivers').required(),
     how: string().desc('How it will be delivered').required(),
+    project: string().desc('Project identifier').default(''),
+    epics: string('epics').desc('Comma-separated epic identifiers').default(''),
     workItems: string('work-items').desc('Comma-separated work item identifiers').required(),
     nonGoals: string('non-goals').desc('Comma-separated non-goals').default(''),
     done: string().desc('Comma-separated Definition of Done').required(),
@@ -193,6 +324,8 @@ const sprintPropose = command({
           why: options.why,
           what: options.what,
           how: options.how,
+          projectId: options.project || undefined,
+          epicIds: split(options.epics),
           workItemIds: split(options.workItems),
           nonGoals: split(options.nonGoals),
           definitionOfDone: split(options.done),
@@ -323,6 +456,15 @@ const commands: Command[] = [
   ready,
   validate,
   events,
+  workspace,
+  timelineCommand,
+  projectCreate,
+  projectList,
+  epicCreate,
+  epicList,
+  workList,
+  sprintList,
+  portfolioCommand,
   workCreate,
   workTransition,
   dependencyAdd,

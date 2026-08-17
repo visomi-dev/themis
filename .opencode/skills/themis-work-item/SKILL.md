@@ -9,6 +9,7 @@ Use the `themis_workitem_create` tool for creation. Never edit `.themis/state.js
 
 Every work item must define:
 
+- An owning project and, when applicable, an epic.
 - A concise title and outcome-oriented summary.
 - Observable acceptance criteria.
 - Explicit `scopeIn` paths or behaviors.

@@ -6,6 +6,8 @@ Use the `/themis-workflow` command to coordinate the lifecycle. State mutations 
 
 The default OpenCode agent is `themis-coordinator`. The workflow separates planning, execution, verification, and review agents.
 
+The hierarchy is `Project -> Epic -> Work items`, with sprint membership tracked separately. An epic can span multiple sprints. Each project has at most one active sprint, while different projects can run active sprints concurrently.
+
 ## CLI
 
 Use the local CLI through the workspace script:
@@ -16,7 +18,14 @@ pnpm themis status
 pnpm themis ready --sprint SPR-001
 pnpm themis events --limit 20
 pnpm themis validate
+pnpm themis portfolio --json
+pnpm themis project-list --json
+pnpm themis epic-list --project PRJ-001 --json
+pnpm themis work-list --project PRJ-001 --epic EPIC-001 --json
+pnpm themis sprint-list --project PRJ-001 --json
 ```
+
+Portfolio commands include `project-create`, `project-list`, `epic-create`, `epic-list`, `sprint-list`, and `portfolio`. Work and sprint commands accept explicit project and epic context.
 
 All operational mutations are also available as CLI commands, including `work-create`, `work-transition`, `sprint-propose`, `sprint-approve`, `sprint-activate`, `claim`, `run-start`, `run-finish`, `evidence-add`, `review-request`, and `review-submit`.
 

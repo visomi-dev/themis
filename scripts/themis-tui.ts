@@ -59,21 +59,30 @@ class SprintDashboard implements Component {
 
   render(width: number): string[] {
     const summary = summarizeSprint(this.root, this.sprintId);
+    const membershipIds = summary.sprint
+      ? new Set(
+          this.state.sprintItems
+            .filter((membership) => membership.sprintId === summary.sprint?.id)
+            .map((membership) => membership.workItemId),
+        )
+      : undefined;
     const sprintItems = summary.sprint
-      ? this.state.workItems.filter((item) => item.sprintId === summary.sprint?.id)
+      ? this.state.workItems.filter((item) => membershipIds?.has(item.id))
       : this.state.workItems;
     const selected = columns[this.selectedSection];
     const selectedItems = sprintItems.filter((item) => item.status === selected.status);
     const counts = columns.map(({ status, label }) => `${label} ${summary.counts[status]}`).join('  ');
     const lines = [
       accent(' THEMIS LOCAL CONTROL PLANE '),
-      summary.sprint ? `${summary.sprint.id}  ${summary.sprint.goal}` : 'No active sprint',
+      summary.sprint
+        ? `${summary.sprint.projectId} / ${summary.sprint.id}  ${summary.sprint.goal}`
+        : 'No active sprint',
       muted(`${counts}    Runs active ${summary.activeRuns}    Reviews ${summary.reviewCount}`),
       '',
       columns
         .map(({ label }, index) => (index === this.selectedSection ? accent(`[ ${label} ]`) : muted(`  ${label}  `)))
         .join('  '),
-      ...selectedItems.map((item) => `${item.id}  ${item.title}`),
+      ...selectedItems.map((item) => `${item.id}  ${item.epicId ? `${item.epicId}  ` : ''}${item.title}`),
       selectedItems.length === 0 ? muted('No work items in this lane.') : '',
       '',
       accent('Ready queue'),

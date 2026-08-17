@@ -7,6 +7,10 @@ description: Use when reviewing, approving, activating, or recalculating the exe
 
 Activation is a human gate.
 
+Only one sprint may be active within a project. Different projects may have
+active sprints concurrently. Always pass and verify the project context before
+activation.
+
 The required order is:
 
 1. Inspect the proposed revision.

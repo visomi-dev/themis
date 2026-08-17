@@ -6,7 +6,9 @@ import { afterEach, describe, it } from 'node:test';
 
 import {
   dependency_add,
+  epic_create,
   evidence_add,
+  project_create,
   ready_queue,
   review_request,
   review_submit,
@@ -50,7 +52,21 @@ describe('OpenCode Themis tools', () => {
   it('runs the public tool protocol from work item creation to accepted review', async () => {
     const root = mkdtempSync(join(tmpdir(), 'themis-tools-e2e-'));
     roots.push(root);
+    await call(project_create, { id: 'PRJ-E2E', name: 'E2E project', summary: 'Public tools project' }, root);
+    await call(
+      epic_create,
+      {
+        id: 'EPIC-E2E',
+        projectId: 'PRJ-E2E',
+        title: 'E2E epic',
+        summary: 'Public tools epic',
+        goal: 'Validate organization',
+      },
+      root,
+    );
     const itemArgs = (title: string) => ({
+      projectId: 'PRJ-E2E',
+      epicId: 'EPIC-E2E',
       title,
       summary: `${title} summary`,
       acceptanceCriteria: [`${title} is complete`],
@@ -71,6 +87,8 @@ describe('OpenCode Themis tools', () => {
       sprint_propose,
       {
         goal: 'Validate the OpenCode local protocol',
+        projectId: 'PRJ-E2E',
+        epicIds: ['EPIC-E2E'],
         why: 'The tools must enforce the workflow before product integration',
         what: 'A complete accepted execution path',
         how: 'Use public OpenCode tools and independent review',
@@ -86,7 +104,7 @@ describe('OpenCode Themis tools', () => {
     await call(sprint_approve, { sprintId, revisionId }, root);
     await call(sprint_activate, { sprintId, revisionId }, root);
 
-    const queue = await call(ready_queue, { sprintId }, root);
+    const queue = await call(ready_queue, { projectId: 'PRJ-E2E', sprintId }, root);
     assert.deepEqual(
       (queue as unknown as Array<{ id: string }>).map((item) => item.id),
       [firstId],

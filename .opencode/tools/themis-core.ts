@@ -15,6 +15,8 @@ type WorkItemStatus =
   | 'cancelled';
 
 type SprintStatus = 'draft' | 'proposed' | 'approved' | 'active' | 'closed';
+type ProjectStatus = 'active' | 'archived';
+type EpicStatus = 'draft' | 'active' | 'done' | 'cancelled';
 type ReviewVerdict = 'accepted' | 'rejected';
 type RunStatus = 'running' | 'completed' | 'failed';
 type EvidenceKind = 'verification' | 'implementation-diff' | 'command' | 'observation';
@@ -24,6 +26,8 @@ type WorkItem = {
   title: string;
   summary: string;
   status: WorkItemStatus;
+  projectId: string;
+  epicId?: string;
   acceptanceCriteria: string[];
   scopeIn: string[];
   scopeOut: string[];
@@ -42,9 +46,11 @@ type Dependency = {
 type SprintRevision = {
   id: string;
   sprintId: string;
+  projectId: string;
   version: number;
   status: 'proposed' | 'approved';
   workItemIds: string[];
+  epicIds: string[];
   why: string;
   what: string;
   how: string;
@@ -57,10 +63,35 @@ type SprintRevision = {
 
 type Sprint = {
   id: string;
+  projectId: string;
   goal: string;
   status: SprintStatus;
   activeRevisionId?: string;
   createdAt: string;
+};
+
+type Project = {
+  id: string;
+  name: string;
+  summary: string;
+  status: ProjectStatus;
+  createdAt: string;
+};
+
+type Epic = {
+  id: string;
+  projectId: string;
+  title: string;
+  summary: string;
+  goal: string;
+  status: EpicStatus;
+  createdAt: string;
+};
+
+type SprintMembership = {
+  sprintId: string;
+  workItemId: string;
+  addedAt: string;
 };
 
 type AgentRun = {
@@ -94,10 +125,13 @@ type Review = {
 };
 
 type ThemisState = {
-  schemaVersion: 1;
+  schemaVersion: 2;
+  projects: Project[];
+  epics: Epic[];
   workItems: WorkItem[];
   dependencies: Dependency[];
   sprints: Sprint[];
+  sprintItems: SprintMembership[];
   revisions: SprintRevision[];
   runs: AgentRun[];
   evidence: Evidence[];
@@ -115,23 +149,45 @@ type ThemisEvent = {
   payload: Record<string, unknown>;
 };
 
+type WorkspaceStatus = {
+  initialized: boolean;
+  stateFileExists: boolean;
+  eventsFileExists: boolean;
+  counts: {
+    projects: number;
+    epics: number;
+    workItems: number;
+    sprints: number;
+  };
+};
+
+type TimelineEntry = ThemisEvent;
+
 type Clock = () => string;
 
 type SprintProposalInput = Omit<
   SprintRevision,
-  'id' | 'sprintId' | 'version' | 'status' | 'createdAt' | 'approvedAt'
+  'id' | 'sprintId' | 'projectId' | 'version' | 'status' | 'createdAt' | 'approvedAt' | 'epicIds'
 > & {
   goal: string;
+  projectId?: string;
+  epicIds?: string[];
   sprintId?: string;
 };
+
+type ProjectInput = Omit<Project, 'createdAt' | 'status'> & { status?: ProjectStatus };
+type EpicInput = Omit<Epic, 'createdAt' | 'status'> & { status?: EpicStatus };
 
 const defaultClock: Clock = () => new Date().toISOString();
 
 const emptyState = (): ThemisState => ({
-  schemaVersion: 1,
+  schemaVersion: 2,
+  projects: [],
+  epics: [],
   workItems: [],
   dependencies: [],
   sprints: [],
+  sprintItems: [],
   revisions: [],
   runs: [],
   evidence: [],
@@ -147,6 +203,102 @@ const paths = (root: string) => {
   };
 };
 
+const readEvents = (root: string): ThemisEvent[] => {
+  const location = paths(root).events;
+  if (!existsSync(location)) return [];
+  return readFileSync(location, 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as ThemisEvent);
+};
+
+const workspaceStatus = (root: string): WorkspaceStatus => {
+  const location = paths(root);
+  const stateFileExists = existsSync(location.state);
+  const eventsFileExists = existsSync(location.events);
+  if (!stateFileExists && !eventsFileExists) {
+    return {
+      initialized: false,
+      stateFileExists,
+      eventsFileExists,
+      counts: { projects: 0, epics: 0, workItems: 0, sprints: 0 },
+    };
+  }
+  const state = readState(root);
+  return {
+    initialized: true,
+    stateFileExists,
+    eventsFileExists,
+    counts: {
+      projects: state.projects.length,
+      epics: state.epics.length,
+      workItems: state.workItems.length,
+      sprints: state.sprints.length,
+    },
+  };
+};
+
+const migrateState = (raw: Partial<ThemisState>): ThemisState => {
+  const state = {
+    ...emptyState(),
+    ...raw,
+    projects: raw.projects ?? [],
+    epics: raw.epics ?? [],
+    workItems: raw.workItems ?? [],
+    dependencies: raw.dependencies ?? [],
+    sprints: raw.sprints ?? [],
+    sprintItems: raw.sprintItems ?? [],
+    revisions: raw.revisions ?? [],
+    runs: raw.runs ?? [],
+    evidence: raw.evidence ?? [],
+    reviews: raw.reviews ?? [],
+  } as ThemisState;
+  const defaultProjectId = 'PRJ-LOCAL';
+  if (
+    (state.workItems.some((item) => !item.projectId) || state.sprints.some((sprint) => !sprint.projectId)) &&
+    !state.projects.some((project) => project.id === defaultProjectId)
+  ) {
+    state.projects.push({
+      id: defaultProjectId,
+      name: 'Local workspace',
+      summary: 'Default project for local workflow items',
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    });
+  }
+  for (const item of state.workItems) {
+    item.projectId ||= defaultProjectId;
+    if (
+      item.sprintId &&
+      !state.sprintItems.some(
+        (membership) => membership.workItemId === item.id && membership.sprintId === item.sprintId,
+      )
+    ) {
+      state.sprintItems.push({ sprintId: item.sprintId, workItemId: item.id, addedAt: new Date().toISOString() });
+    }
+  }
+  for (const sprint of state.sprints) {
+    sprint.projectId ||=
+      state.sprintItems
+        .filter((membership) => membership.sprintId === sprint.id)
+        .map((membership) => state.workItems.find((item) => item.id === membership.workItemId)?.projectId)
+        .find((projectId): projectId is string => projectId !== undefined) ?? defaultProjectId;
+  }
+  for (const revision of state.revisions) {
+    revision.projectId ||=
+      state.sprints.find((sprint) => sprint.id === revision.sprintId)?.projectId ?? defaultProjectId;
+    revision.epicIds ||= [
+      ...new Set(
+        revision.workItemIds
+          .map((id) => state.workItems.find((item) => item.id === id)?.epicId)
+          .filter((id): id is string => id !== undefined),
+      ),
+    ];
+  }
+  state.schemaVersion = 2;
+  return state;
+};
+
 const readState = (root: string): ThemisState => {
   const location = paths(root);
   mkdirSync(location.directory, { recursive: true });
@@ -156,7 +308,11 @@ const readState = (root: string): ThemisState => {
     return state;
   }
 
-  return JSON.parse(readFileSync(location.state, 'utf8')) as ThemisState;
+  const raw = JSON.parse(readFileSync(location.state, 'utf8')) as Partial<ThemisState>;
+  const state = migrateState(raw);
+  if (raw.schemaVersion !== state.schemaVersion)
+    writeFileSync(location.state, JSON.stringify(state, null, 2) + '\n', 'utf8');
+  return state;
 };
 
 const writeState = (root: string, state: ThemisState): void => {
@@ -225,6 +381,92 @@ const requireSprint = (state: ThemisState, id: string): Sprint => {
   return sprint;
 };
 
+const requireProject = (state: ThemisState, id: string): Project => {
+  const project = state.projects.find((candidate) => candidate.id === id);
+  if (!project) throw new ThemisError(`Project not found: ${id}`);
+  return project;
+};
+
+const requireEpic = (state: ThemisState, id: string): Epic => {
+  const epic = state.epics.find((candidate) => candidate.id === id);
+  if (!epic) throw new ThemisError(`Epic not found: ${id}`);
+  return epic;
+};
+
+const ensureDefaultProject = (state: ThemisState, clock: Clock): Project => {
+  const existing = state.projects.find((project) => project.id === 'PRJ-LOCAL');
+  if (existing) return existing;
+  const project: Project = {
+    id: 'PRJ-LOCAL',
+    name: 'Local workspace',
+    summary: 'Default project for local workflow validation',
+    status: 'active',
+    createdAt: clock(),
+  };
+  state.projects.push(project);
+  return project;
+};
+
+const sprintMemberships = (state: ThemisState, sprintId: string): SprintMembership[] =>
+  state.sprintItems.filter((membership) => membership.sprintId === sprintId);
+
+const itemSprintIds = (state: ThemisState, workItemId: string): string[] =>
+  state.sprintItems
+    .filter((membership) => membership.workItemId === workItemId)
+    .map((membership) => membership.sprintId);
+
+const createProject = (
+  root: string,
+  input: ProjectInput,
+  actor = 'human:planner',
+  clock: Clock = defaultClock,
+): Project =>
+  mutate(
+    root,
+    actor,
+    'project.created',
+    'project',
+    input.id,
+    (state) => {
+      if (state.projects.some((project) => project.id === input.id))
+        throw new ThemisError(`Project already exists: ${input.id}`);
+      const project: Project = {
+        ...input,
+        summary: input.summary ?? '',
+        status: input.status ?? 'active',
+        createdAt: clock(),
+      };
+      state.projects.push(project);
+      return project;
+    },
+    (project) => ({ projectId: project.id, status: project.status }),
+    clock,
+  );
+
+const createEpic = (root: string, input: EpicInput, actor = 'agent:planner', clock: Clock = defaultClock): Epic =>
+  mutate(
+    root,
+    actor,
+    'epic.created',
+    'epic',
+    input.id,
+    (state) => {
+      requireProject(state, input.projectId);
+      if (state.epics.some((epic) => epic.id === input.id)) throw new ThemisError(`Epic already exists: ${input.id}`);
+      const epic: Epic = {
+        ...input,
+        summary: input.summary ?? '',
+        goal: input.goal ?? '',
+        status: input.status ?? 'active',
+        createdAt: clock(),
+      };
+      state.epics.push(epic);
+      return epic;
+    },
+    (epic) => ({ epicId: epic.id, projectId: epic.projectId, status: epic.status }),
+    clock,
+  );
+
 const requireRun = (state: ThemisState, id: string): AgentRun => {
   const run = state.runs.find((candidate) => candidate.id === id);
   if (!run) throw new ThemisError(`Run not found: ${id}`);
@@ -280,7 +522,11 @@ const mutate = <T>(
 
 const createWorkItem = (
   root: string,
-  input: Omit<WorkItem, 'id' | 'status'> & { id?: string },
+  input: Omit<WorkItem, 'id' | 'status' | 'projectId' | 'epicId'> & {
+    id?: string;
+    projectId?: string;
+    epicId?: string;
+  },
   actor = 'agent:planner',
   clock: Clock = defaultClock,
 ): WorkItem =>
@@ -291,6 +537,13 @@ const createWorkItem = (
     'work_item',
     input.id ?? 'pending',
     (state) => {
+      const project = input.projectId ? requireProject(state, input.projectId) : ensureDefaultProject(state, clock);
+      if (project.status !== 'active') throw new ThemisError(`Project is not active: ${project.id}`);
+      if (input.epicId) {
+        const epic = requireEpic(state, input.epicId);
+        if (epic.projectId !== project.id)
+          throw new ThemisError(`${input.epicId} does not belong to project ${project.id}`);
+      }
       const id =
         input.id ??
         nextId(
@@ -298,7 +551,7 @@ const createWorkItem = (
           state.workItems.map((item) => item.id),
         );
       if (state.workItems.some((item) => item.id === id)) throw new ThemisError(`Work item already exists: ${id}`);
-      const item: WorkItem = { ...input, id, status: 'draft' };
+      const item: WorkItem = { ...input, id, projectId: project.id, status: 'draft' };
       state.workItems.push(item);
       return item;
     },
@@ -329,7 +582,9 @@ const transitionWorkItem = (
       if (to === 'ready') requireFieldsForReady(item);
       if (
         to === 'planned' &&
-        (!item.sprintId || !state.sprints.some((sprint) => sprint.id === item.sprintId && sprint.status === 'active'))
+        !itemSprintIds(state, id).some((sprintId) =>
+          state.sprints.some((sprint) => sprint.id === sprintId && sprint.status === 'active'),
+        )
       ) {
         throw new ThemisError(`${id} cannot move to planned without an active sprint`);
       }
@@ -399,9 +654,25 @@ const proposeSprint = (
     'sprint',
     input.sprintId ?? 'pending',
     (state) => {
+      const firstItem = requireWorkItem(state, input.workItemIds[0] ?? '');
+      const projectId = input.projectId ?? firstItem.projectId;
+      const project = requireProject(state, projectId);
+      if (project.status !== 'active') throw new ThemisError(`Project is not active: ${projectId}`);
       for (const id of input.workItemIds) {
         const item = requireWorkItem(state, id);
         if (item.status !== 'ready') throw new ThemisError(`${id} must be ready before sprint planning`);
+        if (item.projectId !== projectId) throw new ThemisError(`${id} does not belong to project ${projectId}`);
+      }
+      const epicIds = input.epicIds ?? [
+        ...new Set(
+          input.workItemIds
+            .map((id) => requireWorkItem(state, id).epicId)
+            .filter((id): id is string => id !== undefined),
+        ),
+      ];
+      for (const epicId of epicIds) {
+        const epic = requireEpic(state, epicId);
+        if (epic.projectId !== projectId) throw new ThemisError(`${epicId} does not belong to project ${projectId}`);
       }
       const sprintId =
         input.sprintId ??
@@ -411,7 +682,10 @@ const proposeSprint = (
         );
       const sprint = state.sprints.find((candidate) => candidate.id === sprintId);
       if (sprint && sprint.status === 'active') throw new ThemisError(`${sprintId} is already active`);
-      if (!sprint) state.sprints.push({ id: sprintId, goal: input.goal, status: 'proposed', createdAt: clock() });
+      if (sprint && sprint.projectId !== projectId)
+        throw new ThemisError(`${sprintId} does not belong to project ${projectId}`);
+      if (!sprint)
+        state.sprints.push({ id: sprintId, projectId, goal: input.goal, status: 'proposed', createdAt: clock() });
       const version = state.revisions.filter((revision) => revision.sprintId === sprintId).length + 1;
       const revision: SprintRevision = {
         ...input,
@@ -420,7 +694,9 @@ const proposeSprint = (
           state.revisions.map((candidate) => candidate.id),
         ),
         sprintId,
+        projectId,
         version,
+        epicIds,
         status: 'proposed',
         createdAt: clock(),
       };
@@ -446,6 +722,8 @@ const approveSprint = (
     sprintId,
     (state) => {
       const sprint = requireSprint(state, sprintId);
+      const project = requireProject(state, sprint.projectId);
+      if (project.status !== 'active') throw new ThemisError(`Project is not active: ${project.id}`);
       if (sprint.status !== 'proposed' && sprint.status !== 'draft')
         throw new ThemisError(`${sprintId} cannot be approved from ${sprint.status}`);
       const revision = state.revisions.find(
@@ -476,19 +754,26 @@ const activateSprint = (
     sprintId,
     (state) => {
       const sprint = requireSprint(state, sprintId);
+      const project = requireProject(state, sprint.projectId);
+      if (project.status !== 'active') throw new ThemisError(`Project is not active: ${project.id}`);
       const revision = state.revisions.find(
         (candidate) =>
           candidate.id === revisionId && candidate.sprintId === sprintId && candidate.status === 'approved',
       );
       if (!revision) throw new ThemisError(`${revisionId} must be approved before activation`);
-      if (state.sprints.some((candidate) => candidate.status === 'active'))
-        throw new ThemisError('Only one sprint can be active in the local prototype');
+      if (state.sprints.some((candidate) => candidate.projectId === sprint.projectId && candidate.status === 'active'))
+        throw new ThemisError(`Project ${sprint.projectId} already has an active sprint`);
       sprint.status = 'active';
       sprint.activeRevisionId = revisionId;
       for (const id of revision.workItemIds) {
         const item = requireWorkItem(state, id);
         if (item.status !== 'ready') throw new ThemisError(`${id} must be ready before sprint activation`);
         requireFieldsForReady(item);
+        const activeMembership = itemSprintIds(state, id).find((membershipSprintId) =>
+          state.sprints.some((candidate) => candidate.id === membershipSprintId && candidate.status === 'active'),
+        );
+        if (activeMembership) throw new ThemisError(`${id} is already assigned to active sprint ${activeMembership}`);
+        state.sprintItems.push({ sprintId, workItemId: id, addedAt: clock() });
         item.sprintId = sprintId;
         item.status = 'planned';
       }
@@ -498,17 +783,26 @@ const activateSprint = (
     clock,
   );
 
-const readyQueue = (root: string, sprintId: string): Array<{ id: string; title: string; whyReady: string[] }> => {
+const readyQueue = (
+  root: string,
+  sprintId: string,
+  projectId?: string,
+): Array<{ id: string; title: string; projectId: string; epicId?: string; whyReady: string[] }> => {
   const state = readState(root);
   const sprint = requireSprint(state, sprintId);
   if (sprint.status !== 'active') throw new ThemisError(`${sprintId} is not active`);
+  if (projectId && sprint.projectId !== projectId)
+    throw new ThemisError(`${sprintId} does not belong to project ${projectId}`);
+  const membershipIds = new Set(sprintMemberships(state, sprintId).map((membership) => membership.workItemId));
   return state.workItems
-    .filter((item) => item.sprintId === sprintId && item.status === 'planned')
+    .filter((item) => membershipIds.has(item.id) && item.projectId === sprint.projectId && item.status === 'planned')
     .map((item) => ({ item, blockers: blockingDependencies(state, item.id) }))
     .filter(({ blockers }) => blockers.length === 0)
     .map(({ item }) => ({
       id: item.id,
       title: item.title,
+      projectId: item.projectId,
+      epicId: item.epicId,
       whyReady: ['sprint is active', 'dependencies are complete', 'no open run exists', 'verification strategy exists'],
     }));
 };
@@ -516,18 +810,45 @@ const readyQueue = (root: string, sprintId: string): Array<{ id: string; title: 
 const validateState = (root: string): { valid: boolean; errors: string[]; counts: Record<string, number> } => {
   const state = readState(root);
   const errors: string[] = [];
+  const projectIds = new Set(state.projects.map((project) => project.id));
+  const epicIds = new Set(state.epics.map((epic) => epic.id));
   const workItemIds = new Set(state.workItems.map((item) => item.id));
   const sprintIds = new Set(state.sprints.map((sprint) => sprint.id));
   const runIds = new Set(state.runs.map((run) => run.id));
   const reviewIds = new Set(state.reviews.map((review) => review.id));
 
+  for (const epic of state.epics) {
+    if (!projectIds.has(epic.projectId)) errors.push(`${epic.id} references missing project ${epic.projectId}`);
+  }
+  for (const sprint of state.sprints) {
+    if (!projectIds.has(sprint.projectId)) errors.push(`${sprint.id} references missing project ${sprint.projectId}`);
+  }
   for (const dependency of state.dependencies) {
     if (!workItemIds.has(dependency.from)) errors.push(`Dependency source not found: ${dependency.from}`);
     if (!workItemIds.has(dependency.to)) errors.push(`Dependency target not found: ${dependency.to}`);
   }
   for (const item of state.workItems) {
+    if (!projectIds.has(item.projectId)) errors.push(`${item.id} references missing project ${item.projectId}`);
+    if (item.epicId && !epicIds.has(item.epicId)) errors.push(`${item.id} references missing epic ${item.epicId}`);
+    if (item.epicId && state.epics.find((epic) => epic.id === item.epicId)?.projectId !== item.projectId) {
+      errors.push(`${item.id} crosses its epic project boundary`);
+    }
     if (item.sprintId && !sprintIds.has(item.sprintId))
       errors.push(`${item.id} references missing sprint ${item.sprintId}`);
+  }
+  for (const membership of state.sprintItems) {
+    if (!sprintIds.has(membership.sprintId)) errors.push(`Membership references missing sprint ${membership.sprintId}`);
+    if (!workItemIds.has(membership.workItemId))
+      errors.push(`Membership references missing work item ${membership.workItemId}`);
+    const sprint = state.sprints.find((candidate) => candidate.id === membership.sprintId);
+    const item = state.workItems.find((candidate) => candidate.id === membership.workItemId);
+    if (sprint && item && sprint.projectId !== item.projectId)
+      errors.push(`${membership.workItemId} crosses its sprint project boundary`);
+  }
+  for (const project of state.projects) {
+    if (state.sprints.filter((sprint) => sprint.projectId === project.id && sprint.status === 'active').length > 1) {
+      errors.push(`${project.id} has more than one active sprint`);
+    }
   }
   for (const evidence of state.evidence) {
     if (!runIds.has(evidence.runId)) errors.push(`${evidence.id} references missing run ${evidence.runId}`);
@@ -544,14 +865,92 @@ const validateState = (root: string): { valid: boolean; errors: string[]; counts
     errors,
     counts: {
       workItems: state.workItems.length,
+      projects: state.projects.length,
+      epics: state.epics.length,
       dependencies: state.dependencies.length,
       sprints: state.sprints.length,
+      sprintItems: state.sprintItems.length,
       revisions: state.revisions.length,
       runs: state.runs.length,
       evidence: state.evidence.length,
       reviews: state.reviews.length,
     },
   };
+};
+
+const listProjects = (root: string): Project[] => readState(root).projects;
+
+const listWorkItems = (
+  root: string,
+  filters: { projectId?: string; epicId?: string; sprintId?: string } = {},
+): WorkItem[] => {
+  const state = readState(root);
+  const sprintWorkItemIds = filters.sprintId
+    ? new Set(sprintMemberships(state, filters.sprintId).map((membership) => membership.workItemId))
+    : undefined;
+  return state.workItems.filter(
+    (item) =>
+      (!filters.projectId || item.projectId === filters.projectId) &&
+      (!filters.epicId || item.epicId === filters.epicId) &&
+      (!sprintWorkItemIds || sprintWorkItemIds.has(item.id)),
+  );
+};
+
+const listEpics = (root: string, projectId?: string): Epic[] => {
+  const state = readState(root);
+  return projectId ? state.epics.filter((epic) => epic.projectId === projectId) : state.epics;
+};
+
+const listSprints = (root: string, projectId?: string): Sprint[] => {
+  const state = readState(root);
+  return projectId ? state.sprints.filter((sprint) => sprint.projectId === projectId) : state.sprints;
+};
+
+const timeline = (root: string, projectId?: string): TimelineEntry[] => {
+  const events = readEvents(root);
+  if (!projectId) return events;
+  const state = readState(root);
+  const projectEntityIds = new Set<string>([projectId]);
+  state.epics.filter((epic) => epic.projectId === projectId).forEach((epic) => projectEntityIds.add(epic.id));
+  state.workItems.filter((item) => item.projectId === projectId).forEach((item) => projectEntityIds.add(item.id));
+  state.sprints.filter((sprint) => sprint.projectId === projectId).forEach((sprint) => projectEntityIds.add(sprint.id));
+  state.revisions
+    .filter((revision) => revision.projectId === projectId)
+    .forEach((revision) => projectEntityIds.add(revision.id));
+  state.runs.filter((run) => projectEntityIds.has(run.workItemId)).forEach((run) => projectEntityIds.add(run.id));
+  state.reviews
+    .filter((review) => projectEntityIds.has(review.workItemId))
+    .forEach((review) => projectEntityIds.add(review.id));
+  return events.filter((event) => {
+    const payloadIds = Object.values(event.payload).filter((value): value is string => typeof value === 'string');
+    return projectEntityIds.has(event.aggregateId) || payloadIds.some((id) => projectEntityIds.has(id));
+  });
+};
+
+const portfolio = (
+  root: string,
+): Array<{
+  project: Project;
+  activeSprint?: Sprint;
+  epics: number;
+  workItems: number;
+  ready: number;
+  blocked: number;
+}> => {
+  const state = readState(root);
+  return state.projects.map((project) => {
+    const activeSprint = state.sprints.find((sprint) => sprint.projectId === project.id && sprint.status === 'active');
+    const workItems = state.workItems.filter((item) => item.projectId === project.id);
+    const ready = activeSprint ? readyQueue(root, activeSprint.id).length : 0;
+    return {
+      project,
+      activeSprint,
+      epics: state.epics.filter((epic) => epic.projectId === project.id).length,
+      workItems: workItems.length,
+      ready,
+      blocked: workItems.filter((item) => item.status === 'blocked').length,
+    };
+  });
 };
 
 const claimWorkItem = (
@@ -570,6 +969,13 @@ const claimWorkItem = (
     (state) => {
       const item = requireWorkItem(state, id);
       if (item.status !== 'planned') throw new ThemisError(`${id} cannot be claimed from ${item.status}`);
+      if (
+        !itemSprintIds(state, id).some((sprintId) =>
+          state.sprints.some((sprint) => sprint.id === sprintId && sprint.status === 'active'),
+        )
+      ) {
+        throw new ThemisError(`${id} cannot be claimed without membership in an active sprint`);
+      }
       const blockers = blockingDependencies(state, id);
       if (blockers.length > 0)
         throw new ThemisError(`${id} is blocked by: ${blockers.map((blocker) => blocker.id).join(', ')}`);
@@ -759,29 +1165,45 @@ export {
   activateSprint,
   claimWorkItem,
   createWorkItem,
+  createEpic,
+  createProject,
   finishRun,
+  listEpics,
+  listProjects,
+  listSprints,
+  listWorkItems,
   paths,
+  portfolio,
   proposeSprint,
   readState,
   readyQueue,
   requestReview,
   startRun,
   submitReview,
+  timeline,
   transitionWorkItem,
   validateState,
+  workspaceStatus,
   ThemisError,
 };
 
 export type {
   AgentRun,
   Dependency,
+  Epic,
+  EpicStatus,
   Evidence,
   EvidenceKind,
+  Project,
+  ProjectStatus,
   Review,
   ReviewVerdict,
   Sprint,
+  SprintMembership,
   SprintRevision,
   ThemisState,
+  TimelineEntry,
+  WorkspaceStatus,
   WorkItem,
   WorkItemStatus,
 };

@@ -7,7 +7,7 @@ description: Use when an OpenCode executor must claim and implement one ready Th
 
 The executor must follow this sequence:
 
-1. Call `themis_ready_queue`.
+1. Call `themis_ready_queue` with the explicit project and sprint identifiers.
 2. Select one item returned by the queue.
 3. Call `themis_work_claim`.
 4. Call `themis_run_start`.

@@ -12,6 +12,23 @@ The prototype stores operational state locally:
 planning/                human-readable planning artifacts
 ```
 
+The planning hierarchy is:
+
+```text
+Project
+└── Epic
+    └── Work items
+
+Project
+└── Sprint
+    └── Sprint memberships for selected work items
+```
+
+An epic can span multiple sprints. A work item belongs to one project and may
+belong to an epic, while sprint membership is tracked separately. Each project
+can have one active sprint; different projects can have active sprints at the
+same time.
+
 Do not edit either runtime file directly. Use the CLI or `themis_*` OpenCode
 tools so state transitions and audit events stay consistent.
 
@@ -55,7 +72,56 @@ Use OpenCode for agent-driven planning and execution:
 The default agent is `themis-coordinator`. It delegates to the planner,
 executor, verifier, and reviewer agents.
 
-## 3. Complete Workflow
+For the first interaction in a workspace, use the onboarding command:
+
+```text
+/themis-onboard
+```
+
+The coordinator first calls `themis_workspace_status`. A new workspace enters
+a context interview before any project or planning entity is created. An
+initialized workspace is inspected with repository exploration (or Graphify
+when available), then the findings are reported and confirmed with the user
+before new epics, work items, or sprints are planned.
+
+Agents that do not have OpenCode's custom tools can load the
+`.opencode/skills/themis-onboarding/SKILL.md` skill and use the CLI. This
+supports discovery and task management, but the complete delegated execution,
+evidence, approval, and review control plane requires OpenCode.
+
+## 3. Organize the Portfolio
+
+Create projects and epics before creating scoped work items:
+
+```bash
+pnpm themis project-create \
+  --id PRJ-001 \
+  --name "Repository platform" \
+  --summary "Shared repository infrastructure"
+
+pnpm themis epic-create \
+  --id EPIC-001 \
+  --project PRJ-001 \
+  --title "Repository adapter" \
+  --goal "Expose a reliable repository boundary"
+```
+
+Inspect the portfolio:
+
+```bash
+pnpm themis portfolio --json
+pnpm themis project-list --json
+pnpm themis epic-list --project PRJ-001 --json
+pnpm themis work-list --project PRJ-001 --epic EPIC-001 --json
+pnpm themis sprint-list --project PRJ-001 --json
+pnpm themis workspace-status --json
+pnpm themis timeline --project PRJ-001 --json
+```
+
+The CLI and tools reject work items, epics, and sprints that cross project
+boundaries.
+
+## 4. Complete Workflow
 
 The lifecycle is deliberately gated:
 
@@ -73,7 +139,7 @@ work item
   -> accepted/done or rejected/rework
 ```
 
-### 3.1 Create Work Items
+### 4.1 Create Work Items
 
 Create a draft item with explicit scope and verification:
 
@@ -82,6 +148,8 @@ pnpm themis work-create \
   --id THM-001 \
   --title "Create repository adapter" \
   --summary "Add the local repository adapter used by the workflow." \
+  --project PRJ-001 \
+  --epic EPIC-001 \
   --acceptance "Adapter is callable,Adapter errors are explicit" \
   --scope-in "libs/repository/**,tests/repository/**" \
   --scope-out "apps/web/**,database/**" \
@@ -102,7 +170,7 @@ pnpm themis status
 pnpm themis validate
 ```
 
-### 3.2 Add Dependencies
+### 4.2 Add Dependencies
 
 The first argument blocks the second:
 
@@ -113,7 +181,7 @@ pnpm themis dependency-add --from THM-001 --to THM-002 --json
 Blocked items never appear in the ready queue until their blocking items are
 `done`.
 
-### 3.3 Propose a Sprint
+### 4.3 Propose a Sprint
 
 All selected items must already be `ready`:
 
@@ -123,6 +191,8 @@ pnpm themis sprint-propose \
   --why "The adapter is required before downstream work can start" \
   --what "A tested repository integration" \
   --how "Implement the adapter, verify it, and review the evidence" \
+  --project PRJ-001 \
+  --epics EPIC-001 \
   --work-items "THM-001,THM-002" \
   --non-goals "SQLite migration,Themis dashboard" \
   --done "Acceptance criteria pass,Verification evidence exists,Review is accepted" \
@@ -134,7 +204,7 @@ Save the returned `sprintId` and revision `id`. A later proposal for the same
 sprint should pass `--sprint <sprint-id>` to create a new revision instead of
 overwriting the previous one.
 
-### 3.4 Approve and Activate
+### 4.4 Approve and Activate
 
 Approval is a human gate. Inspect the proposal before running these commands:
 
@@ -153,16 +223,16 @@ pnpm themis sprint-activate \
 Activation assigns the selected work items to the active sprint and calculates
 the executable baseline. It does not claim work.
 
-### 3.5 Inspect Ready Work
+### 4.5 Inspect Ready Work
 
 ```bash
-pnpm themis ready --sprint SPR-001
-pnpm themis ready --sprint SPR-001 --json
+pnpm themis ready --project PRJ-001 --sprint SPR-001
+pnpm themis ready --project PRJ-001 --sprint SPR-001 --json
 ```
 
 Only planned items with completed blocking dependencies are returned.
 
-### 3.6 Claim and Start a Run
+### 4.6 Claim and Start a Run
 
 ```bash
 pnpm themis claim \
@@ -179,7 +249,7 @@ pnpm themis run-start \
 The run identifier returned by `run-start` is required for evidence and run
 completion.
 
-### 3.7 Record Evidence
+### 4.7 Record Evidence
 
 At minimum, record an implementation diff and verification result:
 
@@ -202,7 +272,7 @@ pnpm themis evidence-add \
 Do not record a command as passed without its observed output. Do not place
 secrets in evidence values.
 
-### 3.8 Finish and Request Review
+### 4.8 Finish and Request Review
 
 ```bash
 pnpm themis run-finish \
@@ -220,7 +290,7 @@ pnpm themis review-request \
 Review cannot be requested until the run is completed and both required
 evidence kinds exist.
 
-### 3.9 Accept or Reject
+### 4.9 Accept or Reject
 
 Use an independent reviewer:
 
@@ -235,7 +305,7 @@ pnpm themis review-submit \
 An accepted review moves the work item to `done`. A rejected review moves it
 to `rework` and preserves the feedback.
 
-## 4. OpenCode Roles
+## 5. OpenCode Roles
 
 | Role                 | Responsibility                                  | Code editing  |
 | -------------------- | ----------------------------------------------- | ------------- |
@@ -260,7 +330,7 @@ The underlying tools are available to OpenCode as names such as
 `themis_workitem_create`, `themis_sprint_activate`, `themis_ready_queue`,
 `themis_run_start`, `themis_evidence_add`, and `themis_review_submit`.
 
-## 5. Inspect History
+## 6. Inspect History
 
 Print the latest events:
 
@@ -273,7 +343,7 @@ The event log is append-only and contains the actor, event type, aggregate,
 timestamp, and payload. The normalized current state remains in
 `.themis/state.json`.
 
-## 6. Reset Local Runtime State
+## 7. Reset Local Runtime State
 
 Only reset local state when you intentionally want to discard the prototype's
 current workflow:
@@ -285,7 +355,7 @@ pnpm themis validate
 
 This does not remove versioned planning artifacts or the fixture.
 
-## 7. Verification
+## 8. Verification
 
 Run the complete local prototype suite:
 
@@ -297,7 +367,7 @@ The suite covers the domain state machine, public OpenCode tools, CLI lifecycle,
 and TUI rendering. For the repository's full validation, use the normal Nx
 targets and the pre-push hook.
 
-## 8. Troubleshooting
+## 9. Troubleshooting
 
 ### OpenCode does not show the new agents or tools
 

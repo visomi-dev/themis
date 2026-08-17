@@ -57,9 +57,40 @@ describe('Themis CLI', () => {
     assert.equal(output.counts.ready, 1);
   });
 
+  it('exposes first-run status and project-scoped timeline commands', () => {
+    const root = mkdtempSync(join(tmpdir(), 'themis-cli-onboarding-'));
+    roots.push(root);
+
+    const initial = runCli(root, ['workspace-status']);
+    assert.equal(initial.initialized, false);
+    runCli(root, ['project-create', '--id', 'PRJ-ONBOARD', '--name', 'Onboarding project']);
+
+    const status = runCli(root, ['workspace-status']);
+    assert.equal(status.initialized, true);
+    const entries = runCli(root, ['timeline', '--project', 'PRJ-ONBOARD']) as unknown as Array<{
+      aggregateId: string;
+    }>;
+    assert.deepEqual(
+      entries.map((entry) => entry.aggregateId),
+      ['PRJ-ONBOARD'],
+    );
+  });
+
   it('executes the operational lifecycle through CLI commands', () => {
     const root = mkdtempSync(join(tmpdir(), 'themis-cli-e2e-'));
     roots.push(root);
+    runCli(root, ['project-create', '--id', 'PRJ-CLI', '--name', 'CLI project', '--summary', 'CLI project summary']);
+    runCli(root, [
+      'epic-create',
+      '--id',
+      'EPIC-CLI',
+      '--project',
+      'PRJ-CLI',
+      '--title',
+      'CLI epic',
+      '--goal',
+      'Validate CLI organization',
+    ]);
     const common = (id: string, title: string) => [
       'work-create',
       '--id',
@@ -68,6 +99,10 @@ describe('Themis CLI', () => {
       title,
       '--summary',
       `${title} summary`,
+      '--project',
+      'PRJ-CLI',
+      '--epic',
+      'EPIC-CLI',
       '--acceptance',
       'Acceptance is satisfied',
       '--scope-in',
@@ -94,6 +129,10 @@ describe('Themis CLI', () => {
       'Run all commands with JSON output',
       '--work-items',
       'THM-CLI-001,THM-CLI-002',
+      '--project',
+      'PRJ-CLI',
+      '--epics',
+      'EPIC-CLI',
       '--done',
       'Review accepted',
       '--verify',
@@ -103,7 +142,7 @@ describe('Themis CLI', () => {
     const revisionId = String(proposal.id);
     runCli(root, ['sprint-approve', '--sprint', sprintId, '--revision', revisionId]);
     runCli(root, ['sprint-activate', '--sprint', sprintId, '--revision', revisionId]);
-    const ready = runCli(root, ['ready', '--sprint', sprintId]);
+    const ready = runCli(root, ['ready', '--project', 'PRJ-CLI', '--sprint', sprintId]);
     assert.equal((ready as unknown as Array<{ id: string }>)[0]?.id, 'THM-CLI-001');
     runCli(root, ['claim', '--id', 'THM-CLI-001', '--agent', 'cli-executor']);
     const run = runCli(root, ['run-start', '--work-item', 'THM-CLI-001', '--agent', 'cli-executor']);

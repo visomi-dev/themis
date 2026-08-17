@@ -27,8 +27,9 @@ const statuses: WorkItemStatus[] = [
   'cancelled',
 ];
 
-const activeSprint = (state: ThemisState, sprintId?: string): Sprint | undefined =>
-  state.sprints.find((sprint) => sprint.id === sprintId) ?? state.sprints.find((sprint) => sprint.status === 'active');
+const activeSprint = (state: ThemisState, sprintId?: string, projectId?: string): Sprint | undefined =>
+  state.sprints.find((sprint) => sprint.id === sprintId && (!projectId || sprint.projectId === projectId)) ??
+  state.sprints.find((sprint) => sprint.status === 'active' && (!projectId || sprint.projectId === projectId));
 
 const countWorkItems = (items: WorkItem[]): WorkItemCounts => {
   const counts = Object.fromEntries(statuses.map((status) => [status, 0])) as WorkItemCounts;
@@ -36,13 +37,24 @@ const countWorkItems = (items: WorkItem[]): WorkItemCounts => {
   return counts;
 };
 
-const summarizeSprint = (root: string, sprintId?: string): SprintSummary => {
+const summarizeSprint = (root: string, sprintId?: string, projectId?: string): SprintSummary => {
   const state = readState(root);
-  const sprint = activeSprint(state, sprintId);
-  const items = sprint ? state.workItems.filter((item) => item.sprintId === sprint.id) : state.workItems;
+  const sprint = activeSprint(state, sprintId, projectId);
+  const membershipIds = sprint
+    ? new Set(
+        state.sprintItems
+          .filter((membership) => membership.sprintId === sprint.id)
+          .map((membership) => membership.workItemId),
+      )
+    : undefined;
+  const items = sprint
+    ? state.workItems.filter((item) => membershipIds?.has(item.id))
+    : projectId
+      ? state.workItems.filter((item) => item.projectId === projectId)
+      : state.workItems;
   const ready =
     sprint?.status === 'active'
-      ? readyQueue(root, sprint.id)
+      ? readyQueue(root, sprint.id, projectId)
           .map(({ id }) => state.workItems.find((item) => item.id === id))
           .filter((item): item is WorkItem => item !== undefined)
       : [];

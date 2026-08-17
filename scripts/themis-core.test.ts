@@ -10,6 +10,8 @@ import {
   addEvidence,
   approveSprint,
   claimWorkItem,
+  createEpic,
+  createProject,
   createWorkItem,
   finishRun,
   proposeSprint,
@@ -17,8 +19,10 @@ import {
   requestReview,
   startRun,
   submitReview,
+  timeline,
   transitionWorkItem,
   validateState,
+  workspaceStatus,
 } from '../.opencode/tools/themis-core.ts';
 
 const roots: string[] = [];
@@ -47,6 +51,25 @@ const itemInput = (title: string) => ({
 });
 
 describe('local Themis workflow', () => {
+  it('detects first-run workspaces and scopes the audit timeline by project', () => {
+    const root = createFixture();
+    assert.deepEqual(workspaceStatus(root), {
+      initialized: false,
+      stateFileExists: false,
+      eventsFileExists: false,
+      counts: { projects: 0, epics: 0, workItems: 0, sprints: 0 },
+    });
+
+    createProject(root, { id: 'PRJ-ONE', name: 'One', summary: 'First project' }, 'human:test', clock);
+    createProject(root, { id: 'PRJ-TWO', name: 'Two', summary: 'Second project' }, 'human:test', clock);
+
+    assert.equal(workspaceStatus(root).initialized, true);
+    assert.deepEqual(
+      timeline(root, 'PRJ-ONE').map((event) => event.aggregateId),
+      ['PRJ-ONE'],
+    );
+  });
+
   it('executes the complete proposal to accepted review flow', () => {
     const root = createFixture();
     const first = createWorkItem(root, itemInput('Create adapter'), 'agent:planner', clock);
@@ -187,5 +210,86 @@ describe('local Themis workflow', () => {
       () => transitionWorkItem(root, item.id, 'done', 'agent:planner', clock),
       /cannot move from draft to done/,
     );
+  });
+
+  it('scopes active sprints by project and keeps epic ownership explicit', () => {
+    const root = createFixture();
+    createProject(root, { id: 'PRJ-A', name: 'Project A', summary: 'First project' }, 'human:test', clock);
+    createProject(root, { id: 'PRJ-B', name: 'Project B', summary: 'Second project' }, 'human:test', clock);
+    createEpic(
+      root,
+      { id: 'EPIC-A', projectId: 'PRJ-A', title: 'Epic A', summary: 'A', goal: 'Deliver A' },
+      'agent:planner',
+      clock,
+    );
+    createEpic(
+      root,
+      { id: 'EPIC-B', projectId: 'PRJ-B', title: 'Epic B', summary: 'B', goal: 'Deliver B' },
+      'agent:planner',
+      clock,
+    );
+    const itemA = createWorkItem(
+      root,
+      { ...itemInput('Project A item'), projectId: 'PRJ-A', epicId: 'EPIC-A' },
+      'agent:planner',
+      clock,
+    );
+    const itemB = createWorkItem(
+      root,
+      { ...itemInput('Project B item'), projectId: 'PRJ-B', epicId: 'EPIC-B' },
+      'agent:planner',
+      clock,
+    );
+    transitionWorkItem(root, itemA.id, 'ready', 'agent:planner', clock);
+    transitionWorkItem(root, itemB.id, 'ready', 'agent:planner', clock);
+
+    const revisionA = proposeSprint(
+      root,
+      {
+        projectId: 'PRJ-A',
+        epicIds: ['EPIC-A'],
+        goal: 'Ship project A increment',
+        why: 'A has independent delivery',
+        what: 'A increment',
+        how: 'Implement and verify A',
+        workItemIds: [itemA.id],
+        nonGoals: [],
+        definitionOfDone: ['Review accepted'],
+        verificationStrategy: ['node --test'],
+      },
+      'agent:planner',
+      clock,
+    );
+    const revisionB = proposeSprint(
+      root,
+      {
+        projectId: 'PRJ-B',
+        epicIds: ['EPIC-B'],
+        goal: 'Ship project B increment',
+        why: 'B has independent delivery',
+        what: 'B increment',
+        how: 'Implement and verify B',
+        workItemIds: [itemB.id],
+        nonGoals: [],
+        definitionOfDone: ['Review accepted'],
+        verificationStrategy: ['node --test'],
+      },
+      'agent:planner',
+      clock,
+    );
+    approveSprint(root, revisionA.sprintId, revisionA.id, 'human:owner', clock);
+    approveSprint(root, revisionB.sprintId, revisionB.id, 'human:owner', clock);
+    activateSprint(root, revisionA.sprintId, revisionA.id, 'human:owner', clock);
+    activateSprint(root, revisionB.sprintId, revisionB.id, 'human:owner', clock);
+
+    assert.deepEqual(
+      readyQueue(root, revisionA.sprintId, 'PRJ-A').map((item) => item.id),
+      [itemA.id],
+    );
+    assert.deepEqual(
+      readyQueue(root, revisionB.sprintId, 'PRJ-B').map((item) => item.id),
+      [itemB.id],
+    );
+    assert.equal(validateState(root).valid, true);
   });
 });

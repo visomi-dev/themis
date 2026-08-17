@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "stateFile": ".themis/state.json",
   "eventsFile": ".themis/events.ndjson",
   "workflow": {
