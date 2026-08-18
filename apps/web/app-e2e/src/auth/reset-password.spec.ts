@@ -47,8 +47,7 @@ async function provisionVerifiedUser(request, email, password) {
 }
 
 test.describe('/app/reset-password', () => {
-  const suffix = Date.now().toString();
-  const email = `engineer+reset-spec-${suffix}@themis.visomi.dev`;
+  const email = 'engineer+e2e-reset-password@themis.visomi.dev';
   const password = 'S3cureAuth!';
 
   test.beforeAll(async ({ request }) => {

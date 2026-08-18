@@ -1,0 +1,266 @@
+import { Router, type NextFunction } from 'express';
+
+import { authed, authedContext } from '../auth/auth-middleware';
+import { getValidated, validateRequest } from '../shared/http/route-schemas';
+
+import {
+  deviceApprovalSchema,
+  deviceCreateSchema,
+  deviceEnrollmentSchema,
+  deviceRouteParamsSchema,
+  deviceRecoverySchema,
+  deviceSyncQuerySchema,
+  opaqueEnvelopeRequestSchema,
+  opaqueSyncOpenApiPaths,
+  opaqueSyncParamsSchema,
+  opaqueSyncQuerySchema,
+} from './opaque-sync-schemas';
+
+import { DeviceIdentityError, HttpError, httpResponse, opaqueSyncStore, deviceIdentityStore } from 'shared';
+import { getProject } from 'projects';
+
+const opaqueSyncRouter = Router();
+
+async function authorizeWorkspace(req: Parameters<typeof authedContext>[0], workspaceId: string) {
+  const context = authedContext(req);
+  const workspace = await getProject(context, workspaceId);
+
+  if (!workspace) {
+    throw new HttpError({
+      code: 'workspace_not_found',
+      message: 'The workspace could not be found.',
+      statusCode: 404,
+    });
+  }
+
+  return context;
+}
+
+function nextDeviceError(next: NextFunction, error: unknown): void {
+  next(
+    new HttpError({
+      code: 'device_lifecycle_rejected',
+      message: error instanceof DeviceIdentityError ? error.message : 'The device operation was rejected.',
+      statusCode: 409,
+    }),
+  );
+}
+
+opaqueSyncRouter.use(authed());
+
+opaqueSyncRouter.post(
+  '/:workspaceId/devices',
+  validateRequest({ body: deviceCreateSchema, params: opaqueSyncParamsSchema }),
+  async function createDevice(req, res, next) {
+    const { params, body } = getValidated<{ params: typeof opaqueSyncParamsSchema; body: typeof deviceCreateSchema }>(
+      req,
+    );
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      httpResponse.json(res, {
+        data: deviceIdentityStore.createIdentity(
+          context.accountId,
+          body!.publicKey,
+          body!.label,
+          new Date(),
+          params!.workspaceId,
+        ),
+        message: 'Device created.',
+      });
+    } catch (error) {
+      nextDeviceError(next, error);
+    }
+  },
+);
+
+opaqueSyncRouter.get(
+  '/:workspaceId/devices',
+  validateRequest({ params: opaqueSyncParamsSchema }),
+  async function listDevices(req, res) {
+    const { params } = getValidated<{ params: typeof opaqueSyncParamsSchema }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    httpResponse.json(res, {
+      data: { devices: deviceIdentityStore.listDevices(context.accountId) },
+      message: 'Devices retrieved.',
+    });
+  },
+);
+
+opaqueSyncRouter.get(
+  '/:workspaceId/devices/audit',
+  validateRequest({ params: opaqueSyncParamsSchema }),
+  async function listDeviceAudit(req, res) {
+    const { params } = getValidated<{ params: typeof opaqueSyncParamsSchema }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    httpResponse.json(res, {
+      data: {
+        events: deviceIdentityStore
+          .auditEvents(context.accountId)
+          .filter((event) => event.workspaceId === params!.workspaceId),
+      },
+      message: 'Device audit events retrieved.',
+    });
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/devices/:deviceId/approval',
+  validateRequest({ body: deviceApprovalSchema, params: deviceRouteParamsSchema }),
+  async function approveWorkspace(req, res, next) {
+    const { params, body } = getValidated<{
+      params: typeof deviceRouteParamsSchema;
+      body: typeof deviceApprovalSchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      if (params!.deviceId !== body!.approverDeviceId) {
+        throw new DeviceIdentityError('Approval device does not match the route.');
+      }
+      deviceIdentityStore.approveWorkspace(context.accountId, params!.workspaceId, params!.deviceId);
+      httpResponse.json(res, {
+        data: { workspaceId: params!.workspaceId, approvedByDeviceId: body!.approverDeviceId },
+        message: 'Workspace enrollment approved.',
+      });
+    } catch (error) {
+      nextDeviceError(next, error);
+    }
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/devices/:deviceId/enroll',
+  validateRequest({ body: deviceEnrollmentSchema, params: deviceRouteParamsSchema }),
+  async function enrollDevice(req, res, next) {
+    const { params, body } = getValidated<{
+      params: typeof deviceRouteParamsSchema;
+      body: typeof deviceEnrollmentSchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      httpResponse.json(res, {
+        data: deviceIdentityStore.enrollDevice(
+          context.accountId,
+          params!.deviceId,
+          params!.workspaceId,
+          body!.approverDeviceId,
+          body!.envelope,
+        ),
+        message: 'Device enrolled.',
+      });
+    } catch (error) {
+      nextDeviceError(next, error);
+    }
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/devices/:deviceId/revoke',
+  validateRequest({ params: deviceRouteParamsSchema }),
+  async function revokeDevice(req, res, next) {
+    const { params } = getValidated<{ params: typeof deviceRouteParamsSchema }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      deviceIdentityStore.revokeDevice(context.accountId, params!.deviceId, new Date(), params!.workspaceId);
+      httpResponse.json(res, { data: { deviceId: params!.deviceId, status: 'revoked' }, message: 'Device revoked.' });
+    } catch (error) {
+      nextDeviceError(next, error);
+    }
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/devices/recover',
+  validateRequest({ body: deviceRecoverySchema, params: opaqueSyncParamsSchema }),
+  async function recoverDevice(req, res, next) {
+    const { params, body } = getValidated<{ params: typeof opaqueSyncParamsSchema; body: typeof deviceRecoverySchema }>(
+      req,
+    );
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      httpResponse.json(res, {
+        data: deviceIdentityStore.recoverDevice(
+          context.accountId,
+          body!.lostDeviceId,
+          body!.replacementDeviceId,
+          params!.workspaceId,
+          body!.approverDeviceId,
+          body!.envelope,
+        ),
+        message: 'Device recovered.',
+      });
+    } catch (error) {
+      nextDeviceError(next, error);
+    }
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/envelopes',
+  validateRequest({ body: opaqueEnvelopeRequestSchema, params: opaqueSyncParamsSchema }),
+  async function appendOpaqueEnvelopeHandler(req, res, next) {
+    const { params } = getValidated<{ params: typeof opaqueSyncParamsSchema }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      const { body, params } = getValidated<{
+        body: typeof opaqueEnvelopeRequestSchema;
+        params: typeof opaqueSyncParamsSchema;
+      }>(req);
+
+      deviceIdentityStore.authorizeSync(
+        context.accountId,
+        body!.deviceId,
+        params!.workspaceId,
+        body!.enrollmentVersion,
+      );
+      const result = opaqueSyncStore.append(context.accountId, params!.workspaceId, body!.envelope);
+
+      httpResponse.json(res, { data: result, status: result.duplicate ? 200 : 201, message: 'Envelope accepted.' });
+    } catch {
+      next(
+        new HttpError({
+          code: 'opaque_envelope_rejected',
+          message: 'The encrypted envelope was rejected.',
+          statusCode: 409,
+        }),
+      );
+    }
+  },
+);
+
+opaqueSyncRouter.get(
+  '/:workspaceId/envelopes',
+  validateRequest({ params: opaqueSyncParamsSchema, query: opaqueSyncQuerySchema.merge(deviceSyncQuerySchema) }),
+  async function listOpaqueEnvelopesHandler(req, res, next) {
+    const { params, query } = getValidated<{
+      params: typeof opaqueSyncParamsSchema;
+      query: typeof opaqueSyncQuerySchema & typeof deviceSyncQuerySchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      deviceIdentityStore.authorizeSync(
+        context.accountId,
+        query!.deviceId,
+        params!.workspaceId,
+        query!.enrollmentVersion,
+      );
+    } catch (error) {
+      nextDeviceError(next, error);
+
+      return;
+    }
+    const envelopes = opaqueSyncStore.list(context.accountId, params!.workspaceId, query!.afterCursor, query!.limit);
+
+    httpResponse.json(res, { data: { envelopes }, message: 'Envelopes retrieved.' });
+  },
+);
+
+export { opaqueSyncOpenApiPaths, opaqueSyncRouter };

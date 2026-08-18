@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-
 import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
 import { clearMailbox, readLatestPin } from './mailbox';
@@ -23,8 +21,10 @@ type VerificationOptions = {
 
 const postVerificationUrlPattern = /\/app\/en\/(dashboard|activation)$/;
 
+let credentialIndex = 0;
+
 export const createCredentials = () => ({
-  email: `engineer+${randomUUID()}@themis.visomi.dev`,
+  email: `engineer+e2e-${credentialIndex++}@themis.visomi.dev`,
   password: 'S3cureAuth!',
 });
 

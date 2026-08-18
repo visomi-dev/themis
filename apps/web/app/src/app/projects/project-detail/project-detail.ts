@@ -3,8 +3,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ProjectSeed } from '../../shared/jobs/project-seed';
 import { PROJECTS_URL } from '../../shared/constants/routes';
-import { ProjectsApi } from '../../shared/projects/projects';
 import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '../../shared/projects/projects.models';
+import { LocalAgentVisibility, type LocalAgentProjectView } from '../../shared/projects/local-agent-visibility';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Badge } from '../../shared/ui/data/badge/badge';
 import { Button } from '../../shared/ui/actions/button/button';
@@ -24,13 +24,17 @@ import { Loader } from '../../shared/ui/feedback/loader/loader';
 })
 export class ProjectDetail implements OnInit {
   private readonly projectSeed = inject(ProjectSeed);
-  private readonly projectsApi = inject(ProjectsApi);
+  private readonly localAgentVisibility = inject(LocalAgentVisibility);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   readonly errorMessage = signal('');
   readonly loading = signal(true);
   readonly project = signal<ProjectWithDocuments | null>(null);
+  readonly visibility = signal<LocalAgentProjectView | null>(null);
+  readonly visibilityState = signal<
+    'loading' | 'locked' | 'unavailable' | 'stale' | 'error' | 'unauthorized' | 'empty' | 'authorized'
+  >('loading');
   readonly seeding = signal(false);
   readonly projectsUrl = PROJECTS_URL;
 
@@ -88,6 +92,12 @@ export class ProjectDetail implements OnInit {
     }
   }
 
+  visibilityStatusLabel() {
+    const labels = { authorized: 'Available', empty: 'No approved content', stale: 'Stale', locked: 'Locked' } as const;
+
+    return labels[this.visibilityState() as keyof typeof labels] ?? 'Unavailable';
+  }
+
   statusLabel(status: ProjectStatus) {
     const labels: Record<ProjectStatus, string> = {
       active: 'Active',
@@ -114,8 +124,40 @@ export class ProjectDetail implements OnInit {
     this.errorMessage.set('');
 
     try {
-      this.project.set(await this.projectsApi.getProject(projectId));
+      const result = await this.localAgentVisibility.readProject(projectId);
+
+      if (result.kind !== 'success') {
+        this.visibilityState.set(result.kind);
+        this.errorMessage.set(result.message);
+
+        return;
+      }
+
+      const view = result.view;
+
+      this.visibility.set(view);
+      this.visibilityState.set(
+        view.state === 'authorized' && !view.context && view.activity.length === 0 ? 'empty' : view.state,
+      );
+      if (view.state === 'locked') {
+        return;
+      }
+      this.project.set({
+        accountId: '',
+        createdAt: view.project.updatedAt,
+        createdByUserId: '',
+        documents: [],
+        id: view.project.id,
+        jobs: [],
+        name: view.project.name,
+        slug: view.project.id,
+        sourceType: view.project.sourceType,
+        status: view.project.status,
+        summary: view.context,
+        updatedAt: view.project.updatedAt,
+      });
     } catch {
+      this.visibilityState.set('error');
       this.errorMessage.set('The project could not be loaded.');
     } finally {
       this.loading.set(false);

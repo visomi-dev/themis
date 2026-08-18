@@ -32,6 +32,18 @@ The authenticated product is `apps/web/app`, served below `/app` by the gateway.
 
 This is the product surface that will eventually consume an approved local-agent-mediated projection. Angular guards currently prove web authentication/activation, not device possession, project-key possession, or decryption authority.
 
+### Supported local-agent endpoint boundary
+
+For the current Angular visibility slice, the supported local-agent read endpoint is:
+
+```text
+GET http://127.0.0.1:4317/v1/product-visibility/projects/:projectId
+```
+
+`apps/web/app/src/app/shared/projects/local-agent-visibility.ts` is the sole browser-facing adapter for this boundary. The endpoint represents a local agent or equivalent loopback-mediated process that owns decryption and returns an approved projection. It is not an `apps/web/api` route, and Angular must not fall back to `/api/projects/:projectId` for protected context or activity. The cloud/API path remains an opaque metadata, authorization, and ciphertext-orchestration boundary; it is not plaintext authority for the displayed content.
+
+The adapter maps local-agent transport outcomes to explicit product states: `423` is locked, `401`/`403` is unauthorized, loopback/network failure is unavailable, and other failures are error. The endpoint, port, authentication handshake, and production packaging remain subject to the local-agent transport decision in the later architecture work; this documented loopback URL is the supported repository boundary for the v1 Angular integration, not a claim that a dedicated `themis-agent` Nx project already exists.
+
 ## Gateway and cloud-orchestrator seams
 
 `apps/web/server` is the public gateway, not a data authority. `src/gateway.ts` mounts:

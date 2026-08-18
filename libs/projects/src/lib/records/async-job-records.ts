@@ -14,11 +14,13 @@ function mapAsyncJob(record: typeof asyncJobs.$inferSelect): AsyncJobRecord {
   return {
     completedAt: record.completedAt?.toISOString() ?? null,
     createdAt: record.createdAt.toISOString(),
-    errorMessage: record.errorMessage ?? null,
+    // Job diagnostics may contain protected activity/context. Expose status
+    // metadata only until an agent-mediated projection exists.
+    errorMessage: null,
     id: record.id,
     progress: record.progress,
     projectId: record.projectId ?? null,
-    resultJson: record.resultJson ?? null,
+    resultJson: null,
     status: record.status as AsyncJobStatus,
     type: record.type as AsyncJobType,
     updatedAt: record.updatedAt.toISOString(),
@@ -39,7 +41,9 @@ async function createAsyncJob(
         accountId: context.accountId,
         createdAt: now,
         id: randomUUID(),
-        inputJson: data.inputJson ?? null,
+        // Inputs are retained only in the local agent; projectId is the
+        // approved routing metadata for this transition boundary.
+        inputJson: null,
         progress: 0,
         projectId: data.projectId ?? null,
         status: 'queued',
@@ -93,9 +97,9 @@ async function updateAsyncJob(
       .update(asyncJobs)
       .set({
         completedAt: data.completedAt ?? null,
-        errorMessage: data.errorMessage ?? null,
+        errorMessage: null,
         progress: data.progress ?? 0,
-        resultJson: data.resultJson ?? null,
+        resultJson: null,
         status: data.status,
         updatedAt: new Date(),
       })
