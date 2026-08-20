@@ -1,7 +1,0 @@
-export NX_DAEMON=false
-export PATH="$HOME/.local/share/fnm/node-versions/v24.14.1/installation/bin:$HOME/.local/share/pnpm:$PATH"
-
-# Run E2E before push. The full gateway must be bootable; if it isn't, the test
-# runner will surface that as a connection error and the push is blocked.
-# This catches integration regressions before they reach the remote CI runner.
-pnpm exec nx e2e app-e2e

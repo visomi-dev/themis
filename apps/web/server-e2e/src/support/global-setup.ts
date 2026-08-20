@@ -11,9 +11,9 @@ const SERVER_ENTRYPOINT = resolve(__dirname, '../../../../../dist/apps/web/serve
 const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?: string };
 
 module.exports = async function () {
-  const host = process.env.HOST ?? '127.0.0.1';
+  const host = process.env.HOST ?? 'localhost';
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+  const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
 
   const serverProcess = spawn(process.execPath, [SERVER_ENTRYPOINT], {
     detached: true,
@@ -23,6 +23,7 @@ module.exports = async function () {
       DATABASE_DRIVER: 'memory',
       ENABLE_TEST_API: 'true',
       HOST: host,
+      GATEWAY_PORT: String(port),
       MAIL_TRANSPORT: 'memory',
       NG_ALLOWED_HOSTS: host,
       PORT: String(port),
@@ -40,6 +41,18 @@ module.exports = async function () {
 
   try {
     await waitForPortOpen(port, { host });
+
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      try {
+        const response = await fetch(`http://${host}:${port}/healthz`, { signal: AbortSignal.timeout(1000) });
+
+        if (response.ok) break;
+      } catch {
+        // The TCP listener can be available before the Express app is ready.
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
   } catch (error) {
     serverProcess.kill('SIGTERM');
     throw error;

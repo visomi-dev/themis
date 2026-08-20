@@ -124,7 +124,6 @@ const projects = pgTable('projects', {
     .references(() => accounts.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   slug: text('slug').notNull(),
-  summary: text('summary'),
   status: text('status').notNull().default('active'),
   sourceType: text('source_type').notNull().default('manual'),
   createdByUserId: text('created_by_user_id')
@@ -145,7 +144,6 @@ const projectDocuments = pgTable('project_documents', {
   title: text('title').notNull(),
   documentType: text('document_type').notNull(),
   status: text('status').notNull().default('active'),
-  contentMarkdown: text('content_markdown').notNull(),
   source: text('source').notNull().default('manual'),
   createdByUserId: text('created_by_user_id')
     .notNull()
@@ -166,13 +164,122 @@ const asyncJobs = pgTable('async_jobs', {
   type: text('type').notNull(),
   status: text('status').notNull(),
   progress: integer('progress').default(0).notNull(),
-  inputJson: text('input_json'),
-  resultJson: text('result_json'),
-  errorMessage: text('error_message'),
   completedAt: timestamp('completed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+const opaqueSyncCursors = pgTable(
+  'opaque_sync_cursors',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    highWaterCursor: integer('high_water_cursor').notNull().default(0),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex('opaque_sync_cursors_account_workspace_idx').on(table.accountId, table.workspaceId)],
+);
+
+const opaqueSyncEnvelopes = pgTable(
+  'opaque_sync_envelopes',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    cursor: integer('cursor').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    recordType: text('record_type').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    tombstonedAt: timestamp('tombstoned_at', { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_envelopes_identity_idx').on(
+      table.accountId,
+      table.workspaceId,
+      table.envelopeId,
+      table.revision,
+    ),
+    uniqueIndex('opaque_sync_envelopes_cursor_idx').on(table.accountId, table.workspaceId, table.cursor),
+  ],
+);
+
+const opaqueSyncTombstones = pgTable(
+  'opaque_sync_tombstones',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_tombstones_identity_idx').on(
+      table.accountId,
+      table.workspaceId,
+      table.envelopeId,
+      table.revision,
+    ),
+  ],
+);
+
+const encryptedContextMetadata = pgTable(
+  'encrypted_context_metadata',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    projectId: text('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    sourceId: text('source_id').notNull(),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    recordType: text('record_type').notNull(),
+    state: text('state').notNull().default('active'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+    tombstonedAt: timestamp('tombstoned_at', { withTimezone: true }),
+  },
+  (table) => [uniqueIndex('encrypted_context_metadata_scope_idx').on(table.accountId, table.projectId, table.sourceId)],
+);
+
+const encryptedContextTombstones = pgTable(
+  'encrypted_context_tombstones',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    projectId: text('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    sourceId: text('source_id').notNull(),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('encrypted_context_tombstones_scope_idx').on(table.accountId, table.projectId, table.sourceId),
+  ],
+);
 
 export {
   accounts,
@@ -186,4 +293,9 @@ export {
   userSessions,
   userDevices,
   users,
+  opaqueSyncCursors,
+  opaqueSyncEnvelopes,
+  opaqueSyncTombstones,
+  encryptedContextMetadata,
+  encryptedContextTombstones,
 };

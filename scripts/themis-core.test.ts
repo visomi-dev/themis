@@ -8,19 +8,25 @@ import {
   activateSprint,
   addDependency,
   addEvidence,
+  addSprintEvidence,
   approveSprint,
   claimWorkItem,
+  closeSprint,
   createEpic,
   createProject,
   createWorkItem,
   finishRun,
+  flowReadyQueue,
   proposeSprint,
+  readState,
   readyQueue,
+  removeSprints,
   requestReview,
   startRun,
   submitReview,
   timeline,
   transitionWorkItem,
+  updateWorkItem,
   validateState,
   workspaceStatus,
 } from '../.opencode/tools/themis-core.ts';
@@ -131,6 +137,160 @@ describe('local Themis workflow', () => {
     assert.equal(validateState(root).valid, true);
     const events = readFileSync(join(root, '.themis/events.ndjson'), 'utf8').trim().split('\n');
     assert.equal(events.length, 15);
+  });
+
+  it('updates a completed item, reopens it for rework, and preserves its history', () => {
+    const root = createFixture();
+    const item = createWorkItem(root, itemInput('Update validation'), 'agent:planner', clock);
+    transitionWorkItem(root, item.id, 'ready', 'agent:planner', clock);
+    claimWorkItem(root, item.id, 'themis-executor', 'agent:executor', clock);
+    const run = startRun(root, item.id, 'themis-executor', 'agent:executor', clock);
+    addEvidence(root, run.id, 'implementation-diff', 'Diff', 'fixture', 'agent:executor', clock);
+    addEvidence(root, run.id, 'verification', 'Checks', 'PASS', 'agent:verifier', clock);
+    finishRun(root, run.id, 'completed', 'Checks passed', 'agent:verifier', clock);
+    const review = requestReview(root, item.id, 'themis-reviewer', 'agent:executor', clock);
+    submitReview(root, review.id, 'accepted', 'Accepted', 'agent:reviewer', clock);
+
+    const updated = updateWorkItem(
+      root,
+      item.id,
+      { verificationStrategy: ['[app-e2e][required] pnpm exec nx run app-e2e:e2e'] },
+      'agent:planner',
+      clock,
+    );
+
+    assert.equal(updated.status, 'rework');
+    assert.deepEqual(updated.verificationStrategy, ['[app-e2e][required] pnpm exec nx run app-e2e:e2e']);
+    assert.equal(readState(root).runs.length, 1);
+    assert.equal(readState(root).reviews[0]?.verdict, 'accepted');
+    assert.equal(timeline(root).at(-1)?.type, 'workitem.updated');
+
+    transitionWorkItem(root, item.id, 'claimed', 'agent:coordinator', clock);
+    assert.equal(readState(root).workItems[0]?.status, 'claimed');
+  });
+
+  it('requires final sprint evidence before closing and releases the project slot', () => {
+    const root = createFixture();
+    const item = createWorkItem(root, itemInput('Close sprint'), 'agent:planner', clock);
+    transitionWorkItem(root, item.id, 'ready', 'agent:planner', clock);
+    const revision = proposeSprint(
+      root,
+      {
+        goal: 'Close a verified sprint',
+        why: 'A completed sprint must release its project slot',
+        what: 'A formally closed sprint',
+        how: 'Complete the item, verify it, then close the sprint',
+        workItemIds: [item.id],
+        nonGoals: [],
+        definitionOfDone: ['Final sprint verification recorded'],
+        verificationStrategy: ['node --test scripts/themis-core.test.ts'],
+      },
+      'agent:planner',
+      clock,
+    );
+    approveSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+    activateSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+    assert.throws(() => closeSprint(root, revision.sprintId, 'PRJ-LOCAL', 'human:owner', clock), /unfinished work/);
+
+    claimWorkItem(root, item.id, 'themis-executor', 'agent:executor', clock);
+    const run = startRun(root, item.id, 'themis-executor', 'agent:executor', clock);
+    addEvidence(
+      root,
+      run.id,
+      'implementation-diff',
+      'Implementation exists',
+      'commit close-001',
+      'agent:executor',
+      clock,
+    );
+    addEvidence(root, run.id, 'verification', 'Item tests passed', 'node --test: PASS', 'agent:verifier', clock);
+    finishRun(root, run.id, 'completed', 'Verification passed', 'agent:verifier', clock);
+    const review = requestReview(root, item.id, 'themis-reviewer', 'agent:executor', clock);
+    submitReview(root, review.id, 'accepted', 'Acceptance criteria satisfied', 'agent:reviewer', clock);
+    assert.throws(
+      () => closeSprint(root, revision.sprintId, 'PRJ-LOCAL', 'human:owner', clock),
+      /missing final verification evidence/,
+    );
+
+    addSprintEvidence(
+      root,
+      revision.sprintId,
+      'verification',
+      'Sprint checks passed',
+      'node --test: PASS',
+      'agent:verifier',
+      clock,
+    );
+    const closed = closeSprint(root, revision.sprintId, 'PRJ-LOCAL', 'human:owner', clock);
+    assert.equal(closed.status, 'closed');
+    assert.equal(closed.closedBy, 'human:owner');
+
+    const nextItem = createWorkItem(root, itemInput('Start next sprint'), 'agent:planner', clock);
+    transitionWorkItem(root, nextItem.id, 'ready', 'agent:planner', clock);
+    const nextRevision = proposeSprint(
+      root,
+      {
+        goal: 'Start the next sprint',
+        why: 'The previous sprint is formally closed',
+        what: 'A new executable baseline',
+        how: 'Activate the next approved revision',
+        workItemIds: [nextItem.id],
+        nonGoals: [],
+        definitionOfDone: ['Next item is executable'],
+        verificationStrategy: ['node --test scripts/themis-core.test.ts'],
+      },
+      'agent:planner',
+      clock,
+    );
+    approveSprint(root, nextRevision.sprintId, nextRevision.id, 'human:owner', clock);
+    const nextSprint = activateSprint(root, nextRevision.sprintId, nextRevision.id, 'human:owner', clock);
+    assert.equal(nextSprint.status, 'active');
+    assert.equal(validateState(root).valid, true);
+  });
+
+  it('executes ready work through project flow without an active sprint', () => {
+    const root = createFixture();
+    const item = createWorkItem(root, itemInput('Flow item'), 'agent:planner', clock);
+    transitionWorkItem(root, item.id, 'ready', 'agent:planner', clock);
+
+    assert.deepEqual(
+      flowReadyQueue(root, 'PRJ-LOCAL').map((entry) => entry.id),
+      [item.id],
+    );
+    claimWorkItem(root, item.id, 'themis-executor', 'agent:executor', clock);
+    assert.equal(readFileSync(join(root, '.themis/state.json'), 'utf8').includes('"status": "claimed"'), true);
+  });
+
+  it('removes sprint planning state and returns planned work to project flow', () => {
+    const root = createFixture();
+    const item = createWorkItem(root, itemInput('Remove sprint state'), 'agent:planner', clock);
+    transitionWorkItem(root, item.id, 'ready', 'agent:planner', clock);
+    const revision = proposeSprint(
+      root,
+      {
+        goal: 'Temporary planning boundary',
+        why: 'Validate sprint removal',
+        what: 'A flow item without sprint state',
+        how: 'Activate and remove the planning boundary',
+        workItemIds: [item.id],
+        nonGoals: [],
+        definitionOfDone: ['Flow queue contains the item'],
+        verificationStrategy: ['node --test'],
+      },
+      'agent:planner',
+      clock,
+    );
+    approveSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+    activateSprint(root, revision.sprintId, revision.id, 'human:owner', clock);
+
+    const removed = removeSprints(root, undefined, 'human:owner', clock);
+    assert.deepEqual(removed.removedSprintIds, [revision.sprintId]);
+    assert.deepEqual(
+      flowReadyQueue(root, 'PRJ-LOCAL').map((entry) => entry.id),
+      [item.id],
+    );
+    assert.equal(readState(root).sprints.length, 0);
+    assert.equal(validateState(root).valid, true);
   });
 
   it('rejects blocked work and missing review evidence', () => {

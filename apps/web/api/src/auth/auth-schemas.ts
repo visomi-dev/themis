@@ -1,4 +1,11 @@
-import { challengeIdSchema, emailSchema, passwordSchema, pinSchema, z } from '../shared/http/route-schemas';
+import {
+  challengeIdSchema,
+  emailSchema,
+  passwordSchema,
+  pinSchema,
+  responseEnvelope,
+  z,
+} from '../shared/http/route-schemas';
 
 export const authUserSchema = z
   .object({
@@ -103,12 +110,19 @@ export const challengeOrAuthSchema = z
   .or(challengeSchema)
   .meta({ id: 'AuthChallengeOrAuthenticated' });
 
+const rateLimitResponse = {
+  429: {
+    content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } },
+    description: 'Too many attempts or requests; retry after the cooldown.',
+  },
+};
+
 export const authOpenApiPaths = {
   '/auth/session': {
     get: {
       responses: {
         200: {
-          content: { 'application/json': { schema: sessionResponseSchema } },
+          content: { 'application/json': { schema: responseEnvelope(sessionResponseSchema, 'AuthSessionEnvelope') } },
           description: 'Current authentication session.',
         },
       },
@@ -119,7 +133,7 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: credentialsSchema } } },
       responses: {
         201: {
-          content: { 'application/json': { schema: challengeSchema } },
+          content: { 'application/json': { schema: responseEnvelope(challengeSchema, 'AuthChallengeEnvelope') } },
           description: 'Sign-up challenge created.',
         },
       },
@@ -130,9 +144,14 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: challengeVerificationSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: authenticatedResponseSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(authenticatedResponseSchema, 'SignUpAuthenticatedEnvelope'),
+            },
+          },
           description: 'Sign-up verification complete.',
         },
+        ...rateLimitResponse,
       },
     },
   },
@@ -141,7 +160,11 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: credentialsSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: challengeOrAuthSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(challengeOrAuthSchema, 'AuthChallengeOrAuthenticatedEnvelope'),
+            },
+          },
           description: 'Sign-in challenge created or already verified.',
         },
       },
@@ -152,9 +175,14 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: challengeVerificationSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: authenticatedResponseSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(authenticatedResponseSchema, 'SignInAuthenticatedEnvelope'),
+            },
+          },
           description: 'Sign-in verification complete.',
         },
+        ...rateLimitResponse,
       },
     },
   },
@@ -163,9 +191,10 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: resendVerificationSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: challengeSchema } },
+          content: { 'application/json': { schema: responseEnvelope(challengeSchema, 'ResentAuthChallengeEnvelope') } },
           description: 'Verification challenge resent.',
         },
+        ...rateLimitResponse,
       },
     },
   },
@@ -179,7 +208,11 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: forgottenPasswordSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: challengeSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(challengeSchema.nullable(), 'OptionalAuthChallengeEnvelope'),
+            },
+          },
           description: 'Password reset challenge created.',
         },
       },
@@ -190,9 +223,14 @@ export const authOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: passwordResetVerifySchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: passwordResetSessionSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(passwordResetSessionSchema, 'PasswordResetVerifyEnvelope'),
+            },
+          },
           description: 'Reset session established.',
         },
+        ...rateLimitResponse,
       },
     },
   },
@@ -208,7 +246,11 @@ export const authOpenApiPaths = {
     get: {
       responses: {
         200: {
-          content: { 'application/json': { schema: passwordResetSessionSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(passwordResetSessionSchema, 'PasswordResetSessionStateEnvelope'),
+            },
+          },
           description: 'Current reset session state.',
         },
       },

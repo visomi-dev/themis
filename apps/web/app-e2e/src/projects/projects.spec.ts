@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
+import { mockAuthorizedProjectView } from '../support/projects';
 import { projectNewUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
@@ -44,6 +45,7 @@ test.describe('/app/projects', () => {
     await expect(nameInput).toBeVisible();
 
     await nameInput.fill('Test Web App');
+    await mockAuthorizedProjectView(page, 'Test Web App');
     await page.getByRole('button', { name: /Create project/i }).click();
 
     await expect(page).toHaveURL(/\/app\/en\/projects\/[^/]+$/);

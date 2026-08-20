@@ -34,6 +34,19 @@ async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
     app.use(...createAuthRuntimeMiddleware());
   }
 
+  app.use((req, res, next) => {
+    const supportedMethods = new Set(['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']);
+
+    if (!supportedMethods.has(req.method)) {
+      res.setHeader('Allow', 'GET, POST, PATCH, DELETE, OPTIONS, HEAD');
+      res.status(405).send({ code: 'method_not_allowed', message: 'The requested method is not allowed.' });
+
+      return;
+    }
+
+    next();
+  });
+
   app.get('/', (_req, res) => {
     res.send({ message: 'Hello Themis API' });
   });
@@ -44,6 +57,33 @@ async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
 
   app.get('/openapi.json', (_req, res) => {
     res.send(createOpenApiDocument());
+  });
+
+  const documentedRoutes = Object.entries(createOpenApiDocument().paths ?? {}).map(([template, pathItem]) => ({
+    methods: new Set(
+      Object.keys(pathItem)
+        .filter((key) => ['get', 'post', 'patch', 'delete', 'put', 'options', 'head'].includes(key))
+        .map((key) => key.toUpperCase()),
+    ),
+    template: template.split('/').filter(Boolean),
+  }));
+
+  app.use((req, res, next) => {
+    const requestPath = req.path.split('/').filter(Boolean);
+    const route = documentedRoutes.find(
+      ({ template }) =>
+        template.length === requestPath.length &&
+        template.every((segment, index) => segment.startsWith('{') || segment === requestPath[index]),
+    );
+
+    if (route && !route.methods.has(req.method)) {
+      res.setHeader('Allow', [...route.methods].join(', '));
+      res.status(405).send({ code: 'method_not_allowed', message: 'The requested method is not allowed.' });
+
+      return;
+    }
+
+    next();
   });
 
   app.use('/auth', authRouter);

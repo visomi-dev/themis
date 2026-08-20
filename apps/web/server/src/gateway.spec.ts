@@ -61,6 +61,24 @@ describe('createGatewayApp', () => {
     expect(angularResponse.text).toContain('<app-root>');
   });
 
+  it('mounts the authenticated same-origin local-agent boundary without using the cloud API', async () => {
+    const deps = createDeps();
+    const localAgentHandler = express();
+
+    localAgentHandler.get('/projects/project-1', (req, res) => {
+      res.send({ cookie: req.headers.cookie ?? null });
+    });
+    const app = createGatewayApp({ ...deps, localAgentHandler });
+
+    const response = await request(app)
+      .get('/v1/product-visibility/projects/project-1')
+      .set('Cookie', 'sid=authenticated-session');
+
+    expect(response.status).toBe(200);
+
+    expect(response.body).toEqual({ cookie: 'sid=authenticated-session' });
+  });
+
   it('sets gateway security headers with same-origin connect policy', async () => {
     const app = createGatewayApp(createDeps());
 

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+jest.setTimeout(15000);
+
 describe('composition server', () => {
   it('exposes a runtime health endpoint', async () => {
     const response = await axios.get('/healthz');

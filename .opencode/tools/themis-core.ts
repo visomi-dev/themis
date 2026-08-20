@@ -14,12 +14,17 @@ type WorkItemStatus =
   | 'rejected'
   | 'cancelled';
 
+type WorkItemUpdate = Partial<
+  Pick<WorkItem, 'title' | 'summary' | 'acceptanceCriteria' | 'scopeIn' | 'scopeOut' | 'verificationStrategy'>
+>;
+
 type SprintStatus = 'draft' | 'proposed' | 'approved' | 'active' | 'closed';
 type ProjectStatus = 'active' | 'archived';
 type EpicStatus = 'draft' | 'active' | 'done' | 'cancelled';
 type ReviewVerdict = 'accepted' | 'rejected';
 type RunStatus = 'running' | 'completed' | 'failed';
 type EvidenceKind = 'verification' | 'implementation-diff' | 'command' | 'observation';
+type SprintEvidenceKind = 'verification' | 'command' | 'observation';
 
 type WorkItem = {
   id: string;
@@ -68,6 +73,8 @@ type Sprint = {
   status: SprintStatus;
   activeRevisionId?: string;
   createdAt: string;
+  closedAt?: string;
+  closedBy?: string;
 };
 
 type Project = {
@@ -113,6 +120,23 @@ type Evidence = {
   createdAt: string;
 };
 
+type SprintEvidence = {
+  id: string;
+  sprintId: string;
+  kind: SprintEvidenceKind;
+  summary: string;
+  value: string;
+  createdAt: string;
+};
+
+type SprintRemovalSummary = {
+  removedSprintIds: string[];
+  removedRevisionIds: string[];
+  removedMemberships: number;
+  removedSprintEvidence: number;
+  resetPlannedWorkItems: string[];
+};
+
 type Review = {
   id: string;
   workItemId: string;
@@ -135,6 +159,7 @@ type ThemisState = {
   revisions: SprintRevision[];
   runs: AgentRun[];
   evidence: Evidence[];
+  sprintEvidence: SprintEvidence[];
   reviews: Review[];
 };
 
@@ -191,6 +216,7 @@ const emptyState = (): ThemisState => ({
   revisions: [],
   runs: [],
   evidence: [],
+  sprintEvidence: [],
   reviews: [],
 });
 
@@ -251,6 +277,7 @@ const migrateState = (raw: Partial<ThemisState>): ThemisState => {
     revisions: raw.revisions ?? [],
     runs: raw.runs ?? [],
     evidence: raw.evidence ?? [],
+    sprintEvidence: raw.sprintEvidence ?? [],
     reviews: raw.reviews ?? [],
   } as ThemisState;
   const defaultProjectId = 'PRJ-LOCAL';
@@ -497,7 +524,7 @@ const allowedTransitions: Record<WorkItemStatus, WorkItemStatus[]> = {
   in_progress: ['review', 'blocked'],
   review: ['done', 'rework', 'rejected'],
   rework: ['claimed', 'cancelled'],
-  done: [],
+  done: ['rework'],
   blocked: ['ready', 'cancelled'],
   rejected: ['draft', 'cancelled'],
   cancelled: [],
@@ -559,6 +586,48 @@ const createWorkItem = (
     clock,
   );
 
+const updateWorkItem = (
+  root: string,
+  id: string,
+  patch: WorkItemUpdate,
+  actor = 'agent:planner',
+  clock: Clock = defaultClock,
+): WorkItem =>
+  mutate(
+    root,
+    actor,
+    'workitem.updated',
+    'work_item',
+    id,
+    (state) => {
+      const item = requireWorkItem(state, id);
+      const changedFields = Object.keys(patch) as (keyof WorkItemUpdate)[];
+
+      if (changedFields.length === 0) throw new ThemisError(`${id} update has no fields`);
+
+      if (patch.title !== undefined) item.title = patch.title;
+      if (patch.summary !== undefined) item.summary = patch.summary;
+      if (patch.acceptanceCriteria !== undefined) item.acceptanceCriteria = patch.acceptanceCriteria;
+      if (patch.scopeIn !== undefined) item.scopeIn = patch.scopeIn;
+      if (patch.scopeOut !== undefined) item.scopeOut = patch.scopeOut;
+      if (patch.verificationStrategy !== undefined) item.verificationStrategy = patch.verificationStrategy;
+
+      const previousStatus = item.status;
+      if (previousStatus === 'done' || previousStatus === 'review') item.status = 'rework';
+
+      return { ...item, previousStatus, changedFields } as WorkItem & {
+        previousStatus: WorkItemStatus;
+        changedFields: (keyof WorkItemUpdate)[];
+      };
+    },
+    (item) => ({
+      previousStatus: item.previousStatus,
+      status: item.status,
+      changedFields: item.changedFields,
+    }),
+    clock,
+  );
+
 const transitionWorkItem = (
   root: string,
   id: string,
@@ -580,14 +649,6 @@ const transitionWorkItem = (
         throw new ThemisError(`${id} cannot move from ${from} to ${to}`);
       }
       if (to === 'ready') requireFieldsForReady(item);
-      if (
-        to === 'planned' &&
-        !itemSprintIds(state, id).some((sprintId) =>
-          state.sprints.some((sprint) => sprint.id === sprintId && sprint.status === 'active'),
-        )
-      ) {
-        throw new ThemisError(`${id} cannot move to planned without an active sprint`);
-      }
       if (to === 'claimed' && blockingDependencies(state, id).length > 0) {
         throw new ThemisError(
           `${id} is blocked by: ${blockingDependencies(state, id)
@@ -783,6 +844,142 @@ const activateSprint = (
     clock,
   );
 
+const addSprintEvidence = (
+  root: string,
+  sprintId: string,
+  kind: SprintEvidenceKind,
+  summary: string,
+  value: string,
+  actor = 'agent:verifier',
+  clock: Clock = defaultClock,
+): SprintEvidence =>
+  mutate(
+    root,
+    actor,
+    'sprint.evidence.added',
+    'sprint',
+    sprintId,
+    (state) => {
+      const sprint = requireSprint(state, sprintId);
+      if (sprint.status !== 'active') throw new ThemisError(`${sprintId} must be active before adding evidence`);
+      const evidence: SprintEvidence = {
+        id: nextId(
+          'SEVD',
+          state.sprintEvidence.map((entry) => entry.id),
+        ),
+        sprintId,
+        kind,
+        summary,
+        value,
+        createdAt: clock(),
+      };
+      state.sprintEvidence.push(evidence);
+      return evidence;
+    },
+    (evidence) => ({ sprintId: evidence.sprintId, evidenceId: evidence.id, kind: evidence.kind }),
+    clock,
+  );
+
+const closeSprint = (
+  root: string,
+  sprintId: string,
+  projectId: string,
+  actor = 'human:owner',
+  clock: Clock = defaultClock,
+): Sprint =>
+  mutate(
+    root,
+    actor,
+    'sprint.closed',
+    'sprint',
+    sprintId,
+    (state) => {
+      const sprint = requireSprint(state, sprintId);
+      if (sprint.projectId !== projectId) throw new ThemisError(`${sprintId} does not belong to project ${projectId}`);
+      if (sprint.status !== 'active') throw new ThemisError(`${sprintId} cannot be closed from ${sprint.status}`);
+      const memberships = sprintMemberships(state, sprintId);
+      const items = memberships.map(({ workItemId }) => requireWorkItem(state, workItemId));
+      const unfinished = items.filter((item) => item.status !== 'done' && item.status !== 'cancelled');
+      if (unfinished.length > 0)
+        throw new ThemisError(`Sprint has unfinished work: ${unfinished.map((item) => item.id).join(', ')}`);
+      const openRuns = state.runs.filter(
+        (run) => memberships.some(({ workItemId }) => workItemId === run.workItemId) && run.status === 'running',
+      );
+      if (openRuns.length > 0)
+        throw new ThemisError(`Sprint has open runs: ${openRuns.map((run) => run.id).join(', ')}`);
+      const pendingReviews = state.reviews.filter(
+        (review) => memberships.some(({ workItemId }) => workItemId === review.workItemId) && !review.verdict,
+      );
+      if (pendingReviews.length > 0)
+        throw new ThemisError(`Sprint has pending reviews: ${pendingReviews.map((review) => review.id).join(', ')}`);
+      const evidence = state.sprintEvidence.filter((entry) => entry.sprintId === sprintId);
+      if (!evidence.some((entry) => entry.kind === 'verification'))
+        throw new ThemisError(`${sprintId} is missing final verification evidence`);
+      sprint.status = 'closed';
+      sprint.closedAt = clock();
+      sprint.closedBy = actor;
+      return sprint;
+    },
+    (sprint) => ({
+      projectId: sprint.projectId,
+      sprintId: sprint.id,
+      revisionId: sprint.activeRevisionId,
+      status: sprint.status,
+    }),
+    clock,
+  );
+
+const removeSprints = (
+  root: string,
+  projectId?: string,
+  actor = 'human:owner',
+  clock: Clock = defaultClock,
+): SprintRemovalSummary =>
+  mutate(
+    root,
+    actor,
+    'sprints.removed',
+    'project',
+    projectId ?? 'workspace',
+    (state) => {
+      const sprintIds = new Set(
+        state.sprints.filter((sprint) => !projectId || sprint.projectId === projectId).map((sprint) => sprint.id),
+      );
+      const removedSprintIds = [...sprintIds];
+      const removedRevisionIds = state.revisions
+        .filter((revision) => sprintIds.has(revision.sprintId))
+        .map((revision) => revision.id);
+      const removedMemberships = state.sprintItems.filter((membership) => sprintIds.has(membership.sprintId)).length;
+      const removedSprintEvidence = state.sprintEvidence.filter((evidence) => sprintIds.has(evidence.sprintId)).length;
+      const resetPlannedWorkItems: string[] = [];
+
+      for (const item of state.workItems) {
+        if (item.sprintId && sprintIds.has(item.sprintId)) {
+          if (item.status === 'planned') {
+            item.status = 'ready';
+            resetPlannedWorkItems.push(item.id);
+          }
+          delete item.sprintId;
+        }
+      }
+
+      state.sprints = state.sprints.filter((sprint) => !sprintIds.has(sprint.id));
+      state.revisions = state.revisions.filter((revision) => !sprintIds.has(revision.sprintId));
+      state.sprintItems = state.sprintItems.filter((membership) => !sprintIds.has(membership.sprintId));
+      state.sprintEvidence = state.sprintEvidence.filter((evidence) => !sprintIds.has(evidence.sprintId));
+
+      return {
+        removedSprintIds,
+        removedRevisionIds,
+        removedMemberships,
+        removedSprintEvidence,
+        resetPlannedWorkItems,
+      };
+    },
+    (summary) => summary,
+    clock,
+  );
+
 const readyQueue = (
   root: string,
   sprintId: string,
@@ -804,6 +1001,36 @@ const readyQueue = (
       projectId: item.projectId,
       epicId: item.epicId,
       whyReady: ['sprint is active', 'dependencies are complete', 'no open run exists', 'verification strategy exists'],
+    }));
+};
+
+const flowReadyQueue = (
+  root: string,
+  projectId: string,
+  wipLimit?: number,
+): Array<{ id: string; title: string; projectId: string; epicId?: string; whyReady: string[] }> => {
+  const state = readState(root);
+  requireProject(state, projectId);
+  const activeWork = state.workItems.filter(
+    (item) =>
+      item.projectId === projectId &&
+      (item.status === 'claimed' || item.status === 'in_progress' || item.status === 'review'),
+  ).length;
+  if (wipLimit !== undefined && (!Number.isInteger(wipLimit) || wipLimit < 1)) {
+    throw new ThemisError('WIP limit must be a positive integer');
+  }
+  if (wipLimit !== undefined && activeWork >= wipLimit) return [];
+  return state.workItems
+    .filter((item) => item.projectId === projectId && (item.status === 'ready' || item.status === 'planned'))
+    .map((item) => ({ item, blockers: blockingDependencies(state, item.id) }))
+    .filter(({ blockers }) => blockers.length === 0)
+    .slice(0, wipLimit === undefined ? undefined : wipLimit - activeWork)
+    .map(({ item }) => ({
+      id: item.id,
+      title: item.title,
+      projectId: item.projectId,
+      epicId: item.epicId,
+      whyReady: ['project flow is active', 'dependencies are complete', 'no open run exists', 'verification strategy exists'],
     }));
 };
 
@@ -853,6 +1080,9 @@ const validateState = (root: string): { valid: boolean; errors: string[]; counts
   for (const evidence of state.evidence) {
     if (!runIds.has(evidence.runId)) errors.push(`${evidence.id} references missing run ${evidence.runId}`);
   }
+  for (const evidence of state.sprintEvidence) {
+    if (!sprintIds.has(evidence.sprintId)) errors.push(`${evidence.id} references missing sprint ${evidence.sprintId}`);
+  }
   for (const review of state.reviews) {
     if (!runIds.has(review.runId)) errors.push(`${review.id} references missing run ${review.runId}`);
   }
@@ -873,6 +1103,7 @@ const validateState = (root: string): { valid: boolean; errors: string[]; counts
       revisions: state.revisions.length,
       runs: state.runs.length,
       evidence: state.evidence.length,
+      sprintEvidence: state.sprintEvidence.length,
       reviews: state.reviews.length,
     },
   };
@@ -932,6 +1163,7 @@ const portfolio = (
 ): Array<{
   project: Project;
   activeSprint?: Sprint;
+  lastClosedSprint?: Sprint;
   epics: number;
   workItems: number;
   ready: number;
@@ -940,11 +1172,15 @@ const portfolio = (
   const state = readState(root);
   return state.projects.map((project) => {
     const activeSprint = state.sprints.find((sprint) => sprint.projectId === project.id && sprint.status === 'active');
+    const lastClosedSprint = state.sprints
+      .filter((sprint) => sprint.projectId === project.id && sprint.status === 'closed')
+      .sort((left, right) => (right.closedAt ?? '').localeCompare(left.closedAt ?? ''))[0];
     const workItems = state.workItems.filter((item) => item.projectId === project.id);
-    const ready = activeSprint ? readyQueue(root, activeSprint.id).length : 0;
+    const ready = flowReadyQueue(root, project.id).length;
     return {
       project,
       activeSprint,
+      lastClosedSprint,
       epics: state.epics.filter((epic) => epic.projectId === project.id).length,
       workItems: workItems.length,
       ready,
@@ -968,14 +1204,8 @@ const claimWorkItem = (
     id,
     (state) => {
       const item = requireWorkItem(state, id);
-      if (item.status !== 'planned') throw new ThemisError(`${id} cannot be claimed from ${item.status}`);
-      if (
-        !itemSprintIds(state, id).some((sprintId) =>
-          state.sprints.some((sprint) => sprint.id === sprintId && sprint.status === 'active'),
-        )
-      ) {
-        throw new ThemisError(`${id} cannot be claimed without membership in an active sprint`);
-      }
+      if (item.status !== 'ready' && item.status !== 'planned')
+        throw new ThemisError(`${id} cannot be claimed from ${item.status}`);
       const blockers = blockingDependencies(state, id);
       if (blockers.length > 0)
         throw new ThemisError(`${id} is blocked by: ${blockers.map((blocker) => blocker.id).join(', ')}`);
@@ -1163,10 +1393,13 @@ const submitReview = (
 export {
   addDependency,
   addEvidence,
+  addSprintEvidence,
   approveSprint,
   activateSprint,
   claimWorkItem,
+  closeSprint,
   createWorkItem,
+  updateWorkItem,
   createEpic,
   createProject,
   finishRun,
@@ -1179,7 +1412,9 @@ export {
   proposeSprint,
   readState,
   readyQueue,
+  flowReadyQueue,
   requestReview,
+  removeSprints,
   startRun,
   submitReview,
   timeline,
@@ -1201,6 +1436,9 @@ export type {
   Review,
   ReviewVerdict,
   Sprint,
+  SprintEvidence,
+  SprintEvidenceKind,
+  SprintRemovalSummary,
   SprintMembership,
   SprintRevision,
   ThemisState,
@@ -1208,4 +1446,5 @@ export type {
   WorkspaceStatus,
   WorkItem,
   WorkItemStatus,
+  WorkItemUpdate,
 };

@@ -20,14 +20,14 @@ Project
     └── Work items
 
 Project
-└── Sprint
+└── Optional sprint or goal window
     └── Sprint memberships for selected work items
 ```
 
 An epic can span multiple sprints. A work item belongs to one project and may
-belong to an epic, while sprint membership is tracked separately. Each project
-can have one active sprint; different projects can have active sprints at the
-same time.
+belong to an epic. Sprint membership is optional planning context. Each project
+can have one active sprint, while project-flow execution can continue without a
+sprint and different projects can have active sprints at the same time.
 
 Do not edit either runtime file directly. Use the CLI or `themis_*` OpenCode
 tools so state transitions and audit events stay consistent.
@@ -59,7 +59,7 @@ Use the TUI for visual inspection:
 pnpm themis tui
 ```
 
-The TUI displays sprint lanes, ready work, blocked work, active runs, and
+The TUI displays planning lanes, flow-ready work, blocked work, active runs, and
 reviews. Use `h` or Left Arrow for the previous lane, `l` or Right Arrow for
 the next lane, `r` to reload state, and `q`, Escape, or Ctrl-C to exit.
 
@@ -118,6 +118,37 @@ pnpm themis workspace-status --json
 pnpm themis timeline --project PRJ-001 --json
 ```
 
+Close a completed sprint only after its final verification has been recorded:
+
+```bash
+pnpm themis sprint-evidence-add \
+  --sprint SPR-001 \
+  --kind verification \
+  --summary "Sprint verification passed" \
+  --value "pnpm nx run shared:test: PASS"
+
+pnpm themis sprint-close \
+  --project PRJ-001 \
+  --sprint SPR-001 \
+  --json
+```
+
+An empty ready queue does not close a sprint. Closure requires terminal selected
+work, no open runs or reviews, and at least one final verification evidence
+entry. Closing the active sprint releases the project's single planning slot;
+project-flow execution does not wait for that closure.
+
+To intentionally remove all sprint planning state while preserving work items,
+runs, execution evidence, and reviews:
+
+```bash
+pnpm themis sprint-remove-all --json
+```
+
+Pass `--project PRJ-001` to limit the removal to one project. This operation
+removes sprints, sprint revisions, memberships, and sprint-level evidence. It
+returns `planned` items to `ready` and records an audit event.
+
 The CLI and tools reject work items, epics, and sprints that cross project
 boundaries.
 
@@ -128,15 +159,16 @@ The lifecycle is deliberately gated:
 ```text
 work item
   -> ready
-  -> sprint proposal
-  -> human approval
-  -> sprint activation
-  -> ready queue
+  -> project flow queue
   -> claim
   -> run
   -> evidence
   -> review
   -> accepted/done or rejected/rework
+
+optional human planning boundary:
+  specification -> sprint proposal -> approval -> activation
+  -> outcome inspection -> sprint evidence -> closure
 ```
 
 ### 4.1 Create Work Items
@@ -204,7 +236,7 @@ Save the returned `sprintId` and revision `id`. A later proposal for the same
 sprint should pass `--sprint <sprint-id>` to create a new revision instead of
 overwriting the previous one.
 
-### 4.4 Approve and Activate
+### 4.4 Approve and Activate (Optional Planning Boundary)
 
 Approval is a human gate. Inspect the proposal before running these commands:
 
@@ -220,8 +252,9 @@ pnpm themis sprint-activate \
   --json
 ```
 
-Activation assigns the selected work items to the active sprint and calculates
-the executable baseline. It does not claim work.
+Activation assigns the selected work items to the planning boundary and
+calculates an optional forecast baseline. It does not claim work and is not
+required before project-flow execution.
 
 ### 4.5 Inspect Ready Work
 
@@ -230,7 +263,14 @@ pnpm themis ready --project PRJ-001 --sprint SPR-001
 pnpm themis ready --project PRJ-001 --sprint SPR-001 --json
 ```
 
-Only planned items with completed blocking dependencies are returned.
+With a sprint filter, only planned items in that sprint with completed blocking
+dependencies are returned. Without a sprint filter, the project flow returns
+`ready` and `planned` items with completed dependencies:
+
+```bash
+pnpm themis ready --project PRJ-001
+pnpm themis ready --project PRJ-001 --wip 3
+```
 
 ### 4.6 Claim and Start a Run
 
@@ -247,7 +287,7 @@ pnpm themis run-start \
 ```
 
 The run identifier returned by `run-start` is required for evidence and run
-completion.
+completion. An active sprint is not required.
 
 ### 4.7 Record Evidence
 
@@ -335,8 +375,9 @@ allows verification agents to run tests, builds, lint, and E2E checks without a
 prompt for every command.
 
 The underlying tools are available to OpenCode as names such as
-`themis_workitem_create`, `themis_sprint_activate`, `themis_ready_queue`,
-`themis_run_start`, `themis_evidence_add`, and `themis_review_submit`.
+`themis_workitem_create`, `themis_sprint_activate`,
+`themis_flow_ready_queue`, `themis_ready_queue`, `themis_run_start`,
+`themis_evidence_add`, and `themis_review_submit`.
 
 ## 6. Inspect History
 
@@ -384,13 +425,19 @@ startup.
 
 ### `ready` reports no work
 
-Check that the sprint is active, selected work items are `planned`, and all
-blocking dependencies are `done`:
+For sprint-scoped work, check that the sprint is active, selected work items are
+`planned`, and all blocking dependencies are `done`:
 
 ```bash
 pnpm themis status --sprint SPR-001
 pnpm themis validate
 pnpm themis events --limit 50
+```
+
+For continuous project flow, inspect the project queue instead:
+
+```bash
+pnpm themis ready --project PRJ-001
 ```
 
 ### A transition is rejected

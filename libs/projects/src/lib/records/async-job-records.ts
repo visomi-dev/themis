@@ -14,9 +14,9 @@ function mapAsyncJob(record: typeof asyncJobs.$inferSelect): AsyncJobRecord {
   return {
     completedAt: record.completedAt?.toISOString() ?? null,
     createdAt: record.createdAt.toISOString(),
+    errorMessage: null,
     // Job diagnostics may contain protected activity/context. Expose status
     // metadata only until an agent-mediated projection exists.
-    errorMessage: null,
     id: record.id,
     progress: record.progress,
     projectId: record.projectId ?? null,
@@ -28,10 +28,7 @@ function mapAsyncJob(record: typeof asyncJobs.$inferSelect): AsyncJobRecord {
   };
 }
 
-async function createAsyncJob(
-  context: JobContext,
-  data: { inputJson?: string; projectId?: string; type: AsyncJobType },
-) {
+async function createAsyncJob(context: JobContext, data: { projectId?: string; type: AsyncJobType }) {
   const now = new Date();
 
   return withAccountContext(context, async (db) => {
@@ -43,7 +40,6 @@ async function createAsyncJob(
         id: randomUUID(),
         // Inputs are retained only in the local agent; projectId is the
         // approved routing metadata for this transition boundary.
-        inputJson: null,
         progress: 0,
         projectId: data.projectId ?? null,
         status: 'queued',
@@ -86,9 +82,7 @@ async function updateAsyncJob(
   jobId: string,
   data: {
     completedAt?: Date | null;
-    errorMessage?: string | null;
     progress?: number;
-    resultJson?: string | null;
     status: AsyncJobStatus;
   },
 ) {
@@ -97,9 +91,7 @@ async function updateAsyncJob(
       .update(asyncJobs)
       .set({
         completedAt: data.completedAt ?? null,
-        errorMessage: null,
         progress: data.progress ?? 0,
-        resultJson: null,
         status: data.status,
         updatedAt: new Date(),
       })

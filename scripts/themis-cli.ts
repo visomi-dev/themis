@@ -6,12 +6,15 @@ import {
   activateSprint,
   addDependency,
   addEvidence,
+  addSprintEvidence,
   approveSprint,
   claimWorkItem,
+  closeSprint,
   createEpic,
   createProject,
   createWorkItem,
   finishRun,
+  flowReadyQueue,
   listEpics,
   listProjects,
   listSprints,
@@ -22,10 +25,12 @@ import {
   readState,
   readyQueue,
   requestReview,
+  removeSprints,
   startRun,
   submitReview,
   timeline,
   transitionWorkItem,
+  updateWorkItem,
   validateState,
   workspaceStatus,
 } from '../.opencode/tools/themis-core.ts';
@@ -67,16 +72,21 @@ const status = command({
 
 const ready = command({
   name: 'ready',
-  desc: 'Show work items whose dependencies are complete',
+  desc: 'Show work items ready for sprint or project-flow execution',
   options: {
     ...baseOptions(),
     project: string().desc('Project identifier').default(''),
-    sprint: string().desc('Active sprint identifier').required(),
+    sprint: string().desc('Optional active sprint identifier').default(''),
+    wip: string().desc('Optional project WIP limit when no sprint is selected').default(''),
   },
   handler: (options) => {
     const state = readState(options.root);
     const readyIds = new Set(
-      readyQueue(options.root, options.sprint, options.project || undefined).map((item) => item.id),
+      options.sprint
+        ? readyQueue(options.root, options.sprint, options.project || undefined).map((item) => item.id)
+        : flowReadyQueue(options.root, options.project, options.wip ? Number(options.wip) : undefined).map(
+            (item) => item.id,
+          ),
     );
     const result = state.workItems.filter((item) => readyIds.has(item.id));
     print(
@@ -287,6 +297,32 @@ const workTransition = command({
   handler: (options) => print(transitionWorkItem(options.root, options.id, options.to, 'human:cli'), options.json),
 });
 
+const workUpdate = command({
+  name: 'work-update',
+  desc: 'Update an existing work item and reopen reviewed work for rework',
+  options: {
+    ...baseOptions(),
+    id: string().desc('Work item identifier').required(),
+    title: string().desc('Updated work item title').default(''),
+    summary: string().desc('Updated work item summary').default(''),
+    acceptance: string().desc('Updated comma-separated acceptance criteria').default(''),
+    scopeIn: string('scope-in').desc('Updated comma-separated allowed paths').default(''),
+    scopeOut: string('scope-out').desc('Updated comma-separated excluded paths').default(''),
+    verify: string().desc('Updated comma-separated verification commands').default(''),
+  },
+  handler: (options) => {
+    const patch = {
+      ...(options.title ? { title: options.title } : {}),
+      ...(options.summary ? { summary: options.summary } : {}),
+      ...(options.acceptance ? { acceptanceCriteria: split(options.acceptance) } : {}),
+      ...(options.scopeIn ? { scopeIn: split(options.scopeIn) } : {}),
+      ...(options.scopeOut ? { scopeOut: split(options.scopeOut) } : {}),
+      ...(options.verify ? { verificationStrategy: split(options.verify) } : {}),
+    };
+    print(updateWorkItem(options.root, options.id, patch, 'human:cli'), options.json);
+  },
+});
+
 const dependencyAdd = command({
   name: 'dependency-add',
   desc: 'Add a blocking dependency',
@@ -359,6 +395,44 @@ const sprintActivate = command({
   },
   handler: (options) =>
     print(activateSprint(options.root, options.sprint, options.revision, 'human:cli'), options.json),
+});
+
+const sprintEvidenceAdd = command({
+  name: 'sprint-evidence-add',
+  desc: 'Attach final verification evidence to an active sprint',
+  options: {
+    ...baseOptions(),
+    sprint: string().desc('Sprint identifier').required(),
+    kind: string().desc('Evidence kind').enum('verification', 'command', 'observation').required(),
+    summary: string().desc('Evidence summary').required(),
+    value: string().desc('Evidence value').required(),
+  },
+  handler: (options) =>
+    print(
+      addSprintEvidence(options.root, options.sprint, options.kind, options.summary, options.value, 'human:cli'),
+      options.json,
+    ),
+});
+
+const sprintClose = command({
+  name: 'sprint-close',
+  desc: 'Close an active sprint after final verification',
+  options: {
+    ...baseOptions(),
+    project: string().desc('Project identifier').required(),
+    sprint: string().desc('Sprint identifier').required(),
+  },
+  handler: (options) => print(closeSprint(options.root, options.sprint, options.project, 'human:cli'), options.json),
+});
+
+const sprintRemoveAll = command({
+  name: 'sprint-remove-all',
+  desc: 'Remove sprint planning state while preserving project flow state',
+  options: {
+    ...baseOptions(),
+    project: string().desc('Optional project identifier; omit to remove all sprints').default(''),
+  },
+  handler: (options) => print(removeSprints(options.root, options.project || undefined, 'human:cli'), options.json),
 });
 
 const claim = command({
@@ -467,10 +541,14 @@ const commands: Command[] = [
   portfolioCommand,
   workCreate,
   workTransition,
+  workUpdate,
   dependencyAdd,
   sprintPropose,
   sprintApprove,
   sprintActivate,
+  sprintEvidenceAdd,
+  sprintClose,
+  sprintRemoveAll,
   claim,
   runStart,
   runFinish,

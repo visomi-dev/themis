@@ -5,6 +5,8 @@ import { projectsRoute } from '../support/routes';
 
 type VisibilityState = 'authorized' | 'locked' | 'unavailable' | 'stale' | 'error' | 'unauthorized' | 'empty';
 
+test.describe.configure({ timeout: 60000 });
+
 const projectId = 'visual-project';
 
 const project = {
@@ -15,10 +17,8 @@ const project = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 };
 
-const localAgentUrl = process.env['LOCAL_AGENT_URL'] ?? 'http://127.0.0.1:4317';
-
-async function mockVisibility(page: Page, state: VisibilityState): Promise<void> {
-  await page.route(`${localAgentUrl}/v1/product-visibility/projects/*`, async (route) => {
+async function mockBrowserVisibility(page: Page, state: VisibilityState): Promise<void> {
+  await page.route('**/v1/product-visibility/projects/**', async (route) => {
     if (state === 'unavailable') {
       await route.abort('connectionrefused');
 
@@ -37,30 +37,51 @@ async function mockVisibility(page: Page, state: VisibilityState): Promise<void>
       return;
     }
 
-    const view = {
-      activity:
-        state === 'authorized' || state === 'stale'
-          ? [{ id: 'activity-1', occurredAt: '2026-01-02T00:00:00.000Z', summary: 'Reviewed the plan' }]
-          : [],
-      context: state === 'authorized' || state === 'stale' ? 'Approved project context.' : null,
-      project,
-      state: state === 'empty' ? 'authorized' : state,
-      ...(state === 'stale' ? { staleAt: '2026-01-03T00:00:00.000Z' } : {}),
-    };
+    if (state === 'locked') {
+      await route.fulfill({ status: 423, body: 'Locked' });
+
+      return;
+    }
 
     await route.fulfill({
       contentType: 'application/json',
-      body: JSON.stringify(view),
+      body: JSON.stringify({
+        activity:
+          state === 'authorized' || state === 'stale'
+            ? [{ id: 'activity-1', occurredAt: '2026-01-02T00:00:00.000Z', summary: 'Reviewed the plan' }]
+            : [],
+        context: state === 'authorized' || state === 'stale' ? 'Approved project context.' : null,
+        project,
+        state: state === 'empty' ? 'authorized' : state,
+        ...(state === 'stale' ? { staleAt: '2026-01-03T00:00:00.000Z' } : {}),
+      }),
     });
   });
 }
 
-async function openProject(page: Page, request: Parameters<typeof authenticateViaApi>[1], state: VisibilityState) {
+async function openProject(
+  page: Page,
+  request: Parameters<typeof authenticateViaApi>[1],
+  state: VisibilityState,
+  observedRequests?: string[],
+): Promise<void> {
   const credentials = createCredentials();
 
   await authenticateViaApi(page, request, credentials.email, credentials.password);
-  await mockVisibility(page, state);
-  await page.goto(`${projectsRoute}/${projectId}`);
+  await page.goto(projectsRoute);
+  await page
+    .getByRole('main')
+    .getByRole('link', { name: /New project/i })
+    .click();
+  await page.getByLabel(/Project name/i).fill(project.name);
+  await page.getByRole('button', { name: /Create project/i }).click();
+  await expect(page).toHaveURL(/\/app\/en\/projects\/[^/]+$/);
+  await page.goto(projectsRoute);
+  if (observedRequests) {
+    page.on('request', (requestEvent) => observedRequests.push(requestEvent.url()));
+  }
+  await mockBrowserVisibility(page, state);
+  await page.getByRole('main').getByRole('link', { name: project.name, exact: true }).click();
   await expect(page.getByRole('main')).toBeVisible();
 }
 
@@ -93,4 +114,26 @@ test('authenticated session restores the guarded app route after reload', async 
   await expect(page).toHaveURL(/\/app\/en\/dashboard$/);
   await expect(page.getByText('dashboard works!')).toBeVisible();
   await expect(page).toHaveScreenshot('authenticated-dashboard-session-restored.png', { fullPage: true });
+});
+
+test.describe('protected visibility security fixtures', () => {
+  test('denies a project from another tenant without exposing protected data', async ({ page, request }) => {
+    const requests: string[] = [];
+
+    await openProject(page, request, 'unauthorized', requests);
+
+    await expect(page.getByRole('heading', { name: 'Project access unavailable' })).toBeVisible();
+    await expect(page.getByText('Approved project context.')).not.toBeVisible();
+    expect(requests.some((url) => url.includes('/api/projects/'))).toBe(false);
+  });
+
+  test('keeps locked-agent denial explicit and does not fall back to cloud data', async ({ page, request }) => {
+    const requests: string[] = [];
+
+    await openProject(page, request, 'locked', requests);
+
+    await expect(page.getByRole('heading', { name: 'Project is locked' })).toBeVisible();
+    await expect(page.getByText('Approved project context.')).not.toBeVisible();
+    expect(requests.some((url) => url.includes('/api/projects/'))).toBe(false);
+  });
 });

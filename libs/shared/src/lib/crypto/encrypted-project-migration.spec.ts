@@ -99,4 +99,13 @@ describe('encrypted project migration boundary', () => {
     expect(first.kind).toBe('migrated');
     expect(afterRestart).toEqual({ kind: 'duplicate', fingerprint: expect.any(String) });
   });
+
+  it('denies recovery of a tombstoned envelope', () => {
+    const ledger = new MigrationLedger();
+
+    ledger.accept(migrateProjectRecord(input()));
+    ledger.tombstone('migration-1');
+
+    expect(ledger.accept(migrateProjectRecord(input()))).toEqual({ kind: 'rejected', reason: 'tombstoned' });
+  });
 });

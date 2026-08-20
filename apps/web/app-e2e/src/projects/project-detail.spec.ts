@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
+import { mockAuthorizedProjectView } from '../support/projects';
 import { projectsRoute, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
@@ -17,6 +18,7 @@ test.describe('/app/projects/:projectId', () => {
       .getByRole('link', { name: /New project/i })
       .click();
     await page.getByLabel(/Project name/i).fill('Detail Test Project');
+    await mockAuthorizedProjectView(page, 'Detail Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
     await expect(page).toHaveURL(/\/app\/en\/projects\/[^/]+$/);
@@ -34,6 +36,7 @@ test.describe('/app/projects/:projectId', () => {
       .getByRole('link', { name: /New project/i })
       .click();
     await page.getByLabel(/Project name/i).fill('Metadata Project');
+    await mockAuthorizedProjectView(page, 'Metadata Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
     await expect(page.getByText(/Active/i)).toBeVisible();
@@ -51,9 +54,10 @@ test.describe('/app/projects/:projectId', () => {
       .getByRole('link', { name: /New project/i })
       .click();
     await page.getByLabel(/Project name/i).fill('Doc Test Project');
+    await mockAuthorizedProjectView(page, 'Doc Test Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await expect(page.getByRole('heading', { name: /Documents/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Approved project visibility/i })).toBeVisible();
   });
 
   test('shows empty documents state when no documents exist', async ({ page, request }) => {
@@ -67,9 +71,10 @@ test.describe('/app/projects/:projectId', () => {
       .getByRole('link', { name: /New project/i })
       .click();
     await page.getByLabel(/Project name/i).fill('No Docs Project');
+    await mockAuthorizedProjectView(page, 'No Docs Project', false);
     await page.getByRole('button', { name: /Create project/i }).click();
 
-    await expect(page.getByText(/No documents yet/i)).toBeVisible();
+    await expect(page.getByText(/No approved context or activity is available/i)).toBeVisible();
   });
 
   test('sign out returns to sign-in', async ({ page, request }) => {
@@ -83,6 +88,7 @@ test.describe('/app/projects/:projectId', () => {
       .getByRole('link', { name: /New project/i })
       .click();
     await page.getByLabel(/Project name/i).fill('Sign Out Detail Project');
+    await mockAuthorizedProjectView(page, 'Sign Out Detail Project');
     await page.getByRole('button', { name: /Create project/i }).click();
 
     await signOutViaMenu(page);

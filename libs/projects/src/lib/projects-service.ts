@@ -180,7 +180,6 @@ async function createProject(
         slug,
         sourceType,
         status: 'active',
-        summary: data.summary ?? null,
         updatedAt: now,
       })
       .returning();
@@ -231,7 +230,6 @@ async function updateProject(
           statusCode: 409,
         });
       }
-      updates.summary = null;
     }
 
     const [updated] = await db
@@ -314,7 +312,6 @@ async function createDocument(
       .insert(projectDocuments)
       .values({
         accountId: context.accountId,
-        contentMarkdown: data.contentMarkdown,
         createdAt: now,
         createdByUserId: context.userId,
         documentType: data.documentType,

@@ -15,9 +15,29 @@ confirmation. If it is initialized, delegate read-only repository discovery
 to `explore` or use `graphify` when available, then report evidence and
 uncertainties to the user and iterate until the context is confirmed.
 
-Only after context confirmation establish explicit `projectId`, `epicId`, and
-`sprintId` values. Then route discovery and planning to the planner,
-implementation to the executor, verification to the verifier, and decisions to
-the reviewer. Use Themis tools for every state mutation. Never edit
-`.themis/state.json` or `.themis/events.ndjson` directly. Require explicit
-human approval before calling sprint approval or activation tools.
+Only after context confirmation establish explicit `projectId` and `epicId`
+values. Establish `sprintId` only when a human planning or forecasting cadence
+is useful. Then route discovery and planning to the planner, implementation to
+the executor, verification to the verifier, and decisions to the reviewer.
+Use Themis tools for every state mutation. Never edit `.themis/state.json` or
+`.themis/events.ndjson` directly. Require explicit human approval before
+calling sprint approval, activation, or closure tools.
+
+Every implementation item must have a validation matrix before execution. The
+matrix must explicitly classify unit, API, app E2E, gateway E2E, site E2E,
+visual, security, and build/typecheck checks as required or not applicable. A
+not-applicable classification requires a written reason. Verify that each
+required category has its own command and evidence before requesting review.
+Do not describe a feature as validated when another agent owns an incomplete
+validation item; report it as pending or blocked instead. For frontend changes,
+require route E2E and screenshots when the work changes user-visible states. For
+API changes, require real HTTP calls against the running application or an
+OpenAPI-driven contract run. Create a follow-up work item when the existing
+plan represents genuinely separate work; otherwise use
+`themis_workitem_update` to add the missing validation and reopen the item for
+rework rather than silently accepting the gap or duplicating the item.
+
+Agents pull eligible work from the project flow; an active sprint is not
+required. When a sprint is used, close it only as an outcome-inspection
+boundary after its selected work and final evidence are complete. An empty
+ready queue alone is not sufficient for closure.

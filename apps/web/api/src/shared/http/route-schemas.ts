@@ -4,7 +4,7 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import { ZodError } from 'zod';
 import * as z from 'zod';
 
-import { HttpError } from 'shared';
+import { errorEnvelopeSchema, HttpError } from 'shared';
 
 type RequestSchemas = {
   body?: z.ZodType;
@@ -24,11 +24,24 @@ type RequestWithValidated<T extends RequestSchemas> = Request & {
   validated: ValidatedData<T>;
 };
 
-const emailSchema = z.email().meta({
-  description: 'Account email address.',
-  example: 'engineer@themis.dev',
-  id: 'AuthEmail',
-});
+const emailSchema = z
+  .email({ pattern: z.regexes.email })
+  .max(254)
+  .refine((email) => {
+    const [localPart, domain] = email.split('@');
+
+    return (
+      localPart !== undefined &&
+      localPart.length <= 64 &&
+      domain !== undefined &&
+      domain.split('.').every((label) => label.length <= 63 && /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$/.test(label))
+    );
+  }, 'Invalid email address.')
+  .meta({
+    description: 'Account email address.',
+    example: 'engineer@themis.dev',
+    id: 'AuthEmail',
+  });
 
 const passwordSchema = z.string().min(8).meta({
   description: 'Account password.',
@@ -79,6 +92,26 @@ const validate = <T>(schema: z.ZodType<T>, input: unknown): T => {
   }
 };
 
+const responseEnvelope = <T extends z.ZodType>(data: T, id: string) =>
+  z
+    .object({
+      data,
+      message: z.string(),
+    })
+    .meta({ id });
+
+const errorResponses = {
+  400: { content: { 'application/json': { schema: errorEnvelopeSchema } }, description: 'Invalid request.' },
+  401: { content: { 'application/json': { schema: errorEnvelopeSchema } }, description: 'Authentication required.' },
+  403: { content: { 'application/json': { schema: errorEnvelopeSchema } }, description: 'Access denied.' },
+  404: { content: { 'application/json': { schema: errorEnvelopeSchema } }, description: 'Resource not found.' },
+  409: {
+    content: { 'application/json': { schema: errorEnvelopeSchema } },
+    description: 'Request conflicts with current state.',
+  },
+  500: { content: { 'application/json': { schema: errorEnvelopeSchema } }, description: 'Internal server error.' },
+};
+
 const validateRequest = <T extends RequestSchemas>(schemas: T): RequestHandler => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
@@ -114,6 +147,8 @@ export {
   pinSchema,
   projectIdParamSchema,
   getValidated,
+  errorResponses,
+  responseEnvelope,
   validate,
   validateRequest,
   z,

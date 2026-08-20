@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-import { createCredentials, signUp } from '../support/auth';
+import { authenticateViaApi, createCredentials, signOutViaApi, signUp } from '../support/auth';
 import { clearMailbox } from '../support/mailbox';
 import { fillOtp } from '../support/otp';
 import {
@@ -34,6 +34,10 @@ async function prepareVerifyEmail(page: Page): Promise<void> {
 async function prepareResetPassword(page: Page, request: Parameters<typeof clearMailbox>[0]): Promise<void> {
   const credentials = createCredentials();
 
+  // The recovery flow only issues a challenge for an existing verified user.
+  // Provision that user in this isolated browser context before opening the UI.
+  await authenticateViaApi(page, request, credentials.email, credentials.password);
+  await signOutViaApi(page);
   await clearMailbox(request);
   await page.goto(forgottenPasswordRoute);
   await page.getByRole('textbox', { name: 'Email' }).fill(credentials.email);

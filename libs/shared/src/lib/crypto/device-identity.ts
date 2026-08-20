@@ -117,7 +117,7 @@ export class DeviceIdentityStore {
       keyEnvelope.kind !== 'sync-object' ||
       keyEnvelope.workspaceId !== workspaceId ||
       keyEnvelope.recordType !== 'workspace-key-distribution' ||
-      keyEnvelope.metadata.recipientDeviceId !== deviceId
+      keyEnvelope.metadata['recipientDeviceId'] !== deviceId
     ) {
       throw new DeviceIdentityError('Workspace key envelope is not addressed to this device.');
     }
@@ -176,6 +176,17 @@ export class DeviceIdentityStore {
 
     if (device.status !== 'active' || !grant || enrollmentVersion !== grant.enrollmentVersion) {
       throw new DeviceIdentityError('Device authorization is revoked or stale.');
+    }
+
+    return { ...grant };
+  }
+
+  authorizeLocalAgent(accountId: string, deviceId: string, workspaceId: string): WorkspaceGrant {
+    const device = this.requireDevice(accountId, deviceId);
+    const grant = this.grants.get(this.grantKey(accountId, workspaceId, deviceId));
+
+    if (device.status !== 'active' || !grant) {
+      throw new DeviceIdentityError('Device is not enrolled for this workspace.');
     }
 
     return { ...grant };

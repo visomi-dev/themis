@@ -1,4 +1,4 @@
-import { z } from '../shared/http/route-schemas';
+import { responseEnvelope, z } from '../shared/http/route-schemas';
 
 import { encryptedEnvelopeSchema } from 'shared';
 
@@ -15,8 +15,36 @@ const opaqueEnvelopeRequestSchema = z
     deviceId: z.string().min(1),
     enrollmentVersion: z.number().int().positive(),
   })
-  .meta({ id: 'OpaqueEnvelopeRequest' });
+  .meta({
+    id: 'OpaqueEnvelopeRequest',
+    examples: [
+      {
+        envelope: {
+          format: 'themis.encrypted-envelope',
+          version: 1,
+          kind: 'sync-object',
+          envelopeId: 'envelope-1',
+          workspaceId: 'workspace-1',
+          recordType: 'project-context',
+          revision: 1,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          associatedData: {},
+          metadata: {},
+          nonce: 'bm9uY2U',
+          ciphertext: 'Y2lwaGVydGV4dA',
+          authTag: 'dGFn',
+        },
+        deviceId: 'device-1',
+        enrollmentVersion: 1,
+      },
+    ],
+  });
 const opaqueEnvelopeSchema = z.object({ cursor: z.number().int().positive(), envelope: encryptedEnvelopeSchema });
+const opaqueAppendResultSchema = z.object({
+  cursor: z.number().int().positive(),
+  duplicate: z.boolean(),
+  envelope: encryptedEnvelopeSchema,
+});
 const deviceParamsSchema = z.object({ deviceId: z.string().min(1).max(200) }).meta({ id: 'DeviceParams' });
 const deviceRouteParamsSchema = opaqueSyncParamsSchema.merge(deviceParamsSchema);
 const deviceCreateSchema = z.object({ publicKey: z.string().min(1), label: z.string().min(1).max(200) });
@@ -37,12 +65,31 @@ const opaqueSyncOpenApiPaths = {
   '/sync/{workspaceId}/envelopes': {
     get: {
       requestParams: { path: opaqueSyncParamsSchema, query: opaqueSyncQuerySchema },
-      responses: { 200: { description: 'Opaque envelopes.' } },
+      responses: {
+        200: {
+          content: {
+            'application/json': {
+              schema: responseEnvelope(
+                z.object({ envelopes: z.array(opaqueEnvelopeSchema) }),
+                'OpaqueEnvelopeListEnvelope',
+              ),
+            },
+          },
+          description: 'Opaque envelopes.',
+        },
+      },
     },
     post: {
       requestParams: { path: opaqueSyncParamsSchema },
       requestBody: { content: { 'application/json': { schema: opaqueEnvelopeRequestSchema } } },
-      responses: { 201: { description: 'Opaque envelope accepted.' } },
+      responses: {
+        201: {
+          content: {
+            'application/json': { schema: responseEnvelope(opaqueAppendResultSchema, 'OpaqueAppendResultEnvelope') },
+          },
+          description: 'Opaque envelope accepted.',
+        },
+      },
     },
   },
 };

@@ -1,4 +1,4 @@
-import { projectIdParamSchema, z } from '../shared/http/route-schemas';
+import { projectIdParamSchema, responseEnvelope, z } from '../shared/http/route-schemas';
 
 export const projectStatusSchema = z.enum(['active', 'archived', 'draft']);
 export const projectSourceTypeSchema = z.enum(['imported', 'manual', 'seeded']);
@@ -109,13 +109,19 @@ export const projectsOpenApiPaths = {
   '/projects': {
     get: {
       responses: {
-        200: { content: { 'application/json': { schema: projectsListSchema } }, description: 'List account projects.' },
+        200: {
+          content: { 'application/json': { schema: responseEnvelope(projectsListSchema, 'ProjectsListEnvelope') } },
+          description: 'List account projects.',
+        },
       },
     },
     post: {
       requestBody: { content: { 'application/json': { schema: createProjectSchema } } },
       responses: {
-        201: { content: { 'application/json': { schema: projectSchema } }, description: 'Project created.' },
+        201: {
+          content: { 'application/json': { schema: responseEnvelope(projectSchema, 'ProjectEnvelope') } },
+          description: 'Project created.',
+        },
       },
     },
   },
@@ -124,7 +130,11 @@ export const projectsOpenApiPaths = {
       requestParams: { path: projectParamsSchema },
       responses: {
         200: {
-          content: { 'application/json': { schema: projectWithDocumentsSchema } },
+          content: {
+            'application/json': {
+              schema: responseEnvelope(projectWithDocumentsSchema, 'ProjectWithDocumentsEnvelope'),
+            },
+          },
           description: 'Project detail.',
         },
       },
@@ -133,7 +143,10 @@ export const projectsOpenApiPaths = {
       requestParams: { path: projectParamsSchema },
       requestBody: { content: { 'application/json': { schema: updateProjectSchema } } },
       responses: {
-        200: { content: { 'application/json': { schema: projectSchema } }, description: 'Project updated.' },
+        200: {
+          content: { 'application/json': { schema: responseEnvelope(projectSchema, 'UpdatedProjectEnvelope') } },
+          description: 'Project updated.',
+        },
       },
     },
     delete: {
@@ -147,7 +160,9 @@ export const projectsOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: createDocumentSchema } } },
       responses: {
         201: {
-          content: { 'application/json': { schema: projectDocumentSchema } },
+          content: {
+            'application/json': { schema: responseEnvelope(projectDocumentSchema, 'ProjectDocumentEnvelope') },
+          },
           description: 'Project document created.',
         },
       },
@@ -156,14 +171,22 @@ export const projectsOpenApiPaths = {
   '/projects/{projectId}/jobs': {
     get: {
       requestParams: { path: projectParamsSchema },
-      responses: { 200: { content: { 'application/json': { schema: jobsListSchema } }, description: 'Project jobs.' } },
+      responses: {
+        200: {
+          content: { 'application/json': { schema: responseEnvelope(jobsListSchema, 'ProjectJobsEnvelope') } },
+          description: 'Project jobs.',
+        },
+      },
     },
   },
   '/projects/{projectId}/seed': {
     post: {
       requestParams: { path: projectParamsSchema },
       responses: {
-        202: { content: { 'application/json': { schema: asyncJobSchema } }, description: 'Project seed queued.' },
+        202: {
+          content: { 'application/json': { schema: responseEnvelope(asyncJobSchema, 'AsyncJobEnvelope') } },
+          description: 'Project seed queued.',
+        },
       },
     },
   },

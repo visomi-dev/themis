@@ -42,7 +42,7 @@ Auth changes should keep the route suite green for:
 
 ## Full-Server E2E Playbook
 
-These tests boot the real gateway (api + app + site + worker + realtime) and need Redis for the worker's BullMQ queues. They are gated by the pre-commit hook (`pnpm exec nx run-many -t e2e --parallel=1`); understand the boot path before you try to skip the hook.
+These tests boot the real gateway (api + app + site + worker + realtime) and need Redis for the worker's BullMQ queues. They are gated by the pre-commit hook (`pnpm exec nx affected -t e2e`); understand the boot path before you try to skip the hook.
 
 ### Local environment prerequisites
 

@@ -29,6 +29,22 @@ describe('auth API', () => {
     expect(res.data.paths['/projects/{projectId}/seed']).toBeDefined();
   });
 
+  it('documents rate-limit responses for verification lifecycle routes', async () => {
+    const res = await axios.get('/openapi.json');
+    const paths = res.data.paths as Record<string, Record<string, { responses: Record<string, unknown> }>>;
+
+    for (const [path, method] of [
+      ['/auth/sign-up/verify', 'post'],
+      ['/auth/sign-in/verify', 'post'],
+      ['/auth/verification/resend', 'post'],
+      ['/auth/password/reset/verify', 'post'],
+    ] as const) {
+      expect(paths[path]?.[method]?.responses['429']).toEqual(
+        expect.objectContaining({ description: expect.stringContaining('Too many') }),
+      );
+    }
+  });
+
   it('completes sign-up, verification, session restore, sign-out, and sign-in verification', async () => {
     const signUpResponse = await axios.post('/auth/sign-up', {
       email,
@@ -190,5 +206,23 @@ describe('auth API', () => {
     const secondChallengeId = secondResponse.data.data.challengeId;
 
     expect(secondChallengeId).not.toBe(firstChallengeId);
+  });
+
+  it('should preserve the verification resend rate limit', async () => {
+    const response = await axios.post('/auth/sign-up', {
+      email: `rate-limit-${Date.now()}@themis.dev`,
+      password,
+    });
+
+    const resendResponse = await axios.post(
+      '/auth/verification/resend',
+      { challengeId: response.data.data.challengeId },
+      { validateStatus: () => true },
+    );
+
+    expect(resendResponse.status).toBe(429);
+    expect(resendResponse.data).toEqual(
+      expect.objectContaining({ code: 'challenge_cooldown', message: expect.any(String) }),
+    );
   });
 });

@@ -1,4 +1,4 @@
-import { readState, readyQueue } from '../.opencode/tools/themis-core.ts';
+import { flowReadyQueue, readState, readyQueue } from '../.opencode/tools/themis-core.ts';
 import type { Sprint, ThemisState, WorkItem, WorkItemStatus } from '../.opencode/tools/themis-core.ts';
 
 type WorkItemCounts = Record<WorkItemStatus, number>;
@@ -11,6 +11,7 @@ type SprintSummary = {
   activeRuns: number;
   completedRuns: number;
   reviewCount: number;
+  sprintEvidenceCount: number;
 };
 
 const statuses: WorkItemStatus[] = [
@@ -57,7 +58,14 @@ const summarizeSprint = (root: string, sprintId?: string, projectId?: string): S
       ? readyQueue(root, sprint.id, projectId)
           .map(({ id }) => state.workItems.find((item) => item.id === id))
           .filter((item): item is WorkItem => item !== undefined)
-      : [];
+      : projectId
+        ? flowReadyQueue(root, projectId)
+            .map(({ id }) => state.workItems.find((item) => item.id === id))
+            .filter((item): item is WorkItem => item !== undefined)
+        : state.projects
+            .flatMap((project) => flowReadyQueue(root, project.id))
+            .map(({ id }) => state.workItems.find((item) => item.id === id))
+            .filter((item): item is WorkItem => item !== undefined);
   const blocked = sprint
     ? items.filter((item) => item.status === 'blocked')
     : state.workItems.filter((item) => item.status === 'blocked');
@@ -65,6 +73,9 @@ const summarizeSprint = (root: string, sprintId?: string, projectId?: string): S
   const reviews = sprint
     ? state.reviews.filter((review) => items.some((item) => item.id === review.workItemId))
     : state.reviews;
+  const sprintEvidenceCount = sprint
+    ? state.sprintEvidence.filter((evidence) => evidence.sprintId === sprint.id).length
+    : 0;
   return {
     sprint,
     counts: countWorkItems(items),
@@ -73,11 +84,14 @@ const summarizeSprint = (root: string, sprintId?: string, projectId?: string): S
     activeRuns: runs.filter((run) => run.status === 'running').length,
     completedRuns: runs.filter((run) => run.status === 'completed').length,
     reviewCount: reviews.length,
+    sprintEvidenceCount,
   };
 };
 
 const formatSummary = (summary: SprintSummary): string => {
-  const sprintLabel = summary.sprint ? `${summary.sprint.id} · ${summary.sprint.goal}` : 'No active sprint';
+  const sprintLabel = summary.sprint
+    ? `${summary.sprint.id} · ${summary.sprint.status} · ${summary.sprint.goal}`
+    : 'No active sprint; project flow is available';
   const counts = Object.entries(summary.counts)
     .filter(([, count]) => count > 0)
     .map(([status, count]) => `${status}=${count}`)
@@ -88,7 +102,7 @@ const formatSummary = (summary: SprintSummary): string => {
   return [
     `Sprint: ${sprintLabel}`,
     `Work items: ${counts || 'none'}`,
-    `Runs: active=${summary.activeRuns} completed=${summary.completedRuns} reviews=${summary.reviewCount}`,
+    `Runs: active=${summary.activeRuns} completed=${summary.completedRuns} reviews=${summary.reviewCount} sprintEvidence=${summary.sprintEvidenceCount}`,
     '',
     'Ready queue:',
     ready,

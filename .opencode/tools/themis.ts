@@ -2,18 +2,22 @@ import { tool } from '@opencode-ai/plugin';
 
 import {
   activateSprint,
+  addSprintEvidence,
   addDependency,
   addEvidence,
   approveSprint,
   claimWorkItem,
+  closeSprint,
   createEpic,
   createProject,
   createWorkItem,
   finishRun,
+  flowReadyQueue,
   proposeSprint,
   readState,
   readyQueue,
   requestReview,
+  removeSprints,
   listEpics,
   listProjects,
   listSprints,
@@ -22,6 +26,7 @@ import {
   submitReview,
   timeline,
   transitionWorkItem,
+  updateWorkItem,
   validateState,
   workspaceStatus,
 } from './themis-core.ts';
@@ -85,6 +90,26 @@ export const workitem_transition = tool({
   },
 });
 
+export const workitem_update = tool({
+  description: 'Update an existing work item and reopen reviewed work for rework when its contract changes.',
+  args: {
+    id: tool.schema.string().describe('Work item identifier'),
+    title: tool.schema.string().optional().describe('Updated work item title'),
+    summary: tool.schema.string().optional().describe('Updated problem and expected outcome'),
+    acceptanceCriteria: tool.schema.array(tool.schema.string()).optional().describe('Updated acceptance criteria'),
+    scopeIn: tool.schema.array(tool.schema.string()).optional().describe('Updated allowed implementation scope'),
+    scopeOut: tool.schema.array(tool.schema.string()).optional().describe('Updated excluded scope'),
+    verificationStrategy: tool.schema
+      .array(tool.schema.string())
+      .optional()
+      .describe('Updated commands or checks required before review'),
+  },
+  async execute(args, context) {
+    const { id, ...patch } = args;
+    return output(updateWorkItem(context.worktree, id, patch, `agent:${context.agent}`));
+  },
+});
+
 export const dependency_add = tool({
   description: 'Declare that one work item blocks another.',
   args: {
@@ -139,14 +164,61 @@ export const sprint_activate = tool({
   },
 });
 
+export const sprint_evidence_add = tool({
+  description: 'Attach final verification evidence to an active sprint.',
+  args: {
+    sprintId: tool.schema.string().describe('Active sprint identifier'),
+    kind: tool.schema.enum(['verification', 'command', 'observation']),
+    summary: tool.schema.string().describe('Evidence summary'),
+    value: tool.schema.string().describe('Observed command output or result'),
+  },
+  async execute(args, context) {
+    return output(
+      addSprintEvidence(context.worktree, args.sprintId, args.kind, args.summary, args.value, `agent:${context.agent}`),
+    );
+  },
+});
+
+export const sprint_close = tool({
+  description: 'Close an active sprint after all work and final verification are complete.',
+  args: {
+    projectId: tool.schema.string().describe('Project identifier'),
+    sprintId: tool.schema.string().describe('Active sprint identifier'),
+  },
+  async execute(args, context) {
+    return output(closeSprint(context.worktree, args.sprintId, args.projectId, `agent:${context.agent}`));
+  },
+});
+
+export const sprints_remove = tool({
+  description: 'Remove sprint planning state while preserving projects, work items, runs, evidence, and reviews.',
+  args: {
+    projectId: tool.schema.string().optional().describe('Optional project identifier; omit to remove all sprints'),
+  },
+  async execute(args, context) {
+    return output(removeSprints(context.worktree, args.projectId, `agent:${context.agent}`));
+  },
+});
+
 export const ready_queue = tool({
-  description: 'Return only sprint work items with all blocking dependencies completed.',
+  description: 'Return sprint work items with all blocking dependencies completed.',
   args: {
     projectId: tool.schema.string().describe('Project identifier'),
     sprintId: tool.schema.string().describe('Active sprint identifier'),
   },
   async execute(args, context) {
     return output(readyQueue(context.worktree, args.sprintId, args.projectId));
+  },
+});
+
+export const flow_ready_queue = tool({
+  description: 'Return project work items ready for pull-based execution without requiring an active sprint.',
+  args: {
+    projectId: tool.schema.string().describe('Project identifier'),
+    wipLimit: tool.schema.number().int().positive().optional().describe('Optional maximum active work in the project'),
+  },
+  async execute(args, context) {
+    return output(flowReadyQueue(context.worktree, args.projectId, args.wipLimit));
   },
 });
 

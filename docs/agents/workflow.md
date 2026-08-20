@@ -53,3 +53,12 @@ When work is incomplete or another agent will continue, leave concise handoff no
 - Run focused Nx lint, test, build, or e2e targets relevant to the touched project when feasible.
 - Prefer focused verification before broad workspace verification.
 - If verification is skipped, state why and provide the exact command to run later.
+
+Every feature work item must carry a validation matrix covering `unit`, `api`,
+`app-e2e`, `gateway-e2e`, `site-e2e`, `visual`, `security`, and `build`.
+Each category is either required or explicitly not applicable with a reason.
+API changes require real HTTP/API E2E or the OpenAPI contract target
+`pnpm exec nx run api-e2e:openapi`. Angular route changes require route E2E;
+visual changes additionally require deterministic Playwright screenshots and
+snapshot review. Unit tests or builds do not substitute for missing API, E2E,
+visual, or security evidence.

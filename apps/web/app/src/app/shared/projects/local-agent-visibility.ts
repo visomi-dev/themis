@@ -27,7 +27,9 @@ export type LocalAgentVisibilityResult =
 @Injectable({ providedIn: 'root' })
 export class LocalAgentVisibility {
   private readonly http = inject(HttpClient);
-  private readonly endpoint = 'http://127.0.0.1:4317/v1/product-visibility/projects';
+  // Keep the browser request same-origin. The gateway owns the authenticated
+  // proxy/handshake to the local agent; the cloud API is never a fallback.
+  private readonly endpoint = '/v1/product-visibility/projects';
 
   async readProject(projectId: string): Promise<LocalAgentVisibilityResult> {
     try {

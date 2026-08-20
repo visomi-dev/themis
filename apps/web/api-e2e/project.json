@@ -12,6 +12,29 @@
         "passWithNoTests": true
       },
       "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
+    },
+    "openapi": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/test-results/api-e2e/openapi"],
+      "options": {
+        "command": "node --experimental-strip-types apps/web/api-e2e/src/support/run-openapi-contract.ts"
+      },
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
+    },
+    "openapi-fuzz": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/test-results/api-e2e/openapi"],
+      "options": {
+        "command": "SCHEMATHESIS_PHASES=examples,coverage,fuzzing node --experimental-strip-types apps/web/api-e2e/src/support/run-openapi-contract.ts"
+      },
+      "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
+    },
+    "durable-integration": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/test-results/api-e2e/durable-integration"],
+      "options": {
+        "command": "DATABASE_URL=postgresql://postgres@127.0.0.1:5432/themis pnpm db:migrate && DATABASE_URL=postgresql://postgres@127.0.0.1:5432/themis pnpm exec jest --config apps/web/api-e2e/durable-jest.config.cts --runInBand"
+      }
     }
   }
 }

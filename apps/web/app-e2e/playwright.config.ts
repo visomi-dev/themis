@@ -2,8 +2,9 @@ import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env['BASE_URL'] || 'http://127.0.0.1:8081';
-const localAgentUrl = process.env['LOCAL_AGENT_URL'] || 'http://127.0.0.1:4317';
+const gatewayPort = process.env['GATEWAY_PORT'] || '8081';
+const baseURL = process.env['BASE_URL'] || `http://localhost:${gatewayPort}`;
+const localAgentUrl = process.env['LOCAL_AGENT_URL'] || 'http://localhost:4317';
 
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
@@ -34,15 +35,16 @@ export default defineConfig({
       DATABASE_AUTO_MIGRATE: 'true',
       DATABASE_DRIVER: 'memory',
       ENABLE_TEST_API: 'true',
-      HOST: '127.0.0.1',
+      HOST: 'localhost',
       MAIL_TRANSPORT: 'memory',
       LOCAL_AGENT_URL: localAgentUrl,
-      NG_ALLOWED_HOSTS: '127.0.0.1',
-      GATEWAY_PORT: '8081',
+      NG_ALLOWED_HOSTS: 'localhost',
+      GATEWAY_PORT: gatewayPort,
+      PORT: gatewayPort,
       SESSION_SECRET: 'themis-app-e2e-secret',
     },
     reuseExistingServer: false,
-    url: 'http://127.0.0.1:8081/app/en/sign-in',
+    url: `${baseURL}/app/en/sign-in`,
   },
   projects: [
     {

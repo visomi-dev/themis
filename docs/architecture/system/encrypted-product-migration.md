@@ -11,6 +11,15 @@ The starter path is server-readable and is therefore not the target authority:
 | `async_jobs.input_json`, `result_json`, `error_message` | seed inputs/results and worker errors      | seed queue, job records, project detail/jobs API, realtime events | retained with `async_jobs`; deleted by project cascade                                                    | permit identifiers/status only; never place context/activity plaintext in job payloads or messages  |
 | opaque sync envelopes                                   | ciphertext plus approved routing metadata  | local agent produces/consumes; API stores/relays                  | bounded opaque retention (currently store default is 30 days); deletion policy and tombstones remain open | canonical target transport; deduplicate by envelope identity and revision                           |
 
+The account/project-scoped inventory runs with
+`node --experimental-strip-types scripts/zk008-zero-plaintext-inventory.ts`.
+It reports counts only and refuses to run without `ZK008_ACCOUNT_ID` and
+`ZK008_PROJECT_ID`. It covers PostgreSQL tables, queues, realtime, logs,
+synthetic fixtures, and backups; unavailable optional infrastructure is
+reported as `unverified`, never as zero. The synthetic review fixture is
+`fixtures/zk008/synthetic-envelope.json` and contains ciphertext-shaped data
+only.
+
 The current project and document readers are intentionally identified here so a
 future product read cannot accidentally treat the starter API as plaintext
 authority. The product UI must obtain protected content from an approved local
@@ -62,6 +71,12 @@ attempts to write project or document protected content are rejected with
 - Cloud retention, tombstones, compaction, and recovery quorum are unresolved;
   they require decisions from ZK-001, ZK-003, and ZK-006 before historical
   deletion is enabled.
+
+Migration `20260819220000_encrypted_context_tombstones` drops legacy plaintext
+columns instead of copying them to cloud storage. It adds scoped ciphertext
+metadata, a durable migration ledger, and tombstones. Tombstoned sources are
+rejected on retry, including device recovery, so synchronization cannot
+resurrect deleted state.
 
 ## Unresolved visibility decisions
 

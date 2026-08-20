@@ -51,3 +51,44 @@ jobs:
 
       - name: Build composed runtime
         run: pnpm nx run server:build
+
+      - name: Generate release inputs from the built runtime
+        env:
+          RELEASE_DIR: ${{ runner.temp }}/themis-release
+        run: |
+          mkdir -p "$RELEASE_DIR"
+          tar -czf "$RELEASE_DIR/themis-server.tgz" -C dist/apps/web/server .
+          pnpm exec node --experimental-strip-types scripts/release-gate-fixture.ts \
+            "$RELEASE_DIR/themis-server.tgz" "$RELEASE_DIR"
+
+      - name: Run release gate on generated inputs
+        env:
+          RELEASE_DIR: ${{ runner.temp }}/themis-release
+        run: |
+          pnpm run release:gate \
+            "$RELEASE_DIR/themis-server.tgz" \
+            "$RELEASE_DIR/catalogue-key.pem" \
+            "$RELEASE_DIR/themis.release-manifest.json" \
+            "$RELEASE_DIR/themis.key-catalogue.json" \
+            "$RELEASE_DIR/catalogue-key.pem" \
+            "$RELEASE_DIR/release-metadata.json" \
+            "$RELEASE_DIR/build.log" \
+            "$RELEASE_DIR/telemetry.json"
+
+      - name: Verify release gate fails closed for tampered generated input
+        env:
+          RELEASE_DIR: ${{ runner.temp }}/themis-release
+        run: |
+          printf 'project context: protected\n' >> "$RELEASE_DIR/release-metadata.json"
+          if pnpm run release:gate \
+            "$RELEASE_DIR/themis-server.tgz" \
+            "$RELEASE_DIR/catalogue-key.pem" \
+            "$RELEASE_DIR/themis.release-manifest.json" \
+            "$RELEASE_DIR/themis.key-catalogue.json" \
+            "$RELEASE_DIR/catalogue-key.pem" \
+            "$RELEASE_DIR/release-metadata.json" \
+            "$RELEASE_DIR/build.log" \
+            "$RELEASE_DIR/telemetry.json"; then
+            echo 'release gate unexpectedly accepted protected plaintext'
+            exit 1
+          fi

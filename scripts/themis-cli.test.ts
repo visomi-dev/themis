@@ -57,6 +57,16 @@ describe('Themis CLI', () => {
     assert.equal(output.counts.ready, 1);
   });
 
+  it('lists sprint evidence and closure commands', () => {
+    const result = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/themis-cli.ts', '--help'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /sprint-evidence-add/);
+    assert.match(result.stdout, /sprint-close/);
+  });
+
   it('exposes first-run status and project-scoped timeline commands', () => {
     const root = mkdtempSync(join(tmpdir(), 'themis-cli-onboarding-'));
     roots.push(root);
@@ -175,5 +185,35 @@ describe('Themis CLI', () => {
     runCli(root, ['review-submit', '--review', reviewId, '--verdict', 'accepted', '--feedback', 'Accepted']);
     const finalState = runCli(root, ['validate']);
     assert.equal(finalState.valid, true);
+  });
+
+  it('lists project-flow work without requiring a sprint', () => {
+    const root = mkdtempSync(join(tmpdir(), 'themis-cli-flow-'));
+    roots.push(root);
+    runCli(root, ['project-create', '--id', 'PRJ-FLOW', '--name', 'Flow project']);
+    runCli(root, [
+      'work-create',
+      '--id',
+      'THM-FLOW-001',
+      '--title',
+      'Flow item',
+      '--summary',
+      'Execute without a sprint',
+      '--project',
+      'PRJ-FLOW',
+      '--acceptance',
+      'Flow item is executable',
+      '--scope-in',
+      'fixture/**',
+      '--scope-out',
+      'apps/**',
+      '--verify',
+      'node --test',
+    ]);
+    runCli(root, ['work-transition', '--id', 'THM-FLOW-001', '--to', 'ready']);
+    const ready = runCli(root, ['ready', '--project', 'PRJ-FLOW']);
+    assert.equal((ready as unknown as Array<{ id: string }>)[0]?.id, 'THM-FLOW-001');
+    const claimed = runCli(root, ['claim', '--id', 'THM-FLOW-001', '--agent', 'flow-executor']);
+    assert.equal(claimed.status, 'claimed');
   });
 });

@@ -16,7 +16,15 @@ import {
   opaqueSyncQuerySchema,
 } from './opaque-sync-schemas';
 
-import { DeviceIdentityError, HttpError, httpResponse, opaqueSyncStore, deviceIdentityStore } from 'shared';
+import {
+  DeviceIdentityError,
+  HttpError,
+  httpResponse,
+  opaqueSyncStore,
+  deviceIdentityStore,
+  env,
+  getConfiguredOpaqueSyncRepository,
+} from 'shared';
 import { getProject } from 'projects';
 
 const opaqueSyncRouter = Router();
@@ -220,7 +228,10 @@ opaqueSyncRouter.post(
         params!.workspaceId,
         body!.enrollmentVersion,
       );
-      const result = opaqueSyncStore.append(context.accountId, params!.workspaceId, body!.envelope);
+      const result =
+        env.OPAQUE_SYNC_STORAGE === 'durable'
+          ? await getConfiguredOpaqueSyncRepository().append(context.accountId, params!.workspaceId, body!.envelope)
+          : opaqueSyncStore.append(context.accountId, params!.workspaceId, body!.envelope);
 
       httpResponse.json(res, { data: result, status: result.duplicate ? 200 : 201, message: 'Envelope accepted.' });
     } catch {
@@ -257,7 +268,15 @@ opaqueSyncRouter.get(
 
       return;
     }
-    const envelopes = opaqueSyncStore.list(context.accountId, params!.workspaceId, query!.afterCursor, query!.limit);
+    const envelopes =
+      env.OPAQUE_SYNC_STORAGE === 'durable'
+        ? await getConfiguredOpaqueSyncRepository().list(
+            context.accountId,
+            params!.workspaceId,
+            query!.afterCursor,
+            query!.limit,
+          )
+        : opaqueSyncStore.list(context.accountId, params!.workspaceId, query!.afterCursor, query!.limit);
 
     httpResponse.json(res, { data: { envelopes }, message: 'Envelopes retrieved.' });
   },

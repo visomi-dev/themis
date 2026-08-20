@@ -34,6 +34,12 @@ const environmentSchema = z
     REALTIME_PATH: z.string().default('/socket.io'),
     SESSION_MAX_AGE_MS: z.coerce.number().default(1000 * 60 * 60 * 24 * 7),
     SESSION_SECRET: z.string().default('themis-dev-session-secret'),
+    OPAQUE_SYNC_STORAGE: z.enum(['memory', 'durable']).default('memory'),
+    OPAQUE_SYNC_S3_ENDPOINT: z.url().optional(),
+    OPAQUE_SYNC_S3_BUCKET: z.string().default('themis-opaque-sync'),
+    OPAQUE_SYNC_S3_ACCESS_KEY: z.string().default(''),
+    OPAQUE_SYNC_S3_SECRET_KEY: z.string().default(''),
+    OPAQUE_SYNC_RETENTION_DAYS: z.coerce.number().int().positive().default(30),
   })
   .transform((data) => {
     const hasMailgunCredentials = Boolean(data.MAILGUN_API_KEY && data.MAILGUN_DOMAIN && data.MAILGUN_FROM);

@@ -8,6 +8,7 @@ import {
   dependency_add,
   epic_create,
   evidence_add,
+  flow_ready_queue,
   project_create,
   ready_queue,
   review_request,
@@ -16,6 +17,8 @@ import {
   run_start,
   sprint_activate,
   sprint_approve,
+  sprint_close,
+  sprint_evidence_add,
   sprint_propose,
   validate,
   work_claim,
@@ -83,6 +86,12 @@ describe('OpenCode Themis tools', () => {
     await call(workitem_transition, { id: secondId, to: 'ready' }, root);
     await call(dependency_add, { from: firstId, to: secondId }, root);
 
+    const flowQueue = await call(flow_ready_queue, { projectId: 'PRJ-E2E' }, root);
+    assert.deepEqual(
+      (flowQueue as unknown as Array<{ id: string }>).map((item) => item.id),
+      [firstId],
+    );
+
     const proposal = await call(
       sprint_propose,
       {
@@ -130,6 +139,48 @@ describe('OpenCode Themis tools', () => {
       { reviewId, verdict: 'accepted', feedback: 'Acceptance criteria and evidence are complete' },
       root,
     );
+
+    await call(work_claim, { id: secondId, agent: 'themis-executor' }, root);
+    const secondRun = await call(run_start, { workItemId: secondId, agent: 'themis-executor' }, root);
+    const secondRunId = String(secondRun.runId);
+    await call(
+      evidence_add,
+      {
+        runId: secondRunId,
+        kind: 'implementation-diff',
+        summary: 'Second implementation commit',
+        value: 'commit e2e-002',
+      },
+      root,
+    );
+    await call(
+      evidence_add,
+      { runId: secondRunId, kind: 'verification', summary: 'Second checks passed', value: 'node --test: PASS' },
+      root,
+    );
+    await call(
+      run_finish,
+      { runId: secondRunId, status: 'completed', terminationReason: 'All required checks passed' },
+      root,
+    );
+    const secondReview = await call(review_request, { workItemId: secondId, reviewer: 'themis-reviewer' }, root);
+    await call(
+      review_submit,
+      { reviewId: String(secondReview.reviewId), verdict: 'accepted', feedback: 'Second item accepted' },
+      root,
+    );
+    await call(
+      sprint_evidence_add,
+      {
+        sprintId,
+        kind: 'verification',
+        summary: 'Sprint checks passed',
+        value: 'node --test scripts/themis-tools.e2e.test.ts: PASS',
+      },
+      root,
+    );
+    const closed = await call(sprint_close, { projectId: 'PRJ-E2E', sprintId }, root);
+    assert.equal(closed.status, 'closed');
 
     const finalState = await call(validate, {}, root);
     assert.equal(finalState.valid, true);

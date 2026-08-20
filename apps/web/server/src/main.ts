@@ -8,6 +8,8 @@ import type { Express, NextFunction, Request, RequestHandler, Response } from 'e
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { createGatewayApp } from './gateway';
+import { DurableReplayStore } from './durable-replay-store';
+import { createLocalAgentProxy, publicKeyFromPem } from './local-agent-proxy';
 
 import { createAuthRuntimeMiddleware, logger } from 'shared';
 
@@ -39,6 +41,7 @@ type AngularHandler = RequestHandler & {
 const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
 
 const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
+const localAgentUrl = process.env.LOCAL_AGENT_URL ?? 'http://localhost:4317';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
@@ -153,12 +156,25 @@ async function bootstrap() {
 
   startWorkerRuntime();
 
+  const localAgentPublicKey = publicKeyFromPem(process.env.LOCAL_AGENT_PUBLIC_KEY);
+
   const app = createGatewayApp({
     apiHandler,
     angularHandler,
     astroClientFolder,
     astroRequestHandler,
     authRuntimeHandlers: createAuthRuntimeMiddleware(),
+    localAgentHandler: localAgentPublicKey
+      ? createLocalAgentProxy({
+          publicKey: localAgentPublicKey,
+          replayStore: new DurableReplayStore(),
+          target: new URL(localAgentUrl),
+        })
+      : (_req, res) => {
+          res
+            .status(503)
+            .json({ code: 'local_agent_unconfigured', message: 'The protected visibility agent is not configured.' });
+        },
   });
 
   httpServer = app.listen(port, host, () => {

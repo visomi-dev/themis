@@ -64,7 +64,6 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
   const completedJob = await updateAsyncJob(context, existing.id, {
     completedAt: new Date(),
     progress: 100,
-    resultJson: JSON.stringify(result),
     status: 'completed',
   });
 
@@ -73,7 +72,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
   return result;
 }
 
-async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, error: Error) {
+async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, _error: Error) {
   const context = {
     accountId: bullJob.data.accountId,
     userId: bullJob.data.userId,
@@ -81,7 +80,6 @@ async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, error:
 
   const failedJob = await updateAsyncJob(context, bullJob.data.jobId, {
     completedAt: new Date(),
-    errorMessage: error.message,
     progress: 100,
     status: 'failed',
   });

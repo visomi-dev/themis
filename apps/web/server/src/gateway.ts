@@ -17,6 +17,7 @@ type GatewayDeps = {
   astroClientFolder: string;
   astroRequestHandler: AstroRequestHandler;
   authRuntimeHandlers: RequestHandler[];
+  localAgentHandler?: RequestHandler;
 };
 
 const gatewaySecurityHeaders = helmet({
@@ -44,6 +45,7 @@ function createGatewayApp({
   astroClientFolder,
   astroRequestHandler,
   authRuntimeHandlers,
+  localAgentHandler,
 }: GatewayDeps) {
   const app = express();
 
@@ -55,6 +57,13 @@ function createGatewayApp({
   app.get('/', (_req, res) => {
     res.redirect(302, '/en/');
   });
+
+  // This same-origin route is the only browser path to protected local-agent
+  // views. It preserves the authenticated request/handshake while preventing
+  // the cloud API from becoming a plaintext visibility fallback.
+  if (localAgentHandler) {
+    app.use('/v1/product-visibility', localAgentHandler);
+  }
 
   app.use('/api', apiHandler);
 

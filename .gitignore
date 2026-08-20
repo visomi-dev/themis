@@ -78,3 +78,7 @@ core.*
 .themis/state.json
 .themis/events.ndjson
 .themis/state.json.tmp
+
+# Local contract-fuzzing and research artifacts
+.schemathesis/
+deep-research-report*.md

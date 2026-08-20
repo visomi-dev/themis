@@ -17,6 +17,13 @@ Before proposing a sprint:
 8. Define non-goals and Definition of Done.
 9. Define sprint-level verification.
 
+The Definition of Done must state that every selected work item has its
+validation matrix satisfied. Sprint-level verification must include the
+relevant unit, API/OpenAPI, app or gateway E2E, site E2E, visual screenshot,
+security, and build checks. A selected implementation item without a selected
+validation item is a planning defect; add the validation item and a blocking
+dependency before proposing the sprint.
+
 Use `themis_sprint_propose` with `projectId` and `epicIds`. Proposals are versioned; never overwrite a previous proposal. If exploration changes scope, create a new revision with `sprintId` and explain the delta in `planning/sprints/<sprint-id>/proposal.md`.
 
 Planning does not activate a sprint and does not authorize implementation.

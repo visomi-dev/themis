@@ -20,7 +20,7 @@ describe('LocalAgentVisibility', () => {
 
   it('reads only from the local agent boundary', async () => {
     const resultPromise = service.readProject('project-1');
-    const request = http.expectOne('http://127.0.0.1:4317/v1/product-visibility/projects/project-1');
+    const request = http.expectOne('/v1/product-visibility/projects/project-1');
 
     request.flush({
       project: { id: 'project-1', name: 'Core', sourceType: 'manual', status: 'active', updatedAt: 'now' },
@@ -59,5 +59,16 @@ describe('LocalAgentVisibility', () => {
     http.expectOne(/product-visibility/).flush(null, { status: 0, statusText: 'Network error' });
 
     await expect(resultPromise).resolves.toEqual(expect.objectContaining({ kind: 'unavailable' }));
+  });
+
+  it('does not construct a cloud/API fallback URL for protected visibility', async () => {
+    const resultPromise = service.readProject('tenant-b-project');
+    const request = http.expectOne('/v1/product-visibility/projects/tenant-b-project');
+
+    request.flush(null, { status: 423, statusText: 'Locked' });
+
+    await expect(resultPromise).resolves.toEqual(expect.objectContaining({ kind: 'success' }));
+    expect(request.request.url).not.toContain('/api/');
+    expect(request.request.withCredentials).toBe(false);
   });
 });

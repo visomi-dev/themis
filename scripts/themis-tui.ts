@@ -75,9 +75,11 @@ class SprintDashboard implements Component {
     const lines = [
       accent(' THEMIS LOCAL CONTROL PLANE '),
       summary.sprint
-        ? `${summary.sprint.projectId} / ${summary.sprint.id}  ${summary.sprint.goal}`
+        ? `${summary.sprint.projectId} / ${summary.sprint.id}  ${summary.sprint.status}  ${summary.sprint.goal}`
         : 'No active sprint',
-      muted(`${counts}    Runs active ${summary.activeRuns}    Reviews ${summary.reviewCount}`),
+      muted(
+        `${counts}    Runs active ${summary.activeRuns}    Reviews ${summary.reviewCount}    Sprint evidence ${summary.sprintEvidenceCount}`,
+      ),
       '',
       columns
         .map(({ label }, index) => (index === this.selectedSection ? accent(`[ ${label} ]`) : muted(`  ${label}  `)))
