@@ -78,6 +78,7 @@ core.*
 .themis/state.json
 .themis/events.ndjson
 .themis/state.json.tmp
+.themis/agents.lock.json
 
 # Local contract-fuzzing and research artifacts
 .schemathesis/

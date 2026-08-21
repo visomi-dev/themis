@@ -165,6 +165,27 @@ pnpm nx run api-e2e:e2e
 pnpm nx run server-e2e:e2e
 ```
 
+## Agent Distribution
+
+The canonical Themis agent resources live in `.opencode`. The `.agents`
+directory is a symlink-based distribution facade and does not duplicate those
+resources.
+
+Build and validate the publishable installer with:
+
+```bash
+pnpm nx build themis-agent-cli
+pnpm nx test themis-agent-cli
+pnpm nx run themis-agent-cli:verify
+pnpm nx run themis-agent-cli:publish:dry-run
+```
+
+The resulting npm package is `@visomi/themis`. Its first public alias is:
+
+```bash
+npx @visomi/themis add core
+```
+
 ## Documentation
 
 - [Constitution](docs/constitution/) — mission, tech stack, roadmap

@@ -1,0 +1,119 @@
+{
+  "name": "themis-agent-cli",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/themis-agent-cli/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/themis-agent-cli",
+        "format": ["cjs"],
+        "bundle": true,
+        "main": "apps/themis-agent-cli/src/main.ts",
+        "tsConfig": "apps/themis-agent-cli/tsconfig.app.json",
+        "assets": ["apps/themis-agent-cli/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "prune-lockfile": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "executor": "@nx/js:prune-lockfile",
+      "outputs": [
+        "{workspaceRoot}/dist/apps/themis-agent-cli/package.json",
+        "{workspaceRoot}/dist/apps/themis-agent-cli/pnpm-lock.yaml"
+      ],
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "copy-workspace-modules": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "outputs": ["{workspaceRoot}/dist/apps/themis-agent-cli/workspace_modules"],
+      "executor": "@nx/js:copy-workspace-modules",
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "prune": {
+      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "themis-agent-cli:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "themis-agent-cli:build:development"
+        },
+        "production": {
+          "buildTarget": "themis-agent-cli:build:production"
+        }
+      }
+    },
+    "test": {
+      "options": {
+        "passWithNoTests": true
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tsc --noEmit -p apps/themis-agent-cli/tsconfig.app.json",
+        "cwd": "."
+      }
+    },
+    "verify": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node dist/apps/themis-agent-cli/main.js verify core",
+        "cwd": "."
+      }
+    },
+    "package": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/themis-agent-cli"],
+      "options": {
+        "command": "pnpm exec npm pack ./dist/apps/themis-agent-cli --pack-destination ./dist/apps/themis-agent-cli"
+      }
+    },
+    "publish:dry-run": {
+      "dependsOn": ["package"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec npm publish ./dist/apps/themis-agent-cli/*.tgz --dry-run"
+      }
+    }
+  }
+}
