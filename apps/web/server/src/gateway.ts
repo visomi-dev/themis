@@ -18,6 +18,7 @@ type GatewayDeps = {
   astroRequestHandler: AstroRequestHandler;
   authRuntimeHandlers: RequestHandler[];
   localAgentHandler?: RequestHandler;
+  localAgentFixtureControl?: RequestHandler;
 };
 
 const gatewaySecurityHeaders = helmet({
@@ -46,6 +47,7 @@ function createGatewayApp({
   astroRequestHandler,
   authRuntimeHandlers,
   localAgentHandler,
+  localAgentFixtureControl,
 }: GatewayDeps) {
   const app = express();
 
@@ -62,7 +64,13 @@ function createGatewayApp({
   // views. It preserves the authenticated request/handshake while preventing
   // the cloud API from becoming a plaintext visibility fallback.
   if (localAgentHandler) {
+    app.use('/v1/browser-vault', localAgentHandler);
     app.use('/v1/product-visibility', localAgentHandler);
+    app.use('/v1/local-agent', localAgentHandler);
+  }
+
+  if (localAgentFixtureControl) {
+    app.use('/__fixture__/local-agent', localAgentFixtureControl);
   }
 
   app.use('/api', apiHandler);

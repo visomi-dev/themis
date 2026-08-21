@@ -84,4 +84,25 @@ describe('local-agent gateway handshake', () => {
     expect((await request(gateway).get('/v1/product-visibility/projects/project-1')).status).toBe(200);
     expect((await request(gateway).get('/v1/product-visibility/projects/project-1')).status).toBe(403);
   });
+
+  it('fails closed for malformed handshake responses', async () => {
+    const { publicKey } = generateKeyPairSync('ed25519');
+    const malformed = createLocalAgentProxy({
+      publicKey,
+      replayStore: { claim: async () => true },
+      target: new URL('http://local-agent.test'),
+      fetchImpl: async () =>
+        new Response('protected body', {
+          headers: { 'x-themis-handshake-response': Buffer.from('{not-json').toString('base64url') },
+        }),
+    });
+    const malformedGateway = express();
+
+    malformedGateway.use('/v1/product-visibility', malformed);
+
+    const malformedResponse = await request(malformedGateway).get('/v1/product-visibility/projects/project-1');
+
+    expect(malformedResponse.status).toBe(403);
+    expect(malformedResponse.text).not.toContain('protected body');
+  });
 });

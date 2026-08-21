@@ -5,6 +5,7 @@ import { ProjectSeed } from '../../shared/jobs/project-seed';
 import { PROJECTS_URL } from '../../shared/constants/routes';
 import type { ProjectDocumentType, ProjectStatus, ProjectWithDocuments } from '../../shared/projects/projects.models';
 import { LocalAgentVisibility, type LocalAgentProjectView } from '../../shared/projects/local-agent-visibility';
+import { ProjectProjection, type ProjectionScope } from '../../shared/projects/project-projection';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { Badge } from '../../shared/ui/data/badge/badge';
 import { Button } from '../../shared/ui/actions/button/button';
@@ -13,11 +14,12 @@ import { Container } from '../../shared/ui/layout/container/container';
 import { Heading } from '../../shared/ui/typography/heading/heading';
 import { Link } from '../../shared/ui/typography/link/link';
 import { Loader } from '../../shared/ui/feedback/loader/loader';
+import { ProjectProjectionView } from '../../shared/projects/project-projection-view';
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, Badge, Button, Card, Container, Heading, Link, Loader, RouterLink],
+  imports: [Alert, Badge, Button, Card, Container, Heading, Link, Loader, ProjectProjectionView, RouterLink],
   selector: 'app-project-detail',
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.css',
@@ -25,6 +27,7 @@ import { Loader } from '../../shared/ui/feedback/loader/loader';
 export class ProjectDetail implements OnInit {
   private readonly projectSeed = inject(ProjectSeed);
   private readonly localAgentVisibility = inject(LocalAgentVisibility);
+  protected readonly projection = inject(ProjectProjection);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -37,15 +40,20 @@ export class ProjectDetail implements OnInit {
   >('loading');
   readonly seeding = signal(false);
   readonly projectsUrl = PROJECTS_URL;
+  readonly projectionScope = signal<ProjectionScope>({ tenantId: '', workspaceId: '' });
 
   async ngOnInit() {
     const projectId = this.route.snapshot.paramMap.get('projectId');
+    const tenantId = this.route.snapshot.queryParamMap.get('tenantId');
+    const workspaceId = this.route.snapshot.queryParamMap.get('workspaceId');
 
     if (!projectId) {
       await this.router.navigate([PROJECTS_URL]);
 
       return;
     }
+
+    this.projectionScope.set({ tenantId: tenantId ?? '', workspaceId: workspaceId ?? '' });
 
     await this.loadProject(projectId);
   }

@@ -3,9 +3,11 @@ import morgan from 'morgan';
 
 import { activationRouter } from './activation/activation-router';
 import { authRouter } from './auth/auth-router';
+import { capabilityRouter } from './capabilities/capability-router';
 import './auth/passport';
 import { projectsRouter } from './projects/projects-router';
 import { opaqueSyncRouter } from './sync/opaque-sync-router';
+import { webAuthnRouter } from './webauthn/webauthn-router';
 import { env } from './shared/env';
 import { createOpenApiDocument } from './shared/http/openapi';
 import { testRouter } from './testing/test-router';
@@ -90,6 +92,8 @@ async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
   app.use('/activation', activationRouter);
   app.use('/projects', projectsRouter);
   app.use('/sync', opaqueSyncRouter);
+  app.use('/capabilities', capabilityRouter);
+  app.use('/webauthn', webAuthnRouter);
 
   if (env.ENABLE_TEST_API) {
     app.use('/test', testRouter);

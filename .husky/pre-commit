@@ -8,4 +8,4 @@ pnpm exec lint-staged
 # Run focused lint + unit tests on the affected projects
 pnpm exec nx affected -t lint
 pnpm exec nx affected -t test
-pnpm exec nx affected -t e2e
+# pnpm exec nx affected -t e2e

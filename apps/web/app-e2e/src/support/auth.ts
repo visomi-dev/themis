@@ -128,6 +128,47 @@ export const authenticateViaApi = async (page: Page, request: APIRequestContext,
   await completeActivationIfNeeded(page);
 };
 
+export const authenticateViaDeterministicTestSession = async (
+  page: Page,
+  request: APIRequestContext,
+  email: string,
+  password: string,
+) => {
+  await page.goto(signInRoute);
+  await expect(page).toHaveURL(signInUrlPattern);
+  const response = await request.post('/api/test/auth/session', {
+    data: { email, password },
+  });
+
+  if (!response.ok()) throw new Error(`deterministic test session failed with ${response.status()}`);
+
+  const cookies = response
+    .headers()
+    ['set-cookie'].split(/, (?=[^;]+=)/)
+    .map((cookie) => cookie.split(';', 1)[0].split('='))
+    .map(([name, ...value]) => ({ name, value: value.join('='), url: new URL(page.url()).origin }));
+
+  await page
+    .context()
+    .addCookies([...cookies, { name: 'themis.hasSession', value: '1', url: new URL(page.url()).origin }]);
+  await waitForAuthenticatedSession(page, email);
+
+  const activationStatus = await page.evaluate(async () => {
+    const response = await fetch('/api/activation/milestones', {
+      body: JSON.stringify({ milestone: 'activation_completed' }),
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      method: 'POST',
+    });
+
+    return response.status;
+  });
+
+  if (activationStatus !== 204 && activationStatus !== 409) {
+    throw new Error(`deterministic activation completion failed with ${activationStatus}`);
+  }
+};
+
 export const signUp = async (page: Page, email: string, password: string) => {
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);

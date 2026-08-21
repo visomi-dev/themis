@@ -7,6 +7,7 @@ import {
   handshakeReplayKey,
   verifyLocalAgentHandshake,
   type LocalAgentHandshakeResponse,
+  redactBridgeDiagnostic,
 } from 'shared';
 
 type ReplayStore = {
@@ -36,13 +37,19 @@ function createLocalAgentProxy({
     const origin = typeof req.headers.origin === 'string' ? req.headers.origin : `${req.protocol}://${req.get('host')}`;
     const challenge = createLocalAgentChallenge(origin, sessionBinding(req));
     const upstream = new URL(
-      `${target.toString().replace(/\/$/, '')}${req.originalUrl.replace(/^\/v1\/product-visibility/, '')}`,
+      `${target.toString().replace(/\/$/, '')}${req.originalUrl.replace(/^\/v1\/(?:browser-vault|product-visibility|local-agent)/, '')}`,
     );
 
     try {
       const upstreamResponse = await fetchImpl(upstream, {
         headers: {
           accept: 'application/json',
+          'x-themis-bridge-capabilities': 'projection',
+          'x-themis-bridge-version': '1',
+          'x-themis-projection-format':
+            req.originalUrl.startsWith('/v1/browser-vault/') || req.originalUrl.startsWith('/v1/product-visibility/')
+              ? 'browser'
+              : 'agent',
           cookie: typeof req.headers.cookie === 'string' ? req.headers.cookie : '',
           'x-themis-handshake-challenge': Buffer.from(JSON.stringify(challenge), 'utf8').toString('base64url'),
         },
@@ -60,9 +67,17 @@ function createLocalAgentProxy({
         return;
       }
 
-      const response = JSON.parse(
-        Buffer.from(responseHeader, 'base64url').toString('utf8'),
-      ) as LocalAgentHandshakeResponse;
+      let response: LocalAgentHandshakeResponse;
+
+      try {
+        response = JSON.parse(Buffer.from(responseHeader, 'base64url').toString('utf8')) as LocalAgentHandshakeResponse;
+      } catch {
+        res
+          .status(403)
+          .json({ code: 'local_agent_handshake_failed', message: 'The local agent handshake was rejected.' });
+
+        return;
+      }
 
       if (
         !verifyLocalAgentHandshake(challenge, response, publicKey) ||
@@ -75,12 +90,20 @@ function createLocalAgentProxy({
         return;
       }
 
-      res
-        .status(200)
-        .type('application/json')
-        .send(await upstreamResponse.text());
-    } catch {
-      res.status(503).json({ code: 'local_agent_unavailable', message: 'The local agent is unavailable.' });
+      const body = await upstreamResponse.text();
+
+      if (Buffer.byteLength(body, 'utf8') > 64 * 1024) {
+        res.status(502).json({
+          code: 'local_agent_projection_unsafe',
+          message: 'The local agent projection exceeded its safe bound.',
+        });
+
+        return;
+      }
+
+      res.status(200).set('cache-control', 'no-store').type('application/json').send(body);
+    } catch (error: unknown) {
+      res.status(503).json({ code: 'local_agent_unavailable', message: redactBridgeDiagnostic(error) });
     }
   };
 }

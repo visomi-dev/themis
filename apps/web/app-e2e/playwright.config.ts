@@ -2,9 +2,13 @@ import { workspaceRoot } from '@nx/devkit';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { defineConfig, devices } from '@playwright/test';
 
+import { LOCAL_AGENT_FIXTURE_PUBLIC_KEY } from './src/support/local-agent-fixture';
+
 const gatewayPort = process.env['GATEWAY_PORT'] || '8081';
 const baseURL = process.env['BASE_URL'] || `http://localhost:${gatewayPort}`;
-const localAgentUrl = process.env['LOCAL_AGENT_URL'] || 'http://localhost:4317';
+
+process.env['BASE_URL'] = baseURL;
+const localAgentUrl = process.env['LOCAL_AGENT_URL'] || 'http://127.0.0.1:4317';
 
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
@@ -20,6 +24,7 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     trace: 'on-first-retry',
   },
+  globalSetup: './src/support/local-agent-global-setup.ts',
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
@@ -38,6 +43,7 @@ export default defineConfig({
       HOST: 'localhost',
       MAIL_TRANSPORT: 'memory',
       LOCAL_AGENT_URL: localAgentUrl,
+      LOCAL_AGENT_PUBLIC_KEY: LOCAL_AGENT_FIXTURE_PUBLIC_KEY,
       NG_ALLOWED_HOSTS: 'localhost',
       GATEWAY_PORT: gatewayPort,
       PORT: gatewayPort,

@@ -86,6 +86,8 @@
         }
       </app-card>
 
+      <app-project-projection [projectId]="project()!.id" [scope]="projectionScope()" />
+
       <section class="flex flex-col gap-4" aria-live="polite">
         <app-heading level="2" [text]="'Approved project visibility'" />
 

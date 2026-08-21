@@ -1,0 +1,192 @@
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
+import { createPrivateKey, sign } from 'node:crypto';
+
+export type LocalAgentFixtureState = 'available' | 'unavailable' | 'disconnected' | 'incompatible' | 'unsafe';
+export type SyncFixturePhase = 'offline' | 'conflict' | 'reconnected' | 'deleted' | 'resolved';
+
+const privateKey = createPrivateKey(`-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIG8V2hvowivr3fEdt8cIyeHi3k+VMLw07JZtSvmrMN2Y
+-----END PRIVATE KEY-----`);
+
+const projection = {
+  tenantId: 'tenant-fixture',
+  workspaceId: 'workspace-fixture',
+  revision: 4,
+  updatedAt: '2026-02-01T00:00:00.000Z',
+  tombstones: [],
+  work: [{ id: 'work-1', title: 'Review local projection', status: 'doing', position: 1 }],
+  planning: [{ id: 'plan-1', title: 'Prepare release', horizon: 'next' }],
+  progress: [{ id: 'progress-1', label: 'Implementation', percent: 60, updatedAt: '2026-02-01T00:00:00.000Z' }],
+};
+
+const syncProjection = {
+  ...projection,
+  revision: 7,
+  work: [{ id: 'work-1', title: 'Resolved local change', status: 'done', position: 1 }],
+  planning: [{ id: 'plan-1', title: 'Reconnect workspace', horizon: 'now' }],
+  progress: [{ id: 'progress-1', label: 'Sync complete', percent: 100, updatedAt: '2026-02-08T00:00:00.000Z' }],
+};
+
+const syncProjections: Record<Exclude<SyncFixturePhase, 'offline'>, typeof syncProjection> = {
+  conflict: { ...syncProjection, revision: -1, tombstones: ['work-1'], work: [], planning: [], progress: [] },
+  reconnected: { ...syncProjection, revision: 7 },
+  deleted: { ...syncProjection, revision: 7, tombstones: ['work-1'], work: [] },
+  resolved: syncProjection,
+};
+
+let networkState: Exclude<LocalAgentFixtureState, 'incompatible' | 'unsafe'> = 'available';
+let syncPhase: SyncFixturePhase = 'resolved';
+
+function responseHeader(challengeHeader: string): string {
+  const challenge = JSON.parse(Buffer.from(challengeHeader, 'base64url').toString('utf8')) as {
+    nonce: string;
+    origin: string;
+    sessionId: string;
+  };
+  const unsigned = {
+    deviceId: 'deterministic-e2e-device',
+    nonce: challenge.nonce,
+    origin: challenge.origin,
+    sessionId: challenge.sessionId,
+  };
+  const signature = sign(null, Buffer.from(JSON.stringify(unsigned), 'utf8'), privateKey).toString('base64url');
+
+  return Buffer.from(JSON.stringify({ ...unsigned, signature }), 'utf8').toString('base64url');
+}
+
+function projectId(request: IncomingMessage): string {
+  return new URL(request.url ?? '/', 'http://localhost').pathname.split('/').pop() ?? '';
+}
+
+function handle(request: IncomingMessage, response: ServerResponse): void {
+  if (request.url === '/__fixture__/network') {
+    let body = '';
+
+    request.on('data', (chunk: Buffer) => (body += chunk.toString('utf8')));
+    request.on('end', () => {
+      const requested = JSON.parse(body) as { state: typeof networkState };
+
+      networkState = requested.state;
+      response.writeHead(204).end();
+    });
+
+    return;
+  }
+
+  if (request.url === '/__fixture__/sync-phase') {
+    let body = '';
+
+    request.on('data', (chunk: Buffer) => (body += chunk.toString('utf8')));
+    request.on('end', () => {
+      syncPhase = (JSON.parse(body) as { phase: SyncFixturePhase }).phase;
+      response.writeHead(204).end();
+    });
+
+    return;
+  }
+
+  const state = networkState === 'available' ? (projectId(request) as LocalAgentFixtureState) : networkState;
+  const isVisibilityProject = request.url?.startsWith('/projects/') ?? false;
+
+  if (!isVisibilityProject && state === 'disconnected' && syncPhase !== 'conflict') {
+    response.socket?.destroy();
+
+    return;
+  }
+
+  if (!isVisibilityProject && state === 'unavailable') {
+    response.writeHead(503).end('deterministic unavailable fixture');
+
+    return;
+  }
+
+  const challenge = request.headers['x-themis-handshake-challenge'];
+
+  if (typeof challenge !== 'string') {
+    response.writeHead(400).end('missing bridge challenge');
+
+    return;
+  }
+
+  response.setHeader('x-themis-handshake-response', responseHeader(challenge));
+  response.setHeader('content-type', 'application/json');
+
+  if (state === 'incompatible') {
+    response.end(JSON.stringify({ format: 'unsupported.bridge', version: 99 }));
+
+    return;
+  }
+
+  if (state === 'unsafe') {
+    response.end(JSON.stringify({ projection, padding: 'unsafe-fixture-'.repeat(5000) }));
+
+    return;
+  }
+
+  const selectedProjection =
+    projectId(request) === 'sync-fixture' && syncPhase !== 'offline'
+      ? syncProjections[syncPhase]
+      : projectId(request) === 'sync-fixture'
+        ? syncProjection
+        : projection;
+
+  if (request.url?.startsWith('/projects/')) {
+    response.end(
+      JSON.stringify({
+        activity: [],
+        context: null,
+        project: {
+          id: projectId(request),
+          name: 'Sync route fixture',
+          sourceType: 'manual',
+          status: 'active',
+          updatedAt: '2026-02-08T00:00:00.000Z',
+        },
+        state: 'authorized',
+      }),
+    );
+
+    return;
+  }
+
+  response.end(
+    JSON.stringify(
+      request.headers['x-themis-projection-format'] === 'browser'
+        ? selectedProjection
+        : { projection: selectedProjection },
+    ),
+  );
+}
+
+export async function startLocalAgentFixture(): Promise<Server> {
+  const server = createServer(handle);
+
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(4317, '127.0.0.1', () => resolve());
+  });
+
+  return server;
+}
+
+export async function stopLocalAgentFixture(server: Server): Promise<void> {
+  await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+}
+
+export async function setLocalAgentFixtureNetwork(
+  state: Exclude<LocalAgentFixtureState, 'incompatible' | 'unsafe'>,
+): Promise<void> {
+  await fetch(`${process.env['BASE_URL'] ?? 'http://localhost:8081'}/__fixture__/local-agent/network/${state}`, {
+    method: 'POST',
+  });
+}
+
+export async function setLocalAgentFixturePhase(phase: SyncFixturePhase): Promise<void> {
+  await fetch(`${process.env['BASE_URL'] ?? 'http://localhost:8081'}/__fixture__/local-agent/sync-phase/${phase}`, {
+    method: 'POST',
+  });
+}
+
+export const LOCAL_AGENT_FIXTURE_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAMiNlot5qU1DkSBrhasHJyQEDLwcpFWHVVYaEzOPz56w=
+-----END PUBLIC KEY-----`;

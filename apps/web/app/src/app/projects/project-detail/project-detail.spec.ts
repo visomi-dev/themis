@@ -48,6 +48,9 @@ describe('ProjectDetail', () => {
               paramMap: {
                 get: () => 'project-1',
               },
+              queryParamMap: {
+                get: (key: string) => ({ tenantId: 'tenant-a', workspaceId: 'workspace-a' })[key] ?? null,
+              },
             },
           },
         },

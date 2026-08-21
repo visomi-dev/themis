@@ -7,6 +7,24 @@ const password = 'S3cureAuth!';
 const toCookieHeader = (setCookie: string[] | undefined) =>
   setCookie?.map((cookie) => cookie.split(';', 1)[0]).join('; ') ?? '';
 
+async function registerSession(suffix: string): Promise<{ cookie: string; workspaceId: string }> {
+  const account = `webauthn-${suffix}-${Date.now()}@themis.dev`;
+  const signUp = await axios.post('/auth/sign-up', { email: account, password });
+  const mailbox = await axios.get('/test/mailbox/latest', { params: { email: account, purpose: 'sign_up' } });
+  const verified = await axios.post('/auth/sign-up/verify', {
+    challengeId: signUp.data.data.challengeId,
+    pin: mailbox.data.pin,
+  });
+  const cookie = toCookieHeader(verified.headers['set-cookie']);
+  const project = await axios.post(
+    '/projects',
+    { name: `WebAuthn ${suffix}`, sourceType: 'manual' },
+    { headers: { Cookie: cookie } },
+  );
+
+  return { cookie, workspaceId: project.data.data.id as string };
+}
+
 describe('auth API', () => {
   beforeEach(async () => {
     await axios.delete('/test/mailbox');
@@ -44,6 +62,110 @@ describe('auth API', () => {
       );
     }
   });
+
+  it('covers WebAuthn metadata negative cases over real HTTP', async () => {
+    const owner = await registerSession('owner');
+    const otherTenant = await registerSession('other');
+    const credential = {
+      credentialId: 'AQIDBA',
+      rpId: 'example.test',
+      origin: 'https://example.test',
+      prfSupported: true,
+      transports: ['internal'],
+    };
+    const ownerHeaders = { headers: { Cookie: owner.cookie }, validateStatus: () => true };
+    const otherHeaders = { headers: { Cookie: otherTenant.cookie }, validateStatus: () => true };
+
+    const unauthorizedWorkspace = await axios.get(`/webauthn/${owner.workspaceId}/credentials`, otherHeaders);
+
+    expect(unauthorizedWorkspace.status).toBe(404);
+    expect(unauthorizedWorkspace.data).toEqual({
+      code: 'workspace_not_found',
+      message: 'The workspace could not be found.',
+    });
+
+    const malformedCredential = await axios.post(
+      `/webauthn/${owner.workspaceId}/credentials`,
+      { ...credential, credentialId: 'not canonical!' },
+      ownerHeaders,
+    );
+
+    expect(malformedCredential.status).toBe(400);
+    expect(malformedCredential.data.code).toBe('invalid_request');
+
+    const secretField = await axios.post(
+      `/webauthn/${owner.workspaceId}/credentials`,
+      { ...credential, privateKey: 'must-not-cross-the-api' },
+      ownerHeaders,
+    );
+
+    expect(secretField.status).toBe(400);
+    expect(JSON.stringify(secretField.data)).not.toContain('must-not-cross-the-api');
+
+    const enrolled = await axios.post(
+      `/webauthn/${owner.workspaceId}/recovery`,
+      { requestId: 'enroll-once', confirmed: true },
+      ownerHeaders,
+    );
+
+    expect(enrolled.status).toBe(201);
+    expect(enrolled.data.data).not.toHaveProperty('material');
+    const replayedEnrollment = await axios.post(
+      `/webauthn/${owner.workspaceId}/recovery`,
+      { requestId: 'enroll-once', confirmed: true },
+      ownerHeaders,
+    );
+
+    expect(replayedEnrollment.status).toBe(409);
+    expect(replayedEnrollment.data).toEqual({
+      code: 'webauthn_replay',
+      message: 'The recovery operation was already processed.',
+    });
+
+    const recoveryId = enrolled.data.data.recoveryId as string;
+    const crossTenant = await axios.post(
+      `/webauthn/${owner.workspaceId}/recovery/${recoveryId}/use`,
+      { requestId: 'cross-tenant', confirmed: true },
+      otherHeaders,
+    );
+
+    expect(crossTenant.status).toBe(404);
+
+    const revoked = await axios.post(
+      `/webauthn/${otherTenant.workspaceId}/recovery`,
+      { requestId: 'revoke-me', confirmed: true },
+      otherHeaders,
+    );
+
+    const revokedId = revoked.data.data.recoveryId as string;
+
+    expect(
+      (await axios.delete(`/webauthn/${otherTenant.workspaceId}/recovery/${revokedId}`, otherHeaders)).status,
+    ).toBe(200);
+
+    const revokedUse = await axios.post(
+      `/webauthn/${otherTenant.workspaceId}/recovery/${revokedId}/use`,
+      { requestId: 'revoked-use', confirmed: true },
+      otherHeaders,
+    );
+
+    expect(revokedUse.status).toBe(409);
+
+    const used = await axios.post(
+      `/webauthn/${owner.workspaceId}/recovery/${recoveryId}/use`,
+      { requestId: 'use-once', confirmed: true },
+      ownerHeaders,
+    );
+
+    expect(used.status).toBe(200);
+    const replayedUse = await axios.post(
+      `/webauthn/${owner.workspaceId}/recovery/${recoveryId}/use`,
+      { requestId: 'use-again', confirmed: true },
+      ownerHeaders,
+    );
+
+    expect(replayedUse.status).toBe(409);
+  }, 30_000);
 
   it('completes sign-up, verification, session restore, sign-out, and sign-in verification', async () => {
     const signUpResponse = await axios.post('/auth/sign-up', {

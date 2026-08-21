@@ -43,6 +43,25 @@ const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
 const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
 const localAgentUrl = process.env.LOCAL_AGENT_URL ?? 'http://localhost:4317';
 
+function createLocalAgentFixtureControl(target: URL): RequestHandler {
+  return async (req, res) => {
+    const state = req.path.split('/').filter(Boolean).pop();
+    const controlPath = req.path.includes('/network') ? '/__fixture__/network' : '/__fixture__/sync-phase';
+
+    try {
+      const response = await fetch(new URL(`${target.toString().replace(/\/$/, '')}${controlPath}`), {
+        body: JSON.stringify(req.path.includes('/network') ? { state } : { phase: state }),
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+      });
+
+      res.status(response.status).end();
+    } catch {
+      res.status(503).send('fixture control unavailable');
+    }
+  };
+}
+
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
 const apiEntryFile = resolve(serverDistFolder, '..', 'api', 'main.js');
@@ -157,6 +176,7 @@ async function bootstrap() {
   startWorkerRuntime();
 
   const localAgentPublicKey = publicKeyFromPem(process.env.LOCAL_AGENT_PUBLIC_KEY);
+  const localAgentTarget = new URL(localAgentUrl);
 
   const app = createGatewayApp({
     apiHandler,
@@ -168,13 +188,15 @@ async function bootstrap() {
       ? createLocalAgentProxy({
           publicKey: localAgentPublicKey,
           replayStore: new DurableReplayStore(),
-          target: new URL(localAgentUrl),
+          target: localAgentTarget,
         })
       : (_req, res) => {
           res
             .status(503)
             .json({ code: 'local_agent_unconfigured', message: 'The protected visibility agent is not configured.' });
         },
+    localAgentFixtureControl:
+      process.env.ENABLE_TEST_API === 'true' ? createLocalAgentFixtureControl(localAgentTarget) : undefined,
   });
 
   httpServer = app.listen(port, host, () => {
