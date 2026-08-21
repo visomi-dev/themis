@@ -29,6 +29,16 @@ describe('Checkbox', () => {
     expect(input.checked).toBe(true);
   });
 
+  it('updates the signal form value when toggled', () => {
+    const input = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
+
+    input.click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.model().remember).toBe(false);
+    expect(input.checked).toBe(false);
+  });
+
   it('forwards disabled state to the native checkbox', () => {
     const input = fixture.nativeElement.querySelector('input[type="checkbox"]') as HTMLInputElement;
 

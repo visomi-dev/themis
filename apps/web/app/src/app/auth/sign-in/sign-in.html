@@ -20,12 +20,6 @@
       </p>
     </header>
 
-    @if (errorMessage()) {
-      <app-alert class="mb-5" tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{
-        errorMessage()
-      }}</app-alert>
-    }
-
     <app-form class="grid w-full max-w-sm grid-cols-1 gap-4" [form]="signInForm">
       <app-field>
         <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
@@ -91,6 +85,10 @@
         [loading]="submitting()"
         >Sign in</app-button
       >
+
+      @if (errorMessage()) {
+        <app-alert tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
+      }
 
       <p class="text-center text-sm text-zinc-500 dark:text-zinc-400">
         <span i18n="@@signInFooterPrompt">New to Themis?</span>

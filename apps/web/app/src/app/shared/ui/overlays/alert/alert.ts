@@ -10,7 +10,7 @@ type AlertVariant = 'default' | 'auth';
 const alertTones = Object.freeze({
   auth: {
     danger:
-      /* tw */ 'border-red-600 dark:border-red-500/20 bg-red-600 dark:bg-red-500/10 text-red-600 dark:text-red-400',
+      /* tw */ 'border-red-600/20 dark:border-red-500/20 bg-red-600/5 dark:bg-red-500/10 text-red-800 dark:text-red-300',
     info: /* tw */ 'border-blue-600 dark:border-blue-500/20 bg-blue-600 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400',
     success:
       /* tw */ 'border-green-600/20 dark:border-green-500/20 bg-green-600/5 dark:bg-green-500/10 text-green-600 dark:text-green-400',
@@ -18,7 +18,7 @@ const alertTones = Object.freeze({
   },
   default: {
     danger:
-      /* tw */ 'border-red-600 dark:border-red-500/20 bg-red-600/5 dark:bg-red-500/10 text-zinc-950 dark:text-zinc-50',
+      /* tw */ 'border-red-600/20 dark:border-red-500/20 bg-red-600/5 dark:bg-red-500/10 text-red-800 dark:text-red-300',
     info: /* tw */ 'border-blue-600 dark:border-blue-500/20 bg-blue-600/5 dark:bg-blue-500/10 text-zinc-950 dark:text-zinc-50',
     success:
       /* tw */ 'border-green-600/20 dark:border-green-500/20 bg-green-600/5 dark:bg-green-500/10 text-zinc-950 dark:text-zinc-50',

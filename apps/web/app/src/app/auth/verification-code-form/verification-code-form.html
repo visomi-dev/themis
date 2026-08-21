@@ -1,6 +1,3 @@
-@if (errorMessage()) {
-  <app-alert tone="danger">{{ errorMessage() }}</app-alert>
-}
 @if (statusMessage()) {
   <app-alert tone="success">{{ statusMessage() }}</app-alert>
 }
@@ -41,4 +38,8 @@
       Resend code
     </app-button>
   </div>
+
+  @if (errorMessage()) {
+    <app-alert tone="danger" variant="auth">{{ errorMessage() }}</app-alert>
+  }
 </app-form>
