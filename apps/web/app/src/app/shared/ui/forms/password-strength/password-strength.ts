@@ -52,7 +52,7 @@ export class PasswordStrength {
   readonly labelClasses = computed(() =>
     uiClass(
       'text-zinc-500 dark:text-zinc-400 block text-xs font-medium tracking-wide',
-      this.level() === 0 ? 'opacity-60' : 'opacity-100',
+      this.level() === 0 ? 'opacity-0' : 'opacity-100',
     ),
   );
 }
