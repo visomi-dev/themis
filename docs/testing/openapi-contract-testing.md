@@ -13,10 +13,22 @@ Install `uv`, then run:
 pnpm exec nx run api-e2e:openapi
 ```
 
-The runner pins Schemathesis to `4.24.3` through `uvx`, starts the same memory
+The runner pins Schemathesis to `4.24.3` and `jsonschema-rs` to `0.49.1` through `uvx`, starts the same memory
 database composition server used by `api-e2e`, and writes sanitized JUnit and
-HAR reports to `dist/test-results/api-e2e/openapi/`. The default target runs
-the bounded `examples` and `coverage` phases.
+HAR reports to `dist/test-results/api-e2e/openapi/`. Newer `jsonschema-rs`
+releases removed `CanonicalSchema.is_satisfiable`, which Schemathesis `4.24.3`
+uses, so the explicit compatibility pin is required. Verify the resolution
+with:
+
+```bash
+uvx --from 'schemathesis==4.24.3' --with 'jsonschema-rs==0.49.1' python -c \
+  "from importlib.metadata import version; print(version('schemathesis'), version('jsonschema-rs'))"
+```
+
+The default target runs the bounded `examples` and `coverage` phases. The
+`passkey-smoke-summary.json` report identifies the real HTTP registration-begin,
+registration-complete, authentication-begin, and authentication-complete
+cases.
 
 For the longer property-based pass, run:
 
@@ -37,6 +49,25 @@ pnpm exec nx run api-e2e:openapi-fuzz
   mailbox and passes the resulting sanitized session cookie to generated
   requests. Detailed OTP and password-recovery workflows remain in the
   explicit Jest API E2E suite.
+- Passkey smoke setup creates ceremony rows only through real HTTP begin
+  endpoints and uses the returned challenge IDs and option challenges. The
+  challenge-mismatch case uses two persisted begin results so the session
+  pending challenge and submitted challenge are both real.
+- Expiry, consumed/replay, PIN-gate, and origin/RP-specific outcomes are
+  reported as explicit limitations when the public contract cannot observe
+  them: the five-minute TTL has no public clock-control endpoint, the PIN
+  schema accepts only `true`, and WebAuthn attestation/assertion material is
+  required before the application reaches consumption or origin/RP checks.
+  The passkey fixture uses ephemeral P-256 keys and hand-built WebAuthn
+  `none` attestation/assertion CBOR. It receives every challenge ID and
+  challenge from the API, persists credentials only through the registration
+  HTTP endpoint, and performs authentication through the authentication HTTP
+  endpoint. The composition server is preloaded with the test-only
+  `apps/web/api-e2e/src/support/fake-clock.cjs`; the fixture advances a clock
+  file for the expiry case and restores it before continuing. This bounded
+  setup changes no production source and is removed with the report directory.
+  The smoke report records the actual HTTP response for expiry, replay, origin
+  mismatch, RP mismatch, and successful authentication.
 
 ## Reproducing a failure
 

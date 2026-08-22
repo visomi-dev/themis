@@ -1,4 +1,4 @@
-import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 const users = pgTable(
   'users',
@@ -67,6 +67,60 @@ const authVerificationChallenges = pgTable('auth_verification_challenges', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+const accountPasskeyCredentials = pgTable(
+  'account_passkey_credentials',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    credentialId: text('credential_id').notNull(),
+    publicKey: text('public_key').notNull(),
+    rpId: text('rp_id').notNull(),
+    label: text('label').notNull(),
+    transports: jsonb('transports').$type<string[]>().notNull().default([]),
+    signCount: integer('sign_count').notNull().default(0),
+    backupEligible: boolean('backup_eligible').notNull().default(false),
+    backupState: boolean('backup_state').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('account_passkey_credentials_credential_idx').on(table.credentialId),
+    uniqueIndex('account_passkey_credentials_account_label_idx').on(table.accountId, table.label),
+    index('account_passkey_credentials_account_status_idx').on(table.accountId, table.revokedAt),
+  ],
+);
+
+const accountWebAuthnChallenges = pgTable(
+  'account_webauthn_challenges',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+    challengeHash: text('challenge_hash').notNull(),
+    purpose: text('purpose').notNull(),
+    rpId: text('rp_id').notNull(),
+    origin: text('origin').notNull(),
+    userVerification: text('user_verification').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    attemptCount: integer('attempt_count').notNull().default(0),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('account_webauthn_challenges_hash_idx').on(table.challengeHash),
+    index('account_webauthn_challenges_account_expiry_idx').on(table.accountId, table.expiresAt),
+  ],
+);
 
 const userDevices = pgTable(
   'user_devices',
@@ -287,6 +341,8 @@ export {
   apiKeys,
   asyncJobs,
   authVerificationChallenges,
+  accountPasskeyCredentials,
+  accountWebAuthnChallenges,
   projectDocuments,
   projects,
   userActivationMilestones,

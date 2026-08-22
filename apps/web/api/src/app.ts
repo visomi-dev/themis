@@ -3,6 +3,7 @@ import morgan from 'morgan';
 
 import { activationRouter } from './activation/activation-router';
 import { authRouter } from './auth/auth-router';
+import { passkeyRouter } from './auth/passkey-router';
 import { capabilityRouter } from './capabilities/capability-router';
 import './auth/passport';
 import { projectsRouter } from './projects/projects-router';
@@ -89,6 +90,7 @@ async function buildApp({ mountAuthRuntime = true }: CreateAppOptions = {}) {
   });
 
   app.use('/auth', authRouter);
+  app.use('/auth/passkey', passkeyRouter);
   app.use('/activation', activationRouter);
   app.use('/projects', projectsRouter);
   app.use('/sync', opaqueSyncRouter);

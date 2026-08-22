@@ -55,6 +55,7 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/manrope": "^5.2.8",
     "@fontsource/material-symbols-outlined": "^5.2.45",
+    "@simplewebauthn/server": "13.3.2",
     "axios": "1.18.0",
     "bullmq": "^5.79.1",
     "dotenv": "^17.4.2",

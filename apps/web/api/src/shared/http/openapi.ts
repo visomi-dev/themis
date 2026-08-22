@@ -2,6 +2,7 @@ import { createDocument } from 'zod-openapi';
 
 import { activationOpenApiPaths } from '../../activation/activation-router';
 import { authOpenApiPaths } from '../../auth/auth-router';
+import { passkeyOpenApiPaths } from '../../auth/passkey-router';
 import { capabilityOpenApiPaths } from '../../capabilities/capability-router';
 import { projectsOpenApiPaths } from '../../projects/projects-router';
 import { opaqueSyncOpenApiPaths } from '../../sync/opaque-sync-router';
@@ -17,6 +18,7 @@ function createOpenApiDocument() {
     },
     paths: {
       ...authOpenApiPaths,
+      ...passkeyOpenApiPaths,
       ...activationOpenApiPaths,
       ...projectsOpenApiPaths,
       ...opaqueSyncOpenApiPaths,

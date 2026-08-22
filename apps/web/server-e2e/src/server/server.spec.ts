@@ -3,6 +3,29 @@ import axios from 'axios';
 jest.setTimeout(15000);
 
 describe('composition server', () => {
+  it('exposes passkey ceremony boundaries without bypassing email PIN gating', async () => {
+    const email = `passkey-gateway-${Date.now()}@themis.dev`;
+    const signUp = await axios.post('/api/auth/sign-up', { email, password: 'S3cureAuth!' });
+    const unverified = await axios.post(
+      '/api/auth/passkey/authentication/begin',
+      { email, pinVerified: true },
+      { validateStatus: () => true },
+    );
+    const fallback = await axios.post(
+      '/api/auth/passkey/authentication/begin',
+      { email, pinVerified: true, explicitPassword: true },
+      { validateStatus: () => true },
+    );
+
+    expect(signUp.status).toBe(201);
+    expect(unverified.status).toBe(403);
+    expect(unverified.data.code).toBe('email_unverified');
+    expect(fallback.status).toBe(403);
+    expect(fallback.data.code).toBe('email_unverified');
+    expect(JSON.stringify({ unverified: unverified.data, fallback: fallback.data })).not.toContain('prf');
+    expect(JSON.stringify({ unverified: unverified.data, fallback: fallback.data })).not.toContain('vault');
+  });
+
   it('exposes a runtime health endpoint', async () => {
     const response = await axios.get('/healthz');
 

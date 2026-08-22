@@ -20,6 +20,8 @@ export const authUserSchema = z
     }),
     id: z.string().meta({ description: 'User identifier.', example: 'user-123', id: 'AuthUserId' }),
     role: z.string().meta({ description: 'Active account role.', example: 'owner', id: 'AuthRole' }),
+    authenticationMethod: z.enum(['passkey', 'password']).optional(),
+    credentialId: z.string().optional(),
   })
   .meta({ id: 'AuthUser' });
 

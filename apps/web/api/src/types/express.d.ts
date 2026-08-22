@@ -7,6 +7,8 @@ declare global {
       emailVerifiedAt: string | null;
       id: string;
       role: string;
+      authenticationMethod?: 'passkey' | 'password';
+      credentialId?: string;
     }
   }
 }
@@ -24,6 +26,12 @@ declare module 'express-session' {
       challengeId: string;
       email: string;
       userId: string;
+    };
+    passkeyRegistration?: {
+      challengeId: string;
+      email: string;
+      label: string;
+      pinVerified: true;
     };
   }
 }
