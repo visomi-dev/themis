@@ -60,6 +60,38 @@ pnpm install
 
 ## Local Development
 
+The local runtime uses Podman for PostgreSQL and Redis. The root `.env` file
+contains development-only credentials and is ignored by git.
+
+### Start local dependencies
+
+Install a Podman Compose provider, then start the dependencies with Podman:
+
+```bash
+podman compose up -d
+podman compose ps
+```
+
+The services listen on `localhost:5432` (PostgreSQL) and `localhost:6379`
+(Redis), use persistent named volumes, and expose health checks. The gateway
+loads `.env`, automatically applies database migrations, and starts with:
+
+```bash
+pnpm nx run server:serve
+```
+
+Verify the gateway with:
+
+```bash
+curl http://localhost:8080/healthz
+```
+
+Stop the dependencies when finished:
+
+```bash
+podman compose down
+```
+
 ### Astro site only
 
 ```bash
