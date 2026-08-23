@@ -89,3 +89,27 @@ test('verify-email validation visual regression', async ({ page }) => {
 
   await expect(page).toHaveScreenshot('verify-email-invalid-code.png', { fullPage: true });
 });
+
+for (const theme of themes) {
+  test(`passkey retry and explicit fallback states (${theme})`, async ({ page }) => {
+    await page.route('**/api/auth/passkey/authentication/begin', async (route) => {
+      await route.fulfill({
+        status: 403,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          code: 'pin_required',
+          message: 'Complete email PIN verification before using a passkey.',
+        }),
+      });
+    });
+    await page.goto(signInRoute);
+    await setTheme(page, theme);
+    await page.locator('#passkey-sign-in-email').fill('person@example.com');
+    await page.getByRole('button', { name: 'Continue with passkey' }).click();
+    await expect(page.getByText('Verify your email first.')).toBeVisible();
+    await expect(page).toHaveScreenshot(`sign-in-passkey-verification-${theme}.png`, { fullPage: true });
+    await page.getByRole('button', { name: 'Use password instead' }).click();
+    await expect(page.locator('#sign-in-password')).toBeVisible();
+    await expect(page).toHaveScreenshot(`sign-in-passkey-fallback-${theme}.png`, { fullPage: true });
+  });
+}

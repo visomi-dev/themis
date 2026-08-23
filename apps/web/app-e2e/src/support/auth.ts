@@ -29,7 +29,7 @@ export const createCredentials = () => ({
 });
 
 const fillCredentials = async (page: Page, email: string, password: string) => {
-  const emailField = page.getByRole('textbox', { name: 'Email' });
+  const emailField = page.locator('#sign-up-email, #sign-in-email');
 
   const passwordField = page.getByRole('textbox', { name: 'Password', exact: true });
 

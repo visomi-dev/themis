@@ -53,11 +53,11 @@ pnpm exec nx run api-e2e:openapi-fuzz
   endpoints and uses the returned challenge IDs and option challenges. The
   challenge-mismatch case uses two persisted begin results so the session
   pending challenge and submitted challenge are both real.
-- Expiry, consumed/replay, PIN-gate, and origin/RP-specific outcomes are
-  reported as explicit limitations when the public contract cannot observe
-  them: the five-minute TTL has no public clock-control endpoint, the PIN
-  schema accepts only `true`, and WebAuthn attestation/assertion material is
-  required before the application reaches consumption or origin/RP checks.
+- Expiry, consumed/replay, PIN-gate, challenge-mismatch, and origin/RP-specific
+  outcomes are reported from application responses. The test-only composition
+  preloads `fake-clock.cjs` for the five-minute TTL case; PASSKEY-007 makes the
+  boolean PIN state reachable over HTTP; and the fixture creates standards-valid
+  WebAuthn material before exercising consumption and origin/RP checks.
   The passkey fixture uses ephemeral P-256 keys and hand-built WebAuthn
   `none` attestation/assertion CBOR. It receives every challenge ID and
   challenge from the API, persists credentials only through the registration
@@ -66,8 +66,10 @@ pnpm exec nx run api-e2e:openapi-fuzz
   `apps/web/api-e2e/src/support/fake-clock.cjs`; the fixture advances a clock
   file for the expiry case and restores it before continuing. This bounded
   setup changes no production source and is removed with the report directory.
-  The smoke report records the actual HTTP response for expiry, replay, origin
-  mismatch, RP mismatch, and successful authentication.
+  The smoke report records the actual HTTP response for successful and negative
+  registration/authentication begin/complete cases, including expiry, replay,
+  persisted challenge mismatch, origin mismatch, RP mismatch, and successful
+  authentication.
 
 ## Reproducing a failure
 

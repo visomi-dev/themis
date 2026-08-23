@@ -4,6 +4,7 @@ import { email, form, minLength, required, validate, type FieldTree, FormField }
 import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
+import { Passkey } from '../../shared/auth/passkey';
 import { SIGN_IN_URL, VERIFY_EMAIL_URL } from '../../shared/constants/routes';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
@@ -51,6 +52,7 @@ type SignUpModel = {
 })
 export class SignUp {
   private readonly auth = inject(Auth);
+  private readonly passkey = inject(Passkey);
   private readonly router = inject(Router);
 
   readonly signUpModel = signal<SignUpModel>({
@@ -94,6 +96,8 @@ export class SignUp {
 
   readonly submitting = this.auth.submitting;
   readonly errorMessage = signal('');
+  readonly passkeyState = signal<'ready' | 'loading' | 'verification' | 'retry' | 'fallback' | 'success'>('ready');
+  readonly passkeyEmail = signal('');
 
   readonly passwordValue = computed(() => this.signUpForm.password().value());
 
@@ -122,6 +126,50 @@ export class SignUp {
           : $localize`:@@signUpAuthFailed:Authentication failed.`,
       );
     }
+  }
+
+  protected async registerWithPasskey(): Promise<void> {
+    const email = this.passkeyEmail().trim();
+
+    if (!email || !this.passkey.isSupported()) {
+      this.passkeyState.set('retry');
+      this.errorMessage.set('This browser does not support passkeys. You can choose password fallback.');
+
+      return;
+    }
+
+    this.passkeyState.set('loading');
+    this.errorMessage.set('');
+
+    try {
+      const begin = await this.passkey.beginRegistration(email, 'Themis passkey', false);
+
+      if (!begin.options || !begin.challengeId) {
+        this.passkeyState.set('fallback');
+
+        return;
+      }
+
+      const credential = await this.passkey.createCredential(begin.options);
+
+      await this.passkey.completeRegistration(begin.challengeId, credential);
+      this.passkeyState.set('success');
+    } catch (error) {
+      this.passkeyState.set(error instanceof DOMException && error.name === 'AbortError' ? 'retry' : 'verification');
+      this.errorMessage.set(
+        error instanceof DOMException && error.name === 'AbortError'
+          ? 'Passkey registration was cancelled. Try again when you are ready.'
+          : 'Verify your email and PIN before completing passkey registration.',
+      );
+    }
+  }
+
+  protected usePasswordFallback(): void {
+    this.passkeyState.set('fallback');
+  }
+
+  protected updatePasskeyEmail(event: Event): void {
+    this.passkeyEmail.set((event.target as HTMLInputElement).value);
   }
 
   protected readonly footerLink = SIGN_IN_URL;

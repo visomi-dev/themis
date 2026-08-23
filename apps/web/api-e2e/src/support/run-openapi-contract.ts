@@ -10,6 +10,7 @@ import { createAuthenticationResponse, createRegistrationFixture } from './webau
 const host = process.env.HOST ?? 'localhost';
 const port = Number(process.env.GATEWAY_PORT ?? 8083);
 const baseUrl = `http://${host}:${port}`;
+const origin = baseUrl;
 const apiUrl = `${baseUrl}/api`;
 const schemaUrl = `${apiUrl}/openapi.json`;
 const reportDirectory = resolve(process.cwd(), 'dist/test-results/api-e2e/openapi');
@@ -35,6 +36,9 @@ type Fixture = {
   userId: string;
   email: string;
   smokeEmail: string;
+  unverifiedEmail: string;
+  isolatedCookie: string;
+  isolatedAccountId: string;
   workspaceId: string;
   ownerDeviceId: string;
   agentDeviceId: string;
@@ -154,7 +158,10 @@ function envelope(workspaceId: string, envelopeId: string, metadata: JsonRecord 
 }
 
 async function requestJson(path: string, init: RequestInit, expected: number | number[] = 200): Promise<JsonRecord> {
-  const response = await fetch(`${apiUrl}${path}`, init);
+  const response = await fetch(`${apiUrl}${path}`, {
+    ...init,
+    headers: { Origin: origin, ...init.headers },
+  });
   const allowed = Array.isArray(expected) ? expected : [expected];
 
   if (!allowed.includes(response.status))
@@ -164,7 +171,10 @@ async function requestJson(path: string, init: RequestInit, expected: number | n
 }
 
 async function requestObservation(path: string, init: RequestInit): Promise<HttpObservation> {
-  const response = await fetch(`${apiUrl}${path}`, init);
+  const response = await fetch(`${apiUrl}${path}`, {
+    ...init,
+    headers: { Origin: origin, ...init.headers },
+  });
   const text = await response.text();
   let body: JsonRecord;
 
@@ -319,12 +329,47 @@ async function bootstrapSession(): Promise<Fixture> {
 
   if (!smokeSignUp.ok) throw new Error(`OpenAPI passkey smoke sign-up failed with ${smokeSignUp.status}.`);
 
+  const smokeSignUpBody = (await smokeSignUp.json()) as ChallengeResponse;
+  const smokeMailbox = await fetch(
+    `${apiUrl}/test/mailbox/latest?email=${encodeURIComponent(smokeEmail)}&purpose=sign_up`,
+  );
+  const smokePin = ((await smokeMailbox.json()) as { pin?: string }).pin;
+
+  if (!smokeSignUpBody.data?.challengeId || !smokePin)
+    throw new Error('OpenAPI isolation fixture did not return a verification challenge and PIN.');
+  const smokeVerify = await fetch(`${apiUrl}/auth/sign-up/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challengeId: smokeSignUpBody.data.challengeId, pin: smokePin }),
+  });
+  const smokeCookies = (smokeVerify.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.() ?? [
+    smokeVerify.headers.get('set-cookie') ?? '',
+  ];
+  const isolatedCookie = smokeCookies
+    .filter(Boolean)
+    .map((cookie) => cookie.split(';', 1)[0])
+    .join('; ');
+  const isolatedSession = await requestJson('/auth/session', { headers: { Cookie: isolatedCookie } });
+  const isolatedUser = (isolatedSession.data as JsonRecord).user as JsonRecord;
+  const unverifiedEmail = `openapi-passkey-unverified-${Date.now().toString(36)}@example.test`;
+  const unverifiedSignUp = await fetch(`${apiUrl}/auth/sign-up`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: unverifiedEmail, password }),
+  });
+
+  if (!unverifiedSignUp.ok)
+    throw new Error(`OpenAPI unverified passkey fixture sign-up failed with ${unverifiedSignUp.status}.`);
+
   return {
     cookie,
     accountId,
     userId,
     email,
     smokeEmail,
+    unverifiedEmail,
+    isolatedCookie,
+    isolatedAccountId: String(isolatedUser.accountId),
     workspaceId,
     ownerDeviceId,
     agentDeviceId,
@@ -336,7 +381,6 @@ async function bootstrapSession(): Promise<Fixture> {
 
 async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
   const headers = { Cookie: fixture.cookie, 'Content-Type': 'application/json' };
-  const origin = `${baseUrl}`;
   const rpId = host;
   const registrationBegin = await requestObservation('/auth/passkey/registration/begin', {
     method: 'POST',
@@ -347,7 +391,7 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
   const unverifiedEmail = await requestObservation('/auth/passkey/registration/begin', {
     method: 'POST',
     headers,
-    body: JSON.stringify({ email: fixture.smokeEmail, label: 'OpenAPI unverified email', pinVerified: true }),
+    body: JSON.stringify({ email: fixture.unverifiedEmail, label: 'OpenAPI unverified email', pinVerified: true }),
   });
 
   requireResponseCode(unverifiedEmail, 'email_unverified', 'registration-begin-unverified-email');
@@ -358,24 +402,56 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
     body: JSON.stringify({ email: fixture.email, label: 'OpenAPI unverified PIN', pinVerified: false }),
   });
 
+  const authenticationUnverifiedEmail = await requestObservation('/auth/passkey/authentication/begin', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email: fixture.unverifiedEmail, pinVerified: true }),
+  });
+
+  requireResponseCode(authenticationUnverifiedEmail, 'email_unverified', 'authentication-begin-unverified-email');
+
+  const authenticationUnverifiedPin = await requestObservation('/auth/passkey/authentication/begin', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email: fixture.email, pinVerified: false }),
+  });
+
+  requireResponseCode(authenticationUnverifiedPin, 'pin_required', 'authentication-begin-unverified-pin');
+
   const registrationData = registrationBegin.body.data as JsonRecord;
 
   if (registrationBegin.status !== 200)
     throw new Error(`Registration begin failed: ${observationDetail(registrationBegin)}`);
   const registrationChallengeId = String(registrationData.challengeId);
-  const registrationOptions = registrationData.options as JsonRecord;
-  const expiredFixture = createRegistrationFixture(registrationOptions, origin, rpId);
-  const expiredBegin = registrationChallengeId;
+
+  const mismatchBegin = await requestJson('/auth/passkey/registration/begin', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email: fixture.email, label: 'OpenAPI smoke state', pinVerified: true }),
+  });
+  const mismatchData = mismatchBegin.data as JsonRecord;
+  const mismatchCredential = createRegistrationFixture(mismatchData.options as JsonRecord, origin, rpId);
+  const challengeMismatch = await requestObservation('/auth/passkey/registration/complete', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ challengeId: registrationChallengeId, response: mismatchCredential.response }),
+  });
+  const expiredBeginResult = await requestJson('/auth/passkey/registration/begin', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email: fixture.email, label: 'OpenAPI expired state', pinVerified: true }),
+  });
+  const expiredData = expiredBeginResult.data as JsonRecord;
+  const expiredFixture = createRegistrationFixture(expiredData.options as JsonRecord, origin, rpId);
 
   await writeFile(clockFilePath, String(Date.now() + 6 * 60 * 1000));
   const expired = await requestObservation('/auth/passkey/registration/complete', {
     method: 'POST',
     headers,
-    body: JSON.stringify({ challengeId: expiredBegin, response: expiredFixture.response }),
+    body: JSON.stringify({ challengeId: expiredData.challengeId, response: expiredFixture.response }),
   });
 
   await writeFile(clockFilePath, String(Date.now() - 6 * 60 * 1000));
-
   const successfulBegin = await requestJson('/auth/passkey/registration/begin', {
     method: 'POST',
     headers,
@@ -398,12 +474,15 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
     throw new Error('The application did not return the generated credential persisted by registration-complete.');
   const persistedCredential = { ...generatedCredential, credentialId: persistedCredentialId };
 
-  const authenticationBegin = await requestJson('/auth/passkey/authentication/begin', {
+  const authenticationBegin = await requestObservation('/auth/passkey/authentication/begin', {
     method: 'POST',
     headers,
     body: JSON.stringify({ email: fixture.email, pinVerified: true }),
   });
-  const authenticationData = authenticationBegin.data as JsonRecord;
+
+  if (authenticationBegin.status !== 200)
+    throw new Error(`Authentication begin failed: ${observationDetail(authenticationBegin)}`);
+  const authenticationData = authenticationBegin.body.data as JsonRecord;
   const authenticationResponse = createAuthenticationResponse(
     authenticationData.options as JsonRecord,
     persistedCredential,
@@ -472,7 +551,72 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
     body: JSON.stringify({ challengeId: rpData.challengeId, response: rpResponse }),
   });
 
+  const missingAccount = await requestObservation('/auth/passkey/authentication/begin', {
+    method: 'POST',
+    headers: noSessionHeaders,
+    body: JSON.stringify({ email: `openapi-missing-${Date.now()}@example.test`, pinVerified: true }),
+  });
+  const existingWithoutCredential = await requestObservation('/auth/passkey/authentication/begin', {
+    method: 'POST',
+    headers: noSessionHeaders,
+    body: JSON.stringify({ email: fixture.smokeEmail, pinVerified: true }),
+  });
+  const isolatedBegin = await requestJson('/auth/passkey/registration/begin', {
+    method: 'POST',
+    headers: { Cookie: fixture.isolatedCookie, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: fixture.smokeEmail, label: 'Isolation fixture', pinVerified: true }),
+  });
+  const isolatedData = isolatedBegin.data as JsonRecord;
+  const isolatedFixture = createRegistrationFixture(isolatedData.options as JsonRecord, origin, rpId);
+  const isolatedComplete = await requestJson(
+    '/auth/passkey/registration/complete',
+    {
+      method: 'POST',
+      headers: { Cookie: fixture.isolatedCookie, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challengeId: isolatedData.challengeId, response: isolatedFixture.response }),
+    },
+    201,
+  );
+  const isolatedCredentialId = String((isolatedComplete.data as JsonRecord).id);
+  const isolatedAuthentication = await requestJson('/auth/passkey/authentication/begin', {
+    method: 'POST',
+    headers: noSessionHeaders,
+    body: JSON.stringify({ email: fixture.smokeEmail, pinVerified: true }),
+  });
+  const crossAccountComplete = await requestObservation('/auth/passkey/authentication/complete', {
+    method: 'POST',
+    headers: noSessionHeaders,
+    body: JSON.stringify({
+      challengeId: (isolatedAuthentication.data as JsonRecord).challengeId,
+      response: createAuthenticationResponse(
+        authenticationData.options as JsonRecord,
+        persistedCredential,
+        origin,
+        rpId,
+      ),
+    }),
+  });
+  const isolatedCredentials = await requestObservation('/auth/passkey/credentials', {
+    headers: { Cookie: fixture.isolatedCookie },
+  });
+  const crossAccountPatch = await requestObservation(`/auth/passkey/credentials/${fixture.credentialId}`, {
+    method: 'PATCH',
+    headers: { Cookie: fixture.isolatedCookie, 'Content-Type': 'application/json' },
+    body: '{}',
+  });
+  const crossAccountDelete = await requestObservation(`/auth/passkey/credentials/${fixture.credentialId}`, {
+    method: 'DELETE',
+    headers: { Cookie: fixture.isolatedCookie },
+  });
+
   const results: PasskeySmokeResult[] = [
+    {
+      name: 'registration-begin-success',
+      path: '/auth/passkey/registration/begin',
+      status: registrationBegin.status,
+      observed: registrationBegin.status === 200,
+      assertion: 'Registration begin returned application-generated persisted ceremony options over real HTTP.',
+    },
     {
       name: 'registration-begin-no-session-unauthorized',
       path: '/auth/passkey/registration/begin',
@@ -494,13 +638,32 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
       assertion: `The persisted unverified account was denied by the application with code ${responseCode(unverifiedEmail)}.`,
     },
     {
-      name: 'registration-begin-unverified-pin-schema-boundary',
+      name: 'registration-begin-unverified-pin',
       path: '/auth/passkey/registration/begin',
       status: unverifiedPin.status,
-      observed: false,
-      assertion: `The public request schema rejected pinVerified=false with application code ${responseCode(unverifiedPin) ?? 'none'}.`,
-      limitation:
-        'The public passkey begin schema only accepts pinVerified=true, so emailGate pin_required cannot be reached through the supported HTTP contract without changing PASSKEY-002 product code.',
+      observed: responseCode(unverifiedPin) === 'pin_required',
+      assertion: `The application denied pinVerified=false with code ${responseCode(unverifiedPin) ?? 'none'} over real HTTP.`,
+    },
+    {
+      name: 'authentication-begin-unverified-email',
+      path: '/auth/passkey/authentication/begin',
+      status: authenticationUnverifiedEmail.status,
+      observed: true,
+      assertion: `The persisted unverified account was denied by the application with code ${responseCode(authenticationUnverifiedEmail)}.`,
+    },
+    {
+      name: 'authentication-begin-unverified-pin',
+      path: '/auth/passkey/authentication/begin',
+      status: authenticationUnverifiedPin.status,
+      observed: responseCode(authenticationUnverifiedPin) === 'pin_required',
+      assertion: `The application denied authentication with pinVerified=false and code ${responseCode(authenticationUnverifiedPin) ?? 'none'} over real HTTP.`,
+    },
+    {
+      name: 'registration-complete-persisted-challenge-mismatch',
+      path: '/auth/passkey/registration/complete',
+      status: challengeMismatch.status,
+      observed: responseCode(challengeMismatch) === 'challenge_mismatch',
+      assertion: `A valid response for one persisted begin challenge was submitted with another persisted challenge ID and the application returned ${observationDetail(challengeMismatch)}.`,
     },
     {
       name: 'registration-complete-expired-challenge',
@@ -508,6 +671,20 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
       status: expired.status,
       observed: responseCode(expired) === 'challenge_expired',
       assertion: `A valid attestation for the application-returned challenge was rejected after the bounded test clock advanced: ${observationDetail(expired)}.`,
+    },
+    {
+      name: 'registration-complete-success',
+      path: '/auth/passkey/registration/complete',
+      status: registrationComplete.status,
+      observed: registrationComplete.status === 201,
+      assertion: 'Registration completion persisted the generated credential through the real HTTP application path.',
+    },
+    {
+      name: 'authentication-begin-success',
+      path: '/auth/passkey/authentication/begin',
+      status: authenticationBegin.status,
+      observed: authenticationBegin.status === 200,
+      assertion: 'Authentication begin returned application-generated persisted ceremony options over real HTTP.',
     },
     {
       name: 'authentication-complete-consumed-replay',
@@ -537,13 +714,36 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
       observed: (authenticationComplete.body.data as JsonRecord | undefined)?.authenticated === true,
       assertion: 'Authentication completion returned the application-derived authenticated result over real HTTP.',
     },
+    {
+      name: 'account-enumeration-existing-vs-missing-no-credentials',
+      path: '/auth/passkey/authentication/begin',
+      status: existingWithoutCredential.status,
+      observed:
+        existingWithoutCredential.status === missingAccount.status &&
+        canonicalize(existingWithoutCredential.body) === canonicalize(missingAccount.body),
+      assertion: `Existing account without a credential and non-existing account returned indistinguishable safe responses: existing=${JSON.stringify(existingWithoutCredential)}, missing=${JSON.stringify(missingAccount)}.`,
+    },
+    {
+      name: 'tenant-account-isolation-credential-and-session-attempts',
+      path: '/auth/passkey/authentication/complete',
+      status: crossAccountComplete.status,
+      observed:
+        crossAccountComplete.status === 401 &&
+        responseCode(crossAccountComplete) === 'credential_not_found' &&
+        isolatedCredentials.status === 200 &&
+        JSON.stringify(isolatedCredentials.body).includes(isolatedCredentialId) &&
+        !JSON.stringify(isolatedCredentials.body).includes(fixture.credentialId) &&
+        crossAccountPatch.status === 404 &&
+        crossAccountDelete.status === 404,
+      assertion: `Cross-account/tenant credential authentication was denied and the second session could list only its own credential; cross-account patch/delete were denied: accountA=${fixture.accountId}, accountB=${fixture.isolatedAccountId}, complete=${JSON.stringify(crossAccountComplete)}, list=${JSON.stringify(isolatedCredentials)}, patch=${JSON.stringify(crossAccountPatch)}, delete=${JSON.stringify(crossAccountDelete)}.`,
+    },
   ];
 
   await writeFile(
     resolve(reportDirectory, 'passkey-smoke-summary.json'),
     JSON.stringify(
       {
-        fixture: 'PASSKEY-006',
+        fixture: 'PASSKEY-005',
         execution: 'real-http',
         resolvedVersions: { schemathesis: '4.24.3', jsonschemaRs: '0.49.1' },
         cases: results,

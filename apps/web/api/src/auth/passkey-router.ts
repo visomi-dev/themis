@@ -23,10 +23,12 @@ import {
   registrationCompleteSchema,
 } from './passkey-schemas';
 import { emailGate, nextPasskeyAttempt } from './passkey-contract';
+import { csrfProtection, passkeyRateLimit } from './passkey-security';
 
 import { accountPasskeyCredentials, accountWebAuthnChallenges, db, HttpError, users } from 'shared';
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000;
+const PASSKEY_ACCOUNT_UNAVAILABLE = 'credential_not_found';
 const rpId = process.env.WEBAUTHN_RP_ID ?? 'localhost';
 const origin = process.env.WEBAUTHN_ORIGIN ?? new URL(env.APP_BASE_URL).origin;
 
@@ -51,7 +53,7 @@ function failure(code: string, statusCode: number, message = 'The passkey ceremo
 async function requireVerifiedEmail(email: string, pinVerified: boolean) {
   const user = await findUserByEmail(email);
 
-  if (!user) failure('credential_not_found', 401);
+  if (!user) failure(PASSKEY_ACCOUNT_UNAVAILABLE, 404);
   const gate = emailGate(email, user.emailVerifiedAt, pinVerified);
 
   if (gate === 'email_required') failure('email_required', 400, 'An email address is required.');
@@ -134,6 +136,9 @@ async function loginPasskey(
 }
 
 const passkeyRouter = Router();
+
+passkeyRouter.use(csrfProtection);
+passkeyRouter.use(passkeyRateLimit);
 
 passkeyRouter.post('/registration/begin', validateRequest({ body: registrationBeginSchema }), async (req, res) => {
   const { email, label, pinVerified } = getValidated<{ body: typeof registrationBeginSchema }>(req).body!;
@@ -268,7 +273,7 @@ passkeyRouter.post('/authentication/begin', validateRequest({ body: authenticati
       ),
     );
 
-  if (!credentials.length) failure('credential_not_found', 404);
+  if (!credentials.length) failure(PASSKEY_ACCOUNT_UNAVAILABLE, 404);
   const challenge = randomBytes(32).toString('base64url');
   const options = await generateAuthenticationOptions({
     rpID: rpId,
@@ -376,7 +381,7 @@ passkeyRouter.patch('/credentials/:credentialId', async (req, res) => {
 passkeyRouter.delete('/credentials/:credentialId', async (req, res) => {
   const user = authedRequest(req).user;
 
-  await db
+  const [deleted] = await db
     .delete(accountPasskeyCredentials)
     .where(
       and(
@@ -384,8 +389,12 @@ passkeyRouter.delete('/credentials/:credentialId', async (req, res) => {
         eq(accountPasskeyCredentials.userId, user.id),
         eq(accountPasskeyCredentials.credentialId, req.params.credentialId),
       ),
-    );
+    )
+    .returning();
+
+  if (!deleted) failure('credential_not_found', 404);
+
   res.status(204).send();
 });
 
-export { passkeyOpenApiPaths, passkeyRouter };
+export { PASSKEY_ACCOUNT_UNAVAILABLE, passkeyOpenApiPaths, passkeyRouter };

@@ -30,7 +30,7 @@ const assertionResponseSchema = z
   })
   .strict();
 
-const passkeyEmailSchema = z.object({ email: emailSchema, pinVerified: z.literal(true) }).strict();
+const passkeyEmailSchema = z.object({ email: emailSchema, pinVerified: z.boolean() }).strict();
 const registrationBeginSchema = passkeyEmailSchema.extend({ label: z.string().trim().min(1).max(120) }).strict();
 const registrationCompleteSchema = z
   .object({ challengeId: z.string().min(1).max(200), response: credentialResponseSchema })

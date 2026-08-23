@@ -4,6 +4,7 @@ import { FormField, email, form, minLength, required, type FieldTree } from '@an
 import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
+import { Passkey } from '../../shared/auth/passkey';
 import { APP_URL, FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_DEVICE_URL } from '../../shared/constants/routes';
 import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
@@ -49,6 +50,7 @@ type SignInModel = {
 })
 export class SignIn {
   private readonly auth = inject(Auth);
+  private readonly passkey = inject(Passkey);
   private readonly router = inject(Router);
 
   readonly signInModel = signal<SignInModel>({
@@ -78,6 +80,11 @@ export class SignIn {
 
   readonly submitting = this.auth.submitting;
   readonly errorMessage = signal('');
+  readonly passkeyState = signal<
+    'ready' | 'loading' | 'unsupported' | 'verification' | 'retry' | 'fallback' | 'success'
+  >('ready');
+  readonly pin = signal('');
+  readonly passkeyEmail = signal('');
 
   readonly emailError = computed(() => this.signInForm.email().errors()[0]?.message ?? '');
   readonly passwordError = computed(() => this.signInForm.password().errors()[0]?.message ?? '');
@@ -112,6 +119,69 @@ export class SignIn {
           : $localize`:@@signInAuthFailed:Authentication failed.`,
       );
     }
+  }
+
+  protected async signInWithPasskey(): Promise<void> {
+    const email = this.passkeyEmail().trim();
+
+    if (!email || this.passkeyState() === 'loading') return;
+    if (!this.passkey.isSupported()) {
+      this.passkeyState.set('unsupported');
+
+      return;
+    }
+
+    const pinVerified = this.passkeyState() === 'verification';
+
+    this.passkeyState.set('loading');
+    this.errorMessage.set('');
+
+    try {
+      const begin = await this.passkey.beginAuthentication(email, pinVerified);
+
+      if (!begin.options || !begin.challengeId) {
+        this.passkeyState.set('fallback');
+
+        return;
+      }
+
+      const credential = await this.passkey.getCredential(begin.options);
+
+      await this.passkey.completeAuthentication(begin.challengeId, credential);
+      await this.auth.ensureSessionLoaded();
+      this.passkeyState.set('success');
+      await this.router.navigate([APP_URL]);
+    } catch (error) {
+      const code = error instanceof HttpErrorResponse ? error.error?.code : '';
+
+      if (code === 'email_unverified' || code === 'pin_required') {
+        this.passkeyState.set('verification');
+        this.errorMessage.set('Verify your email and enter the PIN before using a passkey.');
+      } else if (error instanceof DOMException && error.name === 'AbortError') {
+        this.passkeyState.set('retry');
+        this.errorMessage.set('Passkey sign-in was cancelled. You can try again.');
+      } else {
+        this.passkeyState.set('retry');
+        this.errorMessage.set('Passkey sign-in failed. Try again or choose password sign-in.');
+      }
+    }
+  }
+
+  protected continueAfterVerification(): void {
+    if (this.pin().trim().length >= 4) void this.signInWithPasskey();
+  }
+
+  protected updatePin(event: Event): void {
+    this.pin.set((event.target as HTMLInputElement).value);
+  }
+
+  protected updatePasskeyEmail(event: Event): void {
+    this.passkeyEmail.set((event.target as HTMLInputElement).value);
+  }
+
+  protected usePasswordFallback(): void {
+    this.passkeyState.set('fallback');
+    this.errorMessage.set('Password sign-in is available because you selected it explicitly.');
   }
 
   protected readonly footerLink = SIGN_UP_URL;

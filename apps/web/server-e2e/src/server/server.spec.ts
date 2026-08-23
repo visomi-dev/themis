@@ -9,12 +9,12 @@ describe('composition server', () => {
     const unverified = await axios.post(
       '/api/auth/passkey/authentication/begin',
       { email, pinVerified: true },
-      { validateStatus: () => true },
+      { headers: { Origin: 'http://localhost:8080' }, validateStatus: () => true },
     );
     const fallback = await axios.post(
       '/api/auth/passkey/authentication/begin',
       { email, pinVerified: true, explicitPassword: true },
-      { validateStatus: () => true },
+      { headers: { Origin: 'http://localhost:8080' }, validateStatus: () => true },
     );
 
     expect(signUp.status).toBe(201);
