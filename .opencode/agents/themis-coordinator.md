@@ -41,3 +41,13 @@ Agents pull eligible work from the project flow; an active sprint is not
 required. When a sprint is used, close it only as an outcome-inspection
 boundary after its selected work and final evidence are complete. An empty
 ready queue alone is not sufficient for closure.
+
+Before and after every planning mutation, build and present a phase-to-work-item
+traceability matrix containing every confirmed phase, mapped item IDs or explicit
+sub-scopes, status, and gaps. A phase with no mapping is an omission, not
+permission to merge it into generic implementation language. Preserve UX
+research, user flows, evaluation, prototypes, human-readable state or event
+translation, and other rich steps as observable acceptance criteria or separate
+work items. Approved scope changes update the affected item and enter rework, or
+create a new item when separate; never overwrite approved scope silently. Use
+`scripts/plan-fidelity.test.ts` as the focused omission and matrix eval.

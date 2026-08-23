@@ -48,3 +48,10 @@ Record one evidence entry per required category. Each entry must contain:
 
 Do not request independent review until the matrix is complete or the item is
 explicitly blocked with a follow-up work item.
+
+For every created or updated item, the matrix is a complete eight-row contract,
+not a representative sample. Each row must contain the exact command or
+observable check. A not-applicable row must explain why that category cannot
+observe the changed behavior. Plan-fidelity evaluation must fail when a row is
+missing or its reason is empty; use `scripts/plan-fidelity.test.ts` for the
+focused contract check.

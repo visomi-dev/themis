@@ -1,128 +1,118 @@
-<app-container size="lg">
-  <div class="flex flex-col gap-8 py-4">
-    @if (errorMessage() && visibilityState() !== 'unavailable' && visibilityState() !== 'unauthorized') {
-      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
-    }
-
-    @if (loading()) {
-      <app-card padding="md" tone="raised">
-        <div class="flex items-center gap-4">
-          <app-loader />
-          <p class="text-sm text-zinc-500 dark:text-zinc-400">Loading project...</p>
-        </div>
-      </app-card>
-    } @else if (visibilityState() === 'unavailable' || visibilityState() === 'unauthorized') {
-      <app-card padding="md" tone="raised" role="status" aria-live="polite">
-        <app-heading
-          level="1"
-          [text]="visibilityState() === 'unavailable' ? 'Local agent unavailable' : 'Project access unavailable'"
-        />
-        <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">{{ errorMessage() }}</p>
-      </app-card>
-    } @else if (visibilityState() === 'locked') {
-      <app-card padding="md" tone="raised" role="status" aria-live="polite">
-        <app-heading level="1" [text]="'Project is locked'" />
-        <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Unlock the local agent to view approved project context and activity.
+<main class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 md:px-12 md:py-12" aria-labelledby="workspace-title">
+  @if (loading()) {
+    <section class="rounded-lg bg-zinc-100 p-6 dark:bg-zinc-900" aria-live="polite">
+      <h1 id="workspace-title">Loading project workspace</h1>
+      <p>Reading the protected operational projection…</p>
+    </section>
+  } @else if (error() || !workspace()) {
+    <section class="rounded-lg border border-red-500/30 bg-red-50 p-6 dark:bg-red-950/30" role="alert">
+      <h1 id="workspace-title">Project workspace unavailable</h1>
+      <p>Project context could not be read without exposing protected data.</p>
+    </section>
+  } @else if (workspace(); as model) {
+    <header
+      class="flex flex-col gap-4 border-b border-zinc-950/10 pb-6 md:flex-row md:items-end md:justify-between dark:border-white/10"
+    >
+      <div>
+        <p class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
+          Project workspace
         </p>
-      </app-card>
-    } @else if (visibilityState() === 'error') {
-      <app-card padding="md" tone="raised" role="alert">
-        <app-heading level="1" [text]="'Project view failed'" />
-        <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">{{ errorMessage() }}</p>
-      </app-card>
-    } @else if (project()) {
-      <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <h1 id="workspace-title" class="font-heading mt-2 text-4xl font-semibold tracking-tight">
+          {{ project()?.name ?? 'Project context' }}
+        </h1>
+        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+          Read-only operational view · {{ project()?.id ?? 'Protected identity' }}
+        </p>
+      </div>
+      <a
+        class="text-sm font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
+        [routerLink]="['/projects', project()?.id, 'timeline']"
+        >Trace timeline</a
+      >
+    </header>
+
+    <section class="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900" aria-label="Freshness and authority">
+      <p class="font-medium">Inspection context, not a priority score</p>
+      <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+        Source: {{ model.project.source }} · Observed {{ model.project.observedAt | date: 'medium' }}
+      </p>
+    </section>
+
+    <section aria-labelledby="attention-title">
+      <div class="flex items-end justify-between">
         <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <app-badge [tone]="statusTone(project()!.status)">{{ statusLabel(project()!.status) }}</app-badge>
-            <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ project()!.sourceType }}</span>
-          </div>
-
-          <app-heading class="mt-3" level="1" [text]="project()!.name" />
-
-          @if (project()!.summary) {
-            <p class="mt-3 max-w-2xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
-              {{ project()!.summary }}
-            </p>
-          }
-
-          <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">Created {{ formatDate(project()!.createdAt) }}</p>
+          <h2 id="attention-title" class="font-heading text-2xl font-semibold">Inspection context</h2>
+          <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            {{ attention().length }} item(s) need inspection; this is not a priority score.
+          </p>
         </div>
-
-        <app-link i18n="@@projectDetailProjectsLink" [routerLink]="projectsUrl" [text]="'Projects'" />
-      </header>
-
-      <app-card padding="md" tone="raised">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <app-heading i18n="@@projectDetailSeedTitle" level="2" [text]="'Project seed'" />
-            <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-              Start the base seed job to create the initial project context and overview document.
-            </p>
-          </div>
-
-          <app-button
-            i18n="@@projectDetailRunSeed"
-            tone="accent"
-            type="button"
-            [loading]="seeding()"
-            (click)="runSeed()"
+      </div>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        @for (item of attention(); track item.id) {
+          <a
+            class="rounded-lg border border-amber-500/40 bg-amber-50 p-4 transition hover:border-amber-600 focus-visible:outline-2 focus-visible:outline-offset-2 dark:bg-amber-950/20"
+            [routerLink]="['/projects', project()?.id, 'work-items', item.id]"
+            ><p class="font-medium">{{ item.title }}</p>
+            <p class="mt-2 text-sm">{{ meaning(item.status) }}</p>
+            <p class="mt-2 text-xs text-zinc-600 dark:text-zinc-400">
+              Changed {{ item.updatedAt | date: 'medium' }}
+            </p></a
           >
-            Run project seed
-          </app-button>
-        </div>
-
-        @if (currentSeedJob()) {
-          <div class="mt-5 rounded-sm border border-zinc-950/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-zinc-900">
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <p class="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{{ currentSeedJob()!.status }}</p>
-              <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ currentSeedJob()!.progress }}% complete</p>
-            </div>
-            @if (currentSeedJob()!.errorMessage) {
-              <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ currentSeedJob()!.errorMessage }}</p>
-            }
-          </div>
+        } @empty {
+          <p class="rounded-lg bg-zinc-50 p-4 text-sm dark:bg-zinc-900">No inspection context is recorded.</p>
         }
-      </app-card>
+      </div>
+    </section>
 
-      <app-project-projection [projectId]="project()!.id" [scope]="projectionScope()" />
-
-      <section class="flex flex-col gap-4" aria-live="polite">
-        <app-heading level="2" [text]="'Approved project visibility'" />
-
-        @if (visibilityState() === 'stale') {
-          <app-alert tone="warning"
-            >This local view is stale. The displayed content may not include the latest approved changes.</app-alert
+    <section aria-labelledby="work-title">
+      <div class="flex items-end justify-between">
+        <h2 id="work-title" class="font-heading text-2xl font-semibold">Work by outcome</h2>
+        <span class="text-sm text-zinc-500">{{ workItems().length }} work items</span>
+      </div>
+      <div class="mt-4 grid gap-3">
+        @for (item of workItems(); track item.id) {
+          <a
+            class="flex flex-col gap-2 rounded-lg bg-zinc-50 p-4 hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 sm:flex-row sm:items-center sm:justify-between dark:bg-zinc-900 dark:hover:bg-zinc-800"
+            [routerLink]="['/projects', project()?.id, 'work-items', item.id]"
+            ><span
+              ><span class="block font-medium">{{ item.title }}</span
+              ><span class="mt-1 block text-sm text-zinc-500 dark:text-zinc-400">{{ meaning(item.status) }}</span></span
+            ><span class="rounded-md border border-zinc-950/10 px-2 py-1 text-xs dark:border-white/10">{{
+              item.status
+            }}</span></a
           >
+        } @empty {
+          <p class="rounded-lg bg-zinc-50 p-4 text-sm dark:bg-zinc-900">
+            No work items are available in this projection.
+          </p>
         }
+      </div>
+    </section>
 
-        @if (visibilityState() === 'empty') {
-          <app-card padding="md" tone="raised">
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">
-              No approved context or activity is available for this project.
-            </p>
-          </app-card>
-        } @else {
-          @if (visibility()?.context) {
-            <app-card padding="md" tone="raised"
-              ><p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-                {{ visibility()!.context }}
-              </p></app-card
-            >
-          }
-          @if (visibility()!.activity.length > 0) {
-            <ul class="space-y-3" aria-label="Recent approved activity">
-              @for (event of visibility()!.activity; track event.id) {
-                <li class="rounded-lg bg-zinc-50 p-4 text-sm dark:bg-zinc-900">
-                  <span class="font-medium">{{ event.summary }}</span
-                  ><span class="ml-2 text-zinc-500 dark:text-zinc-400">{{ formatDate(event.occurredAt) }}</span>
-                </li>
-              }
-            </ul>
-          }
-        }
-      </section>
-    }
-  </div>
-</app-container>
+    <section class="grid gap-4 md:grid-cols-3" aria-label="Validation and review confidence">
+      <div class="rounded-lg bg-zinc-50 p-5 dark:bg-zinc-900">
+        <h2 class="font-medium">Validation</h2>
+        <p class="mt-2 text-2xl font-semibold">{{ model.evidence.items.length }}</p>
+        <p class="text-sm text-zinc-500">recorded evidence</p>
+      </div>
+      <div class="rounded-lg bg-zinc-50 p-5 dark:bg-zinc-900">
+        <h2 class="font-medium">Review</h2>
+        <p class="mt-2 text-2xl font-semibold">{{ model.reviews.items.length }}</p>
+        <p class="text-sm text-zinc-500">independent decisions</p>
+      </div>
+      <div class="rounded-lg bg-zinc-50 p-5 dark:bg-zinc-900">
+        <h2 class="font-medium">Iteration</h2>
+        <p class="mt-2 text-sm">No iteration selected</p>
+        <p class="text-sm text-zinc-500">The workspace remains useful without a sprint.</p>
+      </div>
+    </section>
+
+    <p class="text-xs text-zinc-500 dark:text-zinc-400">
+      <span class="rounded-md border border-zinc-950/10 px-2 py-1 font-mono text-[11px] dark:border-white/10">{{
+        model.workItems.state
+      }}</span>
+      {{ collectionLabel(model.workItems.state) }} · Protected details appear only through an authorized mediated read.
+      Read-only projection; mutations are not available. No execution or mutation controls are available.
+    </p>
+  }
+</main>

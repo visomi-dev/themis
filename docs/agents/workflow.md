@@ -62,3 +62,20 @@ API changes require real HTTP/API E2E or the OpenAPI contract target
 visual changes additionally require deterministic Playwright screenshots and
 snapshot review. Unit tests or builds do not substitute for missing API, E2E,
 visual, or security evidence.
+
+## Plan Fidelity And Mutation Traceability
+
+The confirmed plan is a phase inventory. Before and after any coordinator or
+planner mutation, present a traceability matrix with one row per phase:
+
+| Phase      | Work-item ID(s) or explicit sub-scope | Status  | Gaps                          |
+| ---------- | ------------------------------------- | ------- | ----------------------------- |
+| `phase-id` | `THM-...` or documented sub-scope     | `ready` | `none` or a concrete omission |
+
+Every phase must have a row. Omission is a blocking gap; it must not be hidden
+by merging the phase into generic implementation language. Rich plan steps,
+including UX research, user flows, evaluation, prototypes, and human-readable
+state/event translation, remain observable acceptance criteria or separate work
+items. Approved scope changes use item update plus rework or a new item; they do
+not overwrite the approved contract. The focused evaluator is
+`node --experimental-strip-types --test scripts/plan-fidelity.test.ts`.

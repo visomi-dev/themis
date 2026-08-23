@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PROJECT_NEW_URL } from '../shared/constants/routes';
+import { PROJECTS_URL } from '../shared/constants/routes';
 import { ProjectsApi } from '../shared/projects/projects';
 import type { Project } from '../shared/projects/projects.models';
 import { Alert } from '../shared/ui/overlays/alert/alert';
@@ -9,14 +9,13 @@ import { Badge } from '../shared/ui/data/badge/badge';
 import { Card } from '../shared/ui/layout/card/card';
 import { Container } from '../shared/ui/layout/container/container';
 import { Heading } from '../shared/ui/typography/heading/heading';
-import { LinkButton } from '../shared/ui/actions/link-button/link-button';
 import { Loader } from '../shared/ui/feedback/loader/loader';
 
 @Component({
   host: {
     class: /* tw */ 'block min-h-full w-full',
   },
-  imports: [Alert, Badge, Card, Container, Heading, LinkButton, Loader, RouterLink],
+  imports: [Alert, Badge, Card, Container, Heading, Loader, RouterLink],
   selector: 'app-projects',
   templateUrl: './projects.html',
   styleUrl: './projects.css',
@@ -27,26 +26,10 @@ export class Projects implements OnInit {
   readonly errorMessage = signal('');
   readonly loading = signal(true);
   readonly projects = signal<Project[]>([]);
-  readonly projectNewUrl = PROJECT_NEW_URL;
+  readonly projectsUrl = PROJECTS_URL;
 
   async ngOnInit() {
     await this.loadProjects();
-  }
-
-  async deleteProject(projectId: string, event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!confirm('Delete this project? This action cannot be undone.')) {
-      return;
-    }
-
-    try {
-      await this.projectsApi.deleteProject(projectId);
-      await this.loadProjects();
-    } catch {
-      this.errorMessage.set('The project could not be deleted.');
-    }
   }
 
   formatDate(isoString: string) {

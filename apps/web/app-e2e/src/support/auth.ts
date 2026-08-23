@@ -7,12 +7,12 @@ import { fillOtp } from './otp';
 import {
   appUrlPattern,
   activationUrlPattern,
-  dashboardRoute,
   signInRoute,
   signInUrlPattern,
   signUpRoute,
   signUpUrlPattern,
   projectsUrlPattern,
+  projectsRoute,
   verifyDeviceUrlPattern,
   verifyEmailUrlPattern,
 } from './routes';
@@ -21,7 +21,7 @@ type VerificationOptions = {
   completeActivation?: boolean;
 };
 
-const postVerificationUrlPattern = /\/app\/en\/(dashboard|activation)$/;
+const postVerificationUrlPattern = /\/app\/en\/(projects|dashboard|activation)$/;
 
 export const createCredentials = () => ({
   email: `engineer+e2e-${randomUUID()}@themis.visomi.dev`,
@@ -107,7 +107,7 @@ const completeActivationIfNeeded = async (page: Page) => {
 
   await page.getByRole('button', { name: /Skip for now/i }).click();
   await expect(page).toHaveURL(projectsUrlPattern, { timeout: 15000 });
-  await page.goto(dashboardRoute);
+  await page.goto(projectsRoute);
   await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
 };
 

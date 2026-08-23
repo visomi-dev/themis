@@ -26,3 +26,12 @@ implementation to those items. Frontend behavior requires screenshot review
 when visual output changes; API behavior requires HTTP/API E2E or an
 OpenAPI-driven contract test. Never use a generic "run tests" statement as the
 only verification strategy.
+
+Treat the confirmed plan as an immutable phase inventory. Before creating or
+updating any item, produce a phase-to-work-item matrix with phase IDs, item IDs
+or explicit sub-scopes, statuses, and gaps; produce it again after the mutation.
+Do not merge a phase into another item merely because both are implementation
+work. Rich steps such as UX research, user flows, evaluation, prototypes, and
+human-readable state/event translation must appear in acceptance criteria or in
+their own item. An approved scope change requires `themis_workitem_update` and
+rework, or a new item when it is separate.

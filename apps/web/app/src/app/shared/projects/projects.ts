@@ -13,6 +13,7 @@ import type {
   ProjectsListResponse,
   ResponseEnvelope,
   UpdateProjectPayload,
+  OperationalWorkspaceResponse,
 } from './projects.models';
 
 @Injectable({
@@ -30,6 +31,14 @@ export class ProjectsApi {
   async getProject(projectId: string) {
     const response = await firstValueFrom(
       this.http.get<ResponseEnvelope<ProjectWithDocuments>>(`/api/projects/${projectId}`),
+    );
+
+    return response.data;
+  }
+
+  async getOperationalWorkspace(projectId: string) {
+    const response = await firstValueFrom(
+      this.http.get<OperationalWorkspaceResponse>(`/api/projects/${projectId}/workspace`),
     );
 
     return response.data;

@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHmac, generateKeyPairSync, randomBytes, sign } from 'node:crypto';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -14,6 +14,7 @@ const origin = baseUrl;
 const apiUrl = `${baseUrl}/api`;
 const schemaUrl = `${apiUrl}/openapi.json`;
 const reportDirectory = resolve(process.cwd(), 'dist/test-results/api-e2e/openapi');
+const rawDirectory = resolve(reportDirectory, 'raw');
 const serverEntryPoint = resolve(process.cwd(), 'dist/apps/web/server/main.js');
 const pidPath = resolve(process.cwd(), 'apps/web/api-e2e/.api-e2e-openapi-server.pid');
 const clockFilePath = resolve(reportDirectory, '.passkey-clock');
@@ -63,6 +64,8 @@ type HttpObservation = {
   body: JsonRecord;
 };
 
+const rawHttpObservations: Array<{ path: string; status: number; body: string }> = [];
+
 const sensitiveKeys =
   /password|pin|token|cookie|authorization|challenge|credential|privatekey|publickey|signature|clientdata|attestation|authenticator|userhandle|proof|session/i;
 
@@ -102,11 +105,12 @@ function sanitizeJson(value: unknown, key?: string): unknown {
 }
 
 async function sanitizeReports(): Promise<void> {
-  for (const entry of await readdir(reportDirectory)) {
-    const path = resolve(reportDirectory, entry);
+  for (const entry of await readdir(reportDirectory, { withFileTypes: true })) {
+    if (entry.isDirectory()) continue;
+    const path = resolve(reportDirectory, entry.name);
     const content = await readFile(path, 'utf8');
 
-    if (entry.endsWith('.json')) {
+    if (entry.name.endsWith('.json')) {
       try {
         await writeFile(path, JSON.stringify(sanitizeJson(JSON.parse(content)), null, 2));
         continue;
@@ -118,8 +122,9 @@ async function sanitizeReports(): Promise<void> {
   }
 }
 
-function captureOutput(stream: NodeJS.ReadableStream, output: { value: string }): void {
+function captureOutput(stream: NodeJS.ReadableStream, output: { value: string }, rawOutput?: { value: string }): void {
   stream.on('data', (chunk: Buffer | string) => {
+    if (rawOutput) rawOutput.value += chunk.toString();
     const sanitized = sanitizeText(chunk.toString(), true);
 
     output.value += sanitized;
@@ -176,6 +181,8 @@ async function requestObservation(path: string, init: RequestInit): Promise<Http
     headers: { Origin: origin, ...init.headers },
   });
   const text = await response.text();
+
+  if (path.endsWith('/workspace')) rawHttpObservations.push({ path, status: response.status, body: text });
   let body: JsonRecord;
 
   try {
@@ -929,6 +936,80 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
 
 async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
   const headers = { Cookie: fixture.cookie, 'Content-Type': 'application/json' };
+  const workspace = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, { headers });
+  const workspaceUnauthorized = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {});
+  const workspaceIsolated = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { Cookie: fixture.isolatedCookie },
+  });
+  const workspaceUnauthorizedFixture = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { ...headers, 'x-operational-workspace-state': 'unauthorized' },
+  });
+  const unavailable = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { ...headers, 'x-operational-workspace-http-case': 'unavailable' },
+  });
+  const serverError = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { ...headers, 'x-operational-workspace-http-case': 'error' },
+  });
+  const malformedJsonResponse = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { ...headers, 'x-operational-workspace-http-case': 'malformed-json' },
+  });
+
+  if (
+    workspace.status !== 200 ||
+    (workspace.body.data as JsonRecord | undefined)?.schemaVersion !== '1' ||
+    (workspace.body.data as JsonRecord | undefined)?.readOnly !== true ||
+    JSON.stringify(workspace.body).includes('contentMarkdown')
+  ) {
+    throw new Error('Operational workspace read boundary did not return the safe versioned projection.');
+  }
+  if (
+    workspaceUnauthorized.status !== 401 ||
+    workspaceUnauthorizedFixture.status !== 401 ||
+    workspaceIsolated.status !== 404 ||
+    unavailable.status !== 503 ||
+    responseCode(unavailable) !== 'operational_workspace_unavailable' ||
+    serverError.status !== 500 ||
+    responseCode(serverError) !== 'operational_workspace_error' ||
+    malformedJsonResponse.status !== 502 ||
+    malformedJsonResponse.body.raw !== '{"data":'
+  ) {
+    throw new Error('Operational workspace read boundary did not preserve authentication and tenant isolation.');
+  }
+  const stateCases = await Promise.all(
+    (['visible', 'empty', 'locked', 'unavailable', 'stale', 'error', 'malformed'] as const).map(async (state) => {
+      const observation = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+        headers: { ...headers, 'x-operational-workspace-state': state },
+      });
+      const data = observation.body.data as JsonRecord | undefined;
+      const collections = ['protectedContext', 'epics', 'workItems', 'runs', 'evidence', 'reviews', 'activity'];
+      const observed =
+        observation.status === 200 &&
+        data?.schemaVersion === '1' &&
+        collections.every((key) => (data[key] as JsonRecord | undefined)?.state === state) &&
+        !JSON.stringify(observation.body).includes('contentMarkdown');
+
+      if (!observed) throw new Error(`Operational workspace state fixture ${state} was not observed safely.`);
+
+      return { name: state, status: observation.status, observed };
+    }),
+  );
+  const malformedObservation = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
+    headers: { ...headers, 'x-operational-workspace-state': 'malformed' },
+  });
+  const malformedItems = (
+    (malformedObservation.body.data as JsonRecord | undefined)?.workItems as JsonRecord | undefined
+  )?.items;
+  const malformedSchemaObserved =
+    malformedObservation.status === 200 &&
+    Array.isArray(malformedItems) &&
+    malformedItems.some((item) => {
+      const record = item as JsonRecord;
+
+      return typeof record.id === 'string' && typeof record.title !== 'string';
+    });
+
+  if (!malformedSchemaObserved)
+    throw new Error('Malformed nested operational workspace payload was not observed over HTTP.');
   const webRequest = {
     format: 'themis.mode-negotiation-request',
     requestId: 'zk027-boundary-web',
@@ -1012,6 +1093,50 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
       {
         profileCoverage: ['web-webcrypto', 'web-local-agent'],
         protectedBoundary: results,
+        operationalWorkspaceReadBoundary: [
+          { name: 'authorized-versioned-read', status: workspace.status, observed: workspace.status === 200 },
+          {
+            name: 'unauthorized-read',
+            status: workspaceUnauthorized.status,
+            observed: workspaceUnauthorized.status === 401,
+          },
+          {
+            name: 'tenant-isolated-read',
+            status: workspaceIsolated.status,
+            observed: workspaceIsolated.status === 404,
+          },
+          {
+            name: 'fixture-unauthorized-read',
+            status: workspaceUnauthorizedFixture.status,
+            observed: workspaceUnauthorizedFixture.status === 401,
+          },
+          {
+            name: 'unavailable-http-response',
+            status: unavailable.status,
+            observed: unavailable.status === 503 && responseCode(unavailable) === 'operational_workspace_unavailable',
+          },
+          {
+            name: 'error-http-response',
+            status: serverError.status,
+            observed: serverError.status === 500 && responseCode(serverError) === 'operational_workspace_error',
+          },
+          {
+            name: 'malformed-json-http-response',
+            status: malformedJsonResponse.status,
+            observed: malformedJsonResponse.status === 502 && malformedJsonResponse.body.raw === '{"data":',
+          },
+          {
+            name: 'malformed-nested-schema-payload',
+            status: malformedObservation.status,
+            observed: malformedSchemaObserved,
+          },
+          {
+            name: 'protected-disclosure-redaction',
+            status: workspace.status,
+            observed: !JSON.stringify(workspace.body).includes('contentMarkdown'),
+          },
+          ...stateCases,
+        ],
         recoveryId: fixture.recoveryId,
         credentialId: fixture.credentialId,
         workspaceId: fixture.workspaceId,
@@ -1045,8 +1170,10 @@ function observationDetail(observation: HttpObservation): string {
 async function run(): Promise<number> {
   await rm(reportDirectory, { recursive: true, force: true });
   await mkdir(reportDirectory, { recursive: true });
+  await mkdir(rawDirectory, { recursive: true });
   await writeFile(clockFilePath, String(Date.now()));
   const consoleOutput = { value: '' };
+  const rawConsoleOutput = { value: '' };
 
   const server = spawn(process.execPath, [serverEntryPoint], {
     detached: true,
@@ -1072,8 +1199,8 @@ async function run(): Promise<number> {
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
-  if (server.stdout) captureOutput(server.stdout, consoleOutput);
-  if (server.stderr) captureOutput(server.stderr, consoleOutput);
+  if (server.stdout) captureOutput(server.stdout, consoleOutput, rawConsoleOutput);
+  if (server.stderr) captureOutput(server.stderr, consoleOutput, rawConsoleOutput);
 
   if (server.pid == null) {
     throw new Error('Failed to start composition server for OpenAPI contract tests.');
@@ -1160,6 +1287,32 @@ async function run(): Promise<number> {
   } finally {
     stopServer(server.pid);
     activeServerPid = undefined;
+    await writeFile(resolve(rawDirectory, 'server.log'), rawConsoleOutput.value);
+    await writeFile(resolve(rawDirectory, 'http-responses.json'), JSON.stringify(rawHttpObservations, null, 2));
+    const rawScan = spawnSync(
+      process.execPath,
+      ['--experimental-strip-types', 'scripts/operational-workspace-security-scan.ts', rawDirectory],
+      { cwd: process.cwd(), encoding: 'utf8' },
+    );
+
+    await writeFile(
+      resolve(reportDirectory, 'raw-scan-result.json'),
+      JSON.stringify(
+        {
+          command:
+            'node --experimental-strip-types scripts/operational-workspace-security-scan.ts dist/test-results/api-e2e/openapi/raw',
+          status: rawScan.status,
+          stdout: rawScan.stdout,
+          stderr: rawScan.stderr,
+        },
+        null,
+        2,
+      ),
+    );
+    if (rawScan.status !== 0) {
+      console.error(`Raw operational workspace security scan failed: ${rawScan.stderr}`);
+      process.exitCode = 1;
+    }
     await writeFile(resolve(reportDirectory, 'console.log'), consoleOutput.value);
     await sanitizeReports();
     await rm(pidPath, { force: true });

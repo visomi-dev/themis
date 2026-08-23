@@ -16,6 +16,10 @@ import type {
   ProjectSourceType,
   ProjectStatus,
   ProjectWithDocuments,
+  OperationalWorkspaceReadModel,
+  OperationalCollection,
+  OperationalVisibility,
+  OperationalWorkItem,
 } from 'projects';
 
 export type {
@@ -29,6 +33,10 @@ export type {
   ProjectSourceType,
   ProjectStatus,
   ProjectWithDocuments,
+  OperationalWorkspaceReadModel,
+  OperationalCollection,
+  OperationalVisibility,
+  OperationalWorkItem,
 };
 
 export type CreateProjectPayload = {
@@ -58,3 +66,5 @@ export type ProjectsListResponse = ResponseEnvelope<{
 export type JobsListResponse = ResponseEnvelope<{
   jobs: AsyncJobRecord[];
 }>;
+
+export type OperationalWorkspaceResponse = ResponseEnvelope<OperationalWorkspaceReadModel>;

@@ -15,3 +15,8 @@ coverage, route E2E, screenshots, snapshot review, security checks, or build
 checks when the matrix requires them. Require a written reason for every
 not-applicable category. Otherwise reject with concrete rework feedback. Never
 modify implementation files and never approve your own work.
+
+For plan-fidelity work, reject any before/after mutation evidence that lacks a
+phase-to-work-item matrix containing phase coverage, item IDs, status, and gaps.
+Reject collapsed rich steps, silent approved-scope replacement, incomplete
+validation categories, or not-applicable entries without reasons.

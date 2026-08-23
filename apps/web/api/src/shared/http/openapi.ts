@@ -53,6 +53,14 @@ function createOpenApiDocument() {
       content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } },
       description: 'Internal server error.',
     },
+    502: {
+      content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } },
+      description: 'Upstream or mediated boundary returned an invalid response.',
+    },
+    503: {
+      content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } },
+      description: 'Service temporarily unavailable.',
+    },
   };
 
   document.components ??= {};
@@ -66,7 +74,9 @@ function createOpenApiDocument() {
   for (const pathItem of Object.values(document.paths ?? {})) {
     for (const operation of Object.values(pathItem)) {
       if (operation && typeof operation === 'object' && 'responses' in operation) {
-        Object.assign(operation.responses, errorResponses);
+        for (const [status, response] of Object.entries(errorResponses)) {
+          operation.responses[status] ??= response;
+        }
       }
     }
   }

@@ -1,0 +1,37 @@
+<main class="mx-auto max-w-4xl px-4 py-8 md:px-12" aria-labelledby="iteration-title">
+  <a class="text-sm text-blue-600 underline dark:text-blue-400" [routerLink]="['/projects', projectId, 'workspace']"
+    >← Back to project workspace</a
+  >
+  <h1 id="iteration-title" class="font-heading mt-6 text-4xl font-semibold">Iteration context</h1>
+  @if (loading()) {
+    <p class="mt-4" aria-live="polite">Loading iteration context…</p>
+  } @else if (model(); as readModel) {
+    @if (readModel.iteration?.items?.length) {
+      @for (iteration of readModel.iteration!.items; track iteration.id) {
+        <section class="mt-6 rounded-lg bg-zinc-50 p-6 dark:bg-zinc-900">
+          <h2 class="font-medium">{{ iteration.name }}</h2>
+          <p class="mt-2 text-sm">{{ iteration.goal }}</p>
+        </section>
+      }
+    } @else {
+      <section class="mt-6 rounded-lg bg-zinc-50 p-6 dark:bg-zinc-900">
+        <h2>No iteration selected</h2>
+        <p class="mt-2 text-sm">
+          The project workspace remains useful without a sprint. Requested context: {{ iterationId }}.
+        </p>
+      </section>
+    }
+    <p class="mt-4 rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900" role="status">
+      {{ readModel.iteration?.state ?? 'No iteration projection' }} · Iteration context is secondary and read-only;
+      planning and activation authority remains protected.
+    </p>
+    <p class="mt-4 text-xs text-zinc-500">
+      Iteration data is a secondary read-only context; planning and activation controls are not exposed.
+    </p>
+  } @else {
+    <section class="mt-6 rounded-lg border border-amber-500/30 bg-amber-50 p-6 dark:bg-amber-950/20" role="alert">
+      <h2>Iteration context unavailable</h2>
+      <p class="mt-2 text-sm">The protected iteration projection could not be safely disclosed.</p>
+    </section>
+  }
+</main>

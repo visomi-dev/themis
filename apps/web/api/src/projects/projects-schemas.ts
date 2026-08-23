@@ -1,5 +1,7 @@
 import { projectIdParamSchema, responseEnvelope, z } from '../shared/http/route-schemas';
 
+import { errorEnvelopeSchema } from 'shared';
+
 export const projectStatusSchema = z.enum(['active', 'archived', 'draft']);
 export const projectSourceTypeSchema = z.enum(['imported', 'manual', 'seeded']);
 export const documentStatusSchema = z.enum(['active', 'archived', 'draft']);
@@ -99,6 +101,97 @@ export const projectsListSchema = z
   })
   .meta({ id: 'ProjectsListResponse' });
 
+const operationalVisibilitySchema = z.enum([
+  'visible',
+  'empty',
+  'locked',
+  'unavailable',
+  'stale',
+  'error',
+  'unauthorized',
+  'malformed',
+]);
+const operationalAuthoritySchema = z.enum(['control-plane', 'local-agent', 'opaque-encrypted-source']);
+const operationalCollectionBaseSchema = z.object({
+  authority: operationalAuthoritySchema,
+  state: operationalVisibilitySchema,
+  source: z.string(),
+  observedAt: z.string(),
+  reason: z.string().optional(),
+});
+const operationalEpicSchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+  title: z.string(),
+  summary: z.string().nullable(),
+  status: z.enum(['active', 'closed']),
+});
+const operationalWorkItemSchema = z.object({
+  id: z.string(),
+  epicId: z.string().nullable(),
+  title: z.string(),
+  status: z.enum(['draft', 'ready', 'in_progress', 'review', 'blocked', 'done']),
+  updatedAt: z.string(),
+});
+const operationalRunSchema = z.object({
+  id: z.string(),
+  workItemId: z.string(),
+  status: z.enum(['running', 'completed', 'failed']),
+  startedAt: z.string(),
+  finishedAt: z.string().nullable(),
+});
+const operationalEvidenceSchema = z.object({
+  id: z.string(),
+  runId: z.string(),
+  kind: z.enum(['verification', 'implementation-diff', 'observation', 'command']),
+  createdAt: z.string(),
+});
+const operationalReviewSchema = z.object({
+  id: z.string(),
+  workItemId: z.string(),
+  verdict: z.enum(['accepted', 'rejected', 'pending']),
+  createdAt: z.string(),
+});
+const operationalActivitySchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+  kind: z.enum(['status', 'progress', 'run', 'review']),
+  occurredAt: z.string(),
+  summary: z.string(),
+});
+const operationalContextSchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+  kind: z.enum(['description', 'decision', 'note']),
+  value: z.string(),
+});
+const operationalCollection = <T extends z.ZodType>(item: T) =>
+  operationalCollectionBaseSchema.extend({ items: z.array(item) });
+const operationalProjectSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  status: projectStatusSchema,
+  visibility: z.literal('operational'),
+  updatedAt: z.string(),
+});
+
+export const operationalWorkspaceSchema = z
+  .object({
+    schemaVersion: z.literal('1'),
+    readOnly: z.literal(true),
+    project: operationalCollection(operationalProjectSchema),
+    protectedContext: operationalCollection(operationalContextSchema),
+    epics: operationalCollection(operationalEpicSchema),
+    workItems: operationalCollection(operationalWorkItemSchema),
+    runs: operationalCollection(operationalRunSchema),
+    evidence: operationalCollection(operationalEvidenceSchema),
+    reviews: operationalCollection(operationalReviewSchema),
+    activity: operationalCollection(operationalActivitySchema),
+  })
+  .meta({ id: 'OperationalWorkspaceReadModelV1' });
+
+export const operationalWorkspaceErrorSchema = errorEnvelopeSchema.meta({ id: 'OperationalWorkspaceErrorEnvelope' });
+
 export const jobsListSchema = z
   .object({
     jobs: z.array(asyncJobSchema),
@@ -152,6 +245,61 @@ export const projectsOpenApiPaths = {
     delete: {
       requestParams: { path: projectParamsSchema },
       responses: { 204: { description: 'Project deleted.' } },
+    },
+  },
+  '/projects/{projectId}/workspace': {
+    get: {
+      requestParams: { path: projectParamsSchema },
+      parameters: [
+        {
+          in: 'header' as const,
+          name: 'x-operational-workspace-state',
+          required: false,
+          schema: {
+            type: 'string' as const,
+            enum: ['visible', 'empty', 'locked', 'unavailable', 'stale', 'error', 'malformed', 'unauthorized'],
+          },
+        },
+        {
+          in: 'header' as const,
+          name: 'x-operational-workspace-http-case',
+          required: false,
+          schema: {
+            type: 'string' as const,
+            enum: ['unavailable', 'error', 'malformed-json'],
+          },
+        },
+      ],
+      responses: {
+        200: {
+          content: {
+            'application/json': {
+              schema: responseEnvelope(operationalWorkspaceSchema, 'OperationalWorkspaceEnvelope'),
+            },
+          },
+          description: 'Versioned, read-only operational workspace projection.',
+        },
+        401: {
+          content: { 'application/json': { schema: operationalWorkspaceErrorSchema } },
+          description: 'The caller is not authenticated or the projection is unauthorized.',
+        },
+        404: {
+          content: { 'application/json': { schema: operationalWorkspaceErrorSchema } },
+          description: 'The project is not found in the authenticated tenant.',
+        },
+        500: {
+          content: { 'application/json': { schema: operationalWorkspaceErrorSchema } },
+          description: 'The projection failed while reading the protected boundary.',
+        },
+        502: {
+          content: { 'text/plain': { schema: { type: 'string' as const } } },
+          description: 'The mediated boundary returned malformed JSON.',
+        },
+        503: {
+          content: { 'application/json': { schema: operationalWorkspaceErrorSchema } },
+          description: 'The mediated projection is temporarily unavailable.',
+        },
+      },
     },
   },
   '/projects/{projectId}/documents': {

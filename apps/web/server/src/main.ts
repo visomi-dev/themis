@@ -112,6 +112,15 @@ function shutdown() {
   httpServer.close(() => process.exit(0));
 }
 
+function failBootstrap(error: unknown): void {
+  logger.error({ err: error }, 'Failed to bootstrap gateway server');
+  // The worker is started before the gateway begins listening. If listen fails
+  // (most commonly because a stale gateway still owns the configured port),
+  // the parent process can exit while the child remains alive and poisons the
+  // next Playwright webServer attempt. Always tear down the child first.
+  shutdown();
+}
+
 async function loadApiApp() {
   const apiModule = (await import(pathToFileURL(apiEntryFile).href)) as ApiModule;
 
@@ -218,7 +227,5 @@ process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
 bootstrap().catch((error: unknown) => {
-  logger.error({ err: error }, 'Failed to bootstrap gateway server');
-
-  process.exit(1);
+  failBootstrap(error);
 });

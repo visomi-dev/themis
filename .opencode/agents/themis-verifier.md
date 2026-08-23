@@ -18,3 +18,12 @@ source code. Do not request review unless implementation-diff evidence and all
 required verification categories exist with observed results. If a command is
 too expensive or the environment is unavailable, record the exact command and
 blocker instead of omitting it.
+
+For planning-fidelity items, run the focused plan-fidelity eval and inspect its
+traceability rows. A pass requires no omitted phase, no unobservable rich step,
+and all eight validation categories classified with a reason for every
+not-applicable entry. The evaluator must reject malformed or duplicate rows,
+and `evidenceMatrixErrors` must reject duplicate or missing category evidence
+or evidence without its exact command and observed result. Do not turn a
+missing row into a passing observation or reuse one generic observation for
+multiple categories.

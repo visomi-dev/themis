@@ -13,6 +13,11 @@ import {
   PROJECTS_PATH,
   PROJECT_ID_PATH,
   PROJECT_NEW_PATH,
+  PROJECT_WORKSPACE_PATH,
+  WORK_ITEM_PATH,
+  TIMELINE_PATH,
+  VALIDATION_PATH,
+  ITERATION_PATH,
   RESET_PASSWORD_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
@@ -24,7 +29,8 @@ export const appRoutes: Route[] = [
   {
     path: APP_PATH,
     pathMatch: 'full',
-    redirectTo: DASHBOARD_PATH,
+    canActivate: [activatedGuard],
+    loadComponent: () => import('./projects/projects').then((module) => module.Projects),
   },
 
   {
@@ -88,8 +94,33 @@ export const appRoutes: Route[] = [
   },
   {
     path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}`,
+    pathMatch: 'full',
+    redirectTo: `${PROJECTS_PATH}/:projectId/${PROJECT_WORKSPACE_PATH}`,
+  },
+  {
+    path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}/${PROJECT_WORKSPACE_PATH}`,
     canActivate: [activatedGuard],
     loadComponent: () => import('./projects/project-detail/project-detail').then((module) => module.ProjectDetail),
+  },
+  {
+    path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}/${WORK_ITEM_PATH}`,
+    canActivate: [activatedGuard],
+    loadComponent: () => import('./projects/work-item-detail/work-item-detail').then((module) => module.WorkItemDetail),
+  },
+  {
+    path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}/${TIMELINE_PATH}`,
+    canActivate: [activatedGuard],
+    loadComponent: () => import('./projects/timeline/timeline').then((module) => module.Timeline),
+  },
+  {
+    path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}/${VALIDATION_PATH}`,
+    canActivate: [activatedGuard],
+    loadComponent: () => import('./projects/validation/validation').then((module) => module.Validation),
+  },
+  {
+    path: `${PROJECTS_PATH}/${PROJECT_ID_PATH}/${ITERATION_PATH}`,
+    canActivate: [activatedGuard],
+    loadComponent: () => import('./projects/iteration/iteration').then((module) => module.Iteration),
   },
 
   {

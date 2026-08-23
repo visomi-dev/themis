@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { authed, authedContext } from '../auth/auth-middleware';
 import { getValidated, validateRequest } from '../shared/http/route-schemas';
+import { env } from '../shared/env';
 
 import {
   createDocumentSchema,
@@ -13,7 +14,15 @@ import {
 import { listProjectJobs, queueProjectSeed } from './project-seed-queue';
 
 import { HttpError, httpResponse } from 'shared';
-import { createDocument, createProject, deleteProject, getProject, listProjects, updateProject } from 'projects';
+import {
+  createDocument,
+  createProject,
+  deleteProject,
+  getOperationalWorkspace,
+  getProject,
+  listProjects,
+  updateProject,
+} from 'projects';
 
 const projectsRouter = Router();
 
@@ -24,6 +33,55 @@ projectsRouter.get('/', async function listProjectsHandler(req, res) {
 
   httpResponse.json(res, { data: { projects }, message: 'Projects retrieved.' });
 });
+
+projectsRouter.get(
+  '/:projectId/workspace',
+  validateRequest({ params: projectParamsSchema }),
+  async function operationalWorkspaceHandler(req, res) {
+    const { projectId } = getValidated<{ params: typeof projectParamsSchema }>(req).params!;
+    const fixtureHeader = env.ENABLE_TEST_API ? req.get('x-operational-workspace-state') : undefined;
+    const lifecycleHeader = env.ENABLE_TEST_API ? req.get('x-operational-workspace-lifecycle') : undefined;
+    const httpCase = env.ENABLE_TEST_API ? req.get('x-operational-workspace-http-case') : undefined;
+
+    if (fixtureHeader === 'unauthorized') {
+      throw new HttpError({ code: 'unauthorized', message: 'Project access is unavailable.', statusCode: 401 });
+    }
+    if (httpCase === 'unavailable') {
+      throw new HttpError({
+        code: 'operational_workspace_unavailable',
+        message: 'The operational projection is unavailable.',
+        statusCode: 503,
+      });
+    }
+    if (httpCase === 'error') {
+      throw new HttpError({
+        code: 'operational_workspace_error',
+        message: 'The operational projection failed.',
+        statusCode: 500,
+      });
+    }
+    if (httpCase === 'malformed-json') {
+      res.status(502).type('text/plain').send('{"data":');
+
+      return;
+    }
+    const fixtureState =
+      fixtureHeader &&
+      ['visible', 'empty', 'locked', 'unavailable', 'stale', 'error', 'malformed'].includes(fixtureHeader)
+        ? (fixtureHeader as Parameters<typeof getOperationalWorkspace>[0]['fixtureState'])
+        : undefined;
+    const workspace = await getOperationalWorkspace(
+      { ...authedContext(req), fixtureState, lifecycle: lifecycleHeader ?? undefined },
+      projectId,
+    );
+
+    if (!workspace) {
+      throw new HttpError({ code: 'project_not_found', message: 'The project could not be found.', statusCode: 404 });
+    }
+
+    httpResponse.json(res, { data: workspace, message: 'Operational workspace retrieved.' });
+  },
+);
 
 projectsRouter.get(
   '/:projectId',

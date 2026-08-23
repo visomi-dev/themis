@@ -39,3 +39,17 @@ duplicate item. Updating a reviewed or done item reopens it in `rework`,
 preserves its runs, evidence, and review history, and requires a new execution
 and independent review. The supported pending state for this purpose is
 `rework`; do not invent a separate `pending` status.
+
+## Plan Fidelity
+
+When an item comes from a confirmed plan, record its source phase ID and keep
+each phase mapped to one item or an explicit sub-scope. UX research, user flows,
+evaluation, prototypes, human-readable state/event translation, and other rich
+steps must be observable in acceptance criteria or represented by separate
+items. Before and after a mutation, the coordinator must show the complete
+phase-to-work-item matrix with coverage, item IDs, statuses, and gaps.
+
+Approved scope is not silently replaceable: use `themis_workitem_update` and
+rework for changed existing scope, or create a new item for separate scope.
+Use `scripts/plan-fidelity.test.ts` to evaluate omission, traceability, and
+scope-change behavior.

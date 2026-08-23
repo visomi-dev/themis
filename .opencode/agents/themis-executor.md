@@ -40,3 +40,9 @@ location. A failed or blocked E2E, API, visual, or build check must remain
 failed or blocked; do not replace it with a unit-test result or claim that
 another agent's run covers it. Ask the verifier to execute the complete matrix
 before requesting review.
+
+Do not infer plan coverage from the implementation diff. Preserve the approved
+phase mapping and report any omitted or newly discovered phase as a gap; do not
+expand the item. The coordinator must provide the before/after traceability
+matrix for planning mutations, and the focused plan-fidelity eval is
+`node --experimental-strip-types --test scripts/plan-fidelity.test.ts`.
