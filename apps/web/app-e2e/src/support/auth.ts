@@ -21,7 +21,7 @@ type VerificationOptions = {
   completeActivation?: boolean;
 };
 
-const postVerificationUrlPattern = /\/app\/en\/(projects|dashboard|activation)$/;
+const postVerificationUrlPattern = /\/app\/en\/?$|\/app\/en\/(projects|dashboard|activation)$/;
 
 export const createCredentials = () => ({
   email: `engineer+e2e-${randomUUID()}@themis.visomi.dev`,
@@ -108,7 +108,7 @@ const completeActivationIfNeeded = async (page: Page) => {
   await page.getByRole('button', { name: /Skip for now/i }).click();
   await expect(page).toHaveURL(projectsUrlPattern, { timeout: 15000 });
   await page.goto(projectsRoute);
-  await expect(page).toHaveURL(appUrlPattern, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/app\/en\/projects$/, { timeout: 15000 });
 };
 
 export const authenticateViaApi = async (page: Page, request: APIRequestContext, email: string, password: string) => {

@@ -1,3 +1,4 @@
+import { appendFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { createPrivateKey, sign } from 'node:crypto';
 
@@ -58,7 +59,28 @@ function projectId(request: IncomingMessage): string {
   return new URL(request.url ?? '/', 'http://localhost').pathname.split('/').pop() ?? '';
 }
 
-function handle(request: IncomingMessage, response: ServerResponse): void {
+export type LocalAgentFixtureOptions = Readonly<{ port?: number; logPath?: string; dynamicScope?: boolean }>;
+
+function handle(request: IncomingMessage, response: ServerResponse, options: LocalAgentFixtureOptions = {}): void {
+  const path = new URL(request.url ?? '/', 'http://localhost').pathname;
+  const record = (event: string, details: Record<string, unknown> = {}): void => {
+    if (options.logPath)
+      appendFileSync(options.logPath, `${JSON.stringify({ event, method: request.method, path, ...details })}\n`);
+  };
+
+  record('bridge.request', {
+    capabilities: request.headers['x-themis-bridge-capabilities'] ?? null,
+    version: request.headers['x-themis-bridge-version'] ?? null,
+    handshake: typeof request.headers['x-themis-handshake-challenge'] === 'string',
+  });
+
+  if (request.url === '/__fixture__/ready') {
+    record('bridge.ready');
+    response.writeHead(200).end('ready');
+
+    return;
+  }
+
   if (request.url === '/__fixture__/network') {
     let body = '';
 
@@ -67,6 +89,7 @@ function handle(request: IncomingMessage, response: ServerResponse): void {
       const requested = JSON.parse(body) as { state: typeof networkState };
 
       networkState = requested.state;
+      record('fixture.network', { state: requested.state });
       response.writeHead(204).end();
     });
 
@@ -79,6 +102,7 @@ function handle(request: IncomingMessage, response: ServerResponse): void {
     request.on('data', (chunk: Buffer) => (body += chunk.toString('utf8')));
     request.on('end', () => {
       syncPhase = (JSON.parse(body) as { phase: SyncFixturePhase }).phase;
+      record('fixture.phase', { phase: syncPhase });
       response.writeHead(204).end();
     });
 
@@ -103,6 +127,7 @@ function handle(request: IncomingMessage, response: ServerResponse): void {
   const challenge = request.headers['x-themis-handshake-challenge'];
 
   if (typeof challenge !== 'string') {
+    record('bridge.rejected', { reason: 'missing-challenge' });
     response.writeHead(400).end('missing bridge challenge');
 
     return;
@@ -112,23 +137,25 @@ function handle(request: IncomingMessage, response: ServerResponse): void {
   response.setHeader('content-type', 'application/json');
 
   if (state === 'incompatible') {
+    record('bridge.welcome', { state: 'incompatible', capabilities: [] });
     response.end(JSON.stringify({ format: 'unsupported.bridge', version: 99 }));
 
     return;
   }
 
   if (state === 'unsafe') {
+    record('bridge.welcome', { state: 'unsafe', capabilities: ['projection'] });
     response.end(JSON.stringify({ projection, padding: 'unsafe-fixture-'.repeat(5000) }));
 
     return;
   }
 
-  const selectedProjection =
-    projectId(request) === 'sync-fixture' && syncPhase !== 'offline'
-      ? syncProjections[syncPhase]
-      : projectId(request) === 'sync-fixture'
-        ? syncProjection
-        : projection;
+  const selectedProjection = syncPhase === 'offline' ? syncProjection : syncProjections[syncPhase];
+  const scopedProjection = options.dynamicScope
+    ? { ...selectedProjection, tenantId: '', workspaceId: projectId(request) }
+    : selectedProjection;
+
+  record('bridge.welcome', { state: 'ready', capabilities: ['projection'], phase: syncPhase });
 
   if (request.url?.startsWith('/projects/')) {
     response.end(
@@ -151,19 +178,17 @@ function handle(request: IncomingMessage, response: ServerResponse): void {
 
   response.end(
     JSON.stringify(
-      request.headers['x-themis-projection-format'] === 'browser'
-        ? selectedProjection
-        : { projection: selectedProjection },
+      request.headers['x-themis-projection-format'] === 'browser' ? scopedProjection : { projection: scopedProjection },
     ),
   );
 }
 
-export async function startLocalAgentFixture(): Promise<Server> {
-  const server = createServer(handle);
+export async function startLocalAgentFixture(options: LocalAgentFixtureOptions = {}): Promise<Server> {
+  const server = createServer((request, response) => handle(request, response, options));
 
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
-    server.listen(4317, '127.0.0.1', () => resolve());
+    server.listen(options.port ?? 4317, '127.0.0.1', () => resolve());
   });
 
   return server;
@@ -176,14 +201,18 @@ export async function stopLocalAgentFixture(server: Server): Promise<void> {
 export async function setLocalAgentFixtureNetwork(
   state: Exclude<LocalAgentFixtureState, 'incompatible' | 'unsafe'>,
 ): Promise<void> {
-  await fetch(`${process.env['BASE_URL'] ?? 'http://localhost:8081'}/__fixture__/local-agent/network/${state}`, {
+  await fetch(`${process.env['LOCAL_AGENT_URL'] ?? 'http://127.0.0.1:4317'}/__fixture__/network`, {
     method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ state }),
   });
 }
 
 export async function setLocalAgentFixturePhase(phase: SyncFixturePhase): Promise<void> {
-  await fetch(`${process.env['BASE_URL'] ?? 'http://localhost:8081'}/__fixture__/local-agent/sync-phase/${phase}`, {
+  await fetch(`${process.env['LOCAL_AGENT_URL'] ?? 'http://127.0.0.1:4317'}/__fixture__/sync-phase`, {
     method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ phase }),
   });
 }
 

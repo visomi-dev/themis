@@ -21,13 +21,18 @@ module.exports = async function () {
       ...process.env,
       COOKIE_SECURE: 'false',
       DATABASE_AUTO_MIGRATE: 'true',
-      DATABASE_DRIVER: 'memory',
+      // Keep the fast in-memory composition by default, but allow the
+      // durable API lifecycle matrix to opt into the configured PostgreSQL
+      // and object-store boundary explicitly.
+      DATABASE_DRIVER:
+        process.env['OPAQUE_SYNC_STORAGE'] === 'durable' && process.env['DATABASE_DRIVER'] === 'pg' ? 'pg' : 'memory',
       ENABLE_TEST_API: 'true',
       HOST: host,
       GATEWAY_PORT: String(port),
       MAIL_TRANSPORT: 'memory',
       NG_ALLOWED_HOSTS: host,
       NODE_ENV: 'test',
+      OPAQUE_SYNC_STORAGE: process.env['OPAQUE_SYNC_STORAGE'] ?? 'memory',
       PORT: String(port),
       SESSION_SECRET: 'themis-api-e2e-secret',
     },

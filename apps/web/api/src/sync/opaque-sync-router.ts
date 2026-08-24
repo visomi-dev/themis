@@ -24,10 +24,13 @@ import {
   deviceIdentityStore,
   env,
   getConfiguredOpaqueSyncRepository,
+  getConfiguredDeviceIdentityStore,
 } from 'shared';
 import { getProject } from 'projects';
 
 const opaqueSyncRouter = Router();
+const deviceStore = () =>
+  env.OPAQUE_SYNC_STORAGE === 'durable' ? getConfiguredDeviceIdentityStore() : deviceIdentityStore;
 
 async function authorizeWorkspace(req: Parameters<typeof authedContext>[0], workspaceId: string) {
   const context = authedContext(req);
@@ -67,7 +70,7 @@ opaqueSyncRouter.post(
 
     try {
       httpResponse.json(res, {
-        data: deviceIdentityStore.createIdentity(
+        data: await deviceStore().createIdentity(
           context.accountId,
           body!.publicKey,
           body!.label,
@@ -90,7 +93,7 @@ opaqueSyncRouter.get(
     const context = await authorizeWorkspace(req, params!.workspaceId);
 
     httpResponse.json(res, {
-      data: { devices: deviceIdentityStore.listDevices(context.accountId) },
+      data: { devices: await deviceStore().listDevices(context.accountId) },
       message: 'Devices retrieved.',
     });
   },
@@ -105,9 +108,9 @@ opaqueSyncRouter.get(
 
     httpResponse.json(res, {
       data: {
-        events: deviceIdentityStore
-          .auditEvents(context.accountId)
-          .filter((event) => event.workspaceId === params!.workspaceId),
+        events: (await deviceStore().auditEvents(context.accountId)).filter(
+          (event) => event.workspaceId === params!.workspaceId,
+        ),
       },
       message: 'Device audit events retrieved.',
     });
@@ -128,7 +131,7 @@ opaqueSyncRouter.post(
       if (params!.deviceId !== body!.approverDeviceId) {
         throw new DeviceIdentityError('Approval device does not match the route.');
       }
-      deviceIdentityStore.approveWorkspace(context.accountId, params!.workspaceId, params!.deviceId);
+      await deviceStore().approveWorkspace(context.accountId, params!.workspaceId, params!.deviceId);
       httpResponse.json(res, {
         data: { workspaceId: params!.workspaceId, approvedByDeviceId: body!.approverDeviceId },
         message: 'Workspace enrollment approved.',
@@ -151,7 +154,7 @@ opaqueSyncRouter.post(
 
     try {
       httpResponse.json(res, {
-        data: deviceIdentityStore.enrollDevice(
+        data: await deviceStore().enrollDevice(
           context.accountId,
           params!.deviceId,
           params!.workspaceId,
@@ -174,7 +177,7 @@ opaqueSyncRouter.post(
     const context = await authorizeWorkspace(req, params!.workspaceId);
 
     try {
-      deviceIdentityStore.revokeDevice(context.accountId, params!.deviceId, new Date(), params!.workspaceId);
+      await deviceStore().revokeDevice(context.accountId, params!.deviceId, new Date(), params!.workspaceId);
       httpResponse.json(res, { data: { deviceId: params!.deviceId, status: 'revoked' }, message: 'Device revoked.' });
     } catch (error) {
       nextDeviceError(next, error);
@@ -193,13 +196,16 @@ opaqueSyncRouter.post(
 
     try {
       httpResponse.json(res, {
-        data: deviceIdentityStore.recoverDevice(
+        data: await deviceStore().recoverDevice(
           context.accountId,
           body!.lostDeviceId,
           body!.replacementDeviceId,
           params!.workspaceId,
-          body!.approverDeviceId,
+          body!.approverDeviceIds[0],
           body!.envelope,
+          new Date(),
+          body!.approverDeviceIds,
+          body!.allDeviceLoss,
         ),
         message: 'Device recovered.',
       });
@@ -222,7 +228,7 @@ opaqueSyncRouter.post(
         params: typeof opaqueSyncParamsSchema;
       }>(req);
 
-      deviceIdentityStore.authorizeSync(
+      await deviceStore().authorizeSync(
         context.accountId,
         body!.deviceId,
         params!.workspaceId,
@@ -257,7 +263,7 @@ opaqueSyncRouter.get(
     const context = await authorizeWorkspace(req, params!.workspaceId);
 
     try {
-      deviceIdentityStore.authorizeSync(
+      await deviceStore().authorizeSync(
         context.accountId,
         query!.deviceId,
         params!.workspaceId,

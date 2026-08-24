@@ -19,6 +19,9 @@ type GatewayDeps = {
   authRuntimeHandlers: RequestHandler[];
   localAgentHandler?: RequestHandler;
   localAgentFixtureControl?: RequestHandler;
+  readiness?: {
+    isReady: () => boolean;
+  };
 };
 
 const gatewaySecurityHeaders = helmet({
@@ -48,6 +51,7 @@ function createGatewayApp({
   authRuntimeHandlers,
   localAgentHandler,
   localAgentFixtureControl,
+  readiness,
 }: GatewayDeps) {
   const app = express();
 
@@ -55,6 +59,15 @@ function createGatewayApp({
   app.use(...authRuntimeHandlers);
   app.get('/healthz', (_req, res) => {
     res.send({ status: 'ok' });
+  });
+  app.get('/readyz', (_req, res) => {
+    if (readiness && !readiness.isReady()) {
+      res.status(503).send({ status: 'not_ready' });
+
+      return;
+    }
+
+    res.send({ status: 'ready' });
   });
   app.get('/', (_req, res) => {
     res.redirect(302, '/en/');

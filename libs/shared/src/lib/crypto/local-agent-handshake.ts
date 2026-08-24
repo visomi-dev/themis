@@ -41,6 +41,8 @@ export function verifyLocalAgentHandshake(
   response: LocalAgentHandshakeResponse,
   publicKey: KeyObject,
 ): boolean {
+  if (Number.isNaN(Date.parse(challenge.issuedAt)) || Date.now() - Date.parse(challenge.issuedAt) > 30_000)
+    return false;
   if (
     response.nonce !== challenge.nonce ||
     response.origin !== challenge.origin ||

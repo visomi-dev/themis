@@ -1,8 +1,13 @@
+import { randomUUID } from 'node:crypto';
+
+import { eq } from 'drizzle-orm';
 import { Router } from 'express';
 
 import { clearMailbox, listSentMessages } from '../auth/auth-mail';
 import { signUp, verifyChallenge } from '../auth/auth-service';
 import { emailSchema, getValidated, validateRequest, z } from '../shared/http/route-schemas';
+
+import { accountMemberships, db } from 'shared';
 
 const mailboxQuerySchema = z
   .object({
@@ -22,7 +27,7 @@ const mailboxMessageSchema = z
   .meta({ id: 'MailboxMessage' });
 
 const deterministicSessionSchema = z
-  .object({ email: emailSchema, password: z.string().min(1) })
+  .object({ email: emailSchema, password: z.string().min(1), accountId: z.string().min(1).optional() })
   .meta({ id: 'DeterministicTestSession' });
 
 const testOpenApiPaths = {
@@ -51,7 +56,7 @@ testRouter.post(
   validateRequest({ body: deterministicSessionSchema }),
   async function deterministicSessionHandler(req, res, next) {
     try {
-      const { email, password } = getValidated<{ body: typeof deterministicSessionSchema }>(req).body!;
+      const { email, password, accountId } = getValidated<{ body: typeof deterministicSessionSchema }>(req).body!;
       const challenge = await signUp(email, password);
       const message = listSentMessages().find(
         (candidate) => candidate.challengeId === challenge.challengeId && candidate.purpose === 'sign_up',
@@ -65,6 +70,20 @@ testRouter.post(
 
       const user = await verifyChallenge(challenge.challengeId, message.pin, 'sign_up');
 
+      if (accountId) {
+        await db.delete(accountMemberships).where(eq(accountMemberships.userId, user.id));
+        await db.insert(accountMemberships).values({
+          accountId,
+          createdAt: new Date(),
+          id: randomUUID(),
+          role: 'member',
+          updatedAt: new Date(),
+          userId: user.id,
+        });
+        user.accountId = accountId;
+        user.role = 'member';
+      }
+
       await new Promise<void>((resolve, reject) => {
         req.login(user, (error) => (error ? reject(error) : resolve()));
       });
@@ -73,7 +92,7 @@ testRouter.post(
         req.session.save((error) => (error ? reject(error) : resolve()));
       });
 
-      res.status(204).send();
+      res.status(200).send({ data: { accountId: user.accountId, userId: user.id } });
     } catch (error: unknown) {
       next(error);
     }

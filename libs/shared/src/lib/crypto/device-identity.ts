@@ -98,11 +98,12 @@ export class DeviceIdentityStore {
     approvedByDeviceId: string,
     keyEnvelopeInput: unknown,
     now = new Date(),
+    allowRevokedApprover = false,
   ): WorkspaceGrant {
     const device = this.requireDevice(accountId, deviceId);
     const approver = this.requireDevice(accountId, approvedByDeviceId);
 
-    if (approver.status !== 'active') {
+    if (approver.status !== 'active' && !allowRevokedApprover) {
       throw new DeviceIdentityError('A revoked device cannot approve enrollment.');
     }
     if (device.status !== 'active') {
@@ -200,7 +201,11 @@ export class DeviceIdentityStore {
     approvedByDeviceId: string,
     keyEnvelopeInput: unknown,
     now = new Date(),
+    recoveryApproverDeviceIds: string[] = [approvedByDeviceId],
+    allDeviceLoss = false,
   ): WorkspaceGrant {
+    this.requireDevice(accountId, replacementDeviceId);
+    this.requireRecoveryQuorum(accountId, workspaceId, recoveryApproverDeviceIds, allDeviceLoss);
     this.revokeDevice(accountId, lostDeviceId, now, workspaceId);
     const grant = this.enrollDevice(
       accountId,
@@ -209,6 +214,7 @@ export class DeviceIdentityStore {
       approvedByDeviceId,
       keyEnvelopeInput,
       now,
+      allDeviceLoss,
     );
 
     this.audit.push({
@@ -220,6 +226,39 @@ export class DeviceIdentityStore {
     });
 
     return grant;
+  }
+
+  private requireRecoveryQuorum(
+    accountId: string,
+    workspaceId: string,
+    approverDeviceIds: string[],
+    allDeviceLoss: boolean,
+  ): void {
+    const uniqueApprovers = [...new Set(approverDeviceIds)];
+
+    if (uniqueApprovers.length < 2) throw new DeviceIdentityError('Recovery requires a quorum of two devices.');
+
+    for (const deviceId of uniqueApprovers) {
+      const device = this.requireDevice(accountId, deviceId);
+      const enrolled = this.grants.has(this.grantKey(accountId, workspaceId, deviceId));
+      const previouslyEnrolled = this.audit.some(
+        (event) =>
+          (event.accountId === accountId &&
+            event.workspaceId === workspaceId &&
+            event.deviceId === deviceId &&
+            event.kind === 'enrolled') ||
+          event.kind === 'approved',
+      );
+
+      if (
+        allDeviceLoss
+          ? !previouslyEnrolled || device.status !== 'revoked'
+          : device.status !== 'active' ||
+            (!enrolled && !this.workspaceAuthorizations.has(this.workspaceDeviceKey(accountId, workspaceId, deviceId)))
+      ) {
+        throw new DeviceIdentityError('Recovery quorum is not authorized for this workspace.');
+      }
+    }
   }
 
   auditEvents(accountId: string): DeviceAuditEvent[] {

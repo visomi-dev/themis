@@ -16,6 +16,6 @@ test.describe('/app', () => {
     await registerAndAuthenticate(page, request, credentials.email, credentials.password);
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByText('dashboard works!')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
   });
 });

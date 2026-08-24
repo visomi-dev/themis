@@ -4,10 +4,19 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { OperationalWorkspaceAdapter } from '../../shared/projects/operational-workspace-adapter';
 import type { OperationalVisibility, OperationalWorkspaceReadModel } from '../../shared/projects/projects.models';
+import { ProjectProjectionView } from '../../shared/projects/project-projection-view';
+import type { ProjectionScope } from '../../shared/projects/project-projection';
+
+type OutcomeGroup = {
+  id: string;
+  title: string;
+  summary: string | null;
+  items: OperationalWorkspaceReadModel['workItems']['items'];
+};
 
 @Component({
   selector: 'app-project-detail',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, ProjectProjectionView],
   templateUrl: './project-detail.html',
   styleUrl: './project-detail.css',
   host: { class: /* tw */ 'block min-h-full w-full' },
@@ -21,6 +30,30 @@ export class ProjectDetail implements OnInit {
   protected readonly error = signal(false);
   protected readonly project = computed(() => this.workspace()?.project.items[0]);
   protected readonly workItems = computed(() => this.workspace()?.workItems.items ?? []);
+  protected readonly projectionScope = signal<ProjectionScope>({ tenantId: '', workspaceId: '' });
+  protected readonly outcomeGroups = computed<OutcomeGroup[]>(() => {
+    const model = this.workspace();
+    const groups = new Map<string, OutcomeGroup>();
+
+    for (const epic of model?.epics.items ?? []) {
+      groups.set(epic.id, { id: epic.id, title: epic.title, summary: epic.summary, items: [] });
+    }
+
+    for (const item of this.workItems()) {
+      const groupId = item.epicId ?? 'unassigned';
+      const group = groups.get(groupId) ?? {
+        id: groupId,
+        title: 'Unassigned outcome',
+        summary: 'No outcome is recorded for this work item.',
+        items: [],
+      };
+
+      group.items.push(item);
+      groups.set(groupId, group);
+    }
+
+    return [...groups.values()].filter((group) => group.items.length > 0);
+  });
   protected readonly attention = computed(() =>
     this.workItems().filter((item) => ['blocked', 'review'].includes(item.status)),
   );
@@ -35,6 +68,11 @@ export class ProjectDetail implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const projectId = this.route.snapshot.paramMap.get('projectId');
+
+    this.projectionScope.set({
+      tenantId: this.route.snapshot.queryParamMap.get('tenantId') ?? '',
+      workspaceId: this.route.snapshot.queryParamMap.get('workspaceId') ?? projectId ?? '',
+    });
 
     if (!projectId) {
       this.error.set(true);
@@ -68,5 +106,48 @@ export class ProjectDetail implements OnInit {
 
   protected meaning(status: string): string {
     return this.statusMeaning[status] ?? 'Recorded state; inspect the source record for context.';
+  }
+
+  protected attentionReason(status: string, hasEvidence: boolean): string {
+    if (status === 'blocked') return 'Blocked; inspect the recorded dependency or decision.';
+    if (status === 'review') return 'Review pending; independent review remains the next checkpoint.';
+    if (!hasEvidence) return 'Evidence is not recorded for this item.';
+
+    return 'No additional attention is derived from the protected read model.';
+  }
+
+  protected executionLabel(workItemId: string): string {
+    const runs = this.workspace()?.runs.items.filter((run) => run.workItemId === workItemId) ?? [];
+    const current = runs[runs.length - 1];
+
+    return current
+      ? current.status === 'running'
+        ? 'Execution in progress'
+        : `Execution ${current.status}`
+      : 'No execution recorded';
+  }
+
+  protected evidenceCount(workItemId: string): number {
+    const runIds = new Set(
+      this.workspace()
+        ?.runs.items.filter((run) => run.workItemId === workItemId)
+        .map((run) => run.id),
+    );
+
+    return this.workspace()?.evidence.items.filter((entry) => runIds.has(entry.runId)).length ?? 0;
+  }
+
+  protected reviewLabel(workItemId: string): string {
+    const reviews = this.workspace()?.reviews.items.filter((entry) => entry.workItemId === workItemId) ?? [];
+    const review = reviews[reviews.length - 1];
+
+    return review ? `Review ${review.verdict}` : 'No review recorded';
+  }
+
+  protected lastActivity(): string {
+    const activities = this.workspace()?.activity.items ?? [];
+    const activity = activities[activities.length - 1];
+
+    return activity?.projectId === this.project()?.id ? activity.summary : 'No activity recorded';
   }
 }

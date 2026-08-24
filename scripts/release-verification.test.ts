@@ -106,6 +106,12 @@ test('scans manifests, artifacts, generated metadata, build logs, and telemetry 
   );
 });
 
+test('does not classify uppercase configuration identifiers as leaked values', () => {
+  assert.doesNotThrow(() =>
+    scanReleaseInputs([{ name: 'server.js', contents: 'MAILGUN_API_KEY: z.string().default("")' }]),
+  );
+});
+
 test('scans the actual release input files and fails when a protected value is inserted', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'release-scan-'));
   const paths = ['manifest.json', 'artifact.tgz', 'metadata.json', 'build.log', 'telemetry.json'].map((name) =>

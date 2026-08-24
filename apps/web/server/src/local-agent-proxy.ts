@@ -1,4 +1,4 @@
-import { createPublicKey, createHash, type KeyObject } from 'node:crypto';
+import { createPublicKey, createHash, randomUUID, type KeyObject } from 'node:crypto';
 
 import type { RequestHandler } from 'express';
 
@@ -7,7 +7,7 @@ import {
   handshakeReplayKey,
   verifyLocalAgentHandshake,
   type LocalAgentHandshakeResponse,
-  redactBridgeDiagnostic,
+  redactedDiagnostic,
 } from 'shared';
 
 type ReplayStore = {
@@ -19,6 +19,7 @@ type LocalAgentProxyOptions = {
   target: URL;
   replayStore: ReplayStore;
   fetchImpl?: typeof fetch;
+  expectedDeviceId?: string;
 };
 
 function sessionBinding(req: { headers: Record<string, string | string[] | undefined> }): string {
@@ -32,6 +33,7 @@ function createLocalAgentProxy({
   target,
   replayStore,
   fetchImpl = fetch,
+  expectedDeviceId,
 }: LocalAgentProxyOptions): RequestHandler {
   return async (req, res) => {
     const origin = typeof req.headers.origin === 'string' ? req.headers.origin : `${req.protocol}://${req.get('host')}`;
@@ -81,6 +83,7 @@ function createLocalAgentProxy({
 
       if (
         !verifyLocalAgentHandshake(challenge, response, publicKey) ||
+        (expectedDeviceId !== undefined && response.deviceId !== expectedDeviceId) ||
         !(await replayStore.claim(handshakeReplayKey(response)))
       ) {
         res
@@ -103,7 +106,9 @@ function createLocalAgentProxy({
 
       res.status(200).set('cache-control', 'no-store').type('application/json').send(body);
     } catch (error: unknown) {
-      res.status(503).json({ code: 'local_agent_unavailable', message: redactBridgeDiagnostic(error) });
+      const diagnostic = redactedDiagnostic('local_agent_unavailable', error, randomUUID());
+
+      res.status(503).json(diagnostic);
     }
   };
 }

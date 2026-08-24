@@ -15,7 +15,7 @@ import {
   type ClientCapabilityClaim,
   type ModeNegotiationRequest,
 } from 'shared';
-import { HttpError, deviceIdentityStore, env, httpResponse } from 'shared';
+import { HttpError, deviceIdentityStore, env, getConfiguredDeviceIdentityStore, httpResponse } from 'shared';
 import { getProject } from 'projects';
 
 const capabilityRouter = Router();
@@ -100,13 +100,17 @@ function verifyWebSessionProof(claim: ClientCapabilityClaim): boolean {
   return Boolean(provided && provided.length === expected.length && timingSafeEqual(provided, expected));
 }
 
-function verifyLocalAgentProof(claim: ClientCapabilityClaim, accountId: string): boolean {
+async function verifyLocalAgentProof(claim: ClientCapabilityClaim, accountId: string): Promise<boolean> {
   try {
-    deviceIdentityStore.authorizeLocalAgent(accountId, claim.clientId, claim.workspaceId);
+    const store = env.OPAQUE_SYNC_STORAGE === 'durable' ? getConfiguredDeviceIdentityStore() : deviceIdentityStore;
+
+    await store.authorizeLocalAgent(accountId, claim.clientId, claim.workspaceId);
     const signature = decodeProof(claim.authenticator.proof, 'ed25519:');
 
     if (!signature) return false;
-    const device = deviceIdentityStore.listDevices(accountId).find(({ deviceId }) => deviceId === claim.clientId);
+
+    const devices = await store.listDevices(accountId);
+    const device = devices.find(({ deviceId }) => deviceId === claim.clientId);
 
     if (!device) return false;
 
@@ -184,12 +188,17 @@ capabilityRouter.post(
         throw new ClientCapabilityContractError('unavailable', 'Capability claim has already been consumed.');
       }
 
+      const localAgentProofValid =
+        claim.authenticator.scheme === 'local-agent-signature'
+          ? await verifyLocalAgentProof(claim, context.accountId)
+          : undefined;
+
       const negotiated = negotiateClientMode(
         request,
         (candidate) =>
           candidate.authenticator.scheme === 'web-session'
             ? verifyWebSessionProof(candidate)
-            : verifyLocalAgentProof(candidate, context.accountId),
+            : candidate.claimId === claim.claimId && localAgentProofValid === true,
         now,
       );
 

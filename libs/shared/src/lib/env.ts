@@ -40,6 +40,47 @@ const environmentSchema = z
     OPAQUE_SYNC_S3_ACCESS_KEY: z.string().default(''),
     OPAQUE_SYNC_S3_SECRET_KEY: z.string().default(''),
     OPAQUE_SYNC_RETENTION_DAYS: z.coerce.number().int().positive().default(30),
+    LOCAL_AGENT_PUBLIC_KEY: z.string().default(''),
+  })
+  .superRefine((data, context) => {
+    if (data.NODE_ENV !== 'production') return;
+
+    if (data.SESSION_SECRET === 'themis-dev-session-secret' || data.SESSION_SECRET.length < 32) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SESSION_SECRET'],
+        message: 'A unique production session secret is required.',
+      });
+    }
+    if (data.DATABASE_DRIVER !== 'pg' || data.DATABASE_AUTO_MIGRATE === true) {
+      context.addIssue({
+        code: 'custom',
+        path: ['DATABASE_DRIVER'],
+        message: 'Production requires PostgreSQL and explicit migrations.',
+      });
+    }
+    if (
+      data.OPAQUE_SYNC_STORAGE !== 'durable' ||
+      !data.OPAQUE_SYNC_S3_ENDPOINT ||
+      !data.OPAQUE_SYNC_S3_ACCESS_KEY ||
+      !data.OPAQUE_SYNC_S3_SECRET_KEY
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['OPAQUE_SYNC_STORAGE'],
+        message: 'Production requires durable opaque object storage credentials.',
+      });
+    }
+    if (!data.LOCAL_AGENT_PUBLIC_KEY) {
+      context.addIssue({
+        code: 'custom',
+        path: ['LOCAL_AGENT_PUBLIC_KEY'],
+        message: 'The local-agent public key is required in production.',
+      });
+    }
+    if (data.COOKIE_SECURE === 'false') {
+      context.addIssue({ code: 'custom', path: ['COOKIE_SECURE'], message: 'Production cookies must be secure.' });
+    }
   })
   .transform((data) => {
     const hasMailgunCredentials = Boolean(data.MAILGUN_API_KEY && data.MAILGUN_DOMAIN && data.MAILGUN_FROM);

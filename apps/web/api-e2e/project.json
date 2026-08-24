@@ -14,11 +14,10 @@
       "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     },
     "e2e": {
-      "executor": "@nx/jest:jest",
+      "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
       "options": {
-        "jestConfig": "apps/web/api-e2e/jest.config.cts",
-        "passWithNoTests": true
+        "command": "node --experimental-strip-types apps/web/api-e2e/src/support/run-api-e2e.ts"
       },
       "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     },
@@ -42,7 +41,7 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/test-results/api-e2e/durable-integration"],
       "options": {
-        "command": "DATABASE_URL=postgresql://postgres@127.0.0.1:5432/themis pnpm db:migrate && DATABASE_URL=postgresql://postgres@127.0.0.1:5432/themis pnpm exec jest --config apps/web/api-e2e/durable-jest.config.cts --runInBand"
+        "command": "API_E2E_DURABLE_ONLY=true node --experimental-strip-types apps/web/api-e2e/src/support/run-api-e2e.ts"
       }
     }
   }

@@ -17,5 +17,10 @@ monotonic even after the retention window removes every record. Clients retain
 envelope identity, revision, associated data, and metadata for local conflict
 decisions. The cloud does not merge revisions. The current foundation adapter
 retains records for 30 days and prunes them; durable storage and device
-authorization is enforced at the device-scoped workspace boundary, while the
-current foundation adapter retains lifecycle state in process-local memory.
+authorization is enforced at the device-scoped workspace boundary. Durable
+deployments retain lifecycle state in PostgreSQL and opaque key envelopes in the
+configured S3-compatible object store. Recovery requires two distinct
+workspace-authorized devices; all-device-loss re-enrollment requires two
+previously authorized, auditable recovery devices and an opaque replacement-key
+envelope. The memory adapter remains test-only and does not represent the
+production durability boundary.

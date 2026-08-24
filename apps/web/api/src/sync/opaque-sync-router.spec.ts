@@ -202,7 +202,8 @@ describe('opaque sync API', () => {
       .send({
         lostDeviceId: targetId,
         replacementDeviceId: replacementId,
-        approverDeviceId: ownerId,
+        approverDeviceIds: [ownerId, deviceId],
+        allDeviceLoss: false,
         envelope: createEnvelope({
           envelopeId: 'http-key-replacement',
           recordType: 'workspace-key-distribution',

@@ -5,7 +5,12 @@ import type { Pool, PoolClient } from 'pg';
 import { env } from '../env';
 import { getPool } from '../db/pool';
 
-import { parseEncryptedEnvelope, serializeEncryptedEnvelope, type EncryptedEnvelope } from './encrypted-envelope';
+import {
+  deserializeEncryptedEnvelope,
+  parseEncryptedEnvelope,
+  serializeEncryptedEnvelope,
+  type EncryptedEnvelope,
+} from './encrypted-envelope';
 import { RailwayS3ObjectStore, sha256, type OpaqueObjectStore } from './opaque-sync-object-store';
 
 type DurableAppendResult = { cursor: number; duplicate: boolean; envelope: EncryptedEnvelope };
@@ -65,7 +70,7 @@ class PostgresOpaqueSyncRepository {
           return {
             cursor: current.cursor,
             duplicate: true,
-            envelope: parseEncryptedEnvelope(new TextDecoder().decode(existingBody)),
+            envelope: deserializeEncryptedEnvelope(new TextDecoder().decode(existingBody)),
           };
         }
         throw new Error('Envelope revision is a replay.');
@@ -131,7 +136,7 @@ class PostgresOpaqueSyncRepository {
 
         if (!body) throw new Error('Opaque object reference is missing.');
 
-        return { cursor, envelope: parseEncryptedEnvelope(new TextDecoder().decode(body)) };
+        return { cursor, envelope: deserializeEncryptedEnvelope(new TextDecoder().decode(body)) };
       }),
     );
 
@@ -147,12 +152,12 @@ class PostgresOpaqueSyncRepository {
   ): Promise<void> {
     await this.pool.query(
       `UPDATE opaque_sync_envelopes SET tombstoned_at = now()
-       WHERE account_id = $1 AND workspace_id = $2 AND envelope_id = $3 AND revision <= $4`,
+       WHERE account_id = $1::text AND workspace_id = $2::text AND envelope_id = $3::text AND revision <= $4::integer`,
       [accountId, workspaceId, envelopeId, revision],
     );
     await this.pool.query(
       `INSERT INTO opaque_sync_tombstones (account_id, workspace_id, envelope_id, revision, reason)
-       VALUES ($1, $2, $3, $4, $5)
+       VALUES ($1::text, $2::text, $3::text, $4::integer, $5::text)
        ON CONFLICT DO NOTHING`,
       [accountId, workspaceId, envelopeId, revision, reason],
     );

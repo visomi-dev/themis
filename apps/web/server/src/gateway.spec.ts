@@ -39,6 +39,25 @@ describe('createGatewayApp', () => {
     expect(response.body).toEqual({ status: 'ok' });
   });
 
+  it('exposes a readiness endpoint only after the gateway dependencies are mounted', async () => {
+    const response = await request(createGatewayApp(createDeps())).get('/readyz');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'ready' });
+  });
+
+  it('fails readiness closed while a composed dependency is bootstrapping', async () => {
+    const response = await request(
+      createGatewayApp({
+        ...createDeps(),
+        readiness: { isReady: () => false },
+      }),
+    ).get('/readyz');
+
+    expect(response.status).toBe(503);
+    expect(response.body).toEqual({ status: 'not_ready' });
+  });
+
   it('redirects the root path to the english site', async () => {
     const app = createGatewayApp(createDeps());
 

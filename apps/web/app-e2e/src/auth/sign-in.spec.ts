@@ -60,12 +60,12 @@ test.describe('/app/sign-in', () => {
     await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByText('dashboard works!')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
 
     await signOutViaApi(page);
     await signInWithRememberedDevice(page, credentials.email, credentials.password);
 
-    await expect(page.getByText('dashboard works!')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
   });
 
   test('stays on the route when credentials are invalid', async ({ page }) => {

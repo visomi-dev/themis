@@ -31,6 +31,8 @@
       >
     </header>
 
+    <app-project-projection [projectId]="project()?.id ?? ''" [scope]="projectionScope()" />
+
     <section class="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900" aria-label="Freshness and authority">
       <p class="font-medium">Inspection context, not a priority score</p>
       <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
@@ -66,27 +68,73 @@
 
     <section aria-labelledby="work-title">
       <div class="flex items-end justify-between">
-        <h2 id="work-title" class="font-heading text-2xl font-semibold">Work by outcome</h2>
+        <div>
+          <h2 id="work-title" class="font-heading text-2xl font-semibold">Agent backlog</h2>
+          <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Read-only work grouped by its recorded outcome.</p>
+        </div>
         <span class="text-sm text-zinc-500">{{ workItems().length }} work items</span>
       </div>
-      <div class="mt-4 grid gap-3">
-        @for (item of workItems(); track item.id) {
-          <a
-            class="flex flex-col gap-2 rounded-lg bg-zinc-50 p-4 hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 sm:flex-row sm:items-center sm:justify-between dark:bg-zinc-900 dark:hover:bg-zinc-800"
-            [routerLink]="['/projects', project()?.id, 'work-items', item.id]"
-            ><span
-              ><span class="block font-medium">{{ item.title }}</span
-              ><span class="mt-1 block text-sm text-zinc-500 dark:text-zinc-400">{{ meaning(item.status) }}</span></span
-            ><span class="rounded-md border border-zinc-950/10 px-2 py-1 text-xs dark:border-white/10">{{
-              item.status
-            }}</span></a
-          >
-        } @empty {
-          <p class="rounded-lg bg-zinc-50 p-4 text-sm dark:bg-zinc-900">
-            No work items are available in this projection.
-          </p>
-        }
-      </div>
+      @if (outcomeGroups().length === 0) {
+        <p class="mt-4 rounded-lg bg-zinc-50 p-4 text-sm dark:bg-zinc-900">
+          No work items are available in this projection.
+        </p>
+      } @else {
+        <div class="mt-4 grid gap-6">
+          @for (group of outcomeGroups(); track group.id) {
+            <section class="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-900" [attr.aria-label]="group.title">
+              <h3 class="font-medium">{{ group.title }}</h3>
+              @if (group.summary) {
+                <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ group.summary }}</p>
+              }
+              <div class="mt-3 grid gap-3">
+                @for (item of group.items; track item.id) {
+                  <article class="rounded-lg bg-white p-4 dark:bg-zinc-950">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <a
+                        class="font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
+                        [routerLink]="['/projects', project()?.id, 'work-items', item.id]"
+                      >
+                        {{ item.title }}
+                      </a>
+                      <span class="rounded-md border border-zinc-950/10 px-2 py-1 text-xs dark:border-white/10">{{
+                        item.status
+                      }}</span>
+                    </div>
+                    <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                      {{ attentionReason(item.status, evidenceCount(item.id) > 0) }}
+                    </p>
+                    <dl class="mt-3 grid gap-2 text-xs text-zinc-500 sm:grid-cols-2 dark:text-zinc-400">
+                      <div>
+                        <dt class="font-semibold uppercase">Execution</dt>
+                        <dd>{{ executionLabel(item.id) }}</dd>
+                      </div>
+                      <div>
+                        <dt class="font-semibold uppercase">Validation</dt>
+                        <dd>
+                          <a class="underline" [routerLink]="['/projects', project()?.id, 'validation']"
+                            >{{ evidenceCount(item.id) }} evidence record(s)</a
+                          >
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="font-semibold uppercase">Review</dt>
+                        <dd>{{ reviewLabel(item.id) }}</dd>
+                      </div>
+                      <div>
+                        <dt class="font-semibold uppercase">Last activity</dt>
+                        <dd>{{ lastActivity() }}</dd>
+                      </div>
+                    </dl>
+                    <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+                      Updated {{ item.updatedAt | date: 'medium' }}
+                    </p>
+                  </article>
+                }
+              </div>
+            </section>
+          }
+        </div>
+      }
     </section>
 
     <section class="grid gap-4 md:grid-cols-3" aria-label="Validation and review confidence">

@@ -57,6 +57,6 @@ test.describe('/app/verify-email', () => {
     await verifyLatestCode(page, request, credentials.email, 'sign_in');
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByText('dashboard works!')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
   });
 });

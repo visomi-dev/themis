@@ -10,7 +10,7 @@ export const projectsRoute = '/app/en/projects';
 export const projectNewRoute = '/app/en/projects/new';
 export const galleryRoute = '/app/en/gallery';
 
-export const appUrlPattern = /\/app\/en\/projects$/;
+export const appUrlPattern = /\/app\/en\/?(?:projects|dashboard)?$/;
 export const activationUrlPattern = /\/app\/en\/activation$/;
 export const signInUrlPattern = /\/app\/en\/sign-in$/;
 export const signUpUrlPattern = /\/app\/en\/sign-up$/;

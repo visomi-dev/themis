@@ -1,7 +1,7 @@
 # ZK-014 Zero-Knowledge Security Review
 
 **Review status: BLOCKED for production architecture and pending independent sign-off**
-**Run:** `RUN-061` (targeted remediation run following `RUN-060` / `REVW-053`)
+**Current disposition run:** `RUN-197` (evidence-gap correction; functional evidence is reused from `RUN-196`)
 **User-mandated constraint:** this review is intentionally conducted with **no sprint**. The absence of a sprint is not an acceptance defect, planning gap, or release finding.
 **Scope:** Phase 0, envelope/crypto proof, local vault, opaque sync, device lifecycle, migration, product visibility, capabilities, execution, MCP/secret broker, telemetry, and release controls.
 
@@ -9,73 +9,99 @@
 
 The reviewed slices demonstrate useful fail-closed proofs, but they do not establish a production zero-knowledge trust boundary. Production release remains blocked by the unresolved critical/high findings below, legacy plaintext containment, release advisory disposition, and the open architecture decisions. This report records review evidence and disposition only; it does not implement remediations.
 
-The cloud/API path returns metadata-only project projections and rejects new protected text writes (`libs/projects/src/lib/projects-service.ts:45-75,147-153,226-235,274-280`). The opaque sync router validates envelope shape and device authorization without decoding ciphertext (`apps/web/api/src/sync/opaque-sync-router.ts:204-263`). These are positive transition controls, not proof that legacy plaintext has been deleted. RUN-061 wires the browser same-origin visibility route through a gateway challenge/response verifier with origin/session binding, replay claims, and fail-closed behavior when the agent key is not configured. The durable replay claim uses a transactional Postgres uniqueness boundary (`apps/web/server/src/durable-replay-store.ts`); process-local fallback is test-only and is not production evidence. Sync/device/session/audit stores and legacy plaintext/tombstone closure remain blocked.
+The cloud/API path returns metadata-only project projections and rejects new protected text writes (`libs/projects/src/lib/projects-service.ts:45-75,147-153,226-235,274-280`). The opaque sync router validates envelope shape and device authorization without decoding ciphertext (`apps/web/api/src/sync/opaque-sync-router.ts:204-263`). These are positive transition controls, not proof that legacy plaintext has been deleted. `SEC-001` is now independently accepted for its capability-signature, authenticated visibility handshake, protected-data policy, redaction, and nonce/key lifecycle controls (`RUN-172` / `REVW-131`). `WEB-001` is independently accepted for the read-only operational backlog visibility slice (`RUN-182` / `REVW-136`). `SYNC-001` remains in progress because its latest run records missing durable API restart and opaque-sync integration prerequisites (`RUN-181`). Legacy plaintext/tombstone closure and production sign-off remain blocked.
 
-## RUN-061 implementation and evidence disposition
+## Current implementation and evidence disposition (`RUN-197`)
 
-The gateway now sends a nonce/origin/session-bound challenge to the local agent, verifies the Ed25519 response before forwarding JSON, rejects forged or replayed responses, and never forwards the response body on authentication failure (`apps/web/server/src/local-agent-proxy.ts`, `apps/web/server/src/local-agent-proxy.spec.ts`). Production configuration requires `LOCAL_AGENT_PUBLIC_KEY`; absent configuration returns a fail-closed `503` rather than exposing a cloud fallback. `DurableReplayStore` persists replay claims transactionally in Postgres with `ON CONFLICT DO NOTHING`; the in-memory branch is explicitly a test fallback.
+The accepted `SEC-001` evidence confirms that the gateway sends a nonce/origin/session-bound challenge, verifies the Ed25519 response before forwarding JSON, rejects forged or replayed responses, and fails closed when the agent key is unavailable (`RUN-172`, `REVW-131`). The accepted `WEB-001` evidence confirms the protected, read-only backlog/workspace route and its state/deep-link/screenshot coverage (`RUN-182`, `REVW-136`). These accepted slices are evidence of bounded controls, not production approval of the complete encrypted workspace architecture.
 
-The zero-plaintext migration gate remains **failed**: no production-like account/project-scoped inventory or independently reviewed zero tombstone count was available in this run. Static schema ownership still identifies `projects.summary`, `project_documents.content_markdown`, and async-job payload/error columns. These locations, secondary queues/realtime payloads/logs/fixtures/backups, and the transactional migration ledger remain release-blocking until a redacted inventory records zero values after the approved verification window.
+The `SYNC-001` gate remains **unresolved**. Its latest run (`RUN-181`, failed) records that the durable API restart fixture lacks `DATABASE_URL` and `OPAQUE_SYNC_S3_ENDPOINT`, and that durable integration fails MinIO bucket setup with HTTP 403. The fresh `RUN-184` durable integration rerun reproduces the HTTP 403. Until those prerequisites are supplied in an isolated runtime and the real multi-user/multi-device API lifecycle is independently verified, durable sync, restart, revocation/recovery propagation, and ciphertext-only storage remain unproven. The zero-plaintext migration/tombstone gate remains release-blocking until independently reviewed redacted inventory evidence is current. `RUN-196` is reused for the completed functional matrix and is not used to infer security closure.
 
-## RUN-060 targeted remediation disposition
+The fresh app/API checks also do not clear the gate. The OpenAPI contract command completed its selected 76/76 cases but retained authentication warnings; the required sync restart/durable API check failed at MinIO bucket setup. The full app E2E command did not complete within the 120-second execution window, so its result is **incomplete/blocked**, not passed; the focused visibility rerun is separate evidence and does not substitute for the full route matrix. Security remains **FAILED/BLOCKED** because durable storage, zero-plaintext/tombstone, recovery, and release-control closure are not independently evidenced.
 
-| Finding     | RUN-060 result                                                                                                                          | Remaining gate                                                                                                                |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| CRITICAL-01 | Real Ed25519 verification now binds issuer public key and signed capability payload; forged signatures are denied by adversarial tests. | Wire key custody/rotation and durable revocation state into the production agent boundary.                                    |
-| CRITICAL-02 | Nonce/origin/session-bound handshake challenge/response protocol and forged/replay tests added.                                         | Integrate response authentication into the browser/gateway visibility transport.                                              |
-| HIGH-01     | Capability state can use an explicit persistence boundary; recovery quorum is executable.                                               | Sync/device/session/audit stores remain process-local in the reviewed runtime.                                                |
-| HIGH-02     | `protected-plaintext` output classification is deny-by-default at MCP boundary.                                                         | Complete end-to-end projection labeling and audit integration.                                                                |
-| HIGH-03     | External-AI requests require provider, projection, fields, retention, consent ID, and output validation.                                | Provider registry, consent persistence, and transport enforcement remain to be wired.                                         |
-| HIGH-04     | Recovery requires explicit consent and independent non-revoked quorum.                                                                  | Vault/device recovery execution, rotation, deletion, and all-device-loss flow remain incomplete.                              |
-| HIGH-05     | Existing plaintext inventory was rerun without printing values; metadata-only writers remain.                                           | Protected columns, secondary queues/logs/backups, transactional migration ledger, and tombstone evidence are not yet cleared. |
+## Accepted and unresolved work-item map
 
-The complete matrix evidence for this disposition is attached to `RUN-060`; security remains failed/blocked and no critical finding is accepted as risk.
+| Item       | Current evidence                                                                                                                                                                                                                                     | Disposition                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `SEC-001`  | Accepted `RUN-172` / `REVW-131`: unit 125/125; API/OpenAPI 76/76; app E2E 96/96; gateway 5/5; visual PASS; security/raw scans PASS; lint/typecheck/production builds/plan fidelity PASS; clean release gate PASS and expected tamper rejection PASS. | Accepted implementation slice; it does not close `SYNC-001`, migration, or production sign-off.                                |
+| `WEB-001`  | Accepted `RUN-182` / `REVW-136`: real OpenAPI 76/76; broad app E2E 96/96; gateway 5/5; visual 12/12; targeted security 5/5; affected lint/typecheck/build PASS; site E2E N/A because no public Astro behavior changed.                               | Accepted read-only visibility slice; it does not establish encrypted sync durability or production readiness.                  |
+| `SYNC-001` | Failed `RUN-181`: restart lacks `DATABASE_URL` and `OPAQUE_SYNC_S3_ENDPOINT`; durable integration fails MinIO bucket setup with HTTP 403.                                                                                                            | Unresolved and release-blocking. Keep the item in progress; do not replace the failed evidence with earlier passing summaries. |
 
-## Severity-ranked findings
+The current report matrix is recorded below. `RUN-197` preserves the failed/incomplete observations rather than converting them to passes, while reusing `RUN-196` only for its completed functional evidence. Security remains failed/blocked because `SYNC-001` evidence is unresolved; no critical finding is accepted as risk.
+
+## Current eight-category validation matrix
+
+| Category    | Exact command/check                                                                                                                                                                                                                                                                                                                      | Observed result and artifact/evidence location                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit        | `pnpm exec nx run shared:test --skip-nx-cache -- --runInBand`                                                                                                                                                                                                                                                                            | **PASS**, 21 suites / 125 tests. Report: `coverage/libs/shared`; command run in `RUN-184`. This proves reviewed shared controls only and does not close durable sync.                                                                                                                                                                                                                                                                                                                                         |
+| API         | `pnpm exec nx run api-e2e:openapi --skip-nx-cache`; `pnpm exec nx run api-e2e:durable-integration --skip-nx-cache`                                                                                                                                                                                                                       | OpenAPI **PASS**, 76/76, with 2 authentication warnings; JUnit/HAR: `dist/test-results/api-e2e/openapi/junit-20260824T015343Z.xml`, `dist/test-results/api-e2e/openapi/har-20260824T015343Z.json`. Required durable API/storage check **FAILED**: `Opaque object bucket setup failed (403)` after migrations; report: `dist/test-results/api-e2e/durable-integration/`. The category is **FAILED/BLOCKED** for the sync lifecycle. Commands run in `RUN-184`.                                                 |
+| App E2E     | `pnpm exec nx run app-e2e:e2e --skip-nx-cache`                                                                                                                                                                                                                                                                                           | **INCOMPLETE/BLOCKED**: the full 96-test command exceeded the 120-second execution window while running; no full-suite pass is claimed. Output/report: `playwright-report/`, `dist/.playwright/apps/web/app-e2e/`; focused `--grep @visibility` rerun passed separately but cannot substitute for the incomplete full matrix. Command run in `RUN-184`.                                                                                                                                                       |
+| Gateway E2E | `pnpm exec nx run server-e2e:e2e --skip-nx-cache`                                                                                                                                                                                                                                                                                        | Composed gateway checks passed for accepted `SEC-001` (5/5) and `WEB-001` (5/5), but this does not clear the failed sync durable-runtime prerequisite. Playwright report: `playwright-report/`; Themis evidence: `RUN-172`, `RUN-182`.                                                                                                                                                                                                                                                                        |
+| Site E2E    | Exact check: no public Astro route or behavior changed in this review                                                                                                                                                                                                                                                                    | Not applicable, with written reason preserved in `RUN-172` and `RUN-182`; no site behavior is being claimed.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Visual      | `pnpm exec nx run app-e2e:e2e --skip-nx-cache -- --grep @visual`                                                                                                                                                                                                                                                                         | **BLOCKED/INCOMPLETE** under the fresh full app run: the full Playwright process exceeded the execution window before deterministic visual completion. Existing accepted snapshots remain historical evidence (`RUN-172`, `RUN-182`) and are not a fresh production sync sign-off. Snapshots: `apps/web/app-e2e/src/__snapshots__/`; report: `playwright-report/`.                                                                                                                                            |
+| Security    | `THEMIS_RUN_ID=RUN-197 node --experimental-strip-types scripts/retain-raw-corpus-scan.ts dist/test-results dist/apps dist/logs dist/queues dist/telemetry dist/evidence playwright-report apps/web/app-e2e/playwright-report apps/web/app-e2e/src/__snapshots__ artifacts .themis`; plus the prior security checks recorded in `RUN-196` | Raw corpus scan **PASS**: observed `filesScanned=777`, `findings=[]`, exit 0. Manifest: `dist/test-results/e2e-001-security/raw-corpus-scan.json`; checked-in copy: `docs/security/zk-014-raw-corpus-scan.json`. The manifest enumerates every artifact with surface, path, byte count, and SHA-256, and records absent-by-design PostgreSQL/S3 export surfaces. This closes the prior evidence-retention gap only; durable sync, zero-plaintext/tombstone, recovery, and release controls remain unresolved. |
+| Build       | `node --experimental-strip-types --test scripts/plan-fidelity.test.ts`; `pnpm exec prettier --check docs/security/zk-014-zero-knowledge-security-review.md`; `pnpm run release:gate`                                                                                                                                                     | Plan fidelity **PASS**, 5/5; report formatting **PASS**. Release gate **FAILED** (fail-closed output); expected tamper rejection remains a required PASS condition and is not relabeled as a validation failure. Artifacts: `dist/test-results/release/`; commands run in `RUN-184`. This report does not clear production release.                                                                                                                                                                           |
+
+The focused plan-fidelity check for this report contract is: `node --experimental-strip-types --test scripts/plan-fidelity.test.ts`. It must be rerun by the verifier after this artifact update; it does not override the unresolved security result.
+
+## Retained raw corpus scan (`RUN-197`)
+
+The complete pre-sanitization corpus was rescanned in `RUN-197` with the exact command shown in the Security matrix. The observed result was `PASS`, `filesScanned=777`, `findings=[]`, and exit code `0`. The manifest records the run ID, start and finish timestamps, command, every scanned artifact, surface membership, byte count, SHA-256 checksum, and explicit absent-by-design reasons for external PostgreSQL and S3 exports. Attach and inspect the exact paths, not a summary or count-only evidence:
+
+- `dist/test-results/e2e-001-security/raw-corpus-scan.json`
+- `docs/security/zk-014-raw-corpus-scan.json` (checked-in reviewer-visible copy)
+
+The functional app/API/gateway/unit/visual/build evidence is reused from `RUN-196`; this scan rerun addresses only the missing reviewer-visible raw corpus artifact and does not convert any unresolved security or release control into a pass.
+
+## Severity-ranked findings and closure gates
+
+The following findings preserve the approved severity model while reflecting the
+current disposition. Earlier proof-only wording is historical context and is
+not a current claim that these controls are absent or production-approved.
 
 ### CRITICAL-01 — Capability signatures are not verified
 
-**Evidence:** `libs/shared/src/lib/crypto/capability-policy.ts:60-73,89-114` checks only that `signature` is non-empty; it does not verify a signature, bind it to an issuer key, or validate issuance. Tests use `detached-signature` (`capability-policy.spec.ts:4-18`).
+**Evidence:** Accepted `SEC-001` evidence (`RUN-172` / `REVW-131`) verifies issuer-bound Ed25519 signatures, key rotation/revocation, expiry, replay, and fail-closed behavior. The production gate still requires durable custody and independently reviewed deployment configuration.
 
-**Reproduction:** construct a capability with `issuer: 'local-agent'`, a forged scope, arbitrary non-empty `signature`, and a matching request; `new CapabilityPolicy().evaluate(...)` returns `{ allowed: true }` without a private key or issuance authority.
+**Reproduction/closure check:** run the `SEC-001` signature and forged/replay negative suite and inspect the raw security report before sanitization; the accepted result is recorded in `RUN-172` security evidence.
 
-**Disposition:** release-blocking; remediate. Critical findings are not accepted risks.
+**Disposition:** implementation slice accepted by `SEC-001`; production release remains blocked until custody, rotation, and deployment provenance are independently approved. Critical findings are not accepted risks.
 
 ### CRITICAL-02 — Browser visibility transport has no authenticated local-agent handshake
 
-**Evidence:** `apps/web/app/src/app/shared/projects/local-agent-visibility.ts:27-35` calls fixed loopback HTTP and accepts typed JSON without session binding, origin-bound nonce, device proof, or response signature. The repository map leaves endpoint/authentication/packaging unresolved (`docs/architecture/system/zero-knowledge-repository-map.md:35-45`).
+**Evidence:** Accepted `SEC-001` evidence (`RUN-172` / `REVW-131`) covers origin/session/nonce/device binding, response proof, forged/replay rejection, and fail-closed gateway forwarding. `WEB-001` visibility evidence is accepted separately (`RUN-182` / `REVW-136`).
 
-**Reproduction:** any process answering the loopback request can return `LocalAgentProjectView`; the adapter maps it to success without cryptographic or session verification.
+**Reproduction/closure check:** run the accepted gateway/app negative cases for forged, replayed, unavailable, and origin/session-mismatched responses; retain the raw reports referenced by `RUN-172`.
 
-**Disposition:** release-blocking; remediate.
+**Disposition:** `SEC-001` control accepted; complete production sign-off remains withheld pending the unresolved sync, migration, and release gates below.
 
 ### HIGH-01 — Sync, device, session, and revocation state is process-local
 
-**Evidence:** `libs/shared/src/lib/crypto/opaque-sync.ts:13-18,79-81`, `device-identity.ts:51-57,259-261`, `local-agent-context.ts:14-17`, and `capability-policy.ts:81-83` keep authorization, cursor, replay, revocation, and audit state in memory.
+**Evidence:** `SYNC-001` remains unresolved. Its latest failed run (`RUN-181`) records blocked durable API restart configuration and MinIO bucket setup HTTP 403. Earlier passing summaries do not close this finding because the latest required durable-runtime evidence is failed.
 
-**Reproduction:** append/revoke state, discard the instance or restart, then create a new instance; the cursor, enrollment/revocation, session, and replay state are absent.
+**Reproduction/closure check:** run the real HTTP multi-user/device lifecycle and independent API restart fixture with `DATABASE_URL` and `OPAQUE_SYNC_S3_ENDPOINT` supplied from a redacted configuration source; verify restart, revocation, recovery, replay, tombstone, and tenant isolation.
 
-**Disposition:** release-blocking; remediate with durable transactional state and defined offline propagation.
+**Disposition:** release-blocking and unresolved under `SYNC-001`; keep the work item in progress until the failed prerequisites and complete lifecycle evidence are independently closed.
 
 ### HIGH-02 — MCP output classification cannot distinguish protected plaintext
 
-**Evidence:** `libs/shared/src/lib/crypto/mcp-boundary.ts:4-6,110-125` allows `public | internal | secret` and rejects only `secret`.
+**Evidence:** Accepted `SEC-001` evidence (`RUN-172` / `REVW-131`) adds protected-data classification and deny-by-default MCP/projection enforcement, with negative disclosure checks.
 
-**Reproduction:** return protected project text with `dataClass: 'internal'`; `McpBoundary.invoke` returns it for an otherwise valid capability.
+**Reproduction/closure check:** run the accepted protected-projection and disclosure-negative suite and inspect raw responses/logs; the accepted result is recorded in `RUN-172` security evidence.
 
-**Disposition:** release-blocking for MCP distribution; add protected-data classification and deny-by-default projection rules.
+**Disposition:** implementation slice accepted by `SEC-001`; durable audit and complete production release controls remain gates.
 
 ### HIGH-03 — External-AI approval is a broad boolean
 
-**Evidence:** `libs/shared/src/lib/crypto/execution-policy.ts:115-129` permits `protected-plaintext` using profile plus `consent`, without provider, fields, purpose, retention, or projection identity. ADR 004:79-81 requires those controls.
+**Evidence:** Accepted `SEC-001` evidence (`RUN-172` / `REVW-131`) requires named provider, projection, fields, purpose, retention, consent, and local output validation. No external provider was introduced.
 
-**Disposition:** release-blocking for external-AI use; require named provider, field projection, retention, consent record, and local output validation.
+**Disposition:** implementation slice accepted by `SEC-001`; external-AI remains default-deny and no provider integration is approved by this report.
 
 ### HIGH-04 — Recovery is unavailable and all-device key loss is unrecoverable
 
 **Evidence:** `LocalEncryptedVault.recover()` throws `VaultRecoveryBlockedError` (`libs/shared/src/lib/crypto/local-encrypted-vault.ts:150-152`); ADR 004:110-112 leaves recovery actors/quorum open.
 
-**Disposition:** accepted only for the proof; production-blocking until recovery actors, quorum, rotation, loss, and deletion are decided.
+**Disposition:** accepted only for the proof; production-blocking and assigned to `SYNC-001` (in progress). `SYNC-001` must produce approved recovery actors/quorum, key rotation, all-device-loss, deletion, and re-enrollment behavior with durable restart and stale-device evidence. `DEPLOY-001` must then verify the production configuration and rollback/recovery boundary. No recovery decision is accepted by this report.
 
 ### HIGH-05 — Legacy server-readable plaintext remains in durable columns
 
@@ -103,7 +129,7 @@ UNION ALL SELECT 'async_jobs.error_message', count(*) FROM async_jobs WHERE erro
 
 **Deletion/containment gate:** production release and migration closure are blocked until (a) all protected writers are frozen and the durable migration ledger is transactional, (b) an account/project-scoped inventory records zero protected values in these columns and in secondary queues, realtime payloads, logs, fixtures, and backups after the approved verification window, (c) deletion/tombstone evidence is independently reviewed without exposing values, and (d) the approved retention/deletion and recovery policy records the final exception handling. Until then, keep metadata-only reads, reject protected plaintext writes, quarantine malformed/unavailable rows, and treat every non-zero query result as a release-blocking finding. No deletion or product remediation is implemented by ZK-014.
 
-**Disposition:** release-blocking migration finding; remediation belongs to the migration/data owners, not this review item.
+**Disposition:** release-blocking migration finding. Closure is jointly mapped to `ZK-008` (destructive migration, writer freeze, ledger, tombstones, and redacted inventory), `SEC-001` (redaction, disclosure, and protected-data enforcement), `SYNC-001` (durable deletion/revocation/recovery propagation and non-resurrection), and `DEPLOY-001` (production migration, backup/restore, release provenance, and deployment configuration). Every protected location must have independently reviewed zero/absent-by-design evidence; any non-zero or unverified result remains blocking. This report implements none of those remediations.
 
 ### MEDIUM-01 — Migration ledger can be process-local
 
@@ -117,9 +143,30 @@ UNION ALL SELECT 'async_jobs.error_message', count(*) FROM async_jobs WHERE erro
 
 The opt-in in-memory `NonceReuseGuard` is not used by vault random-nonce writes (`crypto-proof-harness.ts:104-119`, `local-encrypted-vault.ts:154-181`). **Disposition:** remediate or approve a durable nonce-generation invariant before cryptography sign-off.
 
+## Concrete blocker-to-work-item disposition
+
+This actionable map addresses `REVW-137`; statuses are current Themis
+statuses, not claims that a dependency is complete.
+
+| Blocker/control                                                  | Concrete work item(s)                                                               | Current disposition                                                                                                                               |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CRITICAL-01 capability signatures/custody                        | `SEC-001` (done), `DEPLOY-001` (planned)                                            | Control proof accepted in `SEC-001`; production custody/provenance remains a deployment gate.                                                     |
+| CRITICAL-02 authenticated browser/local-agent handshake          | `SEC-001` (done), `SYNC-001` (in progress)                                          | Handshake slice accepted; durable sync/session/device propagation remains unresolved.                                                             |
+| HIGH-01 durable sync/device/session/revocation/audit             | `SYNC-001` (in progress), `DEPLOY-001` (planned)                                    | Release-blocking; latest restart and opaque-sync integration evidence failed in `RUN-181`.                                                        |
+| HIGH-02 protected MCP/projection classification                  | `SEC-001` (done)                                                                    | Accepted control slice; durable audit and production release controls remain open.                                                                |
+| HIGH-03 named external-AI projection/consent                     | `SEC-001` (done), `DEPLOY-001` (planned)                                            | Default-deny control accepted; no provider or production approval is granted.                                                                     |
+| HIGH-04 recovery, quorum, rotation, and all-device-loss          | `SYNC-001` (in progress), `DEPLOY-001` (planned)                                    | Unresolved production blocker; recovery is not accepted by this report.                                                                           |
+| HIGH-05 plaintext migration, tombstones, and secondary locations | `ZK-008` (done), `SEC-001` (done), `SYNC-001` (in progress), `DEPLOY-001` (planned) | Migration/control slices exist, but current durable sync evidence and independently reviewed production-like zero inventory are unresolved.       |
+| MEDIUM-01 durable migration ledger                               | `ZK-008` (done), `SYNC-001` (in progress)                                           | Proof exists; production durability/restart evidence remains tied to the failed sync gate.                                                        |
+| MEDIUM-02 runtime redaction and retention                        | `SEC-001` (done), `DEPLOY-001` (planned)                                            | Focused redaction proof accepted; deployment telemetry/retention approval remains open.                                                           |
+| MEDIUM-03 nonce/key lifecycle                                    | `SEC-001` (done), `DEPLOY-001` (planned)                                            | Focused invariant proof accepted; custody and production configuration remain release gates.                                                      |
+| RELEASE-01 dependency advisory disposition                       | `ZK-013` (done), `DEPLOY-001` (planned)                                             | Untriaged critical/high advisories require authorized triage, owner, deadline, and any approved time-bounded exception; no exception is recorded. |
+| RELEASE-02 provenance and production key custody                 | `ZK-013` (done), `DEPLOY-001` (planned)                                             | Release provenance, catalogue attestation, signing-key custody, and distribution/rollback evidence remain required and unapproved.                |
+| RELEASE-03 telemetry retention and runtime redaction             | `SEC-001` (done), `ZK-013` (done), `DEPLOY-001` (planned)                           | Focused redaction proof exists, but production telemetry retention and deployment evidence remain open.                                           |
+
 ## ZK-001 decisions and open items
 
-| ZK-001 decision/open item                                      | Evidence                                                    | Owner                               | Disposition at RUN-033                                                                                   |
+| ZK-001 decision/open item                                      | Evidence                                                    | Owner                               | Disposition at RUN-197                                                                                   |
 | -------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Local agent is root of trust; cloud is ciphertext orchestrator | ADR 004:7-11,21-30; ZK-006 opaque sync                      | Security architect / agent owner    | Adopted target; production proof blocked by HIGH-01/02 and legacy plaintext.                             |
 | Metadata visibility/minimization                               | ADR 004:49,56; ADR 005:44-46; migration:66-72               | Product + security owner            | Open: approve exact IDs, names, timestamps, sizes, status, labels, padding, and readers.                 |
@@ -179,23 +226,25 @@ The gate is fail-closed for malformed manifests, invalid signatures, catalogue f
 
 ## Control-by-control conclusion
 
-| Control                   | Result                         | Disposition                                                                                      |
-| ------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
-| Cloud plaintext authority | Partial pass / blocked         | New paths are metadata-only/opaque; legacy durable columns require HIGH-05 deletion gate.        |
-| Envelope/crypto proof     | Proof pass, production pending | Vectors pass; key custody, nonce lifecycle, and capability authentication open.                  |
-| Local vault               | Blocked                        | Recovery and production KDF/key custody absent.                                                  |
-| Sync/device/revocation    | Blocked                        | State is process-local; durable multi-instance and offline semantics absent.                     |
-| Migration                 | Blocked                        | Legacy values remain; deletion/tombstone evidence and durable ledger pending.                    |
-| Product visibility        | Blocked                        | Cloud fallback is avoided, but loopback handshake is unauthenticated.                            |
-| Capabilities/execution    | Blocked                        | Structural checks pass; signatures and bounded projections do not.                               |
-| External AI/MCP/broker    | Blocked                        | Default deny helps, but protected classification and projection controls are insufficient.       |
-| Telemetry/logging         | Blocked                        | Runtime redaction and retention are not proven/approved.                                         |
-| Release gate              | Blocked                        | Gate is wired and reproducible; audit, provenance, key, telemetry, and advisory blockers remain. |
+| Control                   | Result                              | Disposition                                                                                                                                                                                     |
+| ------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cloud plaintext authority | Partial pass / blocked              | New paths are metadata-only/opaque; legacy durable columns require HIGH-05 deletion gate.                                                                                                       |
+| Envelope/crypto proof     | Proof pass, production pending      | Vectors pass; key custody, nonce lifecycle, and capability authentication open.                                                                                                                 |
+| Local vault               | Blocked                             | Recovery and production KDF/key custody absent.                                                                                                                                                 |
+| Sync/device/revocation    | Failed / blocked                    | `SYNC-001` latest run `RUN-181` lacks durable API restart configuration and fails MinIO bucket setup with HTTP 403; durable lifecycle closure is unresolved.                                    |
+| Migration                 | Blocked                             | Legacy values remain; deletion/tombstone evidence and durable ledger pending.                                                                                                                   |
+| Product visibility        | Accepted slice / production pending | `WEB-001` read-only visibility is accepted by `RUN-182`; complete production release remains gated by sync and migration evidence.                                                              |
+| Capabilities/execution    | Accepted slice / production pending | `SEC-001` signature, handshake, protected classification, bounded policy, redaction, and nonce/key controls are accepted by `RUN-172`; provenance/custody and remaining release gates are open. |
+| External AI/MCP/broker    | Blocked                             | Default deny helps, but protected classification and projection controls are insufficient.                                                                                                      |
+| Telemetry/logging         | Blocked                             | Runtime redaction and retention are not proven/approved.                                                                                                                                        |
+| Release gate              | Blocked                             | Gate is wired and reproducible; audit, provenance, key, telemetry, and advisory blockers remain.                                                                                                |
 
 ## Sign-off and release gate
 
 **Production architecture: BLOCKED.** At minimum CRITICAL-01, CRITICAL-02, HIGH-01 through HIGH-05 require remediation or explicit owner decisions; critical findings are not eligible for accepted risk. Release provenance remains blocked by ADR 011's key-custody, catalogue, attestation, telemetry, and advisory-triage decisions.
 
-**Independent sign-off:** pending. This report deliberately makes no unsupported claim that independent review is complete or signed off. The prior `REVW-026` review rejection is the current independent-review record; a new independent reviewer must validate this rework before ZK-014 can be accepted.
+**Independent sign-off:** withheld. `SEC-001` (`REVW-131`) and `WEB-001` (`REVW-136`) are accepted slices, not ZK-014 production approval. ZK-014 requires a new independent review after `SYNC-001` and all release/migration blockers are closed; this run does not request or claim that sign-off.
 
-**Proof-milestone limitations:** process-local stores, placeholder capability signatures, unavailable recovery, fixture-only release keys, and legacy plaintext are documented incomplete controls, not production accepted risks. No remediations outside the ZK-014 review scope were implemented.
+**Proof-milestone limitations:** unresolved durable sync/restart and MinIO integration, recovery/revocation lifecycle closure, legacy plaintext/tombstone inventory, release provenance/key custody, telemetry retention, and advisory disposition remain incomplete controls, not accepted risks. No capability, sync, migration, recovery, UI, or deployment remediation was implemented by ZK-014; this run updates only the security report/disposition artifact.
+
+**Re-review entry point:** after `SYNC-001` supplies a successful independently reviewable durable API restart/integration run, rerun the complete eight-category matrix, refresh the zero-plaintext/tombstone and release-control evidence, and request independent ZK-014 review. Until then, production architecture and production sign-off remain withheld.

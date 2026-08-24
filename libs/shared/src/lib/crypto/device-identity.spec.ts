@@ -128,10 +128,12 @@ describe('DeviceIdentityStore', () => {
     const owner = store.createIdentity('account-a', 'owner-key', 'Owner', new Date(), 'workspace-a');
     const lost = store.createIdentity('account-a', 'lost-key');
     const replacement = store.createIdentity('account-a', 'replacement-key');
+    const quorum = store.createIdentity('account-a', 'quorum-key');
 
     store.approveWorkspace('account-a', 'workspace-a', owner.deviceId);
 
     store.enrollDevice('account-a', lost.deviceId, 'workspace-a', owner.deviceId, envelope(lost.deviceId));
+    store.enrollDevice('account-a', quorum.deviceId, 'workspace-a', owner.deviceId, envelope(quorum.deviceId));
     const recovered = store.recoverDevice(
       'account-a',
       lost.deviceId,
@@ -139,6 +141,8 @@ describe('DeviceIdentityStore', () => {
       'workspace-a',
       owner.deviceId,
       envelope(replacement.deviceId),
+      new Date(),
+      [owner.deviceId, quorum.deviceId],
     );
 
     expect(store.listDevices('account-a').find(({ deviceId }) => deviceId === lost.deviceId)?.status).toBe('revoked');

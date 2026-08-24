@@ -181,6 +181,7 @@ export class LocalEncryptedVault {
       authTag: Buffer.from(encrypted.authTag, 'hex').toString('base64url'),
     });
 
+    this.database.prepare('INSERT INTO vault_nonces (nonce) VALUES (?)').run(envelope.nonce);
     this.database
       .prepare('INSERT INTO vault_records (envelope_id, envelope) VALUES (?, ?)')
       .run(envelopeId, serializeEncryptedEnvelope(envelope));
@@ -199,9 +200,12 @@ export class LocalEncryptedVault {
     }
     try {
       const envelope = deserializeEncryptedEnvelope(row.envelope);
+      const nonce = Buffer.from(envelope.nonce, 'base64url');
+
+      if (nonce.length !== NONCE_BYTES) throw new Error('Invalid vault nonce length.');
       const plaintext = decryptAead(
         key,
-        Buffer.from(envelope.nonce, 'base64url'),
+        nonce,
         {
           ciphertext: Buffer.from(envelope.ciphertext, 'base64url').toString('hex'),
           authTag: Buffer.from(envelope.authTag, 'base64url').toString('hex'),
@@ -229,7 +233,8 @@ export class LocalEncryptedVault {
   private createSchema(): void {
     this.database.exec(
       'CREATE TABLE IF NOT EXISTS vault_meta (schema_version INTEGER NOT NULL, workspace_id TEXT NOT NULL, salt TEXT NOT NULL, wrapped_workspace_key TEXT NOT NULL);' +
-        'CREATE TABLE IF NOT EXISTS vault_records (envelope_id TEXT PRIMARY KEY NOT NULL, envelope TEXT NOT NULL);',
+        'CREATE TABLE IF NOT EXISTS vault_records (envelope_id TEXT PRIMARY KEY NOT NULL, envelope TEXT NOT NULL);' +
+        'CREATE TABLE IF NOT EXISTS vault_nonces (nonce TEXT PRIMARY KEY NOT NULL);',
     );
   }
 

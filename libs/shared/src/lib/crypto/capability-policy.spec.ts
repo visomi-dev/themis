@@ -1,6 +1,7 @@
 import { generateKeyPairSync } from 'node:crypto';
 
 import { CapabilityPolicy, signCapability, type Capability } from './capability-policy';
+import { CapabilityIssuerKeyRegistry, type IssuerKeyRecord } from './capability-issuer';
 
 const keys = generateKeyPairSync('ed25519');
 const publicKey = keys.publicKey.export({ type: 'spki', format: 'der' }).toString('base64url');
@@ -37,6 +38,33 @@ const request = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe('CapabilityPolicy', () => {
+  it('requires a registered, active issuer key when a registry is configured', () => {
+    const state: { keys: readonly IssuerKeyRecord[] } = {
+      keys: [],
+    };
+    const registry = new CapabilityIssuerKeyRegistry({
+      load: () => state.keys,
+      save: (keys) => {
+        state.keys = keys;
+      },
+    });
+
+    registry.register({
+      issuer: 'local-agent',
+      keyId: 'default',
+      publicKey,
+      status: 'active',
+      validFrom: '2026-08-18T00:00:00.000Z',
+    });
+    const policy = new CapabilityPolicy(undefined, registry);
+
+    expect(policy.evaluate(capability(), request())).toEqual({ allowed: true, capabilityId: 'cap-1' });
+    registry.revoke('local-agent', 'default');
+    expect(policy.evaluate(capability({ id: 'cap-2' }), request({ requestId: 'request-2' }))).toEqual({
+      allowed: false,
+      reason: 'malformed',
+    });
+  });
   it('allows an exact, audience-bound request', () => {
     expect(new CapabilityPolicy().evaluate(capability(), request())).toEqual({ allowed: true, capabilityId: 'cap-1' });
   });

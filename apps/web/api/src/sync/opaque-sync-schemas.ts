@@ -53,7 +53,8 @@ const deviceEnrollmentSchema = z.object({ approverDeviceId: z.string().min(1), e
 const deviceRecoverySchema = z.object({
   lostDeviceId: z.string().min(1),
   replacementDeviceId: z.string().min(1),
-  approverDeviceId: z.string().min(1),
+  approverDeviceIds: z.array(z.string().min(1)).min(2).max(5),
+  allDeviceLoss: z.boolean().default(false),
   envelope: encryptedEnvelopeSchema,
 });
 const deviceSyncQuerySchema = z.object({

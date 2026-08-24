@@ -1,80 +1,47 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
-import { mockAuthorizedProjectView } from '../support/projects';
 import { projectsRoute, signInUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
 
 test.describe('/app/projects/:projectId', () => {
-  test('can navigate to project detail after creating a project', async ({ page, request }) => {
+  async function openWorkspace(
+    page: Parameters<typeof authenticateViaApi>[0],
+    request: Parameters<typeof authenticateViaApi>[1],
+  ) {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto(projectsRoute);
+    const create = await page.request.post('/api/projects', { data: { name: 'Detail workspace fixture' } });
 
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Detail Test Project');
-    await mockAuthorizedProjectView(page, 'Detail Test Project');
-    await page.getByRole('button', { name: /Create project/i }).click();
+    expect(create.status()).toBe(201);
+    const projectId = ((await create.json()) as { data: { id: string } }).data.id;
 
-    await expect(page).toHaveURL(/\/app\/en\/projects\/[^/]+$/);
-    await expect(page.getByRole('heading', { name: 'Detail Test Project' })).toBeVisible({ timeout: 15000 });
+    await page.setExtraHTTPHeaders({ 'x-operational-workspace-state': 'visible' });
+    await page.goto(`/app/en/projects/${projectId}/workspace`);
+    await expect(page.getByRole('heading', { name: 'Detail workspace fixture' })).toBeVisible({ timeout: 15000 });
+  }
+
+  test('navigates to the read-only project workspace', async ({ page, request }) => {
+    await openWorkspace(page, request);
+    await expect(page.getByText('Read-only projection; mutations are not available.')).toBeVisible();
   });
 
-  test('shows project status and source type', async ({ page, request }) => {
-    const credentials = createCredentials();
-
-    await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto(projectsRoute);
-
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Metadata Project');
-    await mockAuthorizedProjectView(page, 'Metadata Project');
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await expect(page.getByText(/Active/i)).toBeVisible();
-    await expect(page.getByText(/manual/i)).toBeVisible();
+  test('shows project workspace state and denies mutation controls', async ({ page, request }) => {
+    await openWorkspace(page, request);
+    await expect(page.getByText('visible', { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /run|execute|save|approve|reject|create|transition/i })).toHaveCount(
+      0,
+    );
   });
 
-  test('shows documents section', async ({ page, request }) => {
-    const credentials = createCredentials();
-
-    await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto(projectsRoute);
-
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Doc Test Project');
-    await mockAuthorizedProjectView(page, 'Doc Test Project');
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await expect(page.getByRole('heading', { name: /Approved project visibility/i })).toBeVisible();
-  });
-
-  test('shows empty documents state when no documents exist', async ({ page, request }) => {
-    const credentials = createCredentials();
-
-    await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto(projectsRoute);
-
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('No Docs Project');
-    await mockAuthorizedProjectView(page, 'No Docs Project', false);
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await expect(page.getByText(/No approved context or activity is available/i)).toBeVisible();
+  test('renders protected empty workspace state safely', async ({ page, request }) => {
+    await openWorkspace(page, request);
+    await page.setExtraHTTPHeaders({ 'x-operational-workspace-state': 'empty' });
+    await page.reload();
+    await expect(page.getByText('empty', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Read-only projection; mutations are not available.')).toBeVisible();
   });
 
   test('sign out returns to sign-in', async ({ page, request }) => {
@@ -82,14 +49,6 @@ test.describe('/app/projects/:projectId', () => {
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
     await page.goto(projectsRoute);
-
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Sign Out Detail Project');
-    await mockAuthorizedProjectView(page, 'Sign Out Detail Project');
-    await page.getByRole('button', { name: /Create project/i }).click();
 
     await signOutViaMenu(page);
 

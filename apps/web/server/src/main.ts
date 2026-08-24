@@ -10,6 +10,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import { createGatewayApp } from './gateway';
 import { DurableReplayStore } from './durable-replay-store';
 import { createLocalAgentProxy, publicKeyFromPem } from './local-agent-proxy';
+import { resolveGatewayPort } from './runtime-config';
 
 import { createAuthRuntimeMiddleware, logger } from 'shared';
 
@@ -38,7 +39,7 @@ type AngularHandler = RequestHandler & {
   upgrade?: UpgradeHandler;
 };
 
-const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
+const port = resolveGatewayPort();
 
 const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
 const localAgentUrl = process.env.LOCAL_AGENT_URL ?? 'http://localhost:4317';
@@ -102,14 +103,32 @@ function startWorkerRuntime() {
 }
 
 function shutdown() {
+  if (shuttingDown) return;
   shuttingDown = true;
+  const exit = () => process.exit(0);
+  const timer = setTimeout(exit, 10_000);
+
+  timer.unref();
+
+  let serverClosed = !httpServer;
+  let workerClosed = !workerProcess || workerProcess.exitCode !== null;
+  const finish = () => {
+    if (serverClosed && workerClosed) {
+      clearTimeout(timer);
+      exit();
+    }
+  };
+
+  workerProcess?.once('exit', () => {
+    workerClosed = true;
+    finish();
+  });
   workerProcess?.kill('SIGTERM');
-
-  if (!httpServer) {
-    process.exit(0);
-  }
-
-  httpServer.close(() => process.exit(0));
+  httpServer?.close(() => {
+    serverClosed = true;
+    finish();
+  });
+  finish();
 }
 
 function failBootstrap(error: unknown): void {
@@ -175,6 +194,7 @@ async function loadAngularHandler(): Promise<AngularHandler> {
 }
 
 async function bootstrap() {
+  const readiness = { ready: false };
   const [apiHandler, angularHandler, astroRequestHandler, attachRealtimeServer] = await Promise.all([
     loadApiApp(),
     loadAngularHandler(),
@@ -206,6 +226,9 @@ async function bootstrap() {
         },
     localAgentFixtureControl:
       process.env.ENABLE_TEST_API === 'true' ? createLocalAgentFixtureControl(localAgentTarget) : undefined,
+    readiness: {
+      isReady: () => readiness.ready,
+    },
   });
 
   httpServer = app.listen(port, host, () => {
@@ -221,6 +244,7 @@ async function bootstrap() {
   }
 
   await attachRealtimeServer(httpServer);
+  readiness.ready = true;
 }
 
 process.on('SIGINT', shutdown);

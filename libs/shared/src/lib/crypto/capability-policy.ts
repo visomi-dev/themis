@@ -1,3 +1,7 @@
+import { createPublicKey, sign, verify, type KeyObject } from 'node:crypto';
+
+import type { CapabilityIssuerKeyRegistry } from './capability-issuer';
+
 export type CapabilityAudience = 'local-agent' | `mcp:${string}`;
 
 export type CapabilityAction = 'read' | 'write' | 'execute' | 'use-secret' | 'delegate';
@@ -24,6 +28,7 @@ export type Capability = {
   delegable: boolean;
   signature: string;
   issuerPublicKey?: string;
+  issuerKeyId?: string;
 };
 
 export type CapabilityRequest = {
@@ -62,8 +67,13 @@ function capabilityPayload(capability: Capability): string {
   return JSON.stringify(unsigned);
 }
 
-export function signCapability(capability: Capability, privateKey: KeyObject, issuerPublicKey: string): Capability {
-  const unsigned = { ...capability, issuerPublicKey, signature: '' };
+export function signCapability(
+  capability: Capability,
+  privateKey: KeyObject,
+  issuerPublicKey: string,
+  issuerKeyId = 'default',
+): Capability {
+  const unsigned = { ...capability, issuerKeyId, issuerPublicKey, signature: '' };
 
   return {
     ...unsigned,
@@ -78,22 +88,39 @@ const sameScope = (capability: CapabilityScope, request: CapabilityScope): boole
   capability.resourceId === request.resourceId &&
   capability.action === request.action;
 
-const isCapability = (value: Capability): boolean =>
-  value.format === 'themis.capability' &&
-  value.version === 1 &&
-  value.issuer === 'local-agent' &&
-  value.id.length > 0 &&
-  value.subject.length > 0 &&
-  value.audience.length > 0 &&
-  value.purpose.length > 0 &&
-  value.signature.length > 0 &&
-  typeof value.issuerPublicKey === 'string' &&
-  value.issuerPublicKey.length > 0 &&
-  !Number.isNaN(Date.parse(value.issuedAt)) &&
-  !Number.isNaN(Date.parse(value.expiresAt)) &&
-  Date.parse(value.expiresAt) > Date.parse(value.issuedAt) &&
-  value.scope.accountId.length > 0 &&
-  value.scope.workspaceId.length > 0;
+function isCapability(value: unknown): value is Capability {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Partial<Capability>;
+  const scope = candidate.scope;
+
+  return (
+    candidate.format === 'themis.capability' &&
+    candidate.version === 1 &&
+    candidate.issuer === 'local-agent' &&
+    typeof candidate.id === 'string' &&
+    candidate.id.length > 0 &&
+    typeof candidate.subject === 'string' &&
+    candidate.subject.length > 0 &&
+    typeof candidate.audience === 'string' &&
+    candidate.audience.length > 0 &&
+    typeof candidate.purpose === 'string' &&
+    candidate.purpose.length > 0 &&
+    typeof candidate.signature === 'string' &&
+    candidate.signature.length > 0 &&
+    typeof candidate.issuerPublicKey === 'string' &&
+    candidate.issuerPublicKey.length > 0 &&
+    typeof candidate.issuedAt === 'string' &&
+    typeof candidate.expiresAt === 'string' &&
+    !Number.isNaN(Date.parse(candidate.issuedAt)) &&
+    !Number.isNaN(Date.parse(candidate.expiresAt)) &&
+    Date.parse(candidate.expiresAt) > Date.parse(candidate.issuedAt) &&
+    !!scope &&
+    typeof scope.accountId === 'string' &&
+    typeof scope.workspaceId === 'string' &&
+    scope.accountId.length > 0 &&
+    scope.workspaceId.length > 0
+  );
+}
 
 /**
  * Evaluates already-issued capabilities at the local trust boundary.
@@ -105,7 +132,10 @@ export class CapabilityPolicy {
   private readonly revoked: Set<string>;
   private readonly requests: Set<string>;
 
-  public constructor(private readonly persistence?: CapabilityStatePersistence) {
+  public constructor(
+    private readonly persistence?: CapabilityStatePersistence,
+    private readonly issuerKeys?: CapabilityIssuerKeyRegistry,
+  ) {
     const state = persistence?.load();
 
     this.revoked = new Set(state?.revoked ?? []);
@@ -127,6 +157,13 @@ export class CapabilityPolicy {
     let signatureValid: boolean;
 
     try {
+      const registeredKey = this.issuerKeys?.resolve(
+        capability.issuer,
+        capability.issuerKeyId ?? 'default',
+        request.at,
+      );
+
+      if (this.issuerKeys && !registeredKey) return { allowed: false, reason: 'malformed' };
       signatureValid = verify(
         null,
         Buffer.from(capabilityPayload(capability)),
@@ -137,6 +174,14 @@ export class CapabilityPolicy {
         }),
         Buffer.from(capability.signature, 'base64url'),
       );
+      if (registeredKey) {
+        signatureValid = verify(
+          null,
+          Buffer.from(capabilityPayload(capability)),
+          registeredKey,
+          Buffer.from(capability.signature, 'base64url'),
+        );
+      }
     } catch {
       signatureValid = false;
     }
@@ -168,4 +213,3 @@ export class CapabilityPolicy {
     return { allowed: true, capabilityId: capability.id };
   }
 }
-import { createPublicKey, sign, verify, type KeyObject } from 'node:crypto';

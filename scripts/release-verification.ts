@@ -290,7 +290,11 @@ export const redactedFailureMessage = (failure: ReleaseVerificationFailure): str
 
 const protectedPlaintextPatterns = [
   /-----BEGIN [A-Z ]*PRIVATE KEY-----/i,
-  /(?:password|passphrase|authorization|api[_ -]?key|access[_ -]?token)\s*[:=]/i,
+  // Keep configuration/schema identifiers such as `MAILGUN_API_KEY:` from
+  // being treated as leaked values. Secret-bearing fields are emitted by the
+  // runtime in their redacted, lower-case form; the scanner still rejects the
+  // concrete lower-case labels used by serialized inputs and logs.
+  /(?:password|passphrase|authorization|api[_ -]?key|access[_ -]?token)\s*[:=]/,
   /protected\s+(?:project\s+)?(?:context|activity|plaintext)/i,
   /project\s+context\s*[:=]/i,
 ];

@@ -335,6 +335,48 @@ const encryptedContextTombstones = pgTable(
   ],
 );
 
+const syncDevices = pgTable('sync_devices', {
+  deviceId: text('device_id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
+  publicKey: text('public_key').notNull(),
+  fingerprint: text('fingerprint').notNull(),
+  label: text('label').notNull(),
+  status: text('status').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  revokedAt: timestamp('revoked_at', { withTimezone: true }),
+});
+const syncWorkspaceVersions = pgTable('sync_workspace_versions', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  version: integer('version').notNull().default(0),
+});
+const syncWorkspaceApprovals = pgTable('sync_workspace_approvals', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  approvedAt: timestamp('approved_at', { withTimezone: true }).notNull(),
+});
+const syncDeviceGrants = pgTable('sync_device_grants', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  enrollmentVersion: integer('enrollment_version').notNull(),
+  objectKey: text('object_key').notNull(),
+  ciphertextSha256: text('ciphertext_sha256').notNull(),
+  enrolledAt: timestamp('enrolled_at', { withTimezone: true }).notNull(),
+  revokedAt: timestamp('revoked_at', { withTimezone: true }),
+});
+const syncDeviceAudit = pgTable('sync_device_audit', {
+  id: integer('id').primaryKey(),
+  accountId: text('account_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  kind: text('kind').notNull(),
+  workspaceId: text('workspace_id'),
+  at: timestamp('at', { withTimezone: true }).notNull(),
+});
+
 export {
   accounts,
   accountMemberships,
@@ -354,4 +396,9 @@ export {
   opaqueSyncTombstones,
   encryptedContextMetadata,
   encryptedContextTombstones,
+  syncDevices,
+  syncWorkspaceVersions,
+  syncWorkspaceApprovals,
+  syncDeviceGrants,
+  syncDeviceAudit,
 };
