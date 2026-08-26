@@ -94,10 +94,16 @@ const migrate = command({
     dryRun: boolean('dry-run').desc('Plan without writing stores').default(false),
     resume: boolean().desc('Resume an interrupted migration').default(false),
     cutover: boolean().desc('Activate project stores as the write authority').default(true),
+    targetProject: string().desc('Retarget a single local project during migration').default(''),
   },
   handler: (options) =>
     print(
-      migrateProjectStores(options.root, { dryRun: options.dryRun, resume: options.resume, cutover: options.cutover }),
+      migrateProjectStores(options.root, {
+        dryRun: options.dryRun,
+        resume: options.resume,
+        cutover: options.cutover,
+        targetProjectId: options.targetProject || undefined,
+      }),
       options.json,
     ),
 });

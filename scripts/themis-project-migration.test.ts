@@ -246,6 +246,22 @@ describe('project-scoped Themis migration', () => {
     assert.deepEqual(loadProjectStore(root, 'PRJ-A').state, readProjectState(root, 'PRJ-A'));
   });
 
+  it('retargets a single-project store while preserving domain identities', () => {
+    const root = fixture();
+    const item = makeProject(root, 'agent-tracking');
+
+    const report = migrateProjectStores(root, { targetProjectId: 'core' });
+
+    assert.deepEqual(report.projectIds, ['core']);
+    const store = loadProjectStore(root, 'core');
+    assert.equal(store.state.projects[0]?.id, 'core');
+    assert.equal(store.state.workItems[0]?.id, item.id);
+    assert.equal(store.state.workItems[0]?.projectId, 'core');
+    assert.equal(store.events[0]?.aggregateId, 'core');
+    assert.equal(store.events[0]?.payload.projectId, 'core');
+    assert.throws(() => loadProjectStore(root, 'agent-tracking'));
+  });
+
   it('isolates a corrupt project store and rejects stale global replay', () => {
     const root = fixture();
     const item = makeProject(root, 'PRJ-HEALTHY');

@@ -4,9 +4,9 @@
   "sourceChecksum": "83477f5c999034056267b085581bac53fa25717b58546436b5a7aface9a2eeb0",
   "phase": "cutover",
   "projects": {
-    "agent-tracking": "migrated"
+    "core": "migrated"
   },
-  "quarantinedEvents": 11,
+  "quarantinedEvents": 13,
   "backupId": "migration-migration-83477f5c9990",
   "generation": 1
 }

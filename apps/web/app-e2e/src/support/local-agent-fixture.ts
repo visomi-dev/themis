@@ -1,4 +1,4 @@
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { createPrivateKey, sign } from 'node:crypto';
 
@@ -59,7 +59,53 @@ function projectId(request: IncomingMessage): string {
   return new URL(request.url ?? '/', 'http://localhost').pathname.split('/').pop() ?? '';
 }
 
-export type LocalAgentFixtureOptions = Readonly<{ port?: number; logPath?: string; dynamicScope?: boolean }>;
+export type LocalAgentFixtureOptions = Readonly<{
+  port?: number;
+  logPath?: string;
+  dynamicScope?: boolean;
+  themisStatePath?: string;
+}>;
+
+type ThemisState = Readonly<{
+  projects: readonly Readonly<{ id: string; name: string; status: string }>[];
+  epics: readonly Readonly<{ id: string; title: string; status: string }>[];
+  workItems: readonly Readonly<{ id: string; title: string; status: string }>[];
+}>;
+
+function readThemisProjection(statePath: string, workspaceId: string): typeof projection {
+  const state = JSON.parse(readFileSync(statePath, 'utf8')) as ThemisState;
+  const work = state.workItems.slice(0, 8).map((item, index) => ({
+    id: item.id,
+    title: item.title,
+    status:
+      item.status === 'done' ? 'done' : item.status === 'in_progress' || item.status === 'claimed' ? 'doing' : 'todo',
+    position: index + 1,
+  }));
+  const planning = state.epics.slice(0, 8).map((item) => ({
+    id: item.id,
+    title: item.title,
+    horizon: item.status === 'in_progress' ? 'now' : item.status === 'planned' ? 'next' : 'later',
+  }));
+  const completed = state.workItems.filter((item) => item.status === 'done').length;
+
+  return {
+    tenantId: '',
+    workspaceId,
+    revision: state.workItems.length + state.epics.length,
+    updatedAt: new Date().toISOString(),
+    tombstones: [],
+    work,
+    planning,
+    progress: [
+      {
+        id: 'themis-progress',
+        label: state.projects[0]?.name ?? 'Themis state',
+        percent: state.workItems.length === 0 ? 0 : Math.round((completed / state.workItems.length) * 100),
+        updatedAt: new Date().toISOString(),
+      },
+    ],
+  };
+}
 
 function handle(request: IncomingMessage, response: ServerResponse, options: LocalAgentFixtureOptions = {}): void {
   const path = new URL(request.url ?? '/', 'http://localhost').pathname;
@@ -151,9 +197,14 @@ function handle(request: IncomingMessage, response: ServerResponse, options: Loc
   }
 
   const selectedProjection = syncPhase === 'offline' ? syncProjection : syncProjections[syncPhase];
-  const scopedProjection = options.dynamicScope
-    ? { ...selectedProjection, tenantId: '', workspaceId: projectId(request) }
+  const stateProjection = options.themisStatePath
+    ? readThemisProjection(options.themisStatePath, projectId(request))
     : selectedProjection;
+  const scopedProjection = options.themisStatePath
+    ? stateProjection
+    : options.dynamicScope
+      ? { ...selectedProjection, tenantId: '', workspaceId: projectId(request) }
+      : selectedProjection;
 
   record('bridge.welcome', { state: 'ready', capabilities: ['projection'], phase: syncPhase });
 

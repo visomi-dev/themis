@@ -1,0 +1,14 @@
+[
+  {
+    "step": "session-before-verification",
+    "method": "GET",
+    "path": "/api/auth/session",
+    "status": 401
+  },
+  {
+    "step": "session-after-verification",
+    "method": "GET",
+    "path": "/api/auth/session",
+    "status": 200
+  }
+]

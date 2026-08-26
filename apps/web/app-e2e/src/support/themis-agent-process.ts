@@ -1,4 +1,7 @@
 import { mkdirSync } from 'node:fs';
+import path from 'node:path';
+
+import { workspaceRoot } from '@nx/devkit';
 
 import { startLocalAgentFixture } from './local-agent-fixture.ts';
 
@@ -7,7 +10,13 @@ const logPath = process.env['LOCAL_AGENT_PROCESS_LOG'];
 
 if (logPath) mkdirSync(logPath.slice(0, logPath.lastIndexOf('/')), { recursive: true });
 
-const server = await startLocalAgentFixture({ port, logPath, dynamicScope: true });
+const server = await startLocalAgentFixture({
+  port,
+  logPath,
+  dynamicScope: true,
+  themisStatePath:
+    process.env['THEMIS_PROJECT_STATE_PATH'] ?? path.join(workspaceRoot, '.themis/projects/core/state.json'),
+});
 
 process.stdout.write(`${JSON.stringify({ event: 'process.started', pid: process.pid, port })}\n`);
 

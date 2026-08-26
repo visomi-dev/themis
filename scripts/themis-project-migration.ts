@@ -112,6 +112,24 @@ const readGlobal = (root: string): { state: ThemisState; events: ThemisEvent[]; 
   };
 };
 
+const retargetProject = (
+  state: ThemisState,
+  events: ThemisEvent[],
+  sourceProjectId: string,
+  targetProjectId: string,
+): { state: ThemisState; events: ThemisEvent[] } => {
+  const replace = (value: unknown): unknown => (value === sourceProjectId ? targetProjectId : value);
+  const nextState = JSON.parse(
+    JSON.stringify(state).replaceAll(`"${sourceProjectId}"`, `"${targetProjectId}"`),
+  ) as ThemisState;
+  const nextEvents = events.map((event) => ({
+    ...event,
+    aggregateId: event.aggregateId === sourceProjectId ? targetProjectId : event.aggregateId,
+    payload: Object.fromEntries(Object.entries(event.payload).map(([key, value]) => [key, replace(value)])),
+  }));
+  return { state: nextState, events: nextEvents };
+};
+
 const idsForProject = (state: ThemisState, projectId: string): Set<string> => {
   const ids = new Set<string>([projectId]);
   state.epics.filter((entry) => entry.projectId === projectId).forEach((entry) => ids.add(entry.id));
@@ -400,8 +418,11 @@ const validateProjectStore = (root: string, projectId: string): DomainManifest =
 };
 
 const synchronizeProjectStore = (root: string, projectId: string): DomainManifest => {
+  const cutover = migrationPaths(root).cutover;
+  if (existsSync(cutover)) return validateProjectStore(root, projectId);
   const { state, events, sourceChecksum } = readGlobal(root);
-  const existing = readLedger(root);
+  const recorded = readLedger(root);
+  const existing = recorded?.phase === 'rolled-back' ? undefined : recorded;
   if (existing?.phase === 'cutover' && existing.sourceChecksum !== sourceChecksum)
     throw new Error('Stale global state replay rejected after project-store cutover');
   const project = state.projects.find((entry) => entry.id === projectId);
@@ -468,10 +489,18 @@ const migrateProjectStores = (
     resume?: boolean;
     cutover?: boolean;
     migrationId?: string;
+    targetProjectId?: string;
     failAfterProject?: string;
   } = {},
 ): MigrationReport => {
-  const { state, events, sourceChecksum } = readGlobal(root);
+  const global = readGlobal(root);
+  const sourceProjectId = global.state.projects[0]?.id;
+  const targeted =
+    options.targetProjectId && sourceProjectId && options.targetProjectId !== sourceProjectId
+      ? retargetProject(global.state, global.events, sourceProjectId, options.targetProjectId)
+      : { state: global.state, events: global.events };
+  const { state, events } = targeted;
+  const sourceChecksum = global.sourceChecksum;
   const projectIds = state.projects.map((project) => project.id);
   const assignments = recordAssignment(state);
   const ids = new Map<string, string>();
@@ -488,6 +517,28 @@ const migrateProjectStores = (
     eventGroups.set(projectId, group);
     return false;
   });
+  for (const [projectId, group] of eventGroups) {
+    const projectStateValue = projectState(state, projectId);
+    const ids = new Set<string>([
+      projectId,
+      ...Object.values(projectStateValue).flatMap((value) =>
+        Array.isArray(value)
+          ? value.flatMap((entry) => {
+              const candidate = entry as Record<string, unknown>;
+              return typeof candidate.id === 'string' ? [candidate.id] : [];
+            })
+          : [],
+      ),
+    ]);
+    const valid = group.filter((event) => {
+      const references = Object.entries(event.payload)
+        .filter(([key]) => key === 'id' || key.endsWith('Id') || key === 'from' || key === 'to')
+        .map(([, value]) => value);
+      return [event.aggregateId, ...references].every((value) => typeof value !== 'string' || ids.has(value));
+    });
+    eventGroups.set(projectId, valid);
+    quarantined.push(...group.filter((event) => !valid.includes(event)));
+  }
   const quarantinedRecords: Array<{ kind: string; id: string; record: unknown }> = [];
   const quarantineKeys = new Set<string>();
   const quarantine = (kind: string, id: string, record: unknown): void => {
@@ -516,7 +567,8 @@ const migrateProjectStores = (
   ];
   for (const [kind, id, record] of inventory)
     if (!assignments.get(`${kind}:${id}`)?.projectId) quarantine(kind, id, record);
-  const existing = readLedger(root);
+  const migrationRecord = readLedger(root);
+  const existing = migrationRecord?.phase === 'rolled-back' ? undefined : migrationRecord;
   if (existing && existing.sourceChecksum !== sourceChecksum && existing.phase === 'cutover') {
     throw new Error('Stale global state replay rejected after project-store cutover');
   }
@@ -579,6 +631,8 @@ const migrateProjectStores = (
     const project = state.projects.find((entry) => entry.id === projectId);
     if (project) registry.register(projectId, project.name, root);
   }
+  if (options.targetProjectId && sourceProjectId && options.targetProjectId !== sourceProjectId)
+    if (registry.list(true).some((entry) => entry.projectId === sourceProjectId)) registry.remove(sourceProjectId);
   atomicWrite(join(locations.logs, `${migrationId}.json`), {
     schemaVersion: 1,
     migrationId,

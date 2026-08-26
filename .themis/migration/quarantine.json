@@ -154,6 +154,35 @@
         "removedSprintEvidence": 4,
         "resetPlannedWorkItems": []
       }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 25,
+      "timestamp": "2026-08-17T03:51:06.971Z",
+      "actor": "agent:themis-planner",
+      "type": "sprint.proposed",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "revisionId": "REV-001",
+        "version": 1
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 167,
+      "timestamp": "2026-08-17T22:39:59.334Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.closed",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "projectId": "core",
+        "sprintId": "agent-tracking-2026-08",
+        "revisionId": "REV-002",
+        "status": "closed"
+      }
     }
   ],
   "records": []

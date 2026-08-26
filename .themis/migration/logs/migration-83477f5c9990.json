@@ -3,6 +3,6 @@
   "migrationId": "migration-83477f5c9990",
   "phase": "cutover",
   "projectCount": 1,
-  "quarantinedEventCount": 11,
+  "quarantinedEventCount": 13,
   "writesFenced": true
 }

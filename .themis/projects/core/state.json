@@ -1,8 +1,9 @@
 {
   "schemaVersion": 2,
+  "projectId": "core",
   "projects": [
     {
-      "id": "agent-tracking",
+      "id": "core",
       "name": "Agent Tracking",
       "summary": "Enable Themis to sync agent-side activation and project foundation with the web app, while making agent effort, progress, activity, and durable project context visible across authorized tenants.",
       "status": "active",
@@ -12,7 +13,7 @@
   "epics": [
     {
       "id": "agent-sync-foundation",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Agent Sync Foundation",
       "summary": "Establish the authorized API and runtime foundation for syncing agent-side activation and project foundation with the web app.",
       "goal": "A tenant-safe foundation exists for bidirectional agent/web synchronization without coupling the product to external tracking systems.",
@@ -21,7 +22,7 @@
     },
     {
       "id": "agent-activity-progress",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Agent Activity and Progress",
       "summary": "Make agent effort, progress, and activity visible in the product through a small vertical read/write experience.",
       "goal": "Users can understand what agents are doing and how work is progressing from the web app.",
@@ -30,7 +31,7 @@
     },
     {
       "id": "durable-project-context",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Durable Project Context",
       "summary": "Make project context established by agents durable and visible to authorized web users.",
       "goal": "Agent-established project context can be retained, retrieved, and understood as part of the product foundation.",
@@ -39,7 +40,7 @@
     },
     {
       "id": "zk-trust-foundation",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Zero-Knowledge Trust and Data Foundation",
       "summary": "Define the zero-knowledge trust model, data classification, repository seams, and versioned cryptographic envelope contracts that constrain all later implementation.",
       "goal": "The architecture has an agreed local root of trust and testable contracts proving that cloud services orchestrate ciphertext rather than hold plaintext authority.",
@@ -48,7 +49,7 @@
     },
     {
       "id": "local-agent-vault",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Local Agent Root of Trust and Vault",
       "summary": "Build the themis-agent local encrypted storage and key hierarchy needed for local-first project context, credentials, and execution state.",
       "goal": "A local agent can securely lock, unlock, recover, and use encrypted project data without making the cloud a plaintext authority.",
@@ -57,7 +58,7 @@
     },
     {
       "id": "opaque-sync-device-security",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Opaque Sync and Device Security",
       "summary": "Synchronize encrypted envelopes through an opaque cloud orchestrator while supporting device identity, enrollment, revocation, and client-side conflict handling.",
       "goal": "Authorized devices can exchange ciphertext safely and resolve state locally without server-readable project content.",
@@ -66,7 +67,7 @@
     },
     {
       "id": "encrypted-product-migration",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Encrypted Product Context and Visibility Migration",
       "summary": "Migrate server-readable project context and activity toward encrypted local-agent ownership, then expose approved product visibility through local-agent-mediated reads.",
       "goal": "The authenticated Angular product shows authorized encrypted state without preserving server-readable context or activity as the end state.",
@@ -75,7 +76,7 @@
     },
     {
       "id": "capability-secure-execution",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Capability Security and Trusted Execution",
       "summary": "Define scoped sharing, capability-based access, MCP and secret-broker boundaries, local execution, and explicit external-AI trust profiles.",
       "goal": "Agents and tools can act locally under explicit capabilities and trust policies without turning broad credentials or external AI into implicit authority.",
@@ -84,7 +85,7 @@
     },
     {
       "id": "release-security-assurance",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Release Supply Chain and Security Assurance",
       "summary": "Harden signed releases, dependency and supply-chain review, threat-model verification, and security review for the zero-knowledge architecture.",
       "goal": "The shipped agent and services can be trusted through reproducible release controls and independent security validation.",
@@ -93,7 +94,7 @@
     },
     {
       "id": "account-webauthn-passkeys",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Account WebAuthn and Passkey Authentication",
       "summary": "Deliver account-level WebAuthn/passkey registration and authentication with mandatory email verification, multiple passkeys, and password fallback only after retry or explicit selection.",
       "goal": "Users can register and sign in with passkeys by default while account identity, email verification/PIN, fallback behavior, session integration, and security boundaries remain explicit and distinct from PRF vault unlock and metadata APIs.",
@@ -102,7 +103,7 @@
     },
     {
       "id": "operational-workspace-visualization",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Operational Workspace Visualization",
       "summary": "Replace the authenticated Angular Projects and Dashboard surfaces with a calm, read-only operational workspace for developers and operators.",
       "goal": "Authorized users can understand project identity, attention, active outcome-grouped work, validation and review confidence, and activity without KPI grids, ticket-heavy workflows, mandatory sprints, or cloud plaintext authority.",
@@ -111,7 +112,7 @@
     },
     {
       "id": "themis-planning-fidelity",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Themis Planning Fidelity",
       "summary": "Preserve approved coordinator plans through planner decomposition and complete Themis work-item contracts without losing UX research, flows, evaluation, or human-readable operational semantics.",
       "goal": "Coordinator, planner, and work-item/validation guidance produce auditable, phase-complete work items whose traceability, scope changes, and validation matrices remain explicit.",
@@ -120,7 +121,7 @@
     },
     {
       "id": "project-scoped-zero-trust-sync",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Project-Scoped Zero-Trust Themis Synchronization",
       "summary": "Partition the local and cloud Themis workflow by project and synchronize encrypted project-scoped state from local agents or skills through MCP/direct API to opaque cloud transport, then notify authorized web/native clients to decrypt and materialize local read models.",
       "goal": "Each Themis project scales and synchronizes independently: local agents remain the plaintext authority, cloud services authorize and relay ciphertext only, and connected clients receive project-scoped changes in real time for local ingestion and read-only visualization.",
@@ -131,7 +132,7 @@
   "workItems": [
     {
       "id": "AT-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "agent-sync-foundation",
       "title": "Define the tenant-safe agent sync contract",
       "summary": "Establish the smallest documented contract and authorization boundary for agent-side activation/project foundation updates and web reads, so later slices share stable semantics without introducing external tracker integrations.",
@@ -159,7 +160,7 @@
     },
     {
       "id": "AT-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "agent-sync-foundation",
       "title": "Sync agent activation and project foundation",
       "summary": "Deliver a vertical write path from the agent side through the existing API/runtime boundaries into PostgreSQL-backed project foundation state, with tenant-safe authorization and a response the agent can use to confirm synchronization.",
@@ -185,7 +186,7 @@
     },
     {
       "id": "AT-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "durable-project-context",
       "title": "Persist and retrieve durable project context",
       "summary": "Make the project context established during agent activation durable and retrievable as a coherent foundation for the web app, while keeping the first version intentionally small and tenant-safe.",
@@ -215,7 +216,7 @@
     },
     {
       "id": "AT-004",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "durable-project-context",
       "title": "Show project foundation in the product app",
       "summary": "Give authorized product users a focused Angular view of the synchronized project foundation and durable context, completing the first agent-to-web visibility slice.",
@@ -245,7 +246,7 @@
     },
     {
       "id": "AT-005",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "agent-activity-progress",
       "title": "Capture agent effort and progress activity",
       "summary": "Record the minimum agent activity and progress signals needed to explain work effort in the product, using existing runtime boundaries and durable storage patterns.",
@@ -275,7 +276,7 @@
     },
     {
       "id": "AT-006",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "agent-activity-progress",
       "title": "Show agent activity and progress",
       "summary": "Expose a focused product-app activity and progress view so users can understand current agent effort and recent work without introducing a full tracking system.",
@@ -305,7 +306,7 @@
     },
     {
       "id": "ZK-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "zk-trust-foundation",
       "title": "Establish Phase 0 trust model and data classification",
       "summary": "Produce the confirmed zero-knowledge threat model and classify every current and planned data flow by plaintext authority, ciphertext custody, trust boundary, retention, and recovery responsibility.",
@@ -342,7 +343,7 @@
     },
     {
       "id": "ZK-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "zk-trust-foundation",
       "title": "Map repository seams for the zero-knowledge migration",
       "summary": "Map the starter repository's Astro, Angular, agent/runtime, API, persistence, and test seams so implementation lands in the right boundaries without treating existing server-readable flows as architecture.",
@@ -379,7 +380,7 @@
     },
     {
       "id": "ZK-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "zk-trust-foundation",
       "title": "Define canonical versioned encrypted envelope contract",
       "summary": "Specify the canonical, versioned envelope and serialization contract for local encrypted data and opaque synchronization, leaving algorithm choices and metadata exposure explicit where unconfirmed.",
@@ -412,7 +413,7 @@
     },
     {
       "id": "ZK-004",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "zk-trust-foundation",
       "title": "Prove cryptographic primitives with test vectors",
       "summary": "Validate the selected AEAD and key-derivation/key-wrapping design with reproducible test vectors before production vault implementation, keeping algorithm decisions tied to the approved threat model.",
@@ -449,7 +450,7 @@
     },
     {
       "id": "ZK-005",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "local-agent-vault",
       "title": "Build the local themis-agent encrypted vault proof",
       "summary": "Implement the smallest local encrypted SQLite/envelope proof with VMK and workspace-key hierarchy plus lock, unlock, and recovery behavior, using the approved contracts rather than cloud persistence.",
@@ -487,7 +488,7 @@
     },
     {
       "id": "ZK-006",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Implement opaque append-only ciphertext synchronization",
       "summary": "Provide the cloud orchestrator path that stores and relays versioned ciphertext envelopes without parsing project plaintext, using PostgreSQL for transactional authorization/index/cursor/tombstone metadata and Railway S3-compatible object storage for encrypted envelope blobs.",
@@ -531,7 +532,7 @@
     },
     {
       "id": "ZK-007",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Add device identity, enrollment, and revocation",
       "summary": "Establish device identity lifecycle and revocation semantics so encrypted workspaces can be shared only with explicitly enrolled devices.",
@@ -568,7 +569,7 @@
     },
     {
       "id": "ZK-008",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "encrypted-product-migration",
       "title": "Migrate project context and activity to encrypted ownership",
       "summary": "Replace the starter server-readable project context/activity path with explicit encrypted local-agent ownership and a durable PostgreSQL plus Railway S3 migration strategy, preserving only bounded transition behavior.",
@@ -610,7 +611,7 @@
     },
     {
       "id": "ZK-009",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "encrypted-product-migration",
       "title": "Expose authenticated product visibility through the local agent",
       "summary": "Define and implement the smallest Angular authenticated product visibility path that reads approved decrypted views through themis-agent, while keeping Astro public-only.",
@@ -649,7 +650,7 @@
     },
     {
       "id": "ZK-010",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Define scoped sharing and capability security",
       "summary": "Specify workspace sharing, capability issuance, least privilege, expiry, revocation, and delegation rules for agents, users, tools, and local execution.",
@@ -682,7 +683,7 @@
     },
     {
       "id": "ZK-011",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Implement the MCP and secret-broker boundary",
       "summary": "Create the smallest local secret-broker and MCP/tool boundary that exposes capabilities without exporting broad secrets or bypassing themis-agent policy.",
@@ -715,7 +716,7 @@
     },
     {
       "id": "ZK-012",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Define execution trust profiles and local execution policy",
       "summary": "Define explicit trust profiles for local execution and external-AI assistance so agents can operate with least privilege and users can understand the resulting authority.",
@@ -744,7 +745,7 @@
     },
     {
       "id": "ZK-013",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Harden signed releases and supply-chain review",
       "summary": "Establish release provenance, signing, dependency review, and update verification for themis-agent and supporting services before production distribution.",
@@ -781,7 +782,7 @@
     },
     {
       "id": "ZK-014",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Rework the blocked zero-knowledge security gate and remediation disposition",
       "summary": "Rework the completed review record so it accurately gates production on the documented CRITICAL/HIGH findings, distinguishes proof-milestone evidence from implemented remediation, and tracks the new remediation slices and independent sign-off instead of implying the production architecture is complete.",
@@ -818,7 +819,7 @@
     },
     {
       "id": "ZK-015",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "encrypted-product-migration",
       "title": "Add app Playwright visual and auth regression coverage",
       "summary": "Extend the existing Angular app Playwright suite with visual screenshot assertions for the authenticated zero-knowledge visibility boundary and regression coverage for every existing auth route, without adding API, server, site, or realtime E2E suites.",
@@ -859,7 +860,7 @@
     },
     {
       "id": "ZK-016",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Stabilize composed gateway E2E fixtures and visibility snapshots",
       "summary": "Resolve the pre-existing composed app-E2E blockers observed while validating ZK-006: stale gateway lifecycle, duplicate-account auth fixture reuse, and missing/unstable visibility screenshot baselines.",
@@ -888,7 +889,7 @@
     },
     {
       "id": "ZK-017",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Define dual-client envelope capabilities and mode negotiation",
       "summary": "Establish one client contract for Web + optional local themis-agent and Web-only WebCrypto clients, including capability discovery, negotiation, downgrade rules, and compatibility with the canonical envelope/storage without making either client a plaintext cloud authority.",
@@ -927,7 +928,7 @@
     },
     {
       "id": "ZK-018",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "local-agent-vault",
       "title": "Implement the browser WebCrypto and IndexedDB vault",
       "summary": "Implement the Web-only local vault using WebCrypto and IndexedDB while preserving the canonical envelope/storage contract and keeping protected plaintext and keys local to the browser.",
@@ -967,7 +968,7 @@
     },
     {
       "id": "ZK-019",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Add WebAuthn PRF unlock with recovery and safe fallback",
       "summary": "Add browser unlock and recovery policy for the Web-only vault using WebAuthn/Passkeys, preferably the PRF extension, with explicit fallback that never weakens the zero-knowledge boundary.",
@@ -1007,7 +1008,7 @@
     },
     {
       "id": "ZK-020",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "encrypted-product-migration",
       "title": "Integrate Angular web-only projections for work and planning state",
       "summary": "Integrate the Angular product with the WebCrypto/IndexedDB client so authorized users can view local projections of work items, planning, and progress in Web-only mode while preserving explicit locked, stale, offline, and unavailable states.",
@@ -1047,7 +1048,7 @@
     },
     {
       "id": "ZK-021",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "local-agent-vault",
       "title": "Add optional themis-agent bridge and secure client selection",
       "summary": "Provide an optional local bridge between the Angular app and themis-agent, with authenticated capability negotiation, explicit source selection, and safe fallback to Web-only mode when the agent is absent or unhealthy.",
@@ -1087,7 +1088,7 @@
     },
     {
       "id": "ZK-022",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Implement offline sync, conflicts, and tombstones for both clients",
       "summary": "Implement client-side synchronization for browser and themis-agent clients using the shared opaque envelope storage, including offline queues, deterministic conflicts, durable tombstones, retries, and convergence without server plaintext merge authority.",
@@ -1128,7 +1129,7 @@
     },
     {
       "id": "ZK-023",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Validate independent Web-only and local-agent security E2E",
       "summary": "Create an independent security and end-to-end assurance slice proving that Web-only and Web + themis-agent modes provide equivalent protected behavior, fail safely, and preserve zero-knowledge guarantees across authentication, projections, bridge, offline sync, recovery, and revocation.",
@@ -1169,7 +1170,7 @@
     },
     {
       "id": "ZK-024",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Expose capability discovery and mode negotiation API",
       "summary": "Provide the authenticated HTTP/OpenAPI boundary required to discover and negotiate dual-client capabilities without exposing protected plaintext, keys, or authoritative decryption state to the cloud.",
@@ -1208,7 +1209,7 @@
     },
     {
       "id": "ZK-025",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "capability-secure-execution",
       "title": "Expose WebAuthn recovery metadata API",
       "summary": "Add the authenticated API metadata boundary required by browser WebAuthn/PRF enrollment, revocation, and recovery without transporting secrets, protected plaintext, or decryption authority.",
@@ -1245,7 +1246,7 @@
       "claimedAt": "2026-08-20T06:00:07.777Z"
     },
     {
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "id": "ZK-022-V1",
       "title": "Add offline sync gateway and visual E2E fixtures",
@@ -1280,7 +1281,7 @@
     },
     {
       "id": "ZK-026",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Complete offline sync gateway and visual E2E fixtures",
       "summary": "Complete the independent browser and themis-agent synchronization E2E coverage deferred from ZK-022 for network interruption/reconnect, deterministic conflict resolution, tombstone persistence, and screenshots without changing the canonical envelope or bridge handshake.",
@@ -1316,7 +1317,7 @@
     },
     {
       "id": "ZK-027",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Complete authenticated OpenAPI assurance fixtures",
       "summary": "Close the RUN-106 API validation gap by providing deterministic authenticated identities and valid seeded resources for protected capability, sync, recovery, revocation, and tenant-isolation operations, then reconcile schema-validation warnings without weakening runtime validation.",
@@ -1353,7 +1354,7 @@
     },
     {
       "id": "PASSKEY-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Define account WebAuthn security contract and durable credential model",
       "summary": "Define account-level WebAuthn/passkey ceremonies, email verification/PIN prerequisites, retry-before-fallback behavior, multiple-credential lifecycle, session claims, and durable credential data without coupling account authentication to PRF vault unlock or metadata APIs.",
@@ -1392,7 +1393,7 @@
     },
     {
       "id": "PASSKEY-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Implement account WebAuthn endpoints and session integration",
       "summary": "Implement the backend registration and authentication ceremonies defined by PASSKEY-001, including mandatory email verification/PIN, multi-passkey persistence, retry-aware fallback signals, and account session establishment without conflating account auth with PRF vault unlock or metadata APIs.",
@@ -1435,7 +1436,7 @@
     },
     {
       "id": "PASSKEY-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Implement passkey-first Angular registration and login UX",
       "summary": "Implement the Angular account registration and login states for passkey-first WebAuthn, mandatory email verification/PIN, multiple-passkey prompts where applicable, and retry-before-explicit-password fallback.",
@@ -1471,7 +1472,7 @@
     },
     {
       "id": "PASSKEY-004",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Add independent passkey authentication route, API, security, and visual verification",
       "summary": "Provide focused independent verification ownership for the passkey-first account-authentication slice, covering real API behavior, composed gateway flows, Angular routes, fallback safety, multiple credentials, and visual states without duplicating completed ZK regression work.",
@@ -1505,7 +1506,7 @@
     },
     {
       "id": "PASSKEY-005",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Restore real HTTP/OpenAPI Schemathesis validation for passkey endpoints",
       "summary": "Resolve the independent Schemathesis runner, dependency, and configuration compatibility blocker discovered during PASSKEY-002, where `pnpm exec nx run api-e2e:openapi --skip-nx-cache` crashes with `AttributeError: CanonicalSchema.is_satisfiable missing`. Add only the minimal passkey OpenAPI smoke/contract fixture needed to prove the repaired command can exercise PASSKEY-002 over real HTTP; do not change PASSKEY-002 or account-auth source implementation.",
@@ -1551,7 +1552,7 @@
     },
     {
       "id": "PASSKEY-006",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Add deterministic real-HTTP WebAuthn ceremony fixtures for passkey OpenAPI E2E",
       "summary": "Close the genuinely separate test-fixture gap blocking PASSKEY-005 by providing deterministic, test-only WebAuthn ceremony fixtures that generate valid registration attestation and authentication assertions over real HTTP for the existing PASSKEY-002 endpoints. The fixtures must establish persisted ceremony and credential state without mocks, direct service calls, synthetic identifiers, or production secret leakage, enabling OpenAPI E2E to verify consumed/replayed challenges, expiry, origin/RP mismatch, and successful authentication completion.",
@@ -1596,7 +1597,7 @@
     },
     {
       "id": "PASSKEY-007",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Fix passkey PIN-gate HTTP contract for unverified accounts",
       "summary": "Correct the PASSKEY-002 request schema and focused backend mapping so pinVerified=false reaches application handling and returns the documented pin_required response instead of being rejected by schema validation.",
@@ -1635,7 +1636,7 @@
     },
     {
       "id": "PASSKEY-008",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Restore projects-to-shared build exports for app E2E",
       "summary": "Repair the pre-existing projects:build failure caused by missing shared exports so the required PASSKEY-003 full Angular app E2E matrix can execute.",
@@ -1672,7 +1673,7 @@
     },
     {
       "id": "PASSKEY-009",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "account-webauthn-passkeys",
       "title": "Refresh stale visibility E2E snapshot",
       "summary": "Update the pre-existing project visibility error snapshot whose alert styling changed before PASSKEY-008, so the full app E2E suite can complete without unrelated snapshot drift.",
@@ -1707,7 +1708,7 @@
     },
     {
       "id": "operational-workspace-ia-foundation",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Define the operational workspace IA and visual foundation",
       "summary": "Produce a reviewable prototype and decision record for the calm, attention-first operational workspace, extending the website visual language into the authenticated Angular experience before implementation.",
@@ -1743,7 +1744,7 @@
     },
     {
       "id": "operational-project-workspace-route",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Replace Projects and Dashboard with the read-only Project Workspace route",
       "summary": "Replace the current authenticated Angular Projects/Dashboard primary experience with one read-only Project Workspace route that helps developers and operators understand the current project and attention without leaving the old UI as a parallel surface.",
@@ -1782,7 +1783,7 @@
     },
     {
       "id": "operational-work-item-detail",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Add the read-only Work Item detail surface",
       "summary": "Give developers and operators a progressive-disclosure detail route for intent, boundaries, dependencies, execution, validation, evidence, review, and the next useful human action without turning the product into a ticket editor.",
@@ -1820,7 +1821,7 @@
     },
     {
       "id": "operational-workspace-activity-context",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Add activity timeline and secondary iteration context",
       "summary": "Make human and agent activity legible in the workspace and provide optional iteration context without making sprints mandatory or turning the experience into a sprint board.",
@@ -1857,7 +1858,7 @@
     },
     {
       "id": "operational-workspace-read-model-boundary",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Establish the protected operational workspace read-model boundary",
       "summary": "Define and implement the read-only application boundary for projects, epics, work items, runs, evidence, reviews, and activity when production APIs do not yet expose the model, preserving local-agent authority and zero-knowledge visibility constraints.",
@@ -1895,7 +1896,7 @@
     },
     {
       "id": "THM-PLAN-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "themis-planning-fidelity",
       "title": "Preserve approved plan fidelity across coordinator, planner, and work items",
       "summary": "Update coordinator, planner, work-item, validation, and relevant subagent/skill guidance plus focused tests/evals/docs so every confirmed plan phase remains traceable and materially represented in Themis state.",
@@ -1934,7 +1935,7 @@
     },
     {
       "id": "THM-OWV-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Audit the foundation for operational workspace visualization",
       "summary": "Establish the canonical vocabulary, data classification, visual semantics, authoritative sources, and human-readable state/event translation that all later workspace research, prototype, read-model, and Angular work must use.",
@@ -1974,7 +1975,7 @@
     },
     {
       "id": "THM-OWV-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Define information architecture and operational workspace UX flows",
       "summary": "Turn the foundation decisions into reviewable Angular navigation and UX flow specifications for Project Workspace, Work Item detail, progressive disclosure, no-sprint behavior, and human decision tracing.",
@@ -2015,7 +2016,7 @@
     },
     {
       "id": "THM-OWV-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Prototype the operational workspace visual experience",
       "summary": "Build a UI designer prototype extending the authoritative website visual language across Project Workspace, Work Item detail, validation/evidence, timeline, and all relevant responsive and visual states before Angular implementation.",
@@ -2055,7 +2056,7 @@
     },
     {
       "id": "THM-OWV-004",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Evaluate human comprehension of the operational workspace",
       "summary": "Run task-based evaluation of the approved prototype to measure whether developers and operators can understand attention, blockage, agent work, validation gaps, changes, and acceptance decisions before Angular implementation.",
@@ -2094,7 +2095,7 @@
     },
     {
       "id": "THM-OWV-005",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Materialize the complete project-scoped operational read model",
       "summary": "Rework the approved operational read model into the complete P7 project-scoped client-local contract populated by verified IndexedDB materialization, while preserving local-agent/plaintext authority, explicit visibility states, rich human-readable operational semantics, and zero cloud plaintext.",
@@ -2138,7 +2139,7 @@
     },
     {
       "id": "THM-OWV-006",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Render the complete IndexedDB-backed project portfolio and planning workspace",
       "summary": "Rework the approved P8 Angular read-only workspace so the portfolio and project planning surfaces consume real project-scoped IndexedDB materialization and visualize the complete planning/execution domain while preserving the established rich UX, flows, progressive disclosure, accessibility, human-readable semantics, and deterministic screenshots.",
@@ -2183,7 +2184,7 @@
     },
     {
       "id": "THM-OWV-005-SEC",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Harden raw security scanning for historical audit references",
       "summary": "The raw workspace security scan flags a historical evidence sentence that lists test-secret patterns as absent. Correct the scanner and add regression coverage so negative audit references do not produce false positives while actual protected values remain detected.",
@@ -2219,7 +2220,7 @@
     },
     {
       "id": "SEC-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Close production zero-knowledge security control blockers",
       "summary": "Implement the remaining cross-cutting controls that prevent the existing zero-knowledge proof from being treated as production-safe: verifiable capability signatures with key custody/revocation, authenticated local-agent visibility transport, protected-data classification and audit enforcement, bounded external-AI policy, safe runtime redaction, and nonce/key lifecycle invariants.",
@@ -2260,7 +2261,7 @@
     },
     {
       "id": "SYNC-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "opaque-sync-device-security",
       "title": "Deliver durable multi-user and multi-device encrypted workspace integration",
       "summary": "Turn the existing opaque sync and device proofs into a production-shaped multi-user/multi-device integration with durable authorization, device lifecycle, revocation, recovery, offline propagation, and convergence while keeping plaintext and keys local to authorized clients.",
@@ -2300,7 +2301,7 @@
     },
     {
       "id": "E2E-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Prove the existing zero-knowledge agent-to-platform flow end to end",
       "summary": "Independently validate the already implemented Web-only and local-agent zero-knowledge flow across authentication, local unlock, authenticated visibility, opaque sync, multi-device behavior, failure states, and disclosure boundaries without adding new product scope.",
@@ -2341,7 +2342,7 @@
     },
     {
       "id": "WEB-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "operational-workspace-visualization",
       "title": "Make the agent backlog visible in the operational web workspace",
       "summary": "Extend the existing read-only operational workspace so authorized users can see the agent backlog as outcome-grouped work with attention, blocked state, execution, validation, evidence, review, and activity context through the approved protected read model.",
@@ -2381,7 +2382,7 @@
     },
     {
       "id": "DEPLOY-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Prepare and validate production deployment of the gateway topology",
       "summary": "Turn the existing Docker/gateway deployment direction into a reproducible production deployment slice for site, Angular app, API, worker, realtime, PostgreSQL, Redis, opaque object storage, migrations, health checks, release provenance, and rollback.",
@@ -2422,7 +2423,7 @@
     },
     {
       "id": "E2E-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Repair legacy app-E2E regressions blocking broad validation",
       "summary": "Restore the legacy dashboard, projection, project-list, and authentication app-E2E flows so the required broad validation of SEC-001 and WEB-001 can run to completion without changing either item's approved product scope.",
@@ -2465,7 +2466,7 @@
     },
     {
       "id": "E2E-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "encrypted-product-migration",
       "title": "Align legacy sync E2E fixtures with the current operational workspace",
       "summary": "Update the stale sync app-E2E fixture contract to the current operational workspace route, preserving only behaviors that still exist and explicitly removing assertions for the retired project-visibility/projection surface without reintroducing product behavior.",
@@ -2503,7 +2504,7 @@
     },
     {
       "id": "DEPLOY-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "release-security-assurance",
       "title": "Run deployed production-like gateway validation for DEPLOY-001",
       "summary": "Execute the blocked production-like deployment, real HTTP API/app/site/gateway checks, backup and migration exercise, security checks, and visual smoke capture after container tooling and provider-neutral disposable infrastructure are available.",
@@ -2532,7 +2533,7 @@
     },
     {
       "id": "PZS-001",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Define the project-scoped synchronization architecture and assurance model",
       "summary": "Specify the P0/P11 contract that partitions Themis by project, preserves local plaintext authority, constrains cloud services to opaque project-scoped transport, and establishes threat, performance, compatibility, and deferred-native decisions before implementation.",
@@ -2573,7 +2574,7 @@
     },
     {
       "id": "PZS-002",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Migrate global Themis state into isolated project stores",
       "summary": "Deliver a reversible, observable P1 migration from the global Themis planning/state bottleneck to independently loadable project stores while preserving append-only history, identities, relationships, and local mutation authority.",
@@ -2614,7 +2615,7 @@
     },
     {
       "id": "PZS-003",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Extract the reusable project-scoped local core and explicit workspace registry",
       "summary": "Deliver the P2 local core that opens, validates, mutates, snapshots, and observes one registered project at a time, with explicit user registration of workspace roots/projects and no recursive disk scanning.",
@@ -2659,7 +2660,7 @@
     },
     {
       "id": "PZS-004",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Publish encrypted project changes through the packaged CLI, MCP, and direct API",
       "summary": "Deliver P3 publisher adapters and the packaged `npx @visomi/themis sync` command so an initialized OpenCode-produced `.themis` workspace can transform committed project-scoped logical state into locally encrypted snapshots/events, publish pending deltas through MCP or direct API, and report an observable, resumable sync outcome without surrendering local mutation or plaintext authority.",
@@ -2705,7 +2706,7 @@
     },
     {
       "id": "PZS-005",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Persist and authorize opaque project streams in the API",
       "summary": "Deliver P4 cloud API behavior that authorizes project-scoped publishers/readers, persists opaque snapshots/events, assigns monotonic cursor/revision metadata, and remains zero-knowledge and non-authoritative for domain state.",
@@ -2752,7 +2753,7 @@
     },
     {
       "id": "PZS-006",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Signal project change availability over authenticated realtime channels",
       "summary": "Deliver P5 authenticated WebSocket/realtime notifications that announce safe project-scoped cursor availability without carrying encrypted payloads, protected content, or domain authority.",
@@ -2793,7 +2794,7 @@
     },
     {
       "id": "PZS-007",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Build the runtime-neutral client sync engine and Web IndexedDB materializer",
       "summary": "Deliver P6/P11 client infrastructure that fetches opaque project snapshots/events, decrypts and validates locally, deterministically merges them, and transactionally materializes a Web IndexedDB query database through runtime-neutral contracts.",
@@ -2834,7 +2835,7 @@
     },
     {
       "id": "PZS-008",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Implement project snapshots, compaction, checkpoints, and recovery",
       "summary": "Deliver the P9 lifecycle that bounds each project's stream through verifiable snapshots/checkpoints and supports stale detection, resync, corruption recovery, and tombstone-safe compaction without cloud plaintext authority.",
@@ -2875,7 +2876,7 @@
     },
     {
       "id": "PZS-009",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Enforce per-project quotas, backpressure, and scale isolation",
       "summary": "Deliver the P9 operational controls and performance proof that bound project streams, publisher/realtime/client pressure, and failure blast radius at representative scale without inspecting protected content.",
@@ -2916,7 +2917,7 @@
     },
     {
       "id": "PZS-010",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Independently validate the packaged project-scoped zero-trust sync journey",
       "summary": "Deliver the separate P10 integration/security/scale validation of the real packaged `npx @visomi/themis sync` journey across an initialized local project registry, browser authentication/create-link/device pairing, encrypted CLI publication, opaque API/realtime, client decryption/merge, IndexedDB materialization, and read-only Angular UI without broadening WEB-001 or E2E-001.",
@@ -2962,7 +2963,7 @@
     },
     {
       "id": "PZS-005-LOCAL-STACK",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "title": "Provide reproducible Podman local API E2E stack",
       "summary": "Provide an isolated Podman lifecycle for PZS-005 durable API evidence, including PostgreSQL, Redis, MinIO, bucket initialization, explicit migrations, artifact retention, and external-service mode in the API E2E runner.",
       "acceptanceCriteria": [
@@ -2997,7 +2998,7 @@
     },
     {
       "id": "PZS-011",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicId": "project-scoped-zero-trust-sync",
       "title": "Bootstrap browser authentication, remote project linking, and device pairing for CLI sync",
       "summary": "Deliver the separate P3 browser-bootstrap sub-scope used by `npx @visomi/themis sync`: open an account-authenticated browser journey, make explicit authorized cloud project create/link decisions, enroll and pair the CLI and browser devices without cloud plaintext or key custody, resume the originating CLI run safely, and provide the canonical Angular handoff URL.",
@@ -3040,42 +3041,6 @@
         "[build][required] `pnpm exec nx run-many -t lint,typecheck,build -p themis-agent-cli,shared,api,server,app --skip-nx-cache && node --experimental-strip-types --test scripts/plan-fidelity.test.ts`; observe production boundaries compile, bootstrap contracts remain runtime-neutral, and the immutable P0-P11 inventory explicitly maps this separate P3 browser-bootstrap sub-scope with all eight validation rows."
       ],
       "status": "ready"
-    },
-    {
-      "id": "CLI-010",
-      "projectId": "agent-tracking",
-      "epicId": "account-webauthn-passkeys",
-      "title": "Restore read-only workspace status CLI command",
-      "summary": "Restore the read-only workspace-status command required by the Themis onboarding contract, while preserving project scope for all project-owned operations and keeping root aggregate portfolio commands removed.",
-      "acceptanceCriteria": [
-        "`pnpm themis workspace-status --root <fresh-root> --json` exits successfully and reports initialized=false, both state/event files absent, and zero entity counts.",
-        "The command accepts the shared root and JSON options, performs no state mutation, and uses the existing workspaceStatus implementation.",
-        "CLI help lists workspace-status but continues to omit removed root aggregate commands status, validate, events, and portfolio.",
-        "Project-owned commands continue to require a registered project identifier.",
-        "The change is limited to scripts/themis-cli.ts and scripts/themis-cli.test.ts; unrelated worktree changes are not part of this item."
-      ],
-      "scopeIn": ["scripts/themis-cli.ts", "scripts/themis-cli.test.ts", "Read-only workspace-status CLI behavior"],
-      "scopeOut": [
-        "Passkey product behavior",
-        "HTTP/API routes",
-        "Angular UI or browser E2E",
-        "Portfolio/root aggregate commands",
-        "Manual changes to .themis state or event stores",
-        "Unrelated pre-existing worktree changes"
-      ],
-      "verificationStrategy": [
-        "[unit][required] `node --experimental-strip-types --test scripts/themis-cli.test.ts scripts/themis-core.test.ts`; observe fresh-workspace status, project-scope enforcement, project creation/listing, and timeline assertions pass.",
-        "[api][not-applicable] No HTTP/API behavior or contract changes.",
-        "[app-e2e][not-applicable] No Angular route or user-visible web behavior changes.",
-        "[gateway-e2e][not-applicable] No gateway, worker, realtime, or composed runtime behavior changes.",
-        "[site-e2e][not-applicable] No public Astro route or behavior changes.",
-        "[visual][not-applicable] CLI text/JSON output is not a web visual surface and no screenshot can observe a changed web state.",
-        "[security][required] Inspect the scoped diff and run `git diff --check`; verify workspace-status is read-only, honors the explicit root, emits only redacted portable output, and does not reintroduce unscoped aggregate project operations.",
-        "[build][required] `pnpm exec prettier --check scripts/themis-cli.ts scripts/themis-cli.test.ts && git diff --check`; observe formatting and whitespace checks pass."
-      ],
-      "status": "done",
-      "claimedBy": "themis-executor-cli-010",
-      "claimedAt": "2026-08-26T08:54:07.263Z"
     }
   ],
   "dependencies": [
@@ -3688,7 +3653,7 @@
   "sprints": [
     {
       "id": "agent-backlog-production-readiness",
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "goal": "Demonstrate a production-shaped, zero-knowledge agent workspace: authorized users and devices synchronize encrypted Themis backlog state, the Angular web workspace renders the read-only agent backlog, independent end-to-end evidence closes release-blocking security findings, and the gateway topology passes production-like deployment validation.",
       "status": "active",
       "createdAt": "2026-08-24T00:24:48.936Z",
@@ -3724,7 +3689,7 @@
   ],
   "revisions": [
     {
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "epicIds": ["release-security-assurance", "opaque-sync-device-security", "operational-workspace-visualization"],
       "goal": "Demonstrate a production-shaped, zero-knowledge agent workspace: authorized users and devices synchronize encrypted Themis backlog state, the Angular web workspace renders the read-only agent backlog, independent end-to-end evidence closes release-blocking security findings, and the gateway topology passes production-like deployment validation.",
       "why": "The current zero-knowledge implementation and visual workspace exist as separate proof slices, but production readiness is blocked until security controls, multi-user/multi-device synchronization, integrated E2E evidence, web backlog visibility, and deployment are validated together.",
@@ -5924,15 +5889,6 @@
       "agent": "themis-executor-pzs005-evidence-integrity",
       "status": "running",
       "startedAt": "2026-08-26T05:55:04.275Z"
-    },
-    {
-      "id": "RUN-241",
-      "workItemId": "CLI-010",
-      "agent": "themis-executor-cli-010",
-      "status": "completed",
-      "startedAt": "2026-08-26T08:54:10.154Z",
-      "terminationReason": "CLI-010 implementation and required unit, security, build, read-only behavior, and plan-fidelity checks passed; unrelated worktree changes remain explicitly out of scope.",
-      "finishedAt": "2026-08-26T08:55:13.731Z"
     }
   ],
   "evidence": [
@@ -25863,46 +25819,6 @@
       "summary": "[build] PASS — independent command execution",
       "value": "Exact commands: `pnpm exec nx run api:build --skip-nx-cache`, `pnpm exec nx run api-e2e:lint --skip-nx-cache`, and `node --experimental-strip-types --test scripts/plan-fidelity.test.ts`. Observed: API build exited 0; API-E2E lint exited 0; plan-fidelity 6 tests passed, 0 failed. This category does not override failed API/security artifact audits.",
       "createdAt": "2026-08-26T05:54:18.716Z"
-    },
-    {
-      "id": "EVD-2492",
-      "runId": "RUN-241",
-      "kind": "verification",
-      "summary": "Unit and CLI contract tests pass",
-      "value": "Command: node --experimental-strip-types --test scripts/themis-cli.test.ts scripts/themis-core.test.ts\nObserved: 14 tests passed, 0 failed. CLI tests cover project scope, fresh workspace-status zero counts, project creation/listing, and timeline.",
-      "createdAt": "2026-08-26T08:54:45.213Z"
-    },
-    {
-      "id": "EVD-2493",
-      "runId": "RUN-241",
-      "kind": "verification",
-      "summary": "Security and scope checks pass",
-      "value": "Command: root=$(mktemp -d); pnpm themis workspace-status --root \"$root\" --json; test ! -e \"$root/.themis/state.json\"; test ! -e \"$root/.themis/events.ndjson\"\nObserved: initialized=false, both files absent, all counts zero, and no state/event files created. The command uses the explicit root and read-only status path.\nCommand: git diff --check\nObserved: PASS.",
-      "createdAt": "2026-08-26T08:54:45.678Z"
-    },
-    {
-      "id": "EVD-2494",
-      "runId": "RUN-241",
-      "kind": "verification",
-      "summary": "Build and formatting checks pass",
-      "value": "Command: pnpm exec prettier --check scripts/themis-cli.ts scripts/themis-cli.test.ts && git diff --check\nObserved: All matched files use Prettier code style; diff check passed.",
-      "createdAt": "2026-08-26T08:54:45.994Z"
-    },
-    {
-      "id": "EVD-2495",
-      "runId": "RUN-241",
-      "kind": "implementation-diff",
-      "summary": "Scoped implementation diff for CLI-010",
-      "value": "Scoped files only: scripts/themis-cli.ts and scripts/themis-cli.test.ts. Added the read-only workspace-status command backed by workspaceStatus(root), registered it in the command list, and added a fresh-workspace zero-count test. No passkey or product files changed by this item; unrelated worktree modifications remain outside scope.",
-      "createdAt": "2026-08-26T08:54:46.246Z"
-    },
-    {
-      "id": "EVD-2496",
-      "runId": "RUN-241",
-      "kind": "verification",
-      "summary": "Plan fidelity remains intact",
-      "value": "Command: node --experimental-strip-types --test scripts/plan-fidelity.test.ts\nObserved: 6 tests passed, 0 failed, including traceability before/after mutation and validation-matrix completeness checks.",
-      "createdAt": "2026-08-26T08:55:09.124Z"
     }
   ],
   "sprintEvidence": [],
@@ -27705,17 +27621,6 @@
       "runId": "RUN-238",
       "reviewer": "themis-reviewer-pzs005-run-238",
       "createdAt": "2026-08-26T05:14:29.517Z"
-    },
-    {
-      "id": "REVW-183",
-      "workItemId": "CLI-010",
-      "runId": "RUN-241",
-      "reviewer": "themis-reviewer-cli-010",
-      "createdAt": "2026-08-26T08:56:13.949Z",
-      "verdict": "accepted",
-      "feedback": "Accepted independently. CLI-010 is limited to scripts/themis-cli.ts and scripts/themis-cli.test.ts: workspace-status is registered with shared root/json options, delegates to the existing read-only workspaceStatus implementation, and output is passed through redactPortable. Independent fresh-root execution of `pnpm themis workspace-status --root <tmp> --json` exited 0 with initialized=false, both files absent, zero projects/epics/workItems/sprints, and the root remained unchanged. Help lists workspace-status and omits status, validate, events, and portfolio; project-scope tests pass. Independent unit command passed 14/14, Prettier check passed, and git diff --check passed. The matrix is complete: unit/security/build required checks have matching commands/results; API, app-e2e, gateway-e2e, site-e2e, and visual are explicitly N/A with written reasons. No failed or unresolved check is presented as complete, and no root aggregate command was reintroduced.",
-      "decidedAt": "2026-08-26T09:01:34.491Z"
     }
-  ],
-  "projectId": "agent-tracking"
+  ]
 }

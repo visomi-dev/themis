@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "registrations": [
     {
-      "projectId": "agent-tracking",
+      "projectId": "core",
       "name": "Agent Tracking",
       "status": "active",
       "locatorHash": "1ab90061c4d5e43adcb83a1b085b279dbde9dcb947770fb53b4194e04ab3bab1",
       "rootPath": "/home/visomi/Projects/GitHub/visomi-dev/themis",
-      "registeredAt": "2026-08-26T08:48:20.212Z",
-      "updatedAt": "2026-08-26T08:48:20.212Z"
+      "registeredAt": "2026-08-26T21:10:25.662Z",
+      "updatedAt": "2026-08-26T21:13:19.726Z"
     }
   ]
 }
