@@ -1,0 +1,6 @@
+{
+  "runId": "RUN-223",
+  "before": "docs/architecture/system/project-scoped-sync-plan-fidelity.json",
+  "after": "No plan mutation was made by RUN-223.",
+  "rows": "The approved P0-P11 inventory and statuses are unchanged; P4/PZS-005 remains in_progress because this run is blocked at durable device enrollment."
+}

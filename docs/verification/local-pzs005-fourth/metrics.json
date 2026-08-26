@@ -1,0 +1,6 @@
+{
+  "runId": "local-pzs005-fourth",
+  "streamId": "stream-4b49d852-1f38-4e53-b10a-ee1989695751",
+  "status": "N/A",
+  "reason": "No metrics exporter/collector is configured in the isolated API harness; current-run server log inspection is retained."
+}

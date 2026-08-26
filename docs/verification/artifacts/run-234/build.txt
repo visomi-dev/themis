@@ -1,0 +1,3 @@
+Command: pnpm exec nx run-many -t lint,typecheck,build -p themis-workflow,themis-agent-cli --skip-nx-cache && pnpm themis:test && node --experimental-strip-types --test scripts/plan-fidelity.test.ts
+Result: PASS; Nx lint/typecheck/build succeeded for themis-workflow and themis-agent-cli; pnpm themis:test passed 239/239; plan-fidelity passed 6/6.
+Warnings: Nx emitted the existing package-type/cjs format warning; it did not fail the build.

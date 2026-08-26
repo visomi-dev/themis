@@ -10,6 +10,10 @@ import {
   deviceRouteParamsSchema,
   deviceRecoverySchema,
   deviceSyncQuerySchema,
+  checkpointRequestSchema,
+  recoveryQuerySchema,
+  checkpointSchema,
+  checkpointParamsSchema,
   opaqueEnvelopeRequestSchema,
   opaqueSyncOpenApiPaths,
   opaqueSyncParamsSchema,
@@ -96,6 +100,138 @@ opaqueSyncRouter.get(
       data: { devices: await deviceStore().listDevices(context.accountId) },
       message: 'Devices retrieved.',
     });
+  },
+);
+
+opaqueSyncRouter.post(
+  '/:workspaceId/checkpoints',
+  validateRequest({ body: checkpointRequestSchema, params: opaqueSyncParamsSchema }),
+  async function createCheckpoint(req, res, next) {
+    const { params, body } = getValidated<{
+      params: typeof opaqueSyncParamsSchema;
+      body: typeof checkpointRequestSchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      await deviceStore().authorizeSync(
+        context.accountId,
+        body!.deviceId,
+        params!.workspaceId,
+        body!.enrollmentVersion,
+      );
+      const checkpoint =
+        env.OPAQUE_SYNC_STORAGE === 'durable'
+          ? await getConfiguredOpaqueSyncRepository().createCheckpoint(
+              context.accountId,
+              params!.workspaceId,
+              body!.checkpointId,
+              body!.cursor,
+              body!.revision,
+              body!.envelope,
+            )
+          : opaqueSyncStore.checkpoint(
+              context.accountId,
+              params!.workspaceId,
+              body!.checkpointId,
+              body!.cursor,
+              body!.revision,
+              body!.envelope,
+            );
+
+      httpResponse.json(res, { data: checkpoint, status: 201, message: 'Checkpoint stored.' });
+    } catch {
+      next(new HttpError({ code: 'checkpoint_rejected', message: 'The checkpoint was rejected.', statusCode: 409 }));
+    }
+  },
+);
+
+opaqueSyncRouter.get(
+  '/:workspaceId/checkpoints/:checkpointId',
+  validateRequest({
+    params: opaqueSyncParamsSchema.extend({ checkpointId: checkpointSchema.shape.checkpointId }),
+    query: deviceSyncQuerySchema,
+  }),
+  async function getCheckpoint(req, res, next) {
+    const { params, query } = getValidated<{
+      params: typeof checkpointParamsSchema;
+      query: typeof deviceSyncQuerySchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      await deviceStore().authorizeSync(
+        context.accountId,
+        query!.deviceId,
+        params!.workspaceId,
+        query!.enrollmentVersion,
+      );
+      const checkpoint =
+        env.OPAQUE_SYNC_STORAGE === 'durable'
+          ? await getConfiguredOpaqueSyncRepository().getCheckpoint(
+              context.accountId,
+              params!.workspaceId,
+              params!.checkpointId,
+            )
+          : opaqueSyncStore.getCheckpoint(context.accountId, params!.workspaceId, params!.checkpointId);
+
+      httpResponse.json(res, { data: checkpoint, message: 'Checkpoint retrieved.' });
+    } catch {
+      next(
+        new HttpError({
+          code: 'checkpoint_not_found',
+          message: 'The checkpoint could not be retrieved.',
+          statusCode: 404,
+        }),
+      );
+    }
+  },
+);
+
+opaqueSyncRouter.get(
+  '/:workspaceId/recovery',
+  validateRequest({ params: opaqueSyncParamsSchema, query: recoveryQuerySchema }),
+  async function recoverStream(req, res, next) {
+    const { params, query } = getValidated<{
+      params: typeof opaqueSyncParamsSchema;
+      query: typeof recoveryQuerySchema;
+    }>(req);
+    const context = await authorizeWorkspace(req, params!.workspaceId);
+
+    try {
+      await deviceStore().authorizeSync(
+        context.accountId,
+        query!.deviceId,
+        params!.workspaceId,
+        query!.enrollmentVersion,
+      );
+      const recovery =
+        env.OPAQUE_SYNC_STORAGE === 'durable'
+          ? await getConfiguredOpaqueSyncRepository().recovery(
+              context.accountId,
+              params!.workspaceId,
+              query!.checkpointId,
+              query!.afterCursor,
+              query!.limit,
+            )
+          : opaqueSyncStore.recovery(
+              context.accountId,
+              params!.workspaceId,
+              query!.checkpointId,
+              query!.afterCursor,
+              query!.limit,
+            );
+
+      httpResponse.json(res, { data: recovery, message: 'Recovery chain retrieved.' });
+    } catch {
+      next(
+        new HttpError({
+          code: 'recovery_chain_unavailable',
+          message: 'The recovery chain could not be retrieved.',
+          statusCode: 409,
+        }),
+      );
+    }
   },
 );
 
@@ -274,17 +410,27 @@ opaqueSyncRouter.get(
 
       return;
     }
-    const envelopes =
-      env.OPAQUE_SYNC_STORAGE === 'durable'
-        ? await getConfiguredOpaqueSyncRepository().list(
-            context.accountId,
-            params!.workspaceId,
-            query!.afterCursor,
-            query!.limit,
-          )
-        : opaqueSyncStore.list(context.accountId, params!.workspaceId, query!.afterCursor, query!.limit);
+    try {
+      const envelopes =
+        env.OPAQUE_SYNC_STORAGE === 'durable'
+          ? await getConfiguredOpaqueSyncRepository().list(
+              context.accountId,
+              params!.workspaceId,
+              query!.afterCursor,
+              query!.limit,
+            )
+          : opaqueSyncStore.list(context.accountId, params!.workspaceId, query!.afterCursor, query!.limit);
 
-    httpResponse.json(res, { data: { envelopes }, message: 'Envelopes retrieved.' });
+      httpResponse.json(res, { data: { envelopes }, message: 'Envelopes retrieved.' });
+    } catch {
+      next(
+        new HttpError({
+          code: 'cursor_recovery_required',
+          message: 'The requested cursor requires snapshot recovery.',
+          statusCode: 409,
+        }),
+      );
+    }
   },
 );
 

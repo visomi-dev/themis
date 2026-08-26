@@ -1,0 +1,43 @@
+runId=local-pzs005-second
+project=themis-local-e2e-3197694
+provider=podman
+$ podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+result=0 podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+compose-up=completed
+healthcheck=postgres command=podman exec bc82d83963cd pg_isready -U themis_api_e2e -d themis_api_e2e result=0
+postgres-readiness=passed
+healthcheck=redis command=podman exec 833b5949fabf redis-cli ping result=0
+redis-readiness=passed
+inspection-command=podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE                                 COMMAND               CREATED        STATUS                   PORTS                               NAMES
+bc82d83963cd  docker.io/library/postgres:16-alpine  postgres              6 seconds ago  Up 5 seconds (healthy)   0.0.0.0:15432->5432/tcp             themis-local-e2e-3197694_postgres_1
+833b5949fabf  docker.io/library/redis:7-alpine      redis-server          6 seconds ago  Up 4 seconds (healthy)   0.0.0.0:16379->6379/tcp             themis-local-e2e-3197694_redis_1
+ae9745654d16  quay.io/minio/minio:latest            server /data --ad...  5 seconds ago  Up 4 seconds (healthy)   0.0.0.0:19000-19001->9000-9001/tcp  themis-local-e2e-3197694_minio_1
+f85b9c11323c  quay.io/minio/mc:latest               mc alias set loca...  5 seconds ago  Exited (0) 1 second ago                                      themis-local-e2e-3197694_minio-init_1
+inspection-stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+healthcheck=minio-image-healthcheck-availability command=podman exec ae9745654d16 sh -c command -v curl && curl --fail --silent http://127.0.0.1:9000/minio/health/ready result=0
+healthcheck=minio-http command=GET http://127.0.0.1:19000/minio/health/ready result=200
+minio-readiness=passed
+$ podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml run --rm minio-init
+result=0 podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml run --rm minio-init
+$ pnpm db:migrate
+result=0 pnpm db:migrate
+$ pnpm nx run api-e2e:e2e --skip-nx-cache
+result=0 pnpm nx run api-e2e:e2e --skip-nx-cache
+migrations=passed
+nx-api-e2e=passed
+$ podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml down --volumes --remove-orphans
+result=0 podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml down --volumes --remove-orphans
+compose-down=completed
+inspection-command=podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-3197694 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE       COMMAND     CREATED     STATUS      PORTS       NAMES
+inspection-stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+inspection-command=podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-3197694
+inspection-result=0 podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-3197694
+inspection-stdout=DRIVER      VOLUME NAME

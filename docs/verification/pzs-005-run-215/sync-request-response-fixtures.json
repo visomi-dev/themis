@@ -1,0 +1,181 @@
+{
+  "runId": "RUN-215",
+  "boundary": "authenticated opaque project-stream HTTP",
+  "cases": [
+    {
+      "id": "append-201",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-a-1", "revision": 1, "ciphertext": "Y2lwaGVydGV4dA", "baseCursor": null }
+      },
+      "response": { "status": 201, "code": "accepted", "body": { "cursor": 1, "revision": 1, "envelopeId": "env-a-1" } }
+    },
+    {
+      "id": "duplicate-200",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-a-1", "revision": 1, "ciphertext": "Y2lwaGVydGV4dA" }
+      },
+      "response": { "status": 200, "code": "duplicate", "body": { "duplicate": true, "cursor": 1 } }
+    },
+    {
+      "id": "duplicate-conflict",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-a-1", "revision": 1, "ciphertext": "Y29uZmxpY3Q" }
+      },
+      "response": { "status": 409, "code": "opaque_envelope_rejected", "body": { "message": "Envelope rejected." } }
+    },
+    {
+      "id": "cross-project",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-b/envelopes",
+        "body": { "workspaceId": "project-a", "envelopeId": "env-cross", "revision": 2 }
+      },
+      "response": { "status": 404, "code": "not_found", "body": { "message": "Resource not found." } }
+    },
+    {
+      "id": "cross-tenant",
+      "request": { "method": "GET", "path": "/api/sync/project-a/envelopes?deviceId=device-other&enrollmentVersion=1" },
+      "response": { "status": 404, "code": "not_found", "body": { "message": "Resource not found." } }
+    },
+    {
+      "id": "revoked-device",
+      "request": {
+        "method": "GET",
+        "path": "/api/sync/project-a/envelopes?deviceId=device-revoked&enrollmentVersion=1"
+      },
+      "response": {
+        "status": 409,
+        "code": "device_revoked_or_stale",
+        "body": { "message": "Device is revoked or stale." }
+      }
+    },
+    {
+      "id": "malformed",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelope": { "version": "bad" } }
+      },
+      "response": { "status": 400, "code": "validation_error", "body": { "message": "Invalid opaque envelope." } }
+    },
+    {
+      "id": "oversized",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-large", "ciphertext": "[redacted oversized fixture]" }
+      },
+      "response": { "status": 400, "code": "validation_error", "body": { "message": "Invalid opaque envelope." } }
+    },
+    {
+      "id": "unsupported-version",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-v2", "version": 2 }
+      },
+      "response": {
+        "status": 400,
+        "code": "unsupported_version",
+        "body": { "message": "Unsupported envelope version." }
+      }
+    },
+    {
+      "id": "stale-base",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-stale", "revision": 3, "baseCursor": 0 }
+      },
+      "response": { "status": 409, "code": "opaque_envelope_rejected", "body": { "message": "Envelope rejected." } }
+    },
+    {
+      "id": "replay-rollback",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-rollback", "revision": 0 }
+      },
+      "response": { "status": 409, "code": "opaque_envelope_rejected", "body": { "message": "Envelope rejected." } }
+    },
+    {
+      "id": "checkpoint-success",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/checkpoints",
+        "body": { "checkpointId": "cp-1", "cursor": 1, "revision": 1, "envelopeId": "env-a-1" }
+      },
+      "response": { "status": 201, "code": "checkpoint_created", "body": { "checkpointId": "cp-1", "cursor": 1 } }
+    },
+    {
+      "id": "checkpoint-mismatch",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/checkpoints",
+        "body": { "checkpointId": "cp-bad", "cursor": 1, "revision": 1, "envelopeId": "env-other" }
+      },
+      "response": {
+        "status": 409,
+        "code": "checkpoint_reference_mismatch",
+        "body": { "message": "Checkpoint reference rejected." }
+      }
+    },
+    {
+      "id": "recovery-success",
+      "request": { "method": "GET", "path": "/api/sync/project-a/recovery?checkpointId=cp-1&afterCursor=0&limit=100" },
+      "response": { "status": 200, "code": "recovery_ready", "body": { "snapshotCursor": 1, "events": [] } }
+    },
+    {
+      "id": "recovery-missing-checkpoint",
+      "request": { "method": "GET", "path": "/api/sync/project-a/recovery?checkpointId=missing" },
+      "response": { "status": 404, "code": "checkpoint_not_found", "body": { "message": "Checkpoint not found." } }
+    },
+    {
+      "id": "recovery-malformed-query",
+      "request": { "method": "GET", "path": "/api/sync/project-a/recovery?checkpointId=" },
+      "response": { "status": 400, "code": "validation_error", "body": { "message": "Invalid recovery query." } }
+    },
+    {
+      "id": "cursor-recovery-required",
+      "request": { "method": "GET", "path": "/api/sync/project-a/envelopes?afterCursor=999999&limit=100" },
+      "response": {
+        "status": 409,
+        "code": "cursor_recovery_required",
+        "body": { "message": "Cursor recovery required." }
+      }
+    },
+    {
+      "id": "tombstone-append",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-delete", "recordType": "tombstone", "revision": 4 }
+      },
+      "response": { "status": 201, "code": "accepted", "body": { "cursor": 4, "revision": 4 } }
+    },
+    {
+      "id": "tombstone-non-resurrection",
+      "request": {
+        "method": "POST",
+        "path": "/api/sync/project-a/envelopes",
+        "body": { "envelopeId": "env-delete", "revision": 1 }
+      },
+      "response": { "status": 409, "code": "opaque_envelope_rejected", "body": { "message": "Envelope rejected." } }
+    },
+    {
+      "id": "retention-recovery",
+      "request": { "method": "GET", "path": "/api/sync/project-a/envelopes?afterCursor=0&limit=100" },
+      "response": {
+        "status": 200,
+        "code": "recovery_ready",
+        "body": { "snapshotRequired": false, "events": [{ "cursor": 1, "envelopeId": "env-a-1" }] }
+      }
+    }
+  ]
+}

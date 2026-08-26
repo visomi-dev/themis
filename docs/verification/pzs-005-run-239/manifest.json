@@ -1,0 +1,10 @@
+{
+  "runId": "RUN-239",
+  "workItemId": "PZS-005",
+  "owner": "themis-executor-pzs005-harness-isolation",
+  "artifactRoot": "docs/verification/pzs-005-run-239",
+  "requiredMatrices": ["openapi:21", "durable:23", "validation:8", "phases:P0-P11"],
+  "durableStorage": ["PostgreSQL", "MinIO S3-compatible"],
+  "memoryStorageAllowed": false,
+  "ownershipRule": "Every artifact must contain RUN-239 and no earlier-run reference."
+}

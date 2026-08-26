@@ -1,0 +1,22 @@
+{
+  "provider": "MinIO S3-compatible",
+  "bucket": "themis-sync-fixture",
+  "objects": [
+    {
+      "key": "opaque/project-a/env-a-1",
+      "contentType": "application/octet-stream",
+      "bytes": 32,
+      "sha256": "sha256:fixture-a",
+      "body": "ciphertext-only fixture bytes"
+    },
+    {
+      "key": "opaque/project-a/env-delete",
+      "contentType": "application/octet-stream",
+      "bytes": 36,
+      "sha256": "sha256:fixture-delete",
+      "body": "ciphertext-only fixture bytes"
+    }
+  ],
+  "metadataAllowlist": ["contentType", "bytes", "sha256", "workspace routing key"],
+  "plaintextObserved": false
+}

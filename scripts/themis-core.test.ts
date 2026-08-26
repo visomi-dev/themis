@@ -29,7 +29,7 @@ import {
   updateWorkItem,
   validateState,
   workspaceStatus,
-} from '../.opencode/tools/themis-core.ts';
+} from '../libs/themis-workflow/src/lib/legacy-workflow-internal.ts';
 
 const roots: string[] = [];
 const clock = (() => {

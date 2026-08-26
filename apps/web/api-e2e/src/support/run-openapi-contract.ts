@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { createHmac, generateKeyPairSync, randomBytes, sign } from 'node:crypto';
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { createHash, createHmac, generateKeyPairSync, randomBytes, sign } from 'node:crypto';
+import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import { waitForPortOpen } from '@nx/node/utils';
@@ -14,6 +14,8 @@ const origin = baseUrl;
 const apiUrl = `${baseUrl}/api`;
 const schemaUrl = `${apiUrl}/openapi.json`;
 const reportDirectory = resolve(process.cwd(), 'dist/test-results/api-e2e/openapi');
+const runId = process.env['PZS005_RUN_ID'] ?? 'RUN-239';
+const stableReportDirectory = resolve(process.cwd(), `dist/test-results/api-e2e/${runId.toLowerCase()}`);
 const rawDirectory = resolve(reportDirectory, 'raw');
 const serverEntryPoint = resolve(process.cwd(), 'dist/apps/web/server/main.js');
 const pidPath = resolve(process.cwd(), 'apps/web/api-e2e/.api-e2e-openapi-server.pid');
@@ -22,6 +24,7 @@ const clockPreloadPath = resolve(process.cwd(), 'apps/web/api-e2e/src/support/fa
 const phases = process.env.SCHEMATHESIS_PHASES ?? 'examples,coverage';
 const includePathRegex = process.env.SCHEMATHESIS_INCLUDE_PATH_REGEX;
 const generationMode = process.env.SCHEMATHESIS_MODE ?? 'all';
+const syncOnly = process.env['PZS005_SYNC_ONLY'] === 'true';
 let activeServerPid: number | undefined;
 
 type ChallengeResponse = {
@@ -43,6 +46,7 @@ type Fixture = {
   workspaceId: string;
   ownerDeviceId: string;
   agentDeviceId: string;
+  enrollmentVersion: number;
   agentPrivateKey: ReturnType<typeof generateKeyPairSync>['privateKey'];
   recoveryId: string;
   credentialId: string;
@@ -62,9 +66,30 @@ type PasskeySmokeResult = {
 type HttpObservation = {
   status: number;
   body: JsonRecord;
+  timingMs: number;
+  correlationId: string;
+  requestBody?: string;
+  requestHeaders: JsonRecord;
+  responseHeaders: JsonRecord;
 };
 
-const rawHttpObservations: Array<{ path: string; status: number; body: string }> = [];
+const rawHttpObservations: Array<{ method: string; path: string; status: number; requestBody?: string; body: string }> =
+  [];
+const syncCaseObservations: Array<{
+  case: string;
+  acceptanceCriterion: string;
+  method: string;
+  path: string;
+  status: number;
+  code?: string;
+  body: JsonRecord;
+  timingMs: number;
+  correlationId: string;
+  requestHeaders: JsonRecord;
+  responseHeaders: JsonRecord;
+  requestBody?: string;
+  artifactHash: string;
+}> = [];
 
 const sensitiveKeys =
   /password|pin|token|cookie|authorization|challenge|credential|privatekey|publickey|signature|clientdata|attestation|authenticator|userhandle|proof|session/i;
@@ -81,7 +106,7 @@ function sanitizeText(value: string, redactLongMaterial = false): string {
     )
     .replace(/\b\d{6}\b/g, '[REDACTED-PIN]')
     .replace(
-      /S3cureOpenApi!|themis-api-openapi-e2e-secret|openapi-zk027(?:-[A-Za-z0-9]+)?(?:@|%40)example\.test|openapi-passkey-unverified(?:-[A-Za-z0-9]+)?(?:@|%40)example\.test|device-[A-Za-z0-9_-]+/g,
+      /S3cureOpenApi!|themis-api-openapi-e2e-secret|openapi-[A-Za-z0-9-]+(?:@|%40)example\.test|device-[A-Za-z0-9_-]+/g,
       '[REDACTED]',
     );
 
@@ -176,13 +201,32 @@ async function requestJson(path: string, init: RequestInit, expected: number | n
 }
 
 async function requestObservation(path: string, init: RequestInit): Promise<HttpObservation> {
+  const correlationId =
+    typeof init.headers === 'object' && init.headers !== null && !Array.isArray(init.headers)
+      ? String((init.headers as Record<string, string>)['x-request-id'] ?? `${runId}-${randomBytes(8).toString('hex')}`)
+      : `${runId}-${randomBytes(8).toString('hex')}`;
+  const requestHeaders = {
+    Origin: origin,
+    ...(init.headers as Record<string, string> | undefined),
+    'x-request-id': correlationId,
+  };
+  const startedAt = performance.now();
   const response = await fetch(`${apiUrl}${path}`, {
     ...init,
-    headers: { Origin: origin, ...init.headers },
+    headers: requestHeaders,
   });
   const text = await response.text();
+  const timingMs = Math.round((performance.now() - startedAt) * 100) / 100;
 
-  if (path.endsWith('/workspace')) rawHttpObservations.push({ path, status: response.status, body: text });
+  if (path.endsWith('/workspace') || path.startsWith('/sync/')) {
+    rawHttpObservations.push({
+      method: init.method ?? 'GET',
+      path,
+      status: response.status,
+      requestBody: typeof init.body === 'string' ? sanitizeText(init.body, true) : undefined,
+      body: sanitizeText(text, true),
+    });
+  }
   let body: JsonRecord;
 
   try {
@@ -191,7 +235,365 @@ async function requestObservation(path: string, init: RequestInit): Promise<Http
     body = { raw: text };
   }
 
-  return { status: response.status, body };
+  const safeRequestHeaders = Object.fromEntries(
+    Object.entries(requestHeaders).filter(([key]) => /^(content-type|origin|x-request-id)$/i.test(key)),
+  );
+  const safeResponseHeaders = Object.fromEntries(
+    [...response.headers.entries()].filter(([key]) => /^(content-type|x-request-id|x-correlation-id)$/i.test(key)),
+  );
+
+  return {
+    status: response.status,
+    body,
+    timingMs,
+    correlationId,
+    requestBody: typeof init.body === 'string' ? sanitizeText(init.body, true) : undefined,
+    requestHeaders: safeRequestHeaders,
+    responseHeaders: safeResponseHeaders,
+  };
+}
+
+async function verifySyncEvidence(fixture: Fixture): Promise<void> {
+  const headers = { Cookie: fixture.cookie, 'Content-Type': 'application/json' };
+  const observe = async (
+    name: string,
+    acceptanceCriterion: string,
+    path: string,
+    init: RequestInit,
+  ): Promise<HttpObservation> => {
+    const observation = await requestObservation(path, { ...init, headers: { ...headers, ...init.headers } });
+
+    const record = {
+      case: name,
+      acceptanceCriterion,
+      method: init.method ?? 'GET',
+      path,
+      status: observation.status,
+      code: responseCode(observation),
+      body: sanitizeJson(observation.body) as JsonRecord,
+      timingMs: observation.timingMs,
+      correlationId: observation.correlationId,
+      requestHeaders: observation.requestHeaders,
+      responseHeaders: observation.responseHeaders,
+      requestBody: observation.requestBody,
+      artifactHash: '',
+    };
+
+    record.artifactHash = createHash('sha256').update(JSON.stringify(record)).digest('hex');
+    syncCaseObservations.push(record);
+
+    return observation;
+  };
+  const criterion = 'Authenticated opaque project-stream HTTP semantics and isolation';
+  const expectedStatuses: Record<string, number> = {
+    'append-201': 201,
+    'duplicate-200': 200,
+    'duplicate-conflict': 409,
+    'cross-project': 404,
+    'cross-tenant': 404,
+    malformed: 400,
+    oversized: 400,
+    'unsupported-version': 400,
+    'stale-base': 409,
+    'replay-rollback': 409,
+    'checkpoint-success': 201,
+    'checkpoint-mismatch': 409,
+    'recovery-success': 200,
+    'recovery-missing-checkpoint': 409,
+    'recovery-malformed-query': 400,
+    'retention-pruned-cursor': 409,
+    'tombstone-append': 201,
+    'tombstone-non-resurrection': 409,
+    'recovery-unauthorized-tenant': 404,
+    'revoked-device-fetch': 409,
+    'revoked-device-append': 409,
+  };
+  const expectedCodes: Record<string, string> = {
+    'duplicate-conflict': 'opaque_envelope_rejected',
+    'cross-project': 'workspace_not_found',
+    'cross-tenant': 'workspace_not_found',
+    malformed: 'invalid_request',
+    oversized: 'invalid_request',
+    'unsupported-version': 'invalid_request',
+    'stale-base': 'opaque_envelope_rejected',
+    'replay-rollback': 'opaque_envelope_rejected',
+    'checkpoint-mismatch': 'checkpoint_rejected',
+    'recovery-missing-checkpoint': 'recovery_chain_unavailable',
+    'recovery-malformed-query': 'invalid_request',
+    'retention-pruned-cursor': 'cursor_recovery_required',
+    'tombstone-non-resurrection': 'opaque_envelope_rejected',
+    'recovery-unauthorized-tenant': 'workspace_not_found',
+    'revoked-device-fetch': 'device_lifecycle_rejected',
+    'revoked-device-append': 'opaque_envelope_rejected',
+  };
+  const prefix = runId.toLowerCase();
+  const stream = {
+    ...envelope(fixture.workspaceId, `${prefix}-sync-stream`, { recipientDeviceId: fixture.agentDeviceId }),
+    revision: 2,
+  };
+  const enrollmentVersion = fixture.enrollmentVersion;
+  const appendBody = JSON.stringify({ envelope: stream, deviceId: fixture.agentDeviceId, enrollmentVersion });
+
+  await observe('append-201', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: appendBody,
+  });
+  await observe('duplicate-200', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: appendBody,
+  });
+  await observe('duplicate-conflict', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, ciphertext: 'Y29uZmxpY3Q' },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe('cross-project', criterion, `/sync/00000000-0000-4000-8000-000000000000/envelopes`, {
+    method: 'POST',
+    body: appendBody,
+  });
+  await observe(
+    'cross-tenant',
+    criterion,
+    `/sync/${fixture.workspaceId}/envelopes?deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    {
+      method: 'GET',
+      headers: { Cookie: fixture.isolatedCookie },
+    },
+  );
+  await observe('malformed', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, version: 999 },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe('oversized', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, envelopeId: `${prefix}-oversized`, ciphertext: 'x'.repeat(100_001) },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe('unsupported-version', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, envelopeId: `${prefix}-unsupported`, version: 2 },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe('stale-base', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, envelopeId: `${prefix}-stale`, revision: 3, metadata: { baseCursor: '0' } },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe('replay-rollback', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, envelopeId: `${prefix}-rollback`, revision: 1 },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  const checkpoint = await observe('checkpoint-success', criterion, `/sync/${fixture.workspaceId}/checkpoints`, {
+    method: 'POST',
+    body: JSON.stringify({
+      checkpointId: `${prefix}-checkpoint`,
+      cursor: 1,
+      revision: 2,
+      envelope: stream,
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+
+  await observe('checkpoint-mismatch', criterion, `/sync/${fixture.workspaceId}/checkpoints`, {
+    method: 'POST',
+    body: JSON.stringify({
+      checkpointId: `${prefix}-checkpoint-mismatch`,
+      cursor: 1,
+      revision: 2,
+      envelope: { ...stream, envelopeId: `${prefix}-other` },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe(
+    'recovery-success',
+    criterion,
+    `/sync/${fixture.workspaceId}/recovery?checkpointId=${prefix}-checkpoint&deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}&afterCursor=0&limit=100`,
+    { method: 'GET' },
+  );
+  await observe(
+    'recovery-missing-checkpoint',
+    criterion,
+    `/sync/${fixture.workspaceId}/recovery?checkpointId=${prefix}-missing&deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    { method: 'GET' },
+  );
+  await observe(
+    'recovery-malformed-query',
+    criterion,
+    `/sync/${fixture.workspaceId}/recovery?checkpointId=&deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    { method: 'GET' },
+  );
+  await observe(
+    'retention-pruned-cursor',
+    criterion,
+    `/sync/${fixture.workspaceId}/envelopes?afterCursor=999999&limit=100&deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    { method: 'GET' },
+  );
+  const tombstone = {
+    ...stream,
+    recordType: 'tombstone',
+    revision: 3,
+    metadata: { deletedRecordId: `${prefix}-sync-stream` },
+  };
+
+  await observe('tombstone-append', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({ envelope: tombstone, deviceId: fixture.agentDeviceId, enrollmentVersion }),
+  });
+  await observe('tombstone-non-resurrection', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, revision: 1 },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  await observe(
+    'recovery-unauthorized-tenant',
+    criterion,
+    `/sync/${fixture.workspaceId}/recovery?checkpointId=${prefix}-checkpoint&deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    { method: 'GET', headers: { Cookie: fixture.isolatedCookie } },
+  );
+  await requestJson(`/sync/${fixture.workspaceId}/devices/${fixture.agentDeviceId}/revoke`, {
+    method: 'POST',
+    headers,
+  });
+  await observe(
+    'revoked-device-fetch',
+    criterion,
+    `/sync/${fixture.workspaceId}/envelopes?deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=${enrollmentVersion}`,
+    { method: 'GET' },
+  );
+  await observe('revoked-device-append', criterion, `/sync/${fixture.workspaceId}/envelopes`, {
+    method: 'POST',
+    body: JSON.stringify({
+      envelope: { ...stream, envelopeId: `${prefix}-revoked`, revision: 4 },
+      deviceId: fixture.agentDeviceId,
+      enrollmentVersion,
+    }),
+  });
+  if (syncCaseObservations.length !== 21) {
+    throw new Error(`OpenAPI PZS-005 matrix captured ${syncCaseObservations.length} cases; expected 21.`);
+  }
+  for (const observation of syncCaseObservations) {
+    const expected = expectedStatuses[observation.case];
+
+    if (expected === undefined || observation.status !== expected) {
+      throw new Error(
+        `OpenAPI PZS-005 case ${observation.case} returned HTTP ${observation.status}; expected ${String(expected)}.`,
+      );
+    }
+    const expectedCode = expectedCodes[observation.case];
+
+    if (expectedCode !== undefined && observation.code !== expectedCode) {
+      throw new Error(
+        `OpenAPI PZS-005 case ${observation.case} returned code ${observation.code ?? 'missing'}; expected ${expectedCode}.`,
+      );
+    }
+    if (observation.status === 409 && expectedCode === undefined) {
+      throw new Error(`OpenAPI PZS-005 case ${observation.case} maps HTTP 409 without an expected negative code.`);
+    }
+  }
+  await writeFile(
+    resolve(reportDirectory, 'sync-case-matrix.json'),
+    JSON.stringify({ checkpointStatus: checkpoint.status, cases: syncCaseObservations }, null, 2),
+  );
+  const harEntries = syncCaseObservations.map((item) => ({
+    startedDateTime: new Date().toISOString(),
+    time: item.timingMs,
+    request: {
+      method: item.method,
+      url: `${apiUrl}${item.path}`,
+      headers: Object.entries(item.requestHeaders).map(([name, value]) => ({ name, value: String(value) })),
+      postData: item.requestBody ? { mimeType: 'application/json', text: item.requestBody } : undefined,
+    },
+    response: {
+      status: item.status,
+      headers: Object.entries(item.responseHeaders).map(([name, value]) => ({ name, value: String(value) })),
+      content: { mimeType: 'application/json', text: JSON.stringify(item.body) },
+    },
+    _case: item.case,
+    _correlationId: item.correlationId,
+    _artifactHash: item.artifactHash,
+  }));
+
+  await writeFile(
+    resolve(reportDirectory, 'pzs-005-sync.har.json'),
+    JSON.stringify(
+      { log: { version: '1.2', creator: { name: `${runId} OpenAPI sync transport capture` }, entries: harEntries } },
+      null,
+      2,
+    ),
+  );
+  const xml = (value: string) =>
+    value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  await writeFile(
+    resolve(reportDirectory, 'pzs-005-sync.junit.xml'),
+    `<testsuite name="PZS-005 ${runId} OpenAPI sync HTTP" tests="${syncCaseObservations.length}">${syncCaseObservations
+      .map(
+        (item) =>
+          `<testcase name="${xml(item.case)}" time="${item.timingMs / 1000}"><properties><property name="method" value="${xml(item.method)}"/><property name="path" value="${xml(item.path)}"/><property name="status" value="${item.status}"/><property name="code" value="${xml(item.code ?? '')}"/><property name="correlationId" value="${xml(item.correlationId)}"/><property name="artifactHash" value="${item.artifactHash}"/></properties></testcase>`,
+      )
+      .join('')}</testsuite>`,
+  );
+  await writeFile(
+    resolve(reportDirectory, 'sync-surface-observations.json'),
+    JSON.stringify(
+      {
+        postgres: {
+          result: 'N/A',
+          reason:
+            'This authenticated API contract run intentionally uses DATABASE_DRIVER=memory; durable PostgreSQL rows are produced by the separate durable-integration target.',
+        },
+        objectStorage: {
+          result: 'N/A',
+          reason:
+            'This contract run intentionally uses OPAQUE_SYNC_STORAGE=memory; object listing/metadata/ciphertext hash are produced by the separate durable-integration target.',
+        },
+        rawHttp: { result: 'OBSERVED', artifact: 'raw/http-responses.json', syncCases: 'sync-case-matrix.json' },
+        serverLogs: { result: 'OBSERVED', artifact: 'raw/server.log', syncRoutes: true },
+        traces: {
+          result: 'N/A',
+          reason:
+            'No trace exporter is configured for this local API process; raw/server.log contains no trace sink, and the stable raw scan records zero trace records.',
+        },
+        metrics: {
+          result: 'N/A',
+          reason:
+            'No metrics exporter is configured for this local API process; raw/server.log contains no metrics sink, and the stable raw scan records zero metric records.',
+        },
+        safeErrors: {
+          result: 'OBSERVED',
+          artifact: 'sync-case-matrix.json',
+          disclosure: 'Only safe error codes/messages are retained.',
+        },
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 function responseCode(observation: HttpObservation): string | undefined {
@@ -207,7 +609,7 @@ function requireResponseCode(observation: HttpObservation, expected: string, nam
 
 async function bootstrapSession(): Promise<Fixture> {
   const runSuffix = Date.now().toString(36);
-  const email = `openapi-zk027-${runSuffix}@example.test`;
+  const email = `pzs005-${runId.toLowerCase()}-${runSuffix}@example.test`;
   const smokeEmail = `openapi-passkey-unverified-${runSuffix}@example.test`;
   const password = 'S3cureOpenApi!';
 
@@ -282,6 +684,19 @@ async function bootstrapSession(): Promise<Fixture> {
     headers,
     body: JSON.stringify({ approverDeviceId: ownerDeviceId }),
   });
+  // The single approver contract still requires the owner to be an enrolled
+  // device. Approval alone must not be treated as authorization for the
+  // owner to approve or use another device.
+  await requestJson(`/sync/${workspaceId}/devices/${ownerDeviceId}/enroll`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      approverDeviceId: ownerDeviceId,
+      envelope: envelope(workspaceId, `${runId.toLowerCase()}-owner-grant`, {
+        recipientDeviceId: ownerDeviceId,
+      }),
+    }),
+  });
   const agent = await requestJson(`/sync/${workspaceId}/devices`, {
     method: 'POST',
     headers,
@@ -292,20 +707,25 @@ async function bootstrapSession(): Promise<Fixture> {
   });
   const agentDeviceId = String((agent.data as JsonRecord).deviceId);
 
-  await requestJson(`/sync/${workspaceId}/devices/${agentDeviceId}/enroll`, {
+  const agentEnrollment = await requestJson(`/sync/${workspaceId}/devices/${agentDeviceId}/enroll`, {
     method: 'POST',
     headers,
     body: JSON.stringify({
       approverDeviceId: ownerDeviceId,
-      envelope: envelope(workspaceId, 'zk027-grant', { recipientDeviceId: agentDeviceId }),
+      envelope: envelope(workspaceId, `${runId.toLowerCase()}-grant`, { recipientDeviceId: agentDeviceId }),
     }),
   });
+  const enrollmentVersion = Number((agentEnrollment.data as JsonRecord).enrollmentVersion);
+
+  if (!Number.isInteger(enrollmentVersion) || enrollmentVersion < 1) {
+    throw new Error('OpenAPI fixture enrollment did not return a valid enrollmentVersion.');
+  }
   const recovery = await requestJson(
     `/webauthn/${workspaceId}/recovery`,
     {
       method: 'POST',
       headers,
-      body: JSON.stringify({ requestId: 'zk027-recovery-enroll', confirmed: true }),
+      body: JSON.stringify({ requestId: `${runId.toLowerCase()}-recovery-enroll`, confirmed: true }),
     },
     201,
   );
@@ -380,6 +800,7 @@ async function bootstrapSession(): Promise<Fixture> {
     workspaceId,
     ownerDeviceId,
     agentDeviceId,
+    enrollmentVersion,
     agentPrivateKey: agentKeys.privateKey,
     recoveryId: String((recovery.data as JsonRecord).recoveryId),
     credentialId,
@@ -768,7 +1189,7 @@ async function verifyPasskeySmoke(fixture: Fixture): Promise<void> {
 
 function claim(fixture: Fixture, profile: 'web-webcrypto' | 'web-local-agent'): JsonRecord {
   const now = '2026-01-01T00:00:00.000Z';
-  const clientId = profile === 'web-webcrypto' ? 'zk027-web-client' : fixture.agentDeviceId;
+  const clientId = profile === 'web-webcrypto' ? `${runId}-web-client` : fixture.agentDeviceId;
   const capabilities =
     profile === 'web-webcrypto'
       ? ['vault-access', 'unlock', 'projection', 'sync', 'offline']
@@ -776,7 +1197,7 @@ function claim(fixture: Fixture, profile: 'web-webcrypto' | 'web-local-agent'): 
   const value: JsonRecord = {
     format: 'themis.client-capability',
     version: 1,
-    claimId: `zk027-${profile}`,
+    claimId: `${runId}-${profile}`,
     clientId,
     clientProfile: profile,
     accountId: fixture.accountId,
@@ -823,14 +1244,14 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
 
         if (name in values) parameter.example = values[name];
         if (name === 'deviceId') parameter.example = fixture.agentDeviceId;
-        if (name === 'enrollmentVersion') parameter.example = 1;
+        if (name === 'enrollmentVersion') parameter.example = fixture.enrollmentVersion;
       }
       if (pathItem === paths['/sync/{workspaceId}/envelopes'] && operation === (pathItem as JsonRecord).get) {
         const parameters = ((operation as JsonRecord).parameters ??= []) as JsonRecord[];
 
         for (const [name, example] of [
           ['deviceId', fixture.agentDeviceId],
-          ['enrollmentVersion', 1],
+          ['enrollmentVersion', fixture.enrollmentVersion],
         ] as const) {
           if (!parameters.some((parameter) => parameter.name === name)) {
             parameters.push({
@@ -850,8 +1271,8 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
       webOnly: {
         value: {
           format: 'themis.mode-negotiation-request',
-          requestId: 'zk027-web-request',
-          clientId: 'zk027-web-client',
+          requestId: `${runId}-web-request`,
+          clientId: `${runId}-web-client`,
           clientProfile: 'web-webcrypto',
           supportedModes: ['webcrypto'],
           supportedVersions: [1],
@@ -864,7 +1285,7 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
       agentAssisted: {
         value: {
           format: 'themis.mode-negotiation-request',
-          requestId: 'zk027-agent-request',
+          requestId: `${runId}-agent-request`,
           clientId: fixture.agentDeviceId,
           clientProfile: 'web-local-agent',
           supportedModes: ['local-agent', 'webcrypto'],
@@ -879,17 +1300,50 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
     '/sync/{workspaceId}/envelopes': {
       append: {
         value: {
-          envelope: envelope(fixture.workspaceId, 'zk027-sync-object', { recipientDeviceId: fixture.agentDeviceId }),
+          envelope: envelope(fixture.workspaceId, `${runId}-sync-object`, { recipientDeviceId: fixture.agentDeviceId }),
           deviceId: fixture.agentDeviceId,
-          enrollmentVersion: 1,
+          enrollmentVersion: fixture.enrollmentVersion,
+        },
+      },
+    },
+    '/sync/{workspaceId}/checkpoints': {
+      create: {
+        value: {
+          checkpointId: `${runId}-checkpoint`,
+          cursor: 1,
+          revision: 1,
+          envelope: envelope(fixture.workspaceId, `${runId}-sync-object`, { recipientDeviceId: fixture.agentDeviceId }),
+          deviceId: fixture.agentDeviceId,
+          enrollmentVersion: fixture.enrollmentVersion,
+        },
+      },
+    },
+    '/sync/{workspaceId}/devices/{deviceId}/enroll': {
+      enroll: {
+        value: {
+          approverDeviceId: fixture.agentDeviceId,
+          envelope: envelope(fixture.workspaceId, `${runId}-device-key`, { recipientDeviceId: fixture.agentDeviceId }),
+        },
+      },
+    },
+    '/sync/{workspaceId}/devices/recover': {
+      recover: {
+        value: {
+          lostDeviceId: fixture.agentDeviceId,
+          replacementDeviceId: fixture.agentDeviceId,
+          approverDeviceIds: [fixture.agentDeviceId, fixture.agentDeviceId],
+          allDeviceLoss: false,
+          envelope: envelope(fixture.workspaceId, `${runId}-recovery-key`, {
+            recipientDeviceId: fixture.agentDeviceId,
+          }),
         },
       },
     },
     '/webauthn/{workspaceId}/recovery': {
-      register: { value: { requestId: 'zk027-openapi-recovery', confirmed: true } },
+      register: { value: { requestId: `${runId}-openapi-recovery`, confirmed: true } },
     },
     '/webauthn/{workspaceId}/recovery/{recoveryId}/use': {
-      use: { value: { requestId: 'zk027-openapi-recovery-use', confirmed: true } },
+      use: { value: { requestId: `${runId}-openapi-recovery-use`, confirmed: true } },
     },
     '/webauthn/{workspaceId}/credentials': {
       register: {
@@ -927,7 +1381,7 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
     schema.paths = Object.fromEntries(Object.entries(paths).filter(([path]) => includePath.test(path)));
   }
 
-  const schemaPath = resolve(reportDirectory, 'zk027-openapi-fixture.json');
+  const schemaPath = resolve(reportDirectory, `${runId.toLowerCase()}-openapi-schema.json`);
 
   await writeFile(schemaPath, JSON.stringify(schema, null, 2));
 
@@ -936,6 +1390,21 @@ async function prepareSchema(fixture: Fixture): Promise<string> {
 
 async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
   const headers = { Cookie: fixture.cookie, 'Content-Type': 'application/json' };
+  const boundaryDevice = await requestJson(`/sync/${fixture.workspaceId}/devices`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ publicKey: `${runId}-boundary-device`, label: `${runId} boundary device` }),
+  });
+  const boundaryDeviceId = String((boundaryDevice.data as JsonRecord).deviceId);
+  const boundaryEnrollment = await requestJson(`/sync/${fixture.workspaceId}/devices/${boundaryDeviceId}/enroll`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      approverDeviceId: fixture.ownerDeviceId,
+      envelope: envelope(fixture.workspaceId, `${runId}-boundary-grant`, { recipientDeviceId: boundaryDeviceId }),
+    }),
+  });
+  const boundaryEnrollmentVersion = Number((boundaryEnrollment.data as JsonRecord).enrollmentVersion);
   const workspace = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, { headers });
   const workspaceUnauthorized = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {});
   const workspaceIsolated = await requestObservation(`/projects/${fixture.workspaceId}/workspace`, {
@@ -1012,8 +1481,8 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
     throw new Error('Malformed nested operational workspace payload was not observed over HTTP.');
   const webRequest = {
     format: 'themis.mode-negotiation-request',
-    requestId: 'zk027-boundary-web',
-    clientId: 'zk027-web-client',
+    requestId: `${runId}-boundary-web`,
+    clientId: `${runId}-web-client`,
     clientProfile: 'web-webcrypto',
     supportedModes: ['webcrypto'],
     supportedVersions: [1],
@@ -1024,7 +1493,7 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
   };
   const agentRequest = {
     format: 'themis.mode-negotiation-request',
-    requestId: 'zk027-boundary-agent',
+    requestId: `${runId}-boundary-agent`,
     clientId: fixture.agentDeviceId,
     clientProfile: 'web-local-agent',
     supportedModes: ['local-agent', 'webcrypto'],
@@ -1060,9 +1529,11 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          envelope: envelope(fixture.workspaceId, 'zk027-boundary-sync', { recipientDeviceId: fixture.agentDeviceId }),
-          deviceId: fixture.agentDeviceId,
-          enrollmentVersion: 1,
+          envelope: envelope(fixture.workspaceId, `${runId}-boundary-sync`, {
+            recipientDeviceId: boundaryDeviceId,
+          }),
+          deviceId: boundaryDeviceId,
+          enrollmentVersion: boundaryEnrollmentVersion,
         }),
       }),
       201,
@@ -1070,7 +1541,7 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
     [
       'opaque fetch',
       fetch(
-        `${apiUrl}/sync/${fixture.workspaceId}/envelopes?deviceId=${encodeURIComponent(fixture.agentDeviceId)}&enrollmentVersion=1`,
+        `${apiUrl}/sync/${fixture.workspaceId}/envelopes?deviceId=${encodeURIComponent(boundaryDeviceId)}&enrollmentVersion=${boundaryEnrollmentVersion}`,
         { headers },
       ),
       200,
@@ -1088,7 +1559,7 @@ async function verifyFixtureBoundary(fixture: Fixture): Promise<void> {
   );
 
   await writeFile(
-    resolve(reportDirectory, 'zk027-fixture-summary.json'),
+    resolve(reportDirectory, `${runId.toLowerCase()}-fixture-summary.json`),
     JSON.stringify(
       {
         profileCoverage: ['web-webcrypto', 'web-local-agent'],
@@ -1169,6 +1640,11 @@ function observationDetail(observation: HttpObservation): string {
 
 async function run(): Promise<number> {
   await rm(reportDirectory, { recursive: true, force: true });
+  await rm(stableReportDirectory, { recursive: true, force: true });
+  if (process.env['PZS005_ARTIFACT_DIR']) {
+    await rm(resolve(process.env['PZS005_ARTIFACT_DIR']), { recursive: true, force: true });
+    await mkdir(resolve(process.env['PZS005_ARTIFACT_DIR']), { recursive: true });
+  }
   await mkdir(reportDirectory, { recursive: true });
   await mkdir(rawDirectory, { recursive: true });
   await writeFile(clockFilePath, String(Date.now()));
@@ -1217,8 +1693,11 @@ async function run(): Promise<number> {
     const fixture = await bootstrapSession();
     const fixtureSchema = await prepareSchema(fixture);
 
-    await verifyFixtureBoundary(fixture);
-    await verifyPasskeySmoke(fixture);
+    if (!syncOnly) {
+      await verifyFixtureBoundary(fixture);
+    }
+    await verifySyncEvidence(fixture);
+    if (!syncOnly) await verifyPasskeySmoke(fixture);
 
     const result = await new Promise<number>((resolveResult, reject) => {
       const contract = spawn(
@@ -1316,7 +1795,36 @@ async function run(): Promise<number> {
       process.exitCode = 1;
     }
     await writeFile(resolve(reportDirectory, 'console.log'), consoleOutput.value);
+    const warningLines = consoleOutput.value
+      .split('\n')
+      .map((line) => sanitizeText(line))
+      .filter((line) => /Authentication failed:|Schema validation mismatch:/i.test(line));
+
+    await writeFile(
+      resolve(reportDirectory, 'openapi-warning-disposition.json'),
+      JSON.stringify(
+        {
+          runId,
+          scope: includePathRegex ?? 'all OpenAPI paths',
+          warnings: warningLines.map((line) => ({
+            observed: line,
+            disposition: /authentication/i.test(line) ? 'blocked-authentication-warning' : 'blocked-schema-warning',
+            reason:
+              "The warning is current-run OpenAPI output for this run and scope; the warning is not converted into a pass. Authenticated transport evidence is retained only in this run's artifacts.",
+          })),
+        },
+        null,
+        2,
+      ),
+    );
     await sanitizeReports();
+    await cp(reportDirectory, stableReportDirectory, { recursive: true });
+    if (process.env['PZS005_ARTIFACT_DIR']) {
+      const artifactReportDirectory = resolve(process.env['PZS005_ARTIFACT_DIR'], 'openapi-report');
+
+      await rm(artifactReportDirectory, { recursive: true, force: true });
+      await cp(reportDirectory, artifactReportDirectory, { recursive: true });
+    }
     await rm(pidPath, { force: true });
     await rm(clockFilePath, { force: true });
   }

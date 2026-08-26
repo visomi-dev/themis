@@ -1,0 +1,38 @@
+Command: node --experimental-strip-types --test scripts/themis-adapter-operation-matrix.test.ts
+Result: PASS
+Tests: 213
+Pass: 213
+Fail: 0
+Suites: 2
+
+Command: pnpm exec prettier --check scripts/themis-adapter-operation-matrix.test.ts scripts/themis-cli.ts .opencode/tools/themis.ts
+Result: PASS; All matched files use Prettier code style.
+
+Coverage exercised by the command:
+- CLI: ready/timeline; project state, validate, backup, restore, and sync;
+  project listing; epics; work items; dependencies; sprints and revisions;
+  claims/runs/evidence; and reviews.
+- OpenCode: ready/flow/timeline, epics, work items, dependencies,
+  sprints/revisions, runs/evidence, and reviews.
+- Every listed CLI operation has an independent missing-scope,
+  unregistered-project, disabled-project, and moved-root test.
+- OpenCode operations have independent missing-scope, unregistered-project,
+  disabled-project, and moved-root tests.
+- Foreign identifiers are explicitly exercised for every declared CLI family:
+  ready/timeline, project state/lifecycle, project listing, epics, work items,
+  dependencies, sprints/revisions, claims/runs/evidence, and reviews.
+- OpenCode has explicit foreign-identifier cases for every applicable mutation
+  and list family, with scoped isolation checks for ready, timeline, epics,
+  sprints, and removal operations.
+- Foreign project listing, epic listing, sprint listing, and timeline checks
+  prove the selected project cannot observe the other project's records.
+- Adapter output is checked through CLI timeline/project-list and OpenCode
+  timeline serialization for local paths, keys, secrets, locator hashes, and
+  nested envelope metadata; all protected markers are absent.
+
+Terminal result excerpt:
+  ✔ OpenCode rejects foreign work-item and workflow identifiers
+✔ OpenCode adapter authorization matrix
+ℹ tests 213
+ℹ pass 213
+ℹ fail 0

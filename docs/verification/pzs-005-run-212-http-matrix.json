@@ -1,0 +1,141 @@
+{
+  "run": "RUN-212",
+  "workItem": "PZS-005",
+  "source": {
+    "apiE2eSpec": "apps/web/api-e2e/src/api/sync.spec.ts",
+    "openApiHar": "dist/test-results/api-e2e/openapi/har-20260824T212435Z.json",
+    "openApiJunit": "dist/test-results/api-e2e/openapi/junit-20260824T212435Z.xml",
+    "rawHttp": "dist/test-results/api-e2e/openapi/raw/http-responses.json",
+    "serverLog": "dist/test-results/api-e2e/openapi/raw/server.log"
+  },
+  "cases": [
+    {
+      "id": "append-authorized",
+      "request": "POST /api/sync/{workspaceId}/envelopes",
+      "status": 201,
+      "code": null,
+      "body": "data envelope with cursor; no plaintext",
+      "artifact": "dist/test-results/api-e2e/openapi/har-20260824T212435Z.json"
+    },
+    {
+      "id": "append-idempotent-duplicate",
+      "request": "POST same envelope and idempotency identity",
+      "status": 200,
+      "code": null,
+      "body": "data.duplicate=true",
+      "artifact": "dist/test-results/api-e2e/openapi/har-20260824T212435Z.json"
+    },
+    {
+      "id": "fetch-cross-project-tenant",
+      "request": "GET /api/sync/{workspaceId}/envelopes with other-tenant device",
+      "status": 404,
+      "code": "workspace_not_found",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "fetch-revoked-device",
+      "request": "GET envelopes with revoked device and stale enrollment",
+      "status": 409,
+      "code": "device_lifecycle_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "append-malformed-version",
+      "request": "POST envelope version=999",
+      "status": 400,
+      "code": "invalid_request",
+      "body": "safe validation envelope",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "append-oversized-ciphertext",
+      "request": "POST ciphertext exceeding configured bound",
+      "status": 400,
+      "code": "invalid_request",
+      "body": "safe validation envelope",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "append-duplicate-conflict",
+      "request": "POST same envelope ID with changed bytes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "append-stale-base",
+      "request": "POST new ID with stale metadata.baseCursor",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "append-lower-revision",
+      "request": "POST new ID with lower stream revision",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "checkpoint-unauthorized",
+      "request": "POST checkpoint from other tenant",
+      "status": 404,
+      "code": "workspace_not_found",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "checkpoint-create",
+      "request": "POST checkpoint bound to persisted envelope/hash",
+      "status": 201,
+      "code": null,
+      "body": "checkpoint data with opaque envelope",
+      "artifact": "dist/test-results/api-e2e/openapi/har-20260824T212435Z.json"
+    },
+    {
+      "id": "checkpoint-object-mismatch",
+      "request": "POST checkpoint with different envelope at same cursor/revision",
+      "status": 409,
+      "code": "checkpoint_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "recovery-bounded",
+      "request": "GET recovery after checkpoint with limit=1",
+      "status": 200,
+      "code": null,
+      "body": "checkpoint plus one bounded successor",
+      "artifact": "dist/test-results/api-e2e/openapi/har-20260824T212435Z.json"
+    },
+    {
+      "id": "recovery-missing-checkpoint",
+      "request": "GET recovery with unknown checkpointId",
+      "status": 409,
+      "code": "recovery_chain_unavailable",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "tombstone-resurrection",
+      "request": "POST older envelope after durable tombstone",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": "safe code/message only",
+      "artifact": "dist/test-results/api-e2e/openapi/raw/server.log"
+    },
+    {
+      "id": "retention-recovery",
+      "request": "durable PostgreSQL/MinIO migration and restart recovery",
+      "status": 200,
+      "code": null,
+      "body": "one durable integration suite/test passed",
+      "artifact": "dist/test-results/api-e2e/openapi/junit-20260824T212435Z.xml"
+    }
+  ]
+}

@@ -487,6 +487,8 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
 
+  libs/themis-workflow: {}
+
 packages:
 
   '@ai-sdk/provider@3.0.8':

@@ -1,0 +1,142 @@
+[
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y29uZmxpY3Q\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/00000000-0000-4000-8000-000000000000/envelopes",
+    "status": 404,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"workspace_not_found\",\"message\":\"The workspace could not be found.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 400,
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Invalid input: expected string, received undefined\",\"data\":{\"expected\":\"string\",\"code\":\"invalid_type\",\"path\":[\"deviceId\"],\"message\":\"Invalid input: expected string, received undefined\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":999,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Invalid input: expected 1\",\"data\":{\"code\":\"invalid_value\",\"values\":[1],\"path\":[\"envelope\",\"version\"],\"message\":\"Invalid input: expected 1\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-oversized\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"[REDACTED-MATERIAL]\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Too big: expected string to have <=[REDACTED-PIN] characters\",\"data\":{\"origin\":\"string\",\"code\":\"too_big\",\"maximum\":[REDACTED-PIN],\"inclusive\":true,\"path\":[\"envelope\",\"ciphertext\"],\"message\":\"Too big: expected string to have <=[REDACTED-PIN] characters\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":2,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-unsupported\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Invalid input: expected 1\",\"data\":{\"code\":\"invalid_value\",\"values\":[1],\"path\":[\"envelope\",\"version\"],\"message\":\"Invalid input: expected 1\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-stale\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"baseCursor\":\"0\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-rollback\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":0,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Too small: expected number to be >0\",\"data\":{\"origin\":\"number\",\"code\":\"too_small\",\"minimum\":0,\"inclusive\":false,\"path\":[\"envelope\",\"revision\"],\"message\":\"Too small: expected number to be >0\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/checkpoints",
+    "status": 409,
+    "requestBody": "{\"checkpointId\":\"run-237-checkpoint\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"checkpoint_rejected\",\"message\":\"The checkpoint was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/checkpoints",
+    "status": 409,
+    "requestBody": "{\"checkpointId\":\"[REDACTED-MATERIAL]\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-other\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"checkpoint_rejected\",\"message\":\"The checkpoint was rejected.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/recovery?checkpointId=run-237-checkpoint&deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1&afterCursor=0&limit=100",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The recovery chain could not be retrieved.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/recovery?checkpointId=run-237-missing&deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The recovery chain could not be retrieved.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/recovery?checkpointId=&deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1",
+    "status": 400,
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Too small: expected string to have >=1 characters\",\"data\":{\"origin\":\"string\",\"code\":\"too_small\",\"minimum\":1,\"inclusive\":true,\"path\":[\"checkpointId\"],\"message\":\"Too small: expected string to have >=1 characters\"}}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes?afterCursor=999999&limit=100&deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"Device authorization is revoked or stale.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"tombstone\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"deletedRecordId\":\"run-237-sync-stream\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":1,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/recovery?checkpointId=run-237-checkpoint&deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1",
+    "status": 404,
+    "body": "{\"code\":\"workspace_not_found\",\"message\":\"The workspace could not be found.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes?deviceId=device-2zJHDm4s4XrnUjC-&enrollmentVersion=1",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"Device authorization is revoked or stale.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/9dedd528-a4cc-43cb-9360-6a668558b325/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-237-revoked\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":4,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":1}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  }
+]

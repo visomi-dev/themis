@@ -1,0 +1,66 @@
+$ pnpm exec node --experimental-strip-types scripts/themis-cli.ts --help
+Local operational control plane for OpenCode work
+
+Usage:
+  themis [command]
+
+Available Commands:
+  ready                      Show work items ready for sprint or project-flow execution
+  project-migrate            Partition global local state into independently loadable project stores
+  project-migrate-rollback   Rollback a fenced project-store cutover
+  project-state              Read one project without loading unrelated project domain state
+  project-validate           Validate one project store independently
+  project-backup             Back up one project store independently
+  project-restore            Restore one project store and validate it
+  project-sync               Synchronize and independently validate one project store
+  timeline                   Show the append-only project timeline
+  project-create             Create a project in the local portfolio
+  project-list               List projects in the local portfolio
+  epic-create                Create an epic inside a project
+  epic-list                  List epics, optionally scoped to a project
+  work-list                  List work items scoped by project, epic, or sprint
+  sprint-list                List sprints, optionally scoped to a project
+  work-create                Create a draft work item
+  work-transition            Apply a validated work item state transition
+  work-update                Update an existing work item and reopen reviewed work for rework
+  dependency-add             Add a blocking dependency
+  sprint-propose             Create a versioned sprint proposal
+  sprint-approve             Approve a sprint revision
+  sprint-activate            Activate an approved sprint revision
+  sprint-evidence-add        Attach final verification evidence to an active sprint
+  sprint-close               Close an active sprint after final verification
+  sprint-remove-all          Remove sprint planning state while preserving project flow state
+  claim                      Claim a ready work item
+  run-start                  Start a run for a claimed work item
+  run-finish                 Finish an execution run
+  evidence-add               Attach evidence to a run
+  review-request             Request an independent review
+  review-submit              Submit an accepted or rejected review
+
+Flags:
+  -h, --help      help for themis
+  -v, --version   version for themis
+$ pnpm exec node --experimental-strip-types scripts/themis-cli.ts project-create --project PRJ-SCOPED --name Scoped --root /tmp/tmp.fDnnJBdFR4 --json
+{
+  "id": "PRJ-SCOPED",
+  "name": "Scoped",
+  "summary": "",
+  "status": "active",
+  "createdAt": "2026-08-25T08:07:50.155Z"
+}
+$ pnpm exec node --experimental-strip-types scripts/themis-cli.ts timeline --project PRJ-SCOPED --root /tmp/tmp.fDnnJBdFR4 --json
+[
+  {
+    "schemaVersion": 1,
+    "sequence": 1,
+    "timestamp": "2026-08-25T08:07:50.155Z",
+    "actor": "human:cli",
+    "type": "project.created",
+    "aggregateType": "project",
+    "aggregateId": "PRJ-SCOPED",
+    "payload": {
+      "projectId": "PRJ-SCOPED",
+      "status": "active"
+    }
+  }
+]

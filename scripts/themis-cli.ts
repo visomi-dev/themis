@@ -1,41 +1,18 @@
-import { boolean, command, run, string, type Command } from '@drizzle-team/brocli';
-import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+import { boolean, command, run, string, type Command } from '@drizzle-team/brocli';
+
 import {
-  activateSprint,
-  addDependency,
-  addEvidence,
-  addSprintEvidence,
-  approveSprint,
-  claimWorkItem,
-  closeSprint,
-  createEpic,
-  createProject,
-  createWorkItem,
-  finishRun,
-  flowReadyQueue,
-  listEpics,
-  listProjects,
-  listSprints,
-  listWorkItems,
-  paths,
-  portfolio,
-  proposeSprint,
-  readState,
-  readyQueue,
-  requestReview,
-  removeSprints,
-  startRun,
-  submitReview,
-  timeline,
-  transitionWorkItem,
-  updateWorkItem,
-  validateState,
-  workspaceStatus,
-} from '../.opencode/tools/themis-core.ts';
-import { formatSummary, summarizeSprint } from './themis-view.ts';
-import { startTui } from './themis-tui.ts';
+  backupProjectStore,
+  migrateProjectStores,
+  readProjectState,
+  restoreProjectStore,
+  rollbackProjectStores,
+  synchronizeProjectStore,
+  validateProjectStore,
+} from './themis-project-migration.ts';
+
+import { ProjectWorkflowStore, WorkspaceRegistry, redactPortable } from '../libs/themis-workflow/src/index.ts';
 
 const split = (value: string): string[] =>
   value
@@ -44,11 +21,30 @@ const split = (value: string): string[] =>
     .filter(Boolean);
 
 const print = (value: unknown, asJson: boolean): void => {
+  const portable = redactPortable(value);
   if (asJson) {
-    console.log(JSON.stringify(value, null, 2));
+    console.log(JSON.stringify(portable, null, 2));
+
     return;
   }
-  console.log(typeof value === 'string' ? value : JSON.stringify(value, null, 2));
+  console.log(typeof portable === 'string' ? portable : JSON.stringify(portable, null, 2));
+};
+
+const projectDomain = (root: string, projectId: string): ReturnType<ProjectWorkflowStore['domain']> =>
+  new ProjectWorkflowStore(new WorkspaceRegistry(root), projectId).domain();
+
+const registeredProject = (root: string, projectId: string): void => {
+  new WorkspaceRegistry(root).resolve(projectId);
+};
+
+const registerProject = (root: string, projectId: string, name: string, summary: string) => {
+  const registry = new WorkspaceRegistry(root);
+
+  registry.register(projectId, name, root);
+
+  return new ProjectWorkflowStore(registry, projectId)
+    .domain()
+    .createProject({ id: projectId, name, summary }, 'human:cli');
 };
 
 const baseOptions = () => ({
@@ -56,39 +52,21 @@ const baseOptions = () => ({
   json: boolean().desc('Print machine-readable JSON').default(false),
 });
 
-const status = command({
-  name: 'status',
-  desc: 'Show the current sprint and operational work state',
-  options: {
-    ...baseOptions(),
-    project: string().desc('Project identifier').default(''),
-    sprint: string().desc('Sprint identifier').default(''),
-  },
-  handler: (options) => {
-    const summary = summarizeSprint(options.root, options.sprint || undefined, options.project || undefined);
-    print(options.json ? summary : formatSummary(summary), options.json);
-  },
-});
-
 const ready = command({
   name: 'ready',
   desc: 'Show work items ready for sprint or project-flow execution',
   options: {
     ...baseOptions(),
-    project: string().desc('Project identifier').default(''),
+    project: string().desc('Registered project identifier').required(),
     sprint: string().desc('Optional active sprint identifier').default(''),
     wip: string().desc('Optional project WIP limit when no sprint is selected').default(''),
   },
   handler: (options) => {
-    const state = readState(options.root);
-    const readyIds = new Set(
-      options.sprint
-        ? readyQueue(options.root, options.sprint, options.project || undefined).map((item) => item.id)
-        : flowReadyQueue(options.root, options.project, options.wip ? Number(options.wip) : undefined).map(
-            (item) => item.id,
-          ),
-    );
-    const result = state.workItems.filter((item) => readyIds.has(item.id));
+    const domain = projectDomain(options.root, options.project);
+    const result = options.sprint
+      ? domain.readyQueue(options.sprint)
+      : domain.flowReadyQueue(options.wip ? Number(options.wip) : undefined);
+
     print(
       options.json
         ? result
@@ -100,48 +78,91 @@ const ready = command({
   },
 });
 
-const validate = command({
-  name: 'validate',
-  desc: 'Validate local state references and report entity counts',
-  options: { ...baseOptions() },
-  handler: (options) => print(validateState(options.root), options.json),
+const migrate = command({
+  name: 'project-migrate',
+  desc: 'Partition global local state into independently loadable project stores',
+  options: {
+    ...baseOptions(),
+    dryRun: boolean('dry-run').desc('Plan without writing stores').default(false),
+    resume: boolean().desc('Resume an interrupted migration').default(false),
+    cutover: boolean().desc('Activate project stores as the write authority').default(true),
+  },
+  handler: (options) =>
+    print(
+      migrateProjectStores(options.root, { dryRun: options.dryRun, resume: options.resume, cutover: options.cutover }),
+      options.json,
+    ),
 });
 
-const events = command({
-  name: 'events',
-  desc: 'Print the latest append-only workflow events',
-  options: { ...baseOptions(), limit: string().desc('Number of events').default('20') },
+const migrateRollback = command({
+  name: 'project-migrate-rollback',
+  desc: 'Rollback a fenced project-store cutover',
+  options: { ...baseOptions() },
   handler: (options) => {
-    const location = paths(options.root).events;
-    const entries = existsSync(location)
-      ? readFileSync(location, 'utf8')
-          .split('\n')
-          .filter(Boolean)
-          .map((line) => JSON.parse(line))
-      : [];
-    const result = entries.slice(-Math.max(1, Number(options.limit) || 20));
-    print(
-      options.json
-        ? result
-        : result.map((event) => `${event.sequence}\t${event.type}\t${event.aggregateId}\t${event.actor}`).join('\n') ||
-            'No events.',
-      options.json,
-    );
+    rollbackProjectStores(options.root);
+    print({ rolledBack: true }, options.json);
   },
 });
 
-const workspace = command({
-  name: 'workspace-status',
-  desc: 'Detect whether the workspace is new or already initialized',
-  options: { ...baseOptions() },
-  handler: (options) => print(workspaceStatus(options.root), options.json),
+const projectState = command({
+  name: 'project-state',
+  desc: 'Read one project without loading unrelated project domain state',
+  options: { ...baseOptions(), project: string().desc('Project identifier').required() },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(readProjectState(options.root, options.project), options.json);
+  },
+});
+
+const projectValidate = command({
+  name: 'project-validate',
+  desc: 'Validate one project store independently',
+  options: { ...baseOptions(), project: string().desc('Project identifier').required() },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(validateProjectStore(options.root, options.project), options.json);
+  },
+});
+
+const projectBackup = command({
+  name: 'project-backup',
+  desc: 'Back up one project store independently',
+  options: { ...baseOptions(), project: string().desc('Project identifier').required() },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print({ backupId: backupProjectStore(options.root, options.project) }, options.json);
+  },
+});
+
+const projectRestore = command({
+  name: 'project-restore',
+  desc: 'Restore one project store and validate it',
+  options: {
+    ...baseOptions(),
+    project: string().desc('Project identifier').required(),
+    backup: string().desc('Safe backup identifier').default(''),
+  },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(restoreProjectStore(options.root, options.project, options.backup || undefined), options.json);
+  },
+});
+
+const projectSync = command({
+  name: 'project-sync',
+  desc: 'Synchronize and independently validate one project store',
+  options: { ...baseOptions(), project: string().desc('Project identifier').required() },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(synchronizeProjectStore(options.root, options.project), options.json);
+  },
 });
 
 const timelineCommand = command({
   name: 'timeline',
   desc: 'Show the append-only project timeline',
-  options: { ...baseOptions(), project: string().desc('Optional project identifier').default('') },
-  handler: (options) => print(timeline(options.root, options.project || undefined), options.json),
+  options: { ...baseOptions(), project: string().desc('Registered project identifier').required() },
+  handler: (options) => print(projectDomain(options.root, options.project).timeline(), options.json),
 });
 
 const projectCreate = command({
@@ -149,22 +170,19 @@ const projectCreate = command({
   desc: 'Create a project in the local portfolio',
   options: {
     ...baseOptions(),
-    id: string().desc('Project identifier').required(),
+    project: string().desc('Project identifier').required(),
     name: string().desc('Project name').required(),
     summary: string().desc('Project summary').default(''),
   },
   handler: (options) =>
-    print(
-      createProject(options.root, { id: options.id, name: options.name, summary: options.summary }, 'human:cli'),
-      options.json,
-    ),
+    print(registerProject(options.root, options.project, options.name, options.summary), options.json),
 });
 
 const projectList = command({
   name: 'project-list',
   desc: 'List projects in the local portfolio',
-  options: { ...baseOptions() },
-  handler: (options) => print(listProjects(options.root), options.json),
+  options: { ...baseOptions(), project: string().desc('Registered project identifier').required() },
+  handler: (options) => print(projectDomain(options.root, options.project).listProjects(), options.json),
 });
 
 const epicCreate = command({
@@ -180,8 +198,7 @@ const epicCreate = command({
   },
   handler: (options) =>
     print(
-      createEpic(
-        options.root,
+      projectDomain(options.root, options.project).createEpic(
         {
           id: options.id,
           projectId: options.project,
@@ -198,8 +215,8 @@ const epicCreate = command({
 const epicList = command({
   name: 'epic-list',
   desc: 'List epics, optionally scoped to a project',
-  options: { ...baseOptions(), project: string().desc('Project identifier').default('') },
-  handler: (options) => print(listEpics(options.root, options.project || undefined), options.json),
+  options: { ...baseOptions(), project: string().desc('Registered project identifier').required() },
+  handler: (options) => print(projectDomain(options.root, options.project).listEpics(), options.json),
 });
 
 const workList = command({
@@ -207,14 +224,14 @@ const workList = command({
   desc: 'List work items scoped by project, epic, or sprint',
   options: {
     ...baseOptions(),
-    project: string().desc('Optional project identifier').default(''),
+    project: string().desc('Registered project identifier').required(),
     epic: string().desc('Optional epic identifier').default(''),
     sprint: string().desc('Optional sprint identifier').default(''),
   },
   handler: (options) =>
     print(
-      listWorkItems(options.root, {
-        projectId: options.project || undefined,
+      projectDomain(options.root, options.project).listWorkItems({
+        projectId: options.project,
         epicId: options.epic || undefined,
         sprintId: options.sprint || undefined,
       }),
@@ -225,15 +242,8 @@ const workList = command({
 const sprintList = command({
   name: 'sprint-list',
   desc: 'List sprints, optionally scoped to a project',
-  options: { ...baseOptions(), project: string().desc('Project identifier').default('') },
-  handler: (options) => print(listSprints(options.root, options.project || undefined), options.json),
-});
-
-const portfolioCommand = command({
-  name: 'portfolio',
-  desc: 'Show project-level operational summaries',
-  options: { ...baseOptions() },
-  handler: (options) => print(portfolio(options.root), options.json),
+  options: { ...baseOptions(), project: string().desc('Registered project identifier').required() },
+  handler: (options) => print(projectDomain(options.root, options.project).listSprints(), options.json),
 });
 
 const workCreate = command({
@@ -241,7 +251,7 @@ const workCreate = command({
   desc: 'Create a draft work item',
   options: {
     ...baseOptions(),
-    project: string().desc('Project identifier').default(''),
+    project: string().desc('Registered project identifier').required(),
     epic: string().desc('Optional epic identifier').default(''),
     title: string().desc('Work item title').required(),
     summary: string().desc('Work item summary').required(),
@@ -252,11 +262,10 @@ const workCreate = command({
     id: string().desc('Optional work item identifier').default(''),
   },
   handler: (options) => {
-    const result = createWorkItem(
-      options.root,
+    const result = projectDomain(options.root, options.project).createWorkItem(
       {
         id: options.id || undefined,
-        projectId: options.project || undefined,
+        projectId: options.project,
         epicId: options.epic || undefined,
         title: options.title,
         summary: options.summary,
@@ -267,6 +276,7 @@ const workCreate = command({
       },
       'human:cli',
     );
+
     print(result, options.json);
   },
 });
@@ -276,6 +286,7 @@ const workTransition = command({
   desc: 'Apply a validated work item state transition',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     id: string().desc('Work item identifier').required(),
     to: string()
       .desc('Destination state')
@@ -294,7 +305,11 @@ const workTransition = command({
       )
       .required(),
   },
-  handler: (options) => print(transitionWorkItem(options.root, options.id, options.to, 'human:cli'), options.json),
+  handler: (options) =>
+    print(
+      projectDomain(options.root, options.project).transitionWorkItem(options.id, options.to, 'human:cli'),
+      options.json,
+    ),
 });
 
 const workUpdate = command({
@@ -302,6 +317,7 @@ const workUpdate = command({
   desc: 'Update an existing work item and reopen reviewed work for rework',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     id: string().desc('Work item identifier').required(),
     title: string().desc('Updated work item title').default(''),
     summary: string().desc('Updated work item summary').default(''),
@@ -319,7 +335,8 @@ const workUpdate = command({
       ...(options.scopeOut ? { scopeOut: split(options.scopeOut) } : {}),
       ...(options.verify ? { verificationStrategy: split(options.verify) } : {}),
     };
-    print(updateWorkItem(options.root, options.id, patch, 'human:cli'), options.json);
+
+    print(projectDomain(options.root, options.project).updateWorkItem(options.id, patch, 'human:cli'), options.json);
   },
 });
 
@@ -328,10 +345,15 @@ const dependencyAdd = command({
   desc: 'Add a blocking dependency',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     from: string().desc('Blocking work item').required(),
     to: string().desc('Blocked work item').required(),
   },
-  handler: (options) => print(addDependency(options.root, options.from, options.to, 'human:cli'), options.json),
+  handler: (options) =>
+    print(
+      projectDomain(options.root, options.project).addDependency(options.from, options.to, 'human:cli'),
+      options.json,
+    ),
 });
 
 const sprintPropose = command({
@@ -353,14 +375,13 @@ const sprintPropose = command({
   },
   handler: (options) =>
     print(
-      proposeSprint(
-        options.root,
+      projectDomain(options.root, options.project).proposeSprint(
         {
           goal: options.goal,
           why: options.why,
           what: options.what,
           how: options.how,
-          projectId: options.project || undefined,
+          projectId: options.project,
           epicIds: split(options.epics),
           workItemIds: split(options.workItems),
           nonGoals: split(options.nonGoals),
@@ -379,10 +400,15 @@ const sprintApprove = command({
   desc: 'Approve a sprint revision',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     sprint: string().desc('Sprint identifier').required(),
     revision: string().desc('Revision identifier').required(),
   },
-  handler: (options) => print(approveSprint(options.root, options.sprint, options.revision, 'human:cli'), options.json),
+  handler: (options) =>
+    print(
+      projectDomain(options.root, options.project).approveSprint(options.sprint, options.revision, 'human:cli'),
+      options.json,
+    ),
 });
 
 const sprintActivate = command({
@@ -390,11 +416,15 @@ const sprintActivate = command({
   desc: 'Activate an approved sprint revision',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     sprint: string().desc('Sprint identifier').required(),
     revision: string().desc('Revision identifier').required(),
   },
   handler: (options) =>
-    print(activateSprint(options.root, options.sprint, options.revision, 'human:cli'), options.json),
+    print(
+      projectDomain(options.root, options.project).activateSprint(options.sprint, options.revision, 'human:cli'),
+      options.json,
+    ),
 });
 
 const sprintEvidenceAdd = command({
@@ -402,6 +432,7 @@ const sprintEvidenceAdd = command({
   desc: 'Attach final verification evidence to an active sprint',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     sprint: string().desc('Sprint identifier').required(),
     kind: string().desc('Evidence kind').enum('verification', 'command', 'observation').required(),
     summary: string().desc('Evidence summary').required(),
@@ -409,7 +440,13 @@ const sprintEvidenceAdd = command({
   },
   handler: (options) =>
     print(
-      addSprintEvidence(options.root, options.sprint, options.kind, options.summary, options.value, 'human:cli'),
+      projectDomain(options.root, options.project).addSprintEvidence(
+        options.sprint,
+        options.kind,
+        options.summary,
+        options.value,
+        'human:cli',
+      ),
       options.json,
     ),
 });
@@ -422,7 +459,8 @@ const sprintClose = command({
     project: string().desc('Project identifier').required(),
     sprint: string().desc('Sprint identifier').required(),
   },
-  handler: (options) => print(closeSprint(options.root, options.sprint, options.project, 'human:cli'), options.json),
+  handler: (options) =>
+    print(projectDomain(options.root, options.project).closeSprint(options.sprint, 'human:cli'), options.json),
 });
 
 const sprintRemoveAll = command({
@@ -430,9 +468,9 @@ const sprintRemoveAll = command({
   desc: 'Remove sprint planning state while preserving project flow state',
   options: {
     ...baseOptions(),
-    project: string().desc('Optional project identifier; omit to remove all sprints').default(''),
+    project: string().desc('Registered project identifier').required(),
   },
-  handler: (options) => print(removeSprints(options.root, options.project || undefined, 'human:cli'), options.json),
+  handler: (options) => print(projectDomain(options.root, options.project).removeSprints('human:cli'), options.json),
 });
 
 const claim = command({
@@ -440,10 +478,15 @@ const claim = command({
   desc: 'Claim a ready work item',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     id: string().desc('Work item identifier').required(),
     agent: string().desc('Agent identifier').default('human-cli'),
   },
-  handler: (options) => print(claimWorkItem(options.root, options.id, options.agent, 'human:cli'), options.json),
+  handler: (options) =>
+    print(
+      projectDomain(options.root, options.project).claimWorkItem(options.id, options.agent, 'human:cli'),
+      options.json,
+    ),
 });
 
 const runStart = command({
@@ -451,10 +494,15 @@ const runStart = command({
   desc: 'Start a run for a claimed work item',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     workItem: string('work-item').desc('Work item identifier').required(),
     agent: string().desc('Agent identifier').default('human-cli'),
   },
-  handler: (options) => print(startRun(options.root, options.workItem, options.agent, 'human:cli'), options.json),
+  handler: (options) =>
+    print(
+      projectDomain(options.root, options.project).startRun(options.workItem, options.agent, 'human:cli'),
+      options.json,
+    ),
 });
 
 const runFinish = command({
@@ -462,12 +510,16 @@ const runFinish = command({
   desc: 'Finish an execution run',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     run: string().desc('Run identifier').required(),
     status: string().desc('Run result').enum('completed', 'failed').required(),
     reason: string().desc('Termination reason').required(),
   },
   handler: (options) =>
-    print(finishRun(options.root, options.run, options.status, options.reason, 'human:cli'), options.json),
+    print(
+      projectDomain(options.root, options.project).finishRun(options.run, options.status, options.reason, 'human:cli'),
+      options.json,
+    ),
 });
 
 const evidenceAdd = command({
@@ -475,6 +527,7 @@ const evidenceAdd = command({
   desc: 'Attach evidence to a run',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     run: string().desc('Run identifier').required(),
     kind: string()
       .desc('Evidence kind')
@@ -485,7 +538,13 @@ const evidenceAdd = command({
   },
   handler: (options) =>
     print(
-      addEvidence(options.root, options.run, options.kind, options.summary, options.value, 'human:cli'),
+      projectDomain(options.root, options.project).addEvidence(
+        options.run,
+        options.kind,
+        options.summary,
+        options.value,
+        'human:cli',
+      ),
       options.json,
     ),
 });
@@ -495,11 +554,15 @@ const reviewRequest = command({
   desc: 'Request an independent review',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     workItem: string('work-item').desc('Work item identifier').required(),
     reviewer: string().desc('Reviewer identifier').required(),
   },
   handler: (options) =>
-    print(requestReview(options.root, options.workItem, options.reviewer, 'human:cli'), options.json),
+    print(
+      projectDomain(options.root, options.project).requestReview(options.workItem, options.reviewer, 'human:cli'),
+      options.json,
+    ),
 });
 
 const reviewSubmit = command({
@@ -507,30 +570,32 @@ const reviewSubmit = command({
   desc: 'Submit an accepted or rejected review',
   options: {
     ...baseOptions(),
+    project: string().desc('Registered project identifier').required(),
     review: string().desc('Review identifier').required(),
     verdict: string().desc('Review verdict').enum('accepted', 'rejected').required(),
     feedback: string().desc('Review feedback').required(),
   },
   handler: (options) =>
-    print(submitReview(options.root, options.review, options.verdict, options.feedback, 'human:cli'), options.json),
-});
-
-const tui = command({
-  name: 'tui',
-  desc: 'Open the interactive local sprint dashboard',
-  options: {
-    root: string().desc('Project root containing .themis').default('.'),
-    sprint: string().desc('Sprint identifier').default(''),
-  },
-  handler: (options) => startTui(options.root, options.sprint || undefined),
+    print(
+      projectDomain(options.root, options.project).submitReview(
+        options.review,
+        options.verdict,
+        options.feedback,
+        'human:cli',
+      ),
+      options.json,
+    ),
 });
 
 const commands: Command[] = [
-  status,
   ready,
-  validate,
-  events,
-  workspace,
+  migrate,
+  migrateRollback,
+  projectState,
+  projectValidate,
+  projectBackup,
+  projectRestore,
+  projectSync,
   timelineCommand,
   projectCreate,
   projectList,
@@ -538,7 +603,6 @@ const commands: Command[] = [
   epicList,
   workList,
   sprintList,
-  portfolioCommand,
   workCreate,
   workTransition,
   workUpdate,
@@ -555,7 +619,6 @@ const commands: Command[] = [
   evidenceAdd,
   reviewRequest,
   reviewSubmit,
-  tui,
 ];
 
 const cliPath = fileURLToPath(import.meta.url);
@@ -565,4 +628,4 @@ if (isMain) {
   run(commands, { name: 'themis', description: 'Local operational control plane for OpenCode work', version: '0.1.0' });
 }
 
-export { commands, status };
+export { commands };

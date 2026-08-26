@@ -1,0 +1,16 @@
+{
+  "runId": "RUN-237",
+  "streamId": "generated in sync-case-matrix.json and raw-sync-http.ndjson",
+  "source": "apps/web/api-e2e/src/support/run-openapi-contract.ts and apps/web/api-e2e/src/api/pzs-005-real.spec.ts",
+  "transport": ["sync-case-matrix.json", "pzs-005-sync.har.json", "pzs-005-sync.junit.xml", "raw-sync-http.ndjson"],
+  "contract": ["generated-openapi.json", "openapi-report/"],
+  "custody": ["postgres-rows.json", "minio-object.json"],
+  "observability": ["server.log", "traces.json", "metrics.json"],
+  "hashes": "artifact-hashes.txt",
+  "provenance": {
+    "openapiSourceBuild": "pnpm exec nx run server:build --skip-nx-cache",
+    "durableMigration": "pnpm db:migrate with isolated DATABASE_URL and durable storage settings",
+    "syntheticArtifacts": false,
+    "crossRunArtifactReuse": false
+  }
+}

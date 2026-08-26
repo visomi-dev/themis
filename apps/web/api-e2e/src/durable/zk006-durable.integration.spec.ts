@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 
 import { Pool } from 'pg';
 
@@ -132,6 +134,40 @@ describe('ZK-006 durable opaque sync integration', () => {
       );
       assert(!JSON.stringify(rows.rows).includes(plaintextMarker), 'Plaintext marker appeared in PostgreSQL metadata.');
 
+      const durableRunId = process.env['PZS005_RUN_ID'] ?? `RUN-${Date.now()}-${process.pid}`;
+      const durableArtifactDirectory = resolve(
+        process.cwd(),
+        process.env['PZS005_ARTIFACT_DIR'] ?? `docs/verification/pzs-005-${durableRunId.toLowerCase()}`,
+      );
+
+      await mkdir(durableArtifactDirectory, { recursive: true });
+      await writeFile(
+        resolve(durableArtifactDirectory, 'durable-storage-observations.json'),
+        JSON.stringify(
+          {
+            runId: durableRunId,
+            database: {
+              driver: 'PostgreSQL',
+              metadataRows: rows.rows,
+              protectedColumns: 'none observed',
+              plaintextMarkerObserved: JSON.stringify(rows.rows).includes(plaintextMarker),
+            },
+            objectStorage: {
+              provider: 'MinIO S3-compatible',
+              bucket,
+              listing:
+                'The repository object-store abstraction has no list operation; observed object key is retained below.',
+              objectKey: rows.rows[1].object_key,
+              retrievedBytes: storedCiphertext.length,
+              ciphertextSha256: sha256(storedCiphertext),
+              metadataHashMatchesPostgres: rows.rows[1].ciphertext_sha256 === sha256(storedCiphertext),
+            },
+          },
+          null,
+          2,
+        ),
+      );
+
       const columns = await pool.query<{ column_name: string }>(
         `SELECT column_name FROM information_schema.columns
        WHERE table_name = 'opaque_sync_envelopes' AND column_name IN ('plaintext', 'payload', 'encryption_key', 'secret_key')`,
@@ -144,7 +180,7 @@ describe('ZK-006 durable opaque sync integration', () => {
         recoveryPool,
         new RailwayS3ObjectStore({ endpoint, bucket, accessKey, secretKey }),
       );
-      const recovered = await recoveredRepository.list(accountId, workspaceId);
+      const recovered = await recoveredRepository.list(accountId, workspaceId, 2);
 
       assert(
         recovered.every((entry) => entry.envelope.envelopeId !== envelopeId),
@@ -173,6 +209,20 @@ describe('ZK-006 durable opaque sync integration', () => {
       );
 
       await owner.approveWorkspace(accountId, workspaceId, ownerDevice.deviceId);
+
+      const approval = await pool.query<{ device_id: string }>(
+        'SELECT device_id FROM sync_workspace_approvals WHERE account_id = $1 AND workspace_id = $2',
+        [accountId, workspaceId],
+      );
+
+      assert(
+        approval.rows.length === 1 && approval.rows[0].device_id === ownerDevice.deviceId,
+        'Durable owner approval was not persisted as the single approver before enrollment.',
+      );
+
+      await expect(owner.approveWorkspace(accountId, workspaceId, replacement.deviceId)).rejects.toThrow(
+        'single-device approval',
+      );
       const grantEnvelope = syntheticEnvelope(workspaceId, `device-key-${randomUUID()}`, 1);
       const grant = await owner.enrollDevice(accountId, replacement.deviceId, workspaceId, ownerDevice.deviceId, {
         ...grantEnvelope,

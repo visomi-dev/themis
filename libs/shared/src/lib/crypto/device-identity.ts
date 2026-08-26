@@ -145,7 +145,13 @@ export class DeviceIdentityStore {
     if (!this.workspaceAuthorizations.has(this.workspaceDeviceKey(accountId, workspaceId, approvedByDeviceId))) {
       throw new DeviceIdentityError('Approver is not authorized for this workspace.');
     }
-    this.workspaceApprovals.set(this.workspaceKey(accountId, workspaceId), {
+    const key = this.workspaceKey(accountId, workspaceId);
+    const existing = this.workspaceApprovals.get(key);
+
+    if (existing && existing.approvedByDeviceId !== approvedByDeviceId) {
+      throw new DeviceIdentityError('Workspace already has a single-device approval.');
+    }
+    this.workspaceApprovals.set(key, {
       accountId,
       approvedByDeviceId,
       workspaceId,

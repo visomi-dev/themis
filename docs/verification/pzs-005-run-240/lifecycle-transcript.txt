@@ -1,0 +1,4 @@
+runId=RUN-240
+project=themis-local-e2e-657445
+provider=podman
+$ podman compose --project-name themis-local-e2e-657445 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init

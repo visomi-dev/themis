@@ -1,0 +1,6 @@
+Command: pnpm exec nx run themis-workflow:test --skip-nx-cache
+Result: PASS
+Tests: 11
+Pass: 11
+Fail: 0
+Artifact target: Nx themis-workflow test output.

@@ -1,0 +1,75 @@
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+[22:37:23.325] [32mINFO[39m (147035): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[22:37:23.334] [32mINFO[39m (147035): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[22:37:23.328] [32mINFO[39m (147035): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[22:37:23.328] [32mINFO[39m (147035): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[22:37:23.336] [32mINFO[39m (147035): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8080
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+[22:37:23.614] [32mINFO[39m (147123): [36mWorker runtime ready[39m
+[0mPOST /api/test/auth/session [32m200[0m 160.054 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 29.721 ms - 370[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices [32m200[0m 15.238 ms - 326[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices/device-ef46aaf1-f6e3-4fe9-b740-009db79a2890/approval [32m200[0m 13.182 ms - 173[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices/device-ef46aaf1-f6e3-4fe9-b740-009db79a2890/enroll [32m200[0m 45.903 ms - 758[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices [32m200[0m 9.145 ms - 328[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices/device-9207356f-702e-4bab-83dd-c5689bb456ac/enroll [32m200[0m 27.693 ms - 734[0m
+[0mPOST /api/test/auth/session [32m200[0m 162.221 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 6.149 ms - 370[0m
+[0mPOST /api/sync/84763229-9607-46d5-912c-0fafec6d938e/devices [32m200[0m 15.910 ms - 326[0m
+[0mPOST /api/sync/84763229-9607-46d5-912c-0fafec6d938e/devices/device-e1e526f4-2b8e-4098-808d-94a11063afcd/approval [32m200[0m 10.880 ms - 173[0m
+[0mPOST /api/sync/84763229-9607-46d5-912c-0fafec6d938e/devices/device-e1e526f4-2b8e-4098-808d-94a11063afcd/enroll [32m200[0m 26.473 ms - 758[0m
+[0mPOST /api/sync/84763229-9607-46d5-912c-0fafec6d938e/devices [32m200[0m 8.699 ms - 328[0m
+[0mPOST /api/sync/84763229-9607-46d5-912c-0fafec6d938e/devices/device-d200fa0e-583e-44a8-aa47-0cb908feb36f/enroll [32m200[0m 23.162 ms - 734[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [32m201[0m 29.009 ms - 546[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [32m200[0m 61.664 ms - 545[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m409[0m 13.594 ms - 84[0m
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes?deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [32m200[0m 9.343 ms - 546[0m
+[0mPOST /api/projects [32m201[0m 4.408 ms - 388[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/09c5b567-8882-44ed-a1ac-25f9b546bb23/envelopes?deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [33m409[0m 3.704 ms - 90[0m
+[ error ] API request failed { code: [32m'workspace_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/sync/84763229-9607-46d5-912c-0fafec6d938e/envelopes?deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [33m404[0m 2.165 ms - 76[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices [32m200[0m 7.756 ms - 310[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices/device-0825d672-3c14-4813-9d16-bacd1e89c877/revoke [32m200[0m 9.263 ms - 114[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes?deviceId=device-0825d672-3c14-4813-9d16-bacd1e89c877&enrollmentVersion=1 [33m409[0m 3.988 ms - 90[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices [32m200[0m 10.821 ms - 316[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes?deviceId=device-83694f12-965c-43d7-8d6d-4297a9e9ecee&enrollmentVersion=1 [33m409[0m 4.803 ms - 90[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m400[0m 1.240 ms - 236[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m400[0m 3.584 ms - 267[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m400[0m 2.746 ms - 177[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m409[0m 8.965 ms - 84[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m409[0m 15.900 ms - 84[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [32m201[0m 37.631 ms - 530[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m409[0m 42.134 ms - 84[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/checkpoints [32m201[0m 28.133 ms - 571[0m
+[ error ] API request failed { code: [32m'checkpoint_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/checkpoints [33m409[0m 8.286 ms - 71[0m
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/recovery?checkpointId=checkpoint-1&deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2&afterCursor=0&limit=10 [32m200[0m 12.063 ms - 1080[0m
+[ error ] API request failed { code: [32m'recovery_chain_unavailable'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/recovery?checkpointId=missing&deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [33m409[0m 5.872 ms - 92[0m
+[ error ] API request failed { code: [32m'cursor_recovery_required'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes?afterCursor=0&deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [33m409[0m 7.458 ms - 96[0m
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [32m201[0m 26.849 ms - 536[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes [33m409[0m 25.376 ms - 84[0m
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/envelopes?afterCursor=1&deviceId=device-9207356f-702e-4bab-83dd-c5689bb456ac&enrollmentVersion=2 [32m200[0m 37.709 ms - 1009[0m
+[0mGET /api/sync/84e72ee6-ca36-47fe-a503-a7280adfbeb1/devices [32m200[0m 2.422 ms - 1229[0m
+[0mGET /api/openapi.json [32m200[0m 9.671 ms - 141785[0m

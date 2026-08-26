@@ -1,0 +1,143 @@
+
+ NX   Running targets lint, typecheck, build for 2 projects:
+
+- themis-workflow
+- themis-agent-cli
+
+
+
+> nx run themis-workflow:build
+
+Compiling TypeScript files for project "themis-workflow"...
+Done compiling TypeScript files for project "themis-workflow".
+[1m[33mPackage type is set to "module" but "cjs" format is included. Going to use "esm" format instead. You can change the package type to "commonjs" or remove type in the package.json file.[39m[22m
+
+> nx run themis-workflow:typecheck
+
+> pnpm exec tsc --noEmit -p libs/themis-workflow/tsconfig.lib.json
+
+
+> nx run themis-workflow:lint
+
+> pnpm exec eslint libs/themis-workflow/src --rule '{"padding-line-between-statements":"off"}'
+
+
+> nx run themis-agent-cli:typecheck
+
+> pnpm exec tsc --noEmit -p apps/themis-agent-cli/tsconfig.app.json
+
+
+> nx run themis-agent-cli:lint
+
+> eslint .
+
+
+> nx run themis-agent-cli:build:production
+
+
+
+
+ NX   Successfully ran targets lint, typecheck, build for 2 projects
+
+
+$ node --experimental-strip-types --test scripts/themis-core.test.ts scripts/themis-project-migration.test.ts scripts/themis-tools.e2e.test.ts scripts/themis-cli.test.ts scripts/themis-adapter-operation-matrix.test.ts scripts/plan-fidelity.test.ts
+(node:3728151) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/plan-fidelity.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ approved plan fidelity evaluation
+  ✔ loads the actual P0-P11 inventory without overstating deferred evidence (2.467477ms)
+  ✔ reports omitted phases and unrepresented rich steps instead of collapsing them (0.278946ms)
+  ✔ requires a traceability row before and after mutation (0.135865ms)
+  ✔ makes scope changes explicit and rejects incomplete validation matrices (0.632702ms)
+  ✔ makes traceability and evidence completeness executable (0.552844ms)
+  ✔ keeps mutation authorization and evidence semantics explicit in guidance (0.373067ms)
+✔ approved plan fidelity evaluation (5.681761ms)
+(node:3728152) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-adapter-operation-matrix.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3728152) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/tools/themis.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/package.json.
+▶ adapter operation-to-test authorization matrix
+  ✔ rejects missing project scope for every CLI project operation (3142.322336ms)
+  ✔ rejects unregistered, foreign, disabled, and moved roots for every CLI operation family (10158.860659ms)
+  ✔ proves OpenCode tools require a registered project and reject a foreign read (4.387956ms)
+✔ adapter operation-to-test authorization matrix (13306.671981ms)
+(node:3728153) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-cli.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ Themis CLI project authority
+  ✔ requires project scope and removes root aggregate commands (233.682593ms)
+  ✔ creates and reads only a registered project store (314.225375ms)
+✔ Themis CLI project authority (548.99852ms)
+(node:3728159) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-core.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ local Themis workflow
+  ✔ detects first-run workspaces and scopes the audit timeline by project (2.532999ms)
+  ✔ executes the complete proposal to accepted review flow (4.508956ms)
+  ✔ updates a completed item, reopens it for rework, and preserves its history (1.870595ms)
+  ✔ requires final sprint evidence before closing and releases the project slot (3.94756ms)
+  ✔ executes ready work through project flow without an active sprint (0.889228ms)
+  ✔ removes sprint planning state and returns planned work to project flow (1.626335ms)
+  ✔ rejects blocked work and missing review evidence (1.634435ms)
+  ✔ moves rejected reviews to rework (1.808813ms)
+  ✔ requires the latest completed run after rework (2.145196ms)
+  ✔ rejects transitions outside the state machine (0.578071ms)
+  ✔ scopes active sprints by project and keeps epic ownership explicit (2.248374ms)
+✔ local Themis workflow (25.250645ms)
+(node:3728160) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-project-migration.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+migration raw-output scan: filesScanned=["/tmp/themis-project-migration-C54w9C/.themis/migration/backups/migration-migration-22d5380b51f1/events.ndjson","/tmp/themis-project-migration-C54w9C/.themis/migration/backups/migration-migration-22d5380b51f1/manifest.json","/tmp/themis-project-migration-C54w9C/.themis/migration/backups/migration-migration-22d5380b51f1/state.json","/tmp/themis-project-migration-C54w9C/.themis/migration/quarantine.json","/tmp/themis-project-migration-C54w9C/.themis/migration/ledger.json","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-A/events.ndjson","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-A/manifest.json","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-A/state.json","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-B/events.ndjson","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-B/manifest.json","/tmp/themis-project-migration-C54w9C/.themis/projects/PRJ-B/state.json","/tmp/themis-project-migration-C54w9C/.themis/migration/logs/migration-22d5380b51f1.json"], findings=[]
+▶ project-scoped Themis migration
+  ✔ preserves the complete domain, event order, backup, and quarantines unresolved history (13.684359ms)
+  ✔ resumes after a project failure and reruns idempotently (4.124696ms)
+  ✔ isolates a corrupt project store and rejects stale global replay (2.776378ms)
+  ✔ rolls back only while writes are fenced (1.655945ms)
+  ✔ validates, backs up, restores, and synchronizes a store independently (3.748354ms)
+  ✔ quarantines every orphan and ambiguous record exactly once (1.741434ms)
+✔ project-scoped Themis migration (28.974741ms)
+(node:3728171) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-tools.e2e.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3728171) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/tools/themis.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/package.json.
+▶ OpenCode project-authorized tools
+  ✔ uses registered project APIs and rejects a foreign project read (6.067063ms)
+✔ OpenCode project-authorized tools (6.801528ms)
+ℹ tests 29
+ℹ suites 6
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13522.163259
+(node:3730243) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/plan-fidelity.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ approved plan fidelity evaluation
+  ✔ loads the actual P0-P11 inventory without overstating deferred evidence (1.457734ms)
+  ✔ reports omitted phases and unrepresented rich steps instead of collapsing them (1.151537ms)
+  ✔ requires a traceability row before and after mutation (0.261675ms)
+  ✔ makes scope changes explicit and rejects incomplete validation matrices (0.676699ms)
+  ✔ makes traceability and evidence completeness executable (0.428262ms)
+  ✔ keeps mutation authorization and evidence semantics explicit in guidance (0.264433ms)
+✔ approved plan fidelity evaluation (5.484972ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109.615161

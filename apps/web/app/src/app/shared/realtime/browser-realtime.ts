@@ -1,4 +1,4 @@
-import { Signal, effect, inject, Injectable, signal } from '@angular/core';
+import { Signal, effect, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 
 import { Auth } from '../auth/auth';
@@ -9,9 +9,8 @@ import type { AsyncJobEvent } from './realtime.models';
 @Injectable({ providedIn: 'root' })
 export class BrowserRealtime extends Realtime {
   private readonly auth = inject(Auth);
-  private readonly $connected: import('@angular/core').WritableSignal<boolean> = signal(false);
-  private readonly $lastEvent: import('@angular/core').WritableSignal<AsyncJobEvent | null> =
-    signal<AsyncJobEvent | null>(null);
+  private readonly $connected: WritableSignal<boolean> = signal(false);
+  private readonly $lastEvent: WritableSignal<AsyncJobEvent | null> = signal<AsyncJobEvent | null>(null);
 
   private socket: Socket | null = null;
 

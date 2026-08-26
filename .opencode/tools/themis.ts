@@ -1,37 +1,17 @@
 import { tool } from '@opencode-ai/plugin';
+import { ProjectWorkflowStore, WorkspaceRegistry, redactPortable } from '../../libs/themis-workflow/src/index.ts';
 
-import {
-  activateSprint,
-  addSprintEvidence,
-  addDependency,
-  addEvidence,
-  approveSprint,
-  claimWorkItem,
-  closeSprint,
-  createEpic,
-  createProject,
-  createWorkItem,
-  finishRun,
-  flowReadyQueue,
-  proposeSprint,
-  readState,
-  readyQueue,
-  requestReview,
-  removeSprints,
-  listEpics,
-  listProjects,
-  listSprints,
-  listWorkItems,
-  startRun,
-  submitReview,
-  timeline,
-  transitionWorkItem,
-  updateWorkItem,
-  validateState,
-  workspaceStatus,
-} from './themis-core.ts';
+const output = (value: unknown): string => JSON.stringify(redactPortable(value), null, 2);
+const projectDomain = (root: string, projectId: string): ReturnType<ProjectWorkflowStore['domain']> =>
+  new ProjectWorkflowStore(new WorkspaceRegistry(root), projectId).domain();
 
-const output = (value: unknown): string => JSON.stringify(value, null, 2);
+const registerProject = (root: string, projectId: string, name: string, summary: string) => {
+  const registry = new WorkspaceRegistry(root);
+
+  registry.register(projectId, name, root);
+
+  return new ProjectWorkflowStore(registry, projectId).domain().createProject({ id: projectId, name, summary }, 'agent:opencode');
+};
 
 export const workitem_create = tool({
   description: 'Create a local Themis work item in draft state.',
@@ -47,23 +27,20 @@ export const workitem_create = tool({
     id: tool.schema.string().optional().describe('Optional stable identifier, for example THM-001'),
   },
   async execute(args, context) {
-    return output(createWorkItem(context.worktree, args, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).createWorkItem(args, `agent:${context.agent}`));
   },
 });
 
 export const workitem_get = tool({
   description: 'Read a local Themis work item and its related runs, evidence, and reviews.',
-  args: { id: tool.schema.string().describe('Work item identifier') },
+  args: { id: tool.schema.string().describe('Work item identifier'), projectId: tool.schema.string().describe('Registered project identifier') },
   async execute(args, context) {
-    const state = readState(context.worktree);
+    const state = projectDomain(context.worktree, args.projectId).readState();
     const item = state.workItems.find((candidate) => candidate.id === args.id);
+
     if (!item) return output({ error: `Work item not found: ${args.id}` });
-    return output({
-      item,
-      dependencies: state.dependencies.filter((dependency) => dependency.from === args.id || dependency.to === args.id),
-      runs: state.runs.filter((run) => run.workItemId === args.id),
-      reviews: state.reviews.filter((review) => review.workItemId === args.id),
-    });
+
+    return output({ item, dependencies: state.dependencies.filter((d) => d.from === args.id || d.to === args.id), runs: state.runs.filter((r) => r.workItemId === args.id), reviews: state.reviews.filter((r) => r.workItemId === args.id) });
   },
 });
 
@@ -71,6 +48,7 @@ export const workitem_transition = tool({
   description: 'Apply a validated state transition to a Themis work item.',
   args: {
     id: tool.schema.string().describe('Work item identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
     to: tool.schema.enum([
       'draft',
       'ready',
@@ -86,7 +64,7 @@ export const workitem_transition = tool({
     ]),
   },
   async execute(args, context) {
-    return output(transitionWorkItem(context.worktree, args.id, args.to, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).transitionWorkItem(args.id, args.to, `agent:${context.agent}`));
   },
 });
 
@@ -94,6 +72,7 @@ export const workitem_update = tool({
   description: 'Update an existing work item and reopen reviewed work for rework when its contract changes.',
   args: {
     id: tool.schema.string().describe('Work item identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
     title: tool.schema.string().optional().describe('Updated work item title'),
     summary: tool.schema.string().optional().describe('Updated problem and expected outcome'),
     acceptanceCriteria: tool.schema.array(tool.schema.string()).optional().describe('Updated acceptance criteria'),
@@ -106,7 +85,8 @@ export const workitem_update = tool({
   },
   async execute(args, context) {
     const { id, ...patch } = args;
-    return output(updateWorkItem(context.worktree, id, patch, `agent:${context.agent}`));
+
+    return output(projectDomain(context.worktree, args.projectId).updateWorkItem(id, patch, `agent:${context.agent}`));
   },
 });
 
@@ -115,9 +95,10 @@ export const dependency_add = tool({
   args: {
     from: tool.schema.string().describe('Blocking work item identifier'),
     to: tool.schema.string().describe('Blocked work item identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(addDependency(context.worktree, args.from, args.to, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).addDependency(args.from, args.to, `agent:${context.agent}`));
   },
 });
 
@@ -137,7 +118,8 @@ export const sprint_propose = tool({
     sprintId: tool.schema.string().optional().describe('Existing sprint identifier for a new revision'),
   },
   async execute(args, context) {
-    const revision = proposeSprint(context.worktree, args, `agent:${context.agent}`);
+    const revision = projectDomain(context.worktree, args.projectId).proposeSprint(args, `agent:${context.agent}`);
+
     return output({ ...revision, revisionId: revision.id });
   },
 });
@@ -147,9 +129,10 @@ export const sprint_approve = tool({
   args: {
     sprintId: tool.schema.string().describe('Sprint identifier'),
     revisionId: tool.schema.string().describe('Revision identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(approveSprint(context.worktree, args.sprintId, args.revisionId, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).approveSprint(args.sprintId, args.revisionId, `agent:${context.agent}`));
   },
 });
 
@@ -158,9 +141,10 @@ export const sprint_activate = tool({
   args: {
     sprintId: tool.schema.string().describe('Sprint identifier'),
     revisionId: tool.schema.string().describe('Approved revision identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(activateSprint(context.worktree, args.sprintId, args.revisionId, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).activateSprint(args.sprintId, args.revisionId, `agent:${context.agent}`));
   },
 });
 
@@ -171,10 +155,11 @@ export const sprint_evidence_add = tool({
     kind: tool.schema.enum(['verification', 'command', 'observation']),
     summary: tool.schema.string().describe('Evidence summary'),
     value: tool.schema.string().describe('Observed command output or result'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
     return output(
-      addSprintEvidence(context.worktree, args.sprintId, args.kind, args.summary, args.value, `agent:${context.agent}`),
+      projectDomain(context.worktree, args.projectId).addSprintEvidence(args.sprintId, args.kind, args.summary, args.value, `agent:${context.agent}`),
     );
   },
 });
@@ -186,17 +171,17 @@ export const sprint_close = tool({
     sprintId: tool.schema.string().describe('Active sprint identifier'),
   },
   async execute(args, context) {
-    return output(closeSprint(context.worktree, args.sprintId, args.projectId, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).closeSprint(args.sprintId, `agent:${context.agent}`));
   },
 });
 
 export const sprints_remove = tool({
   description: 'Remove sprint planning state while preserving projects, work items, runs, evidence, and reviews.',
   args: {
-    projectId: tool.schema.string().optional().describe('Optional project identifier; omit to remove all sprints'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(removeSprints(context.worktree, args.projectId, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).removeSprints(`agent:${context.agent}`));
   },
 });
 
@@ -207,7 +192,7 @@ export const ready_queue = tool({
     sprintId: tool.schema.string().describe('Active sprint identifier'),
   },
   async execute(args, context) {
-    return output(readyQueue(context.worktree, args.sprintId, args.projectId));
+    return output(projectDomain(context.worktree, args.projectId).readyQueue(args.sprintId));
   },
 });
 
@@ -218,55 +203,39 @@ export const flow_ready_queue = tool({
     wipLimit: tool.schema.number().int().positive().optional().describe('Optional maximum active work in the project'),
   },
   async execute(args, context) {
-    return output(flowReadyQueue(context.worktree, args.projectId, args.wipLimit));
+    return output(projectDomain(context.worktree, args.projectId).flowReadyQueue(args.wipLimit));
   },
 });
 
 export const project_create = tool({
   description: 'Create a local Themis project portfolio entry.',
   args: {
-    id: tool.schema.string().describe('Project identifier'),
+    projectId: tool.schema.string().describe('Project identifier'),
     name: tool.schema.string().describe('Project name'),
     summary: tool.schema.string().describe('Project summary'),
   },
   async execute(args, context) {
-    return output(createProject(context.worktree, args, `agent:${context.agent}`));
-  },
-});
-
-export const project_list = tool({
-  description: 'List projects in the local Themis portfolio.',
-  args: {},
-  async execute(_args, context) {
-    return output(listProjects(context.worktree));
-  },
-});
-
-export const workspace_status = tool({
-  description: 'Detect whether the current workspace is new or already initialized.',
-  args: {},
-  async execute(_args, context) {
-    return output(workspaceStatus(context.worktree));
+    return output(registerProject(context.worktree, args.projectId, args.name, args.summary));
   },
 });
 
 export const timeline_list = tool({
-  description: 'Show the append-only project timeline, optionally scoped to a project.',
-  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  description: 'Show the append-only timeline for one registered project.',
+  args: { projectId: tool.schema.string().describe('Registered project identifier') },
   async execute(args, context) {
-    return output(timeline(context.worktree, args.projectId));
+    return output(projectDomain(context.worktree, args.projectId).timeline());
   },
 });
 
 export const workitem_list = tool({
   description: 'List work items scoped by project, epic, or sprint.',
   args: {
-    projectId: tool.schema.string().optional().describe('Optional project identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
     epicId: tool.schema.string().optional().describe('Optional epic identifier'),
     sprintId: tool.schema.string().optional().describe('Optional sprint identifier'),
   },
   async execute(args, context) {
-    return output(listWorkItems(context.worktree, args));
+    return output(projectDomain(context.worktree, args.projectId).listWorkItems(args));
   },
 });
 
@@ -280,23 +249,23 @@ export const epic_create = tool({
     goal: tool.schema.string().describe('Epic goal'),
   },
   async execute(args, context) {
-    return output(createEpic(context.worktree, args, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).createEpic(args, `agent:${context.agent}`));
   },
 });
 
 export const epic_list = tool({
   description: 'List epics, optionally scoped to a project.',
-  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  args: { projectId: tool.schema.string().describe('Registered project identifier') },
   async execute(args, context) {
-    return output(listEpics(context.worktree, args.projectId));
+    return output(projectDomain(context.worktree, args.projectId).listEpics());
   },
 });
 
 export const sprint_list = tool({
   description: 'List sprints, optionally scoped to a project.',
-  args: { projectId: tool.schema.string().optional().describe('Optional project identifier') },
+  args: { projectId: tool.schema.string().describe('Registered project identifier') },
   async execute(args, context) {
-    return output(listSprints(context.worktree, args.projectId));
+    return output(projectDomain(context.worktree, args.projectId).listSprints());
   },
 });
 
@@ -305,9 +274,10 @@ export const work_claim = tool({
   args: {
     id: tool.schema.string().describe('Work item identifier'),
     agent: tool.schema.string().describe('Logical executor identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(claimWorkItem(context.worktree, args.id, args.agent, `agent:${context.agent}`));
+    return output(projectDomain(context.worktree, args.projectId).claimWorkItem(args.id, args.agent, `agent:${context.agent}`));
   },
 });
 
@@ -316,9 +286,11 @@ export const run_start = tool({
   args: {
     workItemId: tool.schema.string().describe('Claimed work item identifier'),
     agent: tool.schema.string().describe('Executor identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    const run = startRun(context.worktree, args.workItemId, args.agent, `agent:${context.agent}`);
+    const run = projectDomain(context.worktree, args.projectId).startRun(args.workItemId, args.agent, `agent:${context.agent}`);
+
     return output({ ...run, runId: run.id });
   },
 });
@@ -329,10 +301,11 @@ export const run_finish = tool({
     runId: tool.schema.string().describe('Run identifier'),
     status: tool.schema.enum(['completed', 'failed']),
     terminationReason: tool.schema.string().describe('Observed result of the run'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
     return output(
-      finishRun(context.worktree, args.runId, args.status, args.terminationReason, `agent:${context.agent}`),
+      projectDomain(context.worktree, args.projectId).finishRun(args.runId, args.status, args.terminationReason, `agent:${context.agent}`),
     );
   },
 });
@@ -344,10 +317,11 @@ export const evidence_add = tool({
     kind: tool.schema.enum(['verification', 'implementation-diff', 'command', 'observation']),
     summary: tool.schema.string().describe('Human-readable evidence summary'),
     value: tool.schema.string().describe('Command output, commit, diff reference, or observation'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
     return output(
-      addEvidence(context.worktree, args.runId, args.kind, args.summary, args.value, `agent:${context.agent}`),
+      projectDomain(context.worktree, args.projectId).addEvidence(args.runId, args.kind, args.summary, args.value, `agent:${context.agent}`),
     );
   },
 });
@@ -357,9 +331,11 @@ export const review_request = tool({
   args: {
     workItemId: tool.schema.string().describe('Work item identifier'),
     reviewer: tool.schema.string().describe('Reviewer agent identifier'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    const review = requestReview(context.worktree, args.workItemId, args.reviewer, `agent:${context.agent}`);
+    const review = projectDomain(context.worktree, args.projectId).requestReview(args.workItemId, args.reviewer, `agent:${context.agent}`);
+
     return output({ ...review, reviewId: review.id });
   },
 });
@@ -370,16 +346,9 @@ export const review_submit = tool({
     reviewId: tool.schema.string().describe('Review identifier'),
     verdict: tool.schema.enum(['accepted', 'rejected']),
     feedback: tool.schema.string().describe('Review decision and actionable feedback'),
+    projectId: tool.schema.string().describe('Registered project identifier'),
   },
   async execute(args, context) {
-    return output(submitReview(context.worktree, args.reviewId, args.verdict, args.feedback, `agent:${context.agent}`));
-  },
-});
-
-export const validate = tool({
-  description: 'Validate local Themis state references and return entity counts.',
-  args: {},
-  async execute(_args, context) {
-    return output(validateState(context.worktree));
+    return output(projectDomain(context.worktree, args.projectId).submitReview(args.reviewId, args.verdict, args.feedback, `agent:${context.agent}`));
   },
 });

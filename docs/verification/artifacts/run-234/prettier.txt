@@ -1,0 +1,2 @@
+Command: pnpm exec prettier --check scripts/themis-adapter-operation-matrix.test.ts scripts/themis-cli.ts .opencode/tools/themis.ts libs/themis-workflow/src/lib/project-workflow.ts libs/themis-workflow/src/lib/project-workflow.spec.ts
+Result: PASS; all matched files use Prettier code style.

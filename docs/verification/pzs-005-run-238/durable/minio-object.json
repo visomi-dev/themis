@@ -1,0 +1,44 @@
+{
+  "runId": "RUN-238",
+  "streamId": "stream-4eb708a8-0c8d-47ec-9ba0-c1ba216b051a",
+  "objects": [
+    {
+      "objectKey": "ca50b652-4030-4424-b4d0-f926ded2b752/7a4e2f39-159a-4a18-a5e1-074cd12f251a/authorized-append/1-74dd8039-1a39-4edf-9e82-ef92f1f9f0e3.json",
+      "bytes": 464,
+      "sha256": "98a96cbc022ef9f0451fca4d8470f16d8071bc0118a975011657a168455c8768",
+      "postgresHash": "98a96cbc022ef9f0451fca4d8470f16d8071bc0118a975011657a168455c8768",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ca50b652-4030-4424-b4d0-f926ded2b752/7a4e2f39-159a-4a18-a5e1-074cd12f251a/replay-target/5-5924e5a0-fbdf-4ae0-ba69-10989958a95a.json",
+      "bytes": 448,
+      "sha256": "f22206f757d92f01576e3068af039b6e747136a89a25816dfeffad31a6ba0a27",
+      "postgresHash": "f22206f757d92f01576e3068af039b6e747136a89a25816dfeffad31a6ba0a27",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ca50b652-4030-4424-b4d0-f926ded2b752/7a4e2f39-159a-4a18-a5e1-074cd12f251a/tombstone-record/6-7366962c-a924-42bf-9247-a72b091e026a.json",
+      "bytes": 454,
+      "sha256": "f2065fad28fa4d6bea31ae0a29298ffb71a7ee719ff850633669f3e70268d4db",
+      "postgresHash": "f2065fad28fa4d6bea31ae0a29298ffb71a7ee719ff850633669f3e70268d4db",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ca50b652-4030-4424-b4d0-f926ded2b752/7a4e2f39-159a-4a18-a5e1-074cd12f251a/checkpoint/checkpoint-1.json",
+      "bytes": 464,
+      "sha256": "98a96cbc022ef9f0451fca4d8470f16d8071bc0118a975011657a168455c8768",
+      "postgresHash": "98a96cbc022ef9f0451fca4d8470f16d8071bc0118a975011657a168455c8768",
+      "hashMatches": true
+    }
+  ],
+  "checkpointReferences": [
+    {
+      "checkpointId": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "objectKey": "ca50b652-4030-4424-b4d0-f926ded2b752/7a4e2f39-159a-4a18-a5e1-074cd12f251a/checkpoint/checkpoint-1.json",
+      "ciphertextSha256": "98a96cbc022ef9f0451fca4d8470f16d8071bc0118a975011657a168455c8768"
+    }
+  ],
+  "hashMatches": true
+}

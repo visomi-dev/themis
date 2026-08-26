@@ -1,0 +1,16 @@
+{
+  "runId": "RUN-239",
+  "storageMode": "durable",
+  "database": {
+    "provider": "PostgreSQL",
+    "observation": "See postgres-rows.json for same-run envelope/checkpoint rows and hashes."
+  },
+  "objectStorage": {
+    "provider": "MinIO S3-compatible",
+    "observation": "See minio-object.json for same-run object byte counts, SHA-256 values, and PostgreSQL hash matches."
+  },
+  "memoryFallback": {
+    "allowed": false,
+    "observed": "The durable lifecycle sets DATABASE_DRIVER=pg and OPAQUE_SYNC_STORAGE=durable and rejects memory configuration."
+  }
+}

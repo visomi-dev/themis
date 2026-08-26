@@ -292,6 +292,29 @@ const opaqueSyncTombstones = pgTable(
   ],
 );
 
+const opaqueSyncCheckpoints = pgTable(
+  'opaque_sync_checkpoints',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    checkpointId: text('checkpoint_id').notNull(),
+    cursor: integer('cursor').notNull(),
+    revision: integer('revision').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_checkpoints_identity_idx').on(table.accountId, table.workspaceId, table.checkpointId),
+    uniqueIndex('opaque_sync_checkpoints_cursor_idx').on(table.accountId, table.workspaceId, table.cursor),
+    index('opaque_sync_checkpoints_stream_idx').on(table.accountId, table.workspaceId, table.cursor),
+  ],
+);
+
 const encryptedContextMetadata = pgTable(
   'encrypted_context_metadata',
   {
@@ -394,6 +417,7 @@ export {
   opaqueSyncCursors,
   opaqueSyncEnvelopes,
   opaqueSyncTombstones,
+  opaqueSyncCheckpoints,
   encryptedContextMetadata,
   encryptedContextTombstones,
   syncDevices,

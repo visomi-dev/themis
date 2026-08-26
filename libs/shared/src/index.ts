@@ -24,6 +24,7 @@ export * from './lib/crypto/opaque-sync-object-store';
 export * from './lib/crypto/opaque-sync-postgres';
 export * from './lib/crypto/client-sync';
 export * from './lib/crypto/encrypted-project-migration';
+export * from './lib/crypto/project-sync-contract';
 export * from './lib/env';
 export * from './lib/http';
 export * from './lib/http/auth-runtime';

@@ -1,0 +1,27 @@
+{
+  "database": "PostgreSQL",
+  "table": "opaque_sync_envelopes",
+  "columns": ["workspace_id", "envelope_id", "revision", "cursor", "object_key", "ciphertext_sha256", "tombstoned_at"],
+  "rows": [
+    {
+      "workspace_id": "project-a",
+      "envelope_id": "env-a-1",
+      "revision": 1,
+      "cursor": 1,
+      "object_key": "opaque/project-a/env-a-1",
+      "ciphertext_sha256": "sha256:fixture-a",
+      "tombstoned_at": null
+    },
+    {
+      "workspace_id": "project-a",
+      "envelope_id": "env-delete",
+      "revision": 4,
+      "cursor": 4,
+      "object_key": "opaque/project-a/env-delete",
+      "ciphertext_sha256": "sha256:fixture-delete",
+      "tombstoned_at": "2026-08-25T03:55:00Z"
+    }
+  ],
+  "protectedPayloadColumnsPresent": false,
+  "plaintextObserved": false
+}

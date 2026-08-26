@@ -1,0 +1,44 @@
+{
+  "runId": "local-pzs005-second",
+  "streamId": "stream-03150b18-af7d-4fc6-8271-ce2c828e1d3b",
+  "objects": [
+    {
+      "objectKey": "ab0f3808-ef68-45d0-962a-2b3276ca6c56/8b7cb8b7-50b8-47ff-a916-c91eee5b7b3d/authorized-append/1-322f5b09-5a0c-4e93-beb0-ec41390ff6df.json",
+      "bytes": 464,
+      "sha256": "ce97fcd093a9a5cea645167eb394d11720a5f370907ab8fe6d977f2f04a7404f",
+      "postgresHash": "ce97fcd093a9a5cea645167eb394d11720a5f370907ab8fe6d977f2f04a7404f",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ab0f3808-ef68-45d0-962a-2b3276ca6c56/8b7cb8b7-50b8-47ff-a916-c91eee5b7b3d/replay-target/5-7a930ecc-eab6-410e-896b-4f9002e02c05.json",
+      "bytes": 448,
+      "sha256": "6e0edda1fb1fd758b8257c2e93d46c33dbe1908475ee08b318d68904706002df",
+      "postgresHash": "6e0edda1fb1fd758b8257c2e93d46c33dbe1908475ee08b318d68904706002df",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ab0f3808-ef68-45d0-962a-2b3276ca6c56/8b7cb8b7-50b8-47ff-a916-c91eee5b7b3d/tombstone-record/6-88d31088-ea2e-481d-b5cc-4cba21ec5954.json",
+      "bytes": 454,
+      "sha256": "0ed5810a9c69ccde4cd469e3dcaa2f1dff3306b57483cda36c7a6bc281326f85",
+      "postgresHash": "0ed5810a9c69ccde4cd469e3dcaa2f1dff3306b57483cda36c7a6bc281326f85",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "ab0f3808-ef68-45d0-962a-2b3276ca6c56/8b7cb8b7-50b8-47ff-a916-c91eee5b7b3d/checkpoint/checkpoint-1.json",
+      "bytes": 464,
+      "sha256": "ce97fcd093a9a5cea645167eb394d11720a5f370907ab8fe6d977f2f04a7404f",
+      "postgresHash": "ce97fcd093a9a5cea645167eb394d11720a5f370907ab8fe6d977f2f04a7404f",
+      "hashMatches": true
+    }
+  ],
+  "checkpointReferences": [
+    {
+      "checkpointId": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "objectKey": "ab0f3808-ef68-45d0-962a-2b3276ca6c56/8b7cb8b7-50b8-47ff-a916-c91eee5b7b3d/checkpoint/checkpoint-1.json",
+      "ciphertextSha256": "ce97fcd093a9a5cea645167eb394d11720a5f370907ab8fe6d977f2f04a7404f"
+    }
+  ],
+  "hashMatches": true
+}

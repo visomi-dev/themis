@@ -1,0 +1,16 @@
+{
+  "runId": "RUN-237",
+  "scope": "^/sync/",
+  "warnings": [
+    {
+      "observed": "Schema validation mismatch: 8 operations mostly rejected generated data due to validation errors, indicating schema constraints don't match API validation",
+      "disposition": "blocked-schema-warning",
+      "reason": "The warning is current-run OpenAPI output for the sync scope; the warning is not converted into a pass. Real authenticated RUN-221 transport evidence is retained separately in the harness artifacts."
+    },
+    {
+      "observed": "  ⚠️ Schema validation mismatch: 8 operations mostly rejected generated data",
+      "disposition": "blocked-schema-warning",
+      "reason": "The warning is current-run OpenAPI output for the sync scope; the warning is not converted into a pass. Real authenticated RUN-221 transport evidence is retained separately in the harness artifacts."
+    }
+  ]
+}

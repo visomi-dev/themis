@@ -84,6 +84,14 @@ export class DurableDeviceIdentityStore {
     now = new Date(),
   ): Promise<void> {
     await this.requireActive(accountId, approvedByDeviceId);
+    const existing = await this.pool.query<{ device_id: string }>(
+      `SELECT device_id FROM sync_workspace_approvals WHERE account_id=$1 AND workspace_id=$2`,
+      [accountId, workspaceId],
+    );
+
+    if (existing.rowCount && existing.rows[0].device_id !== approvedByDeviceId)
+      throw new DeviceIdentityError('Workspace already has a single-device approval.');
+
     await this.pool.query(
       `INSERT INTO sync_workspace_approvals (account_id, workspace_id, device_id, approved_at) VALUES ($1,$2,$3,$4) ON CONFLICT (account_id,workspace_id) DO UPDATE SET device_id=EXCLUDED.device_id, approved_at=EXCLUDED.approved_at`,
       [accountId, workspaceId, approvedByDeviceId, now],

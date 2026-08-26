@@ -5,25 +5,11 @@ import { join } from 'node:path';
 import { afterEach, describe, it } from 'node:test';
 
 import {
-  dependency_add,
-  epic_create,
-  evidence_add,
   flow_ready_queue,
   project_create,
-  ready_queue,
-  review_request,
-  review_submit,
-  run_finish,
-  run_start,
-  sprint_activate,
-  sprint_approve,
-  sprint_close,
-  sprint_evidence_add,
-  sprint_propose,
-  validate,
-  work_claim,
+  timeline_list,
   workitem_create,
-  workitem_transition,
+  workitem_get,
 } from '../.opencode/tools/themis.ts';
 
 const roots: string[] = [];
@@ -31,158 +17,48 @@ const context = (root: string) => ({
   agent: 'themis-e2e',
   directory: root,
   worktree: root,
-  sessionID: 'e2e-session',
-  messageID: 'e2e-message',
+  sessionID: 'e2e',
+  messageID: 'message',
   abort: new AbortController().signal,
   metadata() {},
   async ask() {},
 });
-
-type ToolResult = string | { output: string };
-type InvokableTool = { execute: (args: never, context: never) => Promise<ToolResult> };
-
-const call = async <T>(toolDefinition: InvokableTool, args: T, root: string) => {
-  const result = await toolDefinition.execute(args as never, context(root) as never);
-  const serialized = typeof result === 'string' ? result : result.output;
-  return JSON.parse(serialized) as Record<string, unknown>;
+type InvokableTool = { execute: (args: never, context: never) => Promise<string | { output: string }> };
+const call = async <T>(definition: InvokableTool, args: T, root: string): Promise<Record<string, unknown>> => {
+  const result = await definition.execute(args as never, context(root) as never);
+  return JSON.parse(typeof result === 'string' ? result : result.output) as Record<string, unknown>;
 };
-
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 
-describe('OpenCode Themis tools', () => {
-  it('runs the public tool protocol from work item creation to accepted review', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'themis-tools-e2e-'));
+describe('OpenCode project-authorized tools', () => {
+  it('uses registered project APIs and rejects a foreign project read', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'themis-tools-scoped-'));
     roots.push(root);
-    await call(project_create, { id: 'PRJ-E2E', name: 'E2E project', summary: 'Public tools project' }, root);
-    await call(
-      epic_create,
+    await call(project_create, { projectId: 'PRJ-ONE', name: 'One', summary: '' }, root);
+    await call(project_create, { projectId: 'PRJ-TWO', name: 'Two', summary: '' }, root);
+    const item = await call(
+      workitem_create,
       {
-        id: 'EPIC-E2E',
-        projectId: 'PRJ-E2E',
-        title: 'E2E epic',
-        summary: 'Public tools epic',
-        goal: 'Validate organization',
+        projectId: 'PRJ-ONE',
+        title: 'Scoped item',
+        summary: '',
+        acceptanceCriteria: [],
+        scopeIn: [],
+        scopeOut: [],
+        verificationStrategy: [],
       },
       root,
     );
-    const itemArgs = (title: string) => ({
-      projectId: 'PRJ-E2E',
-      epicId: 'EPIC-E2E',
-      title,
-      summary: `${title} summary`,
-      acceptanceCriteria: [`${title} is complete`],
-      scopeIn: ['fixture/**'],
-      scopeOut: ['apps/**'],
-      verificationStrategy: ['node --test scripts/themis-tools.e2e.test.ts'],
-    });
-
-    const first = await call(workitem_create, itemArgs('Build adapter'), root);
-    const second = await call(workitem_create, itemArgs('Test adapter'), root);
-    const firstId = String(first.id);
-    const secondId = String(second.id);
-    await call(workitem_transition, { id: firstId, to: 'ready' }, root);
-    await call(workitem_transition, { id: secondId, to: 'ready' }, root);
-    await call(dependency_add, { from: firstId, to: secondId }, root);
-
-    const flowQueue = await call(flow_ready_queue, { projectId: 'PRJ-E2E' }, root);
+    const queue = await call(flow_ready_queue, { projectId: 'PRJ-ONE' }, root);
     assert.deepEqual(
-      (flowQueue as unknown as Array<{ id: string }>).map((item) => item.id),
-      [firstId],
+      (queue as unknown as Array<{ id: string }>).map((entry) => entry.id),
+      [],
     );
-
-    const proposal = await call(
-      sprint_propose,
-      {
-        goal: 'Validate the OpenCode local protocol',
-        projectId: 'PRJ-E2E',
-        epicIds: ['EPIC-E2E'],
-        why: 'The tools must enforce the workflow before product integration',
-        what: 'A complete accepted execution path',
-        how: 'Use public OpenCode tools and independent review',
-        workItemIds: [firstId, secondId],
-        nonGoals: ['SQLite', 'Themis UI'],
-        definitionOfDone: ['Review accepted'],
-        verificationStrategy: ['node --test scripts/themis-tools.e2e.test.ts'],
-      },
-      root,
-    );
-    const sprintId = String(proposal.sprintId);
-    const revisionId = String(proposal.revisionId);
-    await call(sprint_approve, { sprintId, revisionId }, root);
-    await call(sprint_activate, { sprintId, revisionId }, root);
-
-    const queue = await call(ready_queue, { projectId: 'PRJ-E2E', sprintId }, root);
-    assert.deepEqual(
-      (queue as unknown as Array<{ id: string }>).map((item) => item.id),
-      [firstId],
-    );
-    await call(work_claim, { id: firstId, agent: 'themis-executor' }, root);
-    const run = await call(run_start, { workItemId: firstId, agent: 'themis-executor' }, root);
-    const runId = String(run.runId);
-    await call(
-      evidence_add,
-      { runId, kind: 'implementation-diff', summary: 'Implementation commit', value: 'commit e2e-001' },
-      root,
-    );
-    await call(
-      evidence_add,
-      { runId, kind: 'verification', summary: 'E2E suite passed', value: 'node --test: PASS' },
-      root,
-    );
-    await call(run_finish, { runId, status: 'completed', terminationReason: 'All required checks passed' }, root);
-    const requested = await call(review_request, { workItemId: firstId, reviewer: 'themis-reviewer' }, root);
-    const reviewId = String(requested.reviewId);
-    await call(
-      review_submit,
-      { reviewId, verdict: 'accepted', feedback: 'Acceptance criteria and evidence are complete' },
-      root,
-    );
-
-    await call(work_claim, { id: secondId, agent: 'themis-executor' }, root);
-    const secondRun = await call(run_start, { workItemId: secondId, agent: 'themis-executor' }, root);
-    const secondRunId = String(secondRun.runId);
-    await call(
-      evidence_add,
-      {
-        runId: secondRunId,
-        kind: 'implementation-diff',
-        summary: 'Second implementation commit',
-        value: 'commit e2e-002',
-      },
-      root,
-    );
-    await call(
-      evidence_add,
-      { runId: secondRunId, kind: 'verification', summary: 'Second checks passed', value: 'node --test: PASS' },
-      root,
-    );
-    await call(
-      run_finish,
-      { runId: secondRunId, status: 'completed', terminationReason: 'All required checks passed' },
-      root,
-    );
-    const secondReview = await call(review_request, { workItemId: secondId, reviewer: 'themis-reviewer' }, root);
-    await call(
-      review_submit,
-      { reviewId: String(secondReview.reviewId), verdict: 'accepted', feedback: 'Second item accepted' },
-      root,
-    );
-    await call(
-      sprint_evidence_add,
-      {
-        sprintId,
-        kind: 'verification',
-        summary: 'Sprint checks passed',
-        value: 'node --test scripts/themis-tools.e2e.test.ts: PASS',
-      },
-      root,
-    );
-    const closed = await call(sprint_close, { projectId: 'PRJ-E2E', sprintId }, root);
-    assert.equal(closed.status, 'closed');
-
-    const finalState = await call(validate, {}, root);
-    assert.equal(finalState.valid, true);
+    const timeline = await call(timeline_list, { projectId: 'PRJ-ONE' }, root);
+    assert.equal(JSON.stringify(timeline).includes(String(item.id)), true);
+    const foreign = await call(workitem_get, { projectId: 'PRJ-TWO', id: String(item.id) }, root);
+    assert.equal(foreign.error, `Work item not found: ${String(item.id)}`);
   });
 });

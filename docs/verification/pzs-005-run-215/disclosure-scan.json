@@ -1,0 +1,7 @@
+{
+  "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/pzs-005-run-215",
+  "result": "PASS",
+  "filesScanned": 17,
+  "findings": [],
+  "assertions": ["no plaintext", "no keys", "no secrets", "no cookies", "no raw local paths"]
+}

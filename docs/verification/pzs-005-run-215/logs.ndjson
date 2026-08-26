@@ -1,0 +1,3 @@
+{"level":"info","route":"/sync/:workspaceId/envelopes","correlationId":"corr-stale","status":409,"code":"opaque_envelope_rejected","workspaceId":"project-a"}
+{"level":"info","route":"/sync/:workspaceId/envelopes","correlationId":"corr-cursor","status":409,"code":"cursor_recovery_required","workspaceId":"project-a"}
+{"level":"warn","route":"/sync/:workspaceId/checkpoints","correlationId":"corr-checkpoint","status":409,"code":"checkpoint_reference_mismatch","workspaceId":"project-a"}

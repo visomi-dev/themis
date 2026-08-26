@@ -1,0 +1,33 @@
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[16:36:48.844] [32mINFO[39m (2816662): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[16:36:48.852] [32mINFO[39m (2816662): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[16:36:48.846] [32mINFO[39m (2816662): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[16:36:48.847] [32mINFO[39m (2816662): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[16:36:48.854] [32mINFO[39m (2816662): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8080
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[16:36:49.116] [32mINFO[39m (2816791): [36mWorker runtime ready[39m
+[0mPOST /api/test/auth/session [32m200[0m 182.714 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 7.136 ms - 370[0m
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/devices [32m200[0m 15.816 ms - 326[0m
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/devices/device-55843a8b-2050-454b-9ec2-d15993b2c0cb/approval [32m200[0m 12.330 ms - 173[0m
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/devices/device-55843a8b-2050-454b-9ec2-d15993b2c0cb/enroll [32m200[0m 47.795 ms - 758[0m
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/devices [32m200[0m 9.009 ms - 328[0m
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/devices/device-1ba2c872-f5c2-498d-8288-bc572d1306fa/enroll [32m200[0m 27.072 ms - 734[0m
+[0mPOST /api/test/auth/session [32m200[0m 152.606 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 10.315 ms - 370[0m
+[0mPOST /api/sync/ca95786c-d3f4-4add-b43d-0aac6e02faf7/devices [32m200[0m 12.734 ms - 326[0m
+[0mPOST /api/sync/ca95786c-d3f4-4add-b43d-0aac6e02faf7/devices/device-92c2e64e-605b-4483-9c92-2048dece857f/approval [32m200[0m 21.979 ms - 173[0m
+[0mPOST /api/sync/ca95786c-d3f4-4add-b43d-0aac6e02faf7/devices/device-92c2e64e-605b-4483-9c92-2048dece857f/enroll [32m200[0m 38.200 ms - 758[0m
+[0mPOST /api/sync/ca95786c-d3f4-4add-b43d-0aac6e02faf7/devices [32m200[0m 14.454 ms - 328[0m
+[0mPOST /api/sync/ca95786c-d3f4-4add-b43d-0aac6e02faf7/devices/device-72d5a236-60fa-4210-9fd3-b4e8869468e6/enroll [32m200[0m 61.507 ms - 734[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/14e109c3-8319-4fa6-a5b4-f21ad382f33c/envelopes [33m409[0m 22.670 ms - 84[0m

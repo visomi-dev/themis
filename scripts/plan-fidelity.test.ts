@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 
+import planFidelityInventory from '../docs/architecture/system/project-scoped-sync-plan-fidelity.json' with { type: 'json' };
+
 import {
   evidenceMatrixErrors,
   invalidNotApplicableReasons,
@@ -21,6 +23,66 @@ const completeValidation = validationCategories.map(
 );
 
 describe('approved plan fidelity evaluation', () => {
+  it('loads the actual P0-P11 inventory without overstating deferred evidence', () => {
+    assert.equal(planFidelityInventory.phases.length, 12);
+    assert.deepEqual(
+      planFidelityInventory.phases.map((phase) => phase.id),
+      Array.from({ length: 12 }, (_, index) => `P${index}`),
+    );
+    assert.equal(
+      planFidelityInventory.evidenceBoundary,
+      'This inventory proves traceability only; it is not evidence that deferred implementation work is complete.',
+    );
+    assert.deepEqual(planFidelityInventory.preservedCoverage, {
+      uxFlows: true,
+      humanReadableTranslation: true,
+      validation: true,
+      deferredNative: true,
+    });
+
+    const expected = [
+      ['PZS-001'],
+      ['PZS-002'],
+      ['PZS-003'],
+      ['PZS-004'],
+      ['PZS-005'],
+      ['PZS-006'],
+      ['PZS-007'],
+      ['PZS-007', 'THM-OWV-005'],
+      ['THM-OWV-006'],
+      ['PZS-008', 'PZS-009'],
+      ['PZS-010'],
+      ['PZS-001', 'PZS-007'],
+    ];
+    assert.deepEqual(
+      planFidelityInventory.phases.map((phase) => phase.itemIds),
+      expected,
+    );
+    assert.deepEqual(
+      planFidelityInventory.phases.map((phase) => phase.decision),
+      [
+        'update-existing-foundations',
+        'create-new-item',
+        'create-new-item',
+        'create-new-item',
+        'create-new-item',
+        'create-new-item',
+        'create-new-item',
+        'update-existing-read-model-and-create-sync-scope',
+        'update-existing-angular-scope',
+        'create-new-items',
+        'create-new-item',
+        'update-contract-and-defer-native-delivery',
+      ],
+    );
+    assert.ok(planFidelityInventory.phases.every((phase) => phase.statuses.length === phase.itemIds.length));
+    assert.ok(planFidelityInventory.phases.every((phase) => phase.gaps.length > 0 || phase.id === 'P0'));
+    assert.match(
+      planFidelityInventory.phases[11]?.gaps.join(' '),
+      /native UI.*native runtime.*native-specific key storage/,
+    );
+  });
+
   it('reports omitted phases and unrepresented rich steps instead of collapsing them', () => {
     const items: PhaseWorkItem[] = [
       {

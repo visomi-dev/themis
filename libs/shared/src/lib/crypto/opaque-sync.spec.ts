@@ -64,24 +64,105 @@ describe('OpaqueSyncStore', () => {
     expect(first.cursor).toBeLessThan(second.cursor);
   });
 
-  it('prunes records according to retention', () => {
+  it('requires snapshot recovery after records are pruned', () => {
     const store = new OpaqueSyncStore(10);
 
     store.append('account-a', 'workspace-a', envelope(), 100);
-    expect(store.list('account-a', 'workspace-a', 0, 100, 110)).toEqual([]);
+    expect(() => store.list('account-a', 'workspace-a', 0, 100, 110)).toThrow('Cursor requires recovery.');
   });
 
   it('keeps the cursor monotonic after all retained records are pruned', () => {
     const store = new OpaqueSyncStore(10);
 
     store.append('account-a', 'workspace-a', envelope(), 100);
-    expect(store.list('account-a', 'workspace-a', 0, 100, 110)).toEqual([]);
+    expect(() => store.list('account-a', 'workspace-a', 0, 100, 110)).toThrow('Cursor requires recovery.');
 
-    const result = store.append('account-a', 'workspace-a', envelope({ envelopeId: 'envelope-2', revision: 1 }), 111);
+    const result = store.append('account-a', 'workspace-a', envelope({ envelopeId: 'envelope-2', revision: 2 }), 111);
 
     expect(result.cursor).toBe(2);
     expect(store.list('account-a', 'workspace-a', 1, 100, 111)).toEqual([
-      { cursor: 2, envelope: envelope({ envelopeId: 'envelope-2', revision: 1 }) },
+      { cursor: 2, envelope: envelope({ envelopeId: 'envelope-2', revision: 2 }) },
     ]);
+  });
+
+  it('keeps cursors independent between project streams', () => {
+    const store = new OpaqueSyncStore();
+
+    expect(store.append('account-a', 'workspace-a', envelope()).cursor).toBe(1);
+    expect(store.append('account-a', 'workspace-b', envelope({ workspaceId: 'workspace-b' })).cursor).toBe(1);
+    expect(store.append('account-a', 'workspace-a', envelope({ envelopeId: 'envelope-2', revision: 2 })).cursor).toBe(
+      2,
+    );
+  });
+
+  it('retains a tombstone replay barrier after the record is pruned', () => {
+    const store = new OpaqueSyncStore(10);
+
+    store.append('account-a', 'workspace-a', envelope({ recordType: 'tombstone', revision: 2 }), 100);
+    expect(() => store.list('account-a', 'workspace-a', 0, 100, 111)).toThrow('Cursor requires recovery.');
+    expect(() => store.append('account-a', 'workspace-a', envelope({ revision: 1 }), 112)).toThrow('tombstoned replay');
+  });
+
+  it('rejects a stale base and a lower revision on a new envelope id across the stream', () => {
+    const store = new OpaqueSyncStore();
+
+    store.append('account-a', 'workspace-a', envelope({ revision: 1 }));
+    store.append('account-a', 'workspace-a', envelope({ envelopeId: 'envelope-2', revision: 2 }));
+
+    expect(() =>
+      store.append(
+        'account-a',
+        'workspace-a',
+        envelope({ envelopeId: 'envelope-3', revision: 3, metadata: { baseCursor: '1' } }),
+      ),
+    ).toThrow('stale stream base');
+    expect(() => store.append('account-a', 'workspace-a', envelope({ envelopeId: 'envelope-4', revision: 2 }))).toThrow(
+      'rolls back the stream',
+    );
+  });
+
+  it('rejects an explicitly supplied zero cursor after the stream has advanced', () => {
+    const store = new OpaqueSyncStore();
+
+    store.append('account-a', 'workspace-a', envelope());
+
+    expect(() =>
+      store.append(
+        'account-a',
+        'workspace-a',
+        envelope({ envelopeId: 'envelope-2', revision: 2, metadata: { baseCursor: '0' } }),
+      ),
+    ).toThrow('stale stream base');
+  });
+
+  it('requires checkpoint references to be a live stream chain entry', () => {
+    const store = new OpaqueSyncStore();
+    const first = store.append('account-a', 'workspace-a', envelope({ revision: 1 }));
+
+    expect(() => store.checkpoint('account-a', 'workspace-a', 'checkpoint-1', first.cursor, 2, first.envelope)).toThrow(
+      'not durable',
+    );
+    expect(
+      store.checkpoint(
+        'account-a',
+        'workspace-a',
+        'checkpoint-1',
+        first.cursor,
+        first.envelope.revision,
+        first.envelope,
+      ),
+    ).toMatchObject({ checkpointId: 'checkpoint-1', cursor: 1, revision: 1 });
+  });
+
+  it('rejects a checkpoint envelope that is not the referenced chain object', () => {
+    const store = new OpaqueSyncStore();
+    const first = store.append('account-a', 'workspace-a', envelope({ revision: 1 }));
+
+    expect(() =>
+      store.checkpoint('account-a', 'workspace-a', 'checkpoint-mismatch', first.cursor, first.envelope.revision, {
+        ...first.envelope,
+        envelopeId: 'different-envelope',
+      }),
+    ).toThrow('does not match the durable stream object');
   });
 });

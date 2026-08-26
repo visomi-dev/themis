@@ -1,0 +1,145 @@
+{
+  "generatedFrom": "/api/openapi.json",
+  "paths": {
+    "/sync/{workspaceId}/envelopes": {
+      "post": {
+        "responses": {
+          "200": "OpaqueSyncDuplicateResponse",
+          "201": "OpaqueSyncAppendResponse",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      },
+      "get": {
+        "responses": {
+          "200": "OpaqueSyncPageResponse",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/recovery": {
+      "get": {
+        "responses": {
+          "200": "OpaqueRecoveryResponse",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/checkpoints": {
+      "post": {
+        "responses": {
+          "201": "OpaqueCheckpointResponse",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices": {
+      "get": {
+        "responses": {
+          "200": "DeviceListEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      },
+      "post": {
+        "responses": {
+          "200": "DeviceCreatedEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices/audit": {
+      "get": {
+        "responses": {
+          "200": "DeviceAuditEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices/{deviceId}/approval": {
+      "post": {
+        "responses": {
+          "200": "DeviceApprovalEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices/{deviceId}/enroll": {
+      "post": {
+        "responses": {
+          "200": "DeviceEnrollmentEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices/{deviceId}/revoke": {
+      "post": {
+        "responses": {
+          "200": "DeviceRevocationEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    },
+    "/sync/{workspaceId}/devices/recover": {
+      "post": {
+        "responses": {
+          "200": "DeviceRecoveryEnvelope",
+          "400": "OpaqueSyncError",
+          "401": "OpaqueSyncError",
+          "403": "OpaqueSyncError",
+          "404": "OpaqueSyncError",
+          "409": "OpaqueSyncError",
+          "500": "OpaqueSyncError"
+        }
+      }
+    }
+  }
+}

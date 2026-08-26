@@ -1,0 +1,19 @@
+runId=local-pzs005-failure
+project=themis-local-e2e-3203977
+provider=podman
+$ podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+result=0 podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+compose-up=completed
+original-failure=intentional startup failure
+$ podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml down --volumes --remove-orphans
+result=0 podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml down --volumes --remove-orphans
+compose-down=completed
+inspection-command=podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-3203977 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE       COMMAND     CREATED     STATUS      PORTS       NAMES
+inspection-stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+inspection-command=podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-3203977
+inspection-result=0 podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-3203977
+inspection-stdout=DRIVER      VOLUME NAME

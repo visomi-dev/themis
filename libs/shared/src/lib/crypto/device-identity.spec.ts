@@ -163,6 +163,18 @@ describe('DeviceIdentityStore', () => {
     );
   });
 
+  it('keeps the first single-device workspace approval instead of replacing it', () => {
+    const store = new DeviceIdentityStore();
+    const owner = store.createIdentity('account-a', 'owner-key', 'Owner', new Date(), 'workspace-a');
+    const second = store.createIdentity('account-a', 'second-key', 'Second', new Date(), 'workspace-a');
+
+    store.approveWorkspace('account-a', 'workspace-a', owner.deviceId);
+    expect(() => store.approveWorkspace('account-a', 'workspace-a', second.deviceId)).toThrow('single-device approval');
+    expect(() =>
+      store.enrollDevice('account-a', second.deviceId, 'workspace-a', owner.deviceId, envelope(second.deviceId)),
+    ).not.toThrow();
+  });
+
   it('rejects re-enrollment of a revoked identity', () => {
     const store = new DeviceIdentityStore();
     const owner = store.createIdentity('account-a', 'owner-key', 'Owner', new Date(), 'workspace-a');

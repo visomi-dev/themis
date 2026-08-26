@@ -1,0 +1,30 @@
+
+> nx run themis-workflow:test
+
+> node --experimental-strip-types --test libs/themis-workflow/src/lib/project-workflow.spec.ts
+
+[32m✔ registry is explicit, redacts locators, and isolates project stores [90m(3.125007ms)[39m[39m
+[32m✔ unknown and disabled projects fail with bounded errors [90m(0.662678ms)[39m[39m
+[32m✔ registry supports update, disable, include-disabled listing, and removal [90m(0.583442ms)[39m[39m
+[32m✔ moved roots fail closed instead of opening a stale registration [90m(0.322404ms)[39m[39m
+[32m✔ corrupt project state returns a bounded corruption error [90m(1.218915ms)[39m[39m
+[32m✔ migration fencing rejects legacy global state before project activation [90m(0.372258ms)[39m[39m
+[32m✔ rejects traversal ids before deriving a project store path [90m(0.226535ms)[39m[39m
+[32m✔ complete domain operations remain isolated behind the registered store [90m(1.837256ms)[39m[39m
+[32m✔ every complete-domain operation rejects foreign project identifiers [90m(7.193612ms)[39m[39m
+[32m✔ lock contention across runtimes fails with a bounded actionable error [90m(2112.27065ms)[39m[39m
+[32m✔ serializes appends from separate runtimes with a filesystem lock [90m(121.841027ms)[39m[39m
+[34mℹ tests 11[39m
+[34mℹ suites 0[39m
+[34mℹ pass 11[39m
+[34mℹ fail 0[39m
+[34mℹ cancelled 0[39m
+[34mℹ skipped 0[39m
+[34mℹ todo 0[39m
+[34mℹ duration_ms 2348.34214[39m
+
+
+
+ NX   Successfully ran target test for project themis-workflow
+
+

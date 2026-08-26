@@ -1,0 +1,37 @@
+{
+  "runId": "RUN-239",
+  "categories": [
+    {
+      "category": "unit",
+      "status": "required",
+      "command": "pnpm exec nx run shared:test --skip-nx-cache && pnpm exec nx run api:test --skip-nx-cache"
+    },
+    {
+      "category": "api",
+      "status": "required",
+      "command": "PZS005_RUN_ID=RUN-239 pnpm e2e:local; PZS005_RUN_ID=RUN-239 PZS005_SYNC_ONLY=true pnpm exec nx run api-e2e:openapi --skip-nx-cache"
+    },
+    {
+      "category": "app-e2e",
+      "status": "not-applicable",
+      "reason": "PZS-005 changes API/storage only; Angular routes belong to later work items."
+    },
+    {
+      "category": "gateway-e2e",
+      "status": "not-applicable",
+      "reason": "PZS-005 does not deliver realtime or gateway composition."
+    },
+    { "category": "site-e2e", "status": "not-applicable", "reason": "No public Astro behavior changes." },
+    { "category": "visual", "status": "not-applicable", "reason": "No rendered UI changes." },
+    {
+      "category": "security",
+      "status": "required",
+      "command": "Inspect RUN-239 PostgreSQL, MinIO, raw HTTP, logs, traces/metrics diagnostics, and disclosure scan artifacts."
+    },
+    {
+      "category": "build",
+      "status": "required",
+      "command": "pnpm exec nx run api:build --skip-nx-cache && pnpm exec nx run api-e2e:lint --skip-nx-cache && node --experimental-strip-types --test scripts/plan-fidelity.test.ts"
+    }
+  ]
+}

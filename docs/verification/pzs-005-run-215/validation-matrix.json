@@ -1,0 +1,43 @@
+{
+  "runId": "RUN-216",
+  "categories": [
+    {
+      "category": "unit",
+      "result": "PASS",
+      "command": "pnpm exec nx run api:test --skip-nx-cache && pnpm exec nx run shared:test --skip-nx-cache",
+      "evidence": "command-results.json:3-4; http-case-records.ndjson and source test assertions cover the fixed 409 cases"
+    },
+    {
+      "category": "api",
+      "result": "PASS",
+      "command": "pnpm exec nx run api-e2e:e2e --skip-nx-cache && pnpm exec nx run api-e2e:openapi --skip-nx-cache && pnpm exec nx run api-e2e:durable-integration --skip-nx-cache",
+      "evidence": "command-results.json:5-7; http-case-records.ndjson (20 records), har.json, raw-sync-http.ndjson, junit.xml, OpenAPI excerpt, PostgreSQL/object custody artifacts"
+    },
+    { "category": "app-e2e", "result": "N/A", "command": "scope check", "reason": "No Angular route changed." },
+    {
+      "category": "gateway-e2e",
+      "result": "N/A",
+      "command": "scope check",
+      "reason": "No gateway/realtime composition changed."
+    },
+    {
+      "category": "site-e2e",
+      "result": "N/A",
+      "command": "scope check",
+      "reason": "No public Astro behavior changed."
+    },
+    { "category": "visual", "result": "N/A", "command": "scope check", "reason": "No rendered UI changed." },
+    {
+      "category": "security",
+      "result": "PASS",
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/pzs-005-run-215",
+      "evidence": "command-results.json:8; postgres-row-dump.json, object-storage-metadata-hashes.json, raw-sync-http.ndjson, logs.ndjson, traces.json, metrics.json, disclosure-scan.json"
+    },
+    {
+      "category": "build",
+      "result": "PASS",
+      "command": "pnpm exec nx run api:build --skip-nx-cache && node --experimental-strip-types --test scripts/plan-fidelity.test.ts",
+      "evidence": "command-results.json:9-10; command-results.json:2 and phase-item-status-gap-matrix.json"
+    }
+  ]
+}

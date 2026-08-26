@@ -25,7 +25,7 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/dist/test-results/api-e2e/openapi"],
       "options": {
-        "command": "SCHEMATHESIS_INCLUDE_PATH_REGEX='^/auth/passkey/(registration|authentication)/begin$' SCHEMATHESIS_MODE=negative node --experimental-strip-types apps/web/api-e2e/src/support/run-openapi-contract.ts"
+        "command": "pnpm exec nx run server:build --skip-nx-cache && SCHEMATHESIS_INCLUDE_PATH_REGEX='^/sync/' node --experimental-strip-types apps/web/api-e2e/src/support/run-openapi-contract.ts"
       },
       "dependsOn": ["api:build", "app:build", "site:build", "worker:build", "realtime:build", "server:build"]
     },

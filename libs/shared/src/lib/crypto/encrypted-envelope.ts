@@ -20,7 +20,7 @@ export const encryptedEnvelopeSchema = z
     associatedData: metadataSchema,
     metadata: metadataSchema,
     nonce: base64UrlSchema,
-    ciphertext: base64UrlSchema,
+    ciphertext: base64UrlSchema.max(100_000),
     authTag: base64UrlSchema,
   })
   .strict();
