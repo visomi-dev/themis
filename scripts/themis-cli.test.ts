@@ -27,7 +27,21 @@ describe('Themis CLI project authority', () => {
     assert.notEqual(missingProject.status, 0);
     const help = runCli(root, ['--help']);
     assert.equal(help.status, 0);
-    assert.doesNotMatch(help.stdout, /(^|\n)\s*(status|validate|events|workspace-status|portfolio)\b/);
+    assert.doesNotMatch(help.stdout, /(^|\n)\s*(status|validate|events|portfolio)\b/);
+  });
+
+  it('reports an uninitialized fresh workspace with zero counts', () => {
+    const root = mkdtempSync(join(tmpdir(), 'themis-cli-status-'));
+    roots.push(root);
+    const result = runCli(root, ['workspace-status']);
+
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), {
+      initialized: false,
+      stateFileExists: false,
+      eventsFileExists: false,
+      counts: { projects: 0, epics: 0, workItems: 0, sprints: 0 },
+    });
   });
 
   it('creates and reads only a registered project store', () => {

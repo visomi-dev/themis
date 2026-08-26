@@ -1,0 +1,6 @@
+{
+  "runId": "local-current",
+  "streamId": "stream-f7ad192b-16af-4b96-960d-8e5c9881d2ab",
+  "status": "N/A",
+  "reason": "No metrics exporter/collector is configured in the isolated API harness; current-run server log inspection is retained."
+}

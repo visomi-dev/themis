@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "projectId": "agent-tracking",
+  "generation": 1,
+  "stateChecksum": "a7b4c6cfe50b6ec7b5d20a5f58058db5b2dea71aa64ffcc49e0ad40c133c70f4",
+  "eventsChecksum": "7bf906c9bd97c4f09e7154c7731c66389c4a1f2f1b3eace8a22b4e0f601b992a",
+  "entityCounts": {
+    "projects": 1,
+    "epics": 13,
+    "workItems": 76,
+    "dependencies": 121,
+    "sprints": 1,
+    "sprintItems": 5,
+    "revisions": 1,
+    "runs": 240,
+    "evidence": 2491,
+    "sprintEvidence": 0,
+    "reviews": 182
+  }
+}

@@ -31,41 +31,6 @@ services:
       retries: 10
       start_period: 5s
 
-  minio:
-    image: quay.io/minio/minio:latest
-    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
-    environment:
-      MINIO_ROOT_USER: themis-local
-      MINIO_ROOT_PASSWORD: themis-local-password
-    ports:
-      - '9000:9000'
-      - '9001:9001'
-    volumes:
-      - themis-minio-data:/data
-    healthcheck:
-      test: ['CMD-SHELL', 'curl --fail --silent http://127.0.0.1:9000/minio/health/ready >/dev/null']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-
-  minio-init:
-    image: quay.io/minio/mc:latest
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: ['/bin/sh', '-ec']
-    command:
-      - >-
-        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}";
-        mc mb --ignore-existing "local/$${OPAQUE_SYNC_S3_BUCKET}";
-        mc anonymous set private "local/$${OPAQUE_SYNC_S3_BUCKET}";
-    environment:
-      MINIO_ROOT_USER: themis-local
-      MINIO_ROOT_PASSWORD: themis-local-password
-      OPAQUE_SYNC_S3_BUCKET: themis-opaque-sync
-
 volumes:
   themis-postgres-data:
   themis-redis-data:
-  themis-minio-data:

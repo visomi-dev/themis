@@ -1,0 +1,160 @@
+{
+  "migrationId": "migration-83477f5c9990",
+  "events": [
+    {
+      "schemaVersion": 1,
+      "sequence": 88,
+      "timestamp": "2026-08-17T04:10:20.350Z",
+      "actor": "agent:themis-planner",
+      "type": "sprint.proposed",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "revisionId": "REV-002",
+        "version": 2
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 89,
+      "timestamp": "2026-08-17T04:17:06.706Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.approved",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "revisionId": "REV-002",
+        "status": "approved"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 90,
+      "timestamp": "2026-08-17T04:33:34.865Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.activated",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "revisionId": "REV-002",
+        "status": "active"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 161,
+      "timestamp": "2026-08-17T19:55:50.822Z",
+      "actor": "agent:themis-planner",
+      "type": "sprint.proposed",
+      "aggregateType": "sprint",
+      "aggregateId": "pending",
+      "payload": {
+        "sprintId": "SPR-001",
+        "revisionId": "REV-003",
+        "version": 1
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 162,
+      "timestamp": "2026-08-17T20:06:25.259Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.approved",
+      "aggregateType": "sprint",
+      "aggregateId": "SPR-001",
+      "payload": {
+        "revisionId": "REV-003",
+        "status": "approved"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 163,
+      "timestamp": "2026-08-17T22:39:55.910Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.evidence.added",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "evidenceId": "SEVD-001",
+        "kind": "verification"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 164,
+      "timestamp": "2026-08-17T22:39:55.922Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.evidence.added",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "evidenceId": "SEVD-002",
+        "kind": "command"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 165,
+      "timestamp": "2026-08-17T22:39:55.930Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.evidence.added",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "evidenceId": "SEVD-003",
+        "kind": "command"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 166,
+      "timestamp": "2026-08-17T22:39:55.940Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.evidence.added",
+      "aggregateType": "sprint",
+      "aggregateId": "agent-tracking-2026-08",
+      "payload": {
+        "sprintId": "agent-tracking-2026-08",
+        "evidenceId": "SEVD-004",
+        "kind": "command"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 168,
+      "timestamp": "2026-08-17T22:40:32.365Z",
+      "actor": "agent:themis-coordinator",
+      "type": "sprint.activated",
+      "aggregateType": "sprint",
+      "aggregateId": "SPR-001",
+      "payload": {
+        "sprintId": "SPR-001",
+        "revisionId": "REV-003",
+        "status": "active"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "sequence": 310,
+      "timestamp": "2026-08-18T06:27:14.356Z",
+      "actor": "human:cli",
+      "type": "sprints.removed",
+      "aggregateType": "project",
+      "aggregateId": "workspace",
+      "payload": {
+        "removedSprintIds": ["agent-tracking-2026-08", "SPR-001"],
+        "removedRevisionIds": ["REV-001", "REV-002", "REV-003"],
+        "removedMemberships": 10,
+        "removedSprintEvidence": 4,
+        "resetPlannedWorkItems": []
+      }
+    }
+  ],
+  "records": []
+}

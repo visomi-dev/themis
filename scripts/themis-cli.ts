@@ -13,6 +13,7 @@ import {
 } from './themis-project-migration.ts';
 
 import { ProjectWorkflowStore, WorkspaceRegistry, redactPortable } from '../libs/themis-workflow/src/index.ts';
+import { workspaceStatus } from '../libs/themis-workflow/src/lib/legacy-workflow-internal.ts';
 
 const split = (value: string): string[] =>
   value
@@ -50,6 +51,13 @@ const registerProject = (root: string, projectId: string, name: string, summary:
 const baseOptions = () => ({
   root: string().desc('Project root containing .themis').default('.'),
   json: boolean().desc('Print machine-readable JSON').default(false),
+});
+
+const workspaceStatusCommand = command({
+  name: 'workspace-status',
+  desc: 'Show read-only workspace initialization status and entity counts',
+  options: { ...baseOptions() },
+  handler: (options) => print(workspaceStatus(options.root), options.json),
 });
 
 const ready = command({
@@ -588,6 +596,7 @@ const reviewSubmit = command({
 });
 
 const commands: Command[] = [
+  workspaceStatusCommand,
   ready,
   migrate,
   migrateRollback,

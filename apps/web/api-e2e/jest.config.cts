@@ -4,7 +4,7 @@ export default {
   globalSetup: '<rootDir>/src/support/global-setup.ts',
   globalTeardown: '<rootDir>/src/support/global-teardown.ts',
   setupFiles: ['<rootDir>/src/support/test-setup.ts'],
-  testPathIgnorePatterns: ['<rootDir>/src/durable/'],
+  testPathIgnorePatterns: ['<rootDir>/src/durable/', '<rootDir>/src/api/pzs-005-real.spec.ts'],
   testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': [

@@ -1,0 +1,378 @@
+runId=local-current
+project=themis-local-e2e-1438045
+provider=podman
+$ podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+stdout=487efc0616382465781b8fdc3d6d1db449e6fd80ae23bf48432a2da6b6929908
+c2ad77420d33bb4ad8694457d3edf7188076428582bd24e3dd4d09d6a1d52872
+69b2ec208575b69597784255eec6fa6a2985ee9e1a47f4411a51f7f5fdd193a9
+75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b
+f799ae55d906442286e07b7c674cf6ba5ca7f6134271dba92936563273f06c03
+a481f0f3cfaaeb46e2eee7472656f8d0bb03c0a519948125c18344073a50c4e0
+ec79d747ebfb063b4285662886b8deb0718ceab0be6601142e4ceca28d72bae7
+fc1d2dc2a3e464bb39802ce7b460f254af0452a1f1bf9c996af6e06d566f27a3
+9d6705794ef3d6505e4ac192414e3d5deff928c6d71d9bdefd0124ed8c1ed101
+themis-local-e2e-1438045_postgres_1
+themis-local-e2e-1438045_redis_1
+themis-local-e2e-1438045_minio_1
+themis-local-e2e-1438045_minio-init_1
+stderr=>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+
+result=0 podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+compose-up=completed
+healthcheck=postgres command=podman exec a481f0f3cfaa pg_isready -U themis_api_e2e -d themis_api_e2e result=0
+postgres-readiness=passed
+healthcheck=redis command=podman exec ec79d747ebfb redis-cli ping result=0
+redis-readiness=passed
+inspection-command=podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE                                 COMMAND               CREATED        STATUS                   PORTS                               NAMES
+a481f0f3cfaa  docker.io/library/postgres:16-alpine  postgres              5 seconds ago  Up 4 seconds (starting)  0.0.0.0:15432->5432/tcp             themis-local-e2e-1438045_postgres_1
+ec79d747ebfb  docker.io/library/redis:7-alpine      redis-server          5 seconds ago  Up 4 seconds (healthy)   0.0.0.0:16379->6379/tcp             themis-local-e2e-1438045_redis_1
+fc1d2dc2a3e4  quay.io/minio/minio:latest            server /data --ad...  5 seconds ago  Up 4 seconds (healthy)   0.0.0.0:19000-19001->9000-9001/tcp  themis-local-e2e-1438045_minio_1
+9d6705794ef3  quay.io/minio/mc:latest               mc alias set loca...  4 seconds ago  Exited (0) 1 second ago                                      themis-local-e2e-1438045_minio-init_1
+inspection-stderr=>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+
+healthcheck=minio-image-healthcheck-availability command=podman exec fc1d2dc2a3e4 sh -c command -v curl && curl --fail --silent http://127.0.0.1:9000/minio/health/ready result=0
+healthcheck=minio-http command=GET http://127.0.0.1:19000/minio/health/ready result=200
+minio-readiness=passed
+$ podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml run --rm minio-init
+stdout=69b2ec208575b69597784255eec6fa6a2985ee9e1a47f4411a51f7f5fdd193a9
+themis-local-e2e-1438045_minio_1
+Access permission for `local/themis-local-e2e-1438045-opaque` is set to `private`
+stderr=>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+time="2026-08-26T14:15:10-06:00" level=warning msg="The input device is not a TTY. The --tty and --interactive flags might not work properly"
+result=0 podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml run --rm minio-init
+migration-config=DATABASE_URL:postgresql://themis_api_e2e:%5BREDACTED%5D@127.0.0.1:15432/themis_api_e2e schema:./libs/shared/src/lib/db/schema.ts out:./drizzle driver:postgresql
+$ pnpm exec drizzle-kit migrate --config=drizzle.config.ts
+stdout=Reading config file '/home/visomi/Projects/GitHub/visomi-dev/themis/drizzle.config.ts'
+Using 'pg' driver for database querying
+[⣷] applying migrations...[⣯] applying migrations...[⣟] applying migrations...[⡿] applying migrations...[⢿] applying migrations...[⣻] applying migrations...[⣽] applying migrations...[✓] migrations applied successfully!
+result=0 pnpm exec drizzle-kit migrate --config=drizzle.config.ts
+$ pnpm nx run api-e2e:e2e --skip-nx-cache
+stdout=NX   Running target e2e for project api-e2e and 8 tasks it depends on:
+
+
+
+> nx run site:build
+
+> pnpm exec astro build --root apps/web/site
+
+14:15:33 [@astrojs/node] Enabling sessions with filesystem storage
+14:15:33 [vite] Re-optimizing dependencies because vite config has changed
+14:15:33 [types] Generated 105ms
+14:15:33 [build] output: "server"
+14:15:33 [build] mode: "server"
+14:15:33 [build] directory: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/site/
+14:15:33 [build] adapter: @astrojs/node
+14:15:33 [build] Collecting build info...
+14:15:33 [build] ✓ Completed in 195ms.
+14:15:33 [build] Building server entrypoints...
+14:15:33 [vite] ✓ built in 94ms
+14:15:33 [vite] ✓ built in 237ms
+14:15:33 [vite] ✓ built in 18ms
+14:15:33 [build] Rearranging server assets...
+14:15:33 [build] ✓ Completed in 381ms.
+14:15:33 [build] Server built in 578ms
+14:15:33 [build] Complete!
+
+> nx run shared:build
+
+Compiling TypeScript files for project "shared"...
+Done compiling TypeScript files for project "shared".
+
+> nx run projects:build
+
+Compiling TypeScript files for project "projects"...
+Done compiling TypeScript files for project "projects".
+
+> nx run realtime:build:production
+
+
+> nx run api:build:production
+
+
+> nx run worker:build:production
+
+
+> nx run app:build:production
+
+❯ Building...
+(node:1444675) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:1444675) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Building...
+Browser bundles
+Initial chunk files   | Names              |  Raw size | Estimated transfer size
+chunk-BAV34TKR.js     | -                  | 208.01 kB |                62.41 kB
+styles-YN7SIKUS.css   | styles             | 132.33 kB |                15.47 kB
+chunk-GCBZXDI3.js     | -                  | 128.53 kB |                33.82 kB
+main-NQ5O3OCJ.js      | main               |  73.41 kB |                19.51 kB
+chunk-UQY4AG5Y.js     | -                  |  59.92 kB |                14.45 kB
+chunk-NYYZYMVF.js     | -                  |   4.61 kB |                 1.95 kB
+polyfills-UMR42IW5.js | polyfills          |   1.89 kB |               932 bytes
+chunk-27UYAA3G.js     | -                  | 748 bytes |               748 bytes
+chunk-SUVRAM7L.js     | -                  | 723 bytes |               723 bytes
+chunk-HKTXXOCG.js     | -                  | 143 bytes |               143 bytes
+chunk-O3LQLXTE.js     | -                  | 126 bytes |               126 bytes
+
+                      | Initial total      | 610.45 kB |               150.28 kB
+
+Lazy chunk files      | Names              |  Raw size | Estimated transfer size
+chunk-DDHHNMUM.js     | gallery            |  70.05 kB |                17.32 kB
+chunk-HHCLNZKV.js     | -                  |  64.20 kB |                16.17 kB
+chunk-CJCKVNQM.js     | project-detail     |  20.33 kB |                 5.60 kB
+chunk-I76ZQYKV.js     | activation         |  15.29 kB |                 4.00 kB
+chunk-MTMSLVUN.js     | -                  |  12.55 kB |                 3.83 kB
+chunk-BVHTHJOP.js     | sign-in            |  11.45 kB |                 3.55 kB
+chunk-EXPFZQXI.js     | sign-up            |  10.04 kB |                 3.15 kB
+chunk-MOP4WISG.js     | -                  |   9.57 kB |                 3.28 kB
+chunk-6NTIPARM.js     | reset-password     |   7.97 kB |                 2.60 kB
+chunk-K5G6RGGD.js     | work-item-detail   |   6.31 kB |                 2.19 kB
+chunk-3AO5LFWL.js     | -                  |   5.57 kB |                 1.91 kB
+chunk-SNWXWYGG.js     | forgotten-password |   5.23 kB |                 1.94 kB
+chunk-QYVALJ66.js     | -                  |   4.67 kB |                 1.73 kB39m
+chunk-JZ22J2SC.js     | project-new        |   4.42 kB |                 1.71 kB
+chunk-DR6EF43E.js     | projects           |   4.28 kB |                 1.64 kB
+...and 20 more lazy chunks files. Use "--verbose" to show all the files.
+
+
+Server bundles
+Initial chunk files   | Names              |  Raw size
+server.mjs            | server             | 817.59 kB |
+main.server.mjs       | main.server        | 590.02 kB |
+polyfills.server.mjs  | polyfills.server   | 236.46 kB |
+chunk-GGLDUW74.mjs    | -                  | 206.34 kB |
+chunk-KH3JBAG5.mjs    | -                  | 130.04 kB |
+chunk-OTMM3HKY.mjs    | -                  |  59.99 kB |
+chunk-ZRGJTF2V.mjs    | -                  |   4.65 kB |
+chunk-JUIMI2TX.mjs    | -                  |   1.52 kB |
+chunk-OIUUXDCT.mjs    | -                  |   1.45 kB |
+chunk-XBMMAE5B.mjs    | -                  | 783 bytes |
+chunk-IZHJ5A4Q.mjs    | -                  | 756 bytes |
+chunk-IFXKOZXU.mjs    | -                  | 176 bytes |
+chunk-DAK4BVL2.mjs    | -                  | 159 bytes |
+
+Lazy chunk files      | Names              |  Raw size
+chunk-T7TUBPQM.mjs    | gallery            |  70.13 kB |
+chunk-5GA2MR4R.mjs    | -                  |  63.56 kB |
+chunk-3NPECTMB.mjs    | project-detail     |  20.40 kB |
+chunk-4IDIBMTF.mjs    | activation         |  15.36 kB |
+chunk-AKWC7AUK.mjs    | -                  |  12.59 kB |
+chunk-IX33SQ4R.mjs    | xhr2               |  12.24 kB |
+chunk-RG46UI4N.mjs    | xhr2               |  12.15 kB |
+chunk-ZLBD2VIZ.mjs    | sign-in            |  11.52 kB |
+chunk-JH2RUQYJ.mjs    | sign-up            |  10.12 kB |
+chunk-DHOFG5C2.mjs    | -                  |   9.61 kB |
+chunk-KZBTACJ2.mjs    | reset-password     |   8.04 kB |
+chunk-GM2XXIWA.mjs    | work-item-detail   |   6.37 kB39m |
+chunk-3VR66X5N.mjs    | -                  |   5.60 kB |
+chunk-NPXYCP3U.mjs    | forgotten-password |   5.30 kB |
+chunk-HWSBQ5CN.mjs    | -                  |   4.71 kB |
+...and 22 more lazy chunks files. Use "--verbose" to show all the files.
+
+Prerendered 0 static routes.
+Application bundle generation complete. [6.073 seconds] - 2026-08-26T20:15:42.646Z
+
+▲ [WARNING] bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 110.45 kB with a total of 610.45 kB.
+
+
+▲ [WARNING] No translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").
+
+
+▲ [WARNING] No translation found for "gallerySectionsNav" ("Gallery sections").
+
+
+▲ [WARNING] No translation found for "galleryFilterLabel" ("Filter components").
+
+
+▲ [WARNING] No translation found for "layoutMenuWorkspace" ("Workspace").
+
+
+▲ [WARNING] No translation found for "themeSwitcherLight" ("Light mode").
+
+
+▲ [WARNING] No translation found for "themeSwitcherDark" ("Dark mode").
+
+
+▲ [WARNING] No translation found for "signInPasskeyTitle" (" Sign in with your passkey ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").
+
+
+▲ [WARNING] No translation found for "signInUsePassword" (" Use password instead ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").
+
+
+▲ [WARNING] No translation found for "signInPinLabel" ("Email PIN").
+
+
+▲ 43;33m[WARNING] No translation found for "signInPinContinue" ("Continue after verification").
+
+
+▲ [WARNING] No translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyTitle" (" Create with a passkey ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyButton" ("Continue with passkey").
+
+
+▲ [WARNING] No translation found for "signUpUsePassword" (" Use password instead ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").
+
+
+▲ [WARNING] No translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").
+
+
+▲ [WARNING] No translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").
+
+
+▲ [WARNING] No translation found for "gallerySectionsNav" ("Gallery sections").
+
+
+▲ [WARNING] No translation found for "galleryFilterLabel" ("Filter components").
+
+
+▲ [WARNING] No translation found for "layoutMenuWorkspace" ("Workspace").
+
+
+▲ [WARNING] No translation found for "themeSwitcherLight" ("Light mode").
+
+
+▲ [WARNING] No translation found for "themeSwitcherDark" ("Dark mode").
+
+
+▲ [WARNING] No translation found for "signInPasskeyTitle" (" Sign in with your passkey ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").
+
+
+▲ [WARNING] No translation found for "signInUsePassword" (" Use password instead ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").
+
+
+▲ [WARNING] No translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").
+
+
+▲ [WARNING] No translation found for "signInPinLabel" ("Email PIN").
+
+
+▲ [WARNING] No translation found for "signInPinContinue" ("Continue after verification").
+
+
+▲ [WARNING] No translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyTitle" (" Create with a passkey ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyButton" ("Continue with passkey").
+
+
+▲ [WARNING] No translation found for "signUpUsePassword" (" Use password instead ").
+
+
+▲ [WARNING] No translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").
+
+
+▲ [WARNING] No translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").
+
+
+Output location: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/app
+
+
+> nx run server:build:production
+
+
+> nx run api-e2e:e2e
+
+> node --experimental-strip-types apps/web/api-e2e/src/support/run-api-e2e.ts
+
+  console.log
+    ◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+      at _log (../../../node_modules/.pnpm/dotenv@17.4.2/node_modules/dotenv/lib/main.js:131:11)
+
+
+Tearing down composition server...
+
+
+
+
+ NX   Successfully ran target e2e for project api-e2e and 8 tasks it depends on
+stderr=$ nx run api-e2e:e2e --skip-nx-cache
+(node:1446096) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/apps/web/api-e2e/src/support/run-api-e2e.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1446110) Warning: Failed to load the ES module: /home/visomi/Projects/GitHub/visomi-dev/themis/apps/web/api-e2e/jest.config.cts. Make sure to set "type": "module" in the nearest package.json file or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.535 s, estimated 7 s
+Ran all test suites within paths "apps/web/api-e2e/src/api/pzs-005-real.spec.ts".
+result=0 pnpm nx run api-e2e:e2e --skip-nx-cache
+migrations=passed
+nx-api-e2e=passed
+$ podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml down --volumes --remove-orphans
+stdout=themis-local-e2e-1438045_redis_1
+themis-local-e2e-1438045_minio-init_1
+themis-local-e2e-1438045_postgres_1
+themis-local-e2e-1438045_minio_1
+themis-local-e2e-1438045_minio-init_1
+themis-local-e2e-1438045_minio_1
+themis-local-e2e-1438045_redis_1
+themis-local-e2e-1438045_postgres_1
+themis-local-e2e-1438045_postgres-data
+themis-local-e2e-1438045_minio-data
+f799ae55d906442286e07b7c674cf6ba5ca7f6134271dba92936563273f06c03
+themis-local-e2e-1438045_default
+stderr=>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+
+result=0 podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml down --volumes --remove-orphans
+compose-down=completed
+inspection-command=podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-1438045 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE       COMMAND     CREATED     STATUS      PORTS       NAMES
+inspection-stderr=>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+
+inspection-command=podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-1438045
+inspection-result=0 podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-1438045
+inspection-stdout=DRIVER      VOLUME NAME

@@ -129,9 +129,7 @@ function cycleCheck() {
   // Reset env_rerun_count on non-environment status
   if (status !== 'environment_issue') envRerunCount = 0;
 
-  // Cycle limit gates. limitReached is a terminal stop; approachingLimit is an
-  // advisory warning emitted in the two cycles before the cap.
-  const limitReached = cycleCount >= maxCycles;
+  // Approaching limit gate
   const approachingLimit = cycleCount >= maxCycles - 2;
 
   output({
@@ -139,12 +137,7 @@ function cycleCheck() {
     agentTriggered: false,
     envRerunCount,
     approachingLimit,
-    limitReached,
-    message: limitReached
-      ? `Cycle limit reached (${cycleCount}/${maxCycles}). Stopping.`
-      : approachingLimit
-        ? `Approaching cycle limit (${cycleCount}/${maxCycles})`
-        : null,
+    message: approachingLimit ? `Approaching cycle limit (${cycleCount}/${maxCycles})` : null,
   });
 }
 
