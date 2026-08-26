@@ -85,7 +85,15 @@ describe('ProjectDetail', () => {
       imports: [ProjectDetail],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'project-1' } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: { get: () => 'project-1' },
+              queryParamMap: { get: () => null },
+            },
+          },
+        },
         { provide: OperationalWorkspaceAdapter, useValue: { read } },
       ],
     }).compileComponents();
