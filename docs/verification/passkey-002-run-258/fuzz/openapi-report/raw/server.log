@@ -1,0 +1,393 @@
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[01:58:40.957] [32mINFO[39m (1055062): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[01:58:40.957] [32mINFO[39m (1055062): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[01:58:40.957] [32mINFO[39m (1055062): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[01:58:40.957] [32mINFO[39m (1055062): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[01:58:40.957] [32mINFO[39m (1055062): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8087
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[0mDELETE /api/test/mailbox [32m204[0m 1.368 ms - -[0m
+[0mPOST /api/auth/sign-up [32m201[0m 86.086 ms - 205[0m
+[0mGET /api/test/mailbox/latest?email=pzs005-run-258-mtb8e8kk%40example.test&purpose=sign_up [32m200[0m 0.987 ms - 211[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 55.380 ms - 272[0m
+[0mGET /api/auth/session [32m200[0m 0.458 ms - 307[0m
+[0mPOST /api/projects [32m201[0m 4.534 ms - 388[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices [32m200[0m 5.558 ms - 397[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices/device-HzK5aQ2lQRGnjOfy/approval [32m200[0m 3.812 ms - 153[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices/device-HzK5aQ2lQRGnjOfy/enroll [32m200[0m 5.973 ms - 603[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices [32m200[0m 6.659 ms - 403[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices/device-V7dP5Iwd_b1lZSp9/enroll [32m200[0m 3.353 ms - 597[0m
+[0mPOST /api/webauthn/42712992-4e2b-4619-8f0f-02fdd221e3f6/recovery [32m201[0m 3.612 ms - 171[0m
+[0mPOST /api/webauthn/42712992-4e2b-4619-8f0f-02fdd221e3f6/credentials [32m201[0m 3.994 ms - 260[0m
+[0mPOST /api/auth/sign-up [32m201[0m 78.512 ms - 217[0m
+[0mGET /api/test/mailbox/latest?email=openapi-passkey-unverified-mtb8e8kk%40example.test&purpose=sign_up [32m200[0m 0.240 ms - 223[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 37.605 ms - 284[0m
+[0mGET /api/auth/session [32m200[0m 0.207 ms - 319[0m
+[0mPOST /api/auth/sign-up [32m201[0m 72.287 ms - 217[0m
+[0mGET /api/openapi.json [32m200[0m 6.541 ms - 141922[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices [32m200[0m 3.465 ms - 315[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/devices/device-CkuyiifUPxzs4QTj/enroll [32m200[0m 3.313 ms - 606[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 2.389 ms - 1949[0m
+[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [33m401[0m 2.106 ms - 79[0m
+[ error ] API request failed { code: [32m'project_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [33m404[0m 1.861 ms - 72[0m
+[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [33m401[0m 0.546 ms - 66[0m
+[ error ] API request failed { code: [32m'operational_workspace_unavailable'[39m, statusCode: [33m503[39m }
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [31m503[0m 0.372 ms - 99[0m
+[ error ] API request failed { code: [32m'operational_workspace_error'[39m, statusCode: [33m500[39m }
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [31m500[0m 0.400 ms - 85[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [31m502[0m 0.283 ms - 8[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 2.091 ms - 3310[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 1.663 ms - 1589[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 1.835 ms - 1949[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 1.906 ms - 2029[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 2.053 ms - 1933[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 2.229 ms - 1933[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 1.436 ms - 2020[0m
+[0mGET /api/projects/42712992-4e2b-4619-8f0f-02fdd221e3f6/workspace [32m200[0m 1.398 ms - 2020[0m
+[0mGET /api/capabilities/42712992-4e2b-4619-8f0f-02fdd221e3f6 [32m200[0m 2.641 ms - 454[0m
+[0mGET /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/envelopes?deviceId=device-CkuyiifUPxzs4QTj&enrollmentVersion=3 [32m200[0m 3.177 ms - 58[0m
+[0mPOST /api/capabilities/42712992-4e2b-4619-8f0f-02fdd221e3f6 [32m200[0m 5.838 ms - 256[0m
+[0mPOST /api/capabilities/42712992-4e2b-4619-8f0f-02fdd221e3f6 [32m200[0m 3.745 ms - 262[0m
+[0mPOST /api/sync/42712992-4e2b-4619-8f0f-02fdd221e3f6/envelopes [32m201[0m 3.189 ms - 481[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 85.888 ms - 824[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 11.926 ms - 252[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.671 ms - 88[0m
+[0mGET /api/test/mailbox/latest?email=openapi-passkey-pending-mtb8e90k%40example.test&purpose=sign_up [32m200[0m 0.345 ms - 220[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 39.925 ms - 281[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 5.474 ms - 747[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.287 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.235 ms - 91[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.084 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.011 ms - 91[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.946 ms - 747[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 0.458 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.088 ms - 747[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 4.590 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.715 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 4.326 ms - 245[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.452 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/complete [32m200[0m 11.036 ms - 360[0m
+[ error ] API request failed { code: [32m'challenge_replayed'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m409[0m 4.367 ms - 86[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.196 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.050 ms - 82[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.884 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.059 ms - 82[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 0.885 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.963 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.450 ms - 759[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 3.944 ms - 243[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 2.444 ms - 392[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 1.537 ms - 88[0m
+[0mGET /api/auth/passkey/credentials [32m200[0m 1.506 ms - 261[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPATCH /api/auth/passkey/credentials/undefined [33m404[0m 1.257 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mDELETE /api/auth/passkey/credentials/undefined [33m404[0m 1.401 ms - 88[0m
+[ error ] API request failed { code: [32m'email_already_registered'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m409[0m 0.919 ms - 97[0m
+[01:52:47.787] [32mINFO[39m (1056012): [36mWorker runtime ready[39m
+[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 4.365 ms - 170[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.166 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.118 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.143 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.110 ms - 77[0m
+[0mTRACE /api/auth/passkey/registration/begin [33m405[0m 0.165 ms - 78[0m
+[0mQUERY /api/auth/passkey/registration/begin [33m405[0m 0.121 ms - 78[0m
+[0mPUT /api/auth/passkey/registration/begin [33m405[0m 0.116 ms - 78[0m
+[0mPATCH /api/auth/passkey/registration/begin [33m405[0m 0.132 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/registration/begin [33m405[0m 0.124 ms - 78[0m
+[0mGET /api/auth/passkey/registration/begin [33m405[0m 0.139 ms - 78[0m
+[0mDELETE /api/auth/passkey/registration/begin [33m405[0m 0.125 ms - 78[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.163 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.282 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.264 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.141 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.222 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.211 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.213 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.244 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.204 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.119 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.117 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.135 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.120 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.130 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.113 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.105 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.098 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.096 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.093 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.098 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mTRACE /api/auth/passkey/registration/complete [33m405[0m 0.138 ms - 78[0m
+[0mQUERY /api/auth/passkey/registration/complete [33m405[0m 0.082 ms - 78[0m
+[0mPUT /api/auth/passkey/registration/complete [33m405[0m 0.072 ms - 78[0m
+[0mPATCH /api/auth/passkey/registration/complete [33m405[0m 0.092 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/registration/complete [33m405[0m 0.082 ms - 78[0m
+[0mGET /api/auth/passkey/registration/complete [33m405[0m 0.084 ms - 78[0m
+[0mDELETE /api/auth/passkey/registration/complete [33m405[0m 0.082 ms - 78[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.104 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.125 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.120 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.098 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.080 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.213 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.211 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.195 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.116 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.105 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.193 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.283 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.182 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.114 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.209 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.210 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.109 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.099 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.208 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.183 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.205 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.150 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.090 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.084 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.080 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.076 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.122 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.085 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.090 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.080 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.077 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.076 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.086 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.081 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.080 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.094 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.077 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.130 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.090 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.106 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.119 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.107 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.106 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.085 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.091 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.083 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.120 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.091 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.086 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.094 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.086 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.269 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.107 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.165 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.119 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.109 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.109 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.125 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.145 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.203 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.330 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.299 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.116 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mTRACE /api/auth/passkey/authentication/begin [33m405[0m 0.102 ms - 78[0m
+[0mQUERY /api/auth/passkey/authentication/begin [33m405[0m 0.108 ms - 78[0m
+[0mPUT /api/auth/passkey/authentication/begin [33m405[0m 0.107 ms - 78[0m
+[0mPATCH /api/auth/passkey/authentication/begin [33m405[0m 0.117 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/authentication/begin [33m405[0m 0.077 ms - 78[0m
+[0mGET /api/auth/passkey/authentication/begin [33m405[0m 0.076 ms - 78[0m
+[0mDELETE /api/auth/passkey/authentication/begin [33m405[0m 0.078 ms - 78[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.111 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.148 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.104 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.104 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.094 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.093 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.117 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.088 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.083 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.079 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.112 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.118 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.145 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.109 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.141 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.138 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.106 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.112 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.075 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.141 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.095 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mTRACE /api/auth/passkey/authentication/complete [33m405[0m 0.141 ms - 78[0m
+[0mQUERY /api/auth/passkey/authentication/complete [33m405[0m 0.176 ms - 78[0m
+[0mPUT /api/auth/passkey/authentication/complete [33m405[0m 0.155 ms - 78[0m
+[0mPATCH /api/auth/passkey/authentication/complete [33m405[0m 0.157 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/authentication/complete [33m405[0m 0.168 ms - 78[0m
+[0mGET /api/auth/passkey/authentication/complete [33m405[0m 0.215 ms - 78[0m
+[0mDELETE /api/auth/passkey/authentication/complete [33m405[0m 0.165 ms - 78[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.225 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.320 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.323 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.328 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.297 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.304 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.305 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.175 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.126 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.111 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.114 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.156 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.132 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.127 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.094 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.088 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.080 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.076 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.077 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.107 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.114 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.097 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.163 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.154 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.174 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.116 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.213 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.214 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.249 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.279 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.215 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.212 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.206 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.199 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.209 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.204 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.106 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.112 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.213 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.137 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.248 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.215 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.225 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.218 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.225 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.193 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.112 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.104 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.098 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.098 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.094 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.092 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.091 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.090 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.090 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.091 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.095 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.095 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.099 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.117 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.104 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.113 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.119 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.147 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.110 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.100 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.082 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.121 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.129 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.139 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.101 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.087 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.135 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.309 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.243 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m403[0m 0.246 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.148 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.175 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.169 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.169 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.177 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m403[0m 0.196 ms - 77[0m

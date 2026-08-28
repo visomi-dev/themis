@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Router, type CookieOptions, type NextFunction, type Request, type Response } from 'express';
+import { and, eq } from 'drizzle-orm';
 
 import { env } from '../shared/env';
 import { getValidated, validateRequest } from '../shared/http/route-schemas';
@@ -24,9 +25,12 @@ import {
   passwordResetSchema,
   passwordResetVerifySchema,
   resendVerificationSchema,
+  securityPasswordSchema,
 } from './auth-schemas';
+import { csrfProtection, passwordRateLimit } from './passkey-security';
+import { hashSecret } from './auth-crypto';
 
-import { HttpError, httpResponse } from 'shared';
+import { db, HttpError, httpResponse, users } from 'shared';
 
 const router = Router();
 
@@ -93,6 +97,81 @@ router.get('/session', authed(), async function sessionHandler(req, res) {
   httpResponse.json(res, { data: { authenticated: true, user: $req.user }, message: 'Session retrieved.' });
 });
 
+router.get('/security/password', authed(), async function passwordStatusHandler(req, res) {
+  const user = await findUserById(authedRequest(req).user.id);
+
+  if (!user || !user.emailVerifiedAt)
+    throw new HttpError({
+      code: 'account_pending',
+      message: 'Verify your account before changing security settings.',
+      statusCode: 403,
+    });
+  httpResponse.json(res, {
+    data: { configured: user.passwordConfigured, setupAvailable: !user.passwordConfigured },
+    message: 'Password status retrieved.',
+  });
+});
+
+router.post('/security/password/reauthenticate', authed(), csrfProtection, async (req, res) => {
+  const authenticatedAt = req.session?.authenticatedAt;
+
+  if (!authenticatedAt || Date.now() - authenticatedAt > 10 * 60 * 1000)
+    throw new HttpError({
+      code: 'reauthentication_required',
+      message: 'Confirm your recent sign-in before changing security settings.',
+      statusCode: 401,
+    });
+  req.session.reauthenticatedAt = Date.now();
+  res.status(204).send();
+});
+
+router.post(
+  '/security/password',
+  authed(),
+  csrfProtection,
+  passwordRateLimit,
+  validateRequest({ body: securityPasswordSchema }),
+  async (req, res) => {
+    const session = req.session;
+    const user = await findUserById(authedRequest(req).user.id);
+
+    if (!user || !user.emailVerifiedAt)
+      throw new HttpError({
+        code: 'account_pending',
+        message: 'Verify your account before changing security settings.',
+        statusCode: 403,
+      });
+    if (!session?.reauthenticatedAt || Date.now() - session.reauthenticatedAt > 10 * 60 * 1000)
+      throw new HttpError({
+        code: 'reauthentication_required',
+        message: 'Confirm your recent sign-in before changing security settings.',
+        statusCode: 401,
+      });
+    if (user.passwordConfigured)
+      throw new HttpError({
+        code: 'password_already_configured',
+        message: 'A password is already configured for this account.',
+        statusCode: 409,
+      });
+    const { password } = getValidated<{ body: typeof securityPasswordSchema }>(req).body!;
+    const passwordHash = await hashSecret(password);
+    const [updated] = await db
+      .update(users)
+      .set({ passwordHash, passwordConfigured: true, updatedAt: new Date() })
+      .where(and(eq(users.id, user.id), eq(users.passwordConfigured, false)))
+      .returning();
+
+    if (!updated)
+      throw new HttpError({
+        code: 'password_already_configured',
+        message: 'A password is already configured for this account.',
+        statusCode: 409,
+      });
+    delete session.reauthenticatedAt;
+    res.status(204).send();
+  },
+);
+
 router.post('/sign-up', validateRequest({ body: credentialsSchema }), async function signUpHandler(req, res) {
   const { email, password } = getValidated<{ body: typeof credentialsSchema }>(req).body!;
 
@@ -121,6 +200,7 @@ router.post(
       });
     });
 
+    req.session.authenticatedAt = Date.now();
     setSessionHintCookie(res);
 
     httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-up complete.' });
@@ -185,6 +265,8 @@ router.post(
               });
             });
 
+            req.session.authenticatedAt = Date.now();
+
             setSessionHintCookie(res);
 
             httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });
@@ -225,6 +307,7 @@ router.post(
       });
     });
 
+    req.session.authenticatedAt = Date.now();
     setSessionHintCookie(res);
 
     httpResponse.json(res, { data: { authenticated: true, user }, message: 'Sign-in complete.' });

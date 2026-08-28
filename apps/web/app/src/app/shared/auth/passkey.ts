@@ -7,11 +7,23 @@ import type { ResponseEnvelope } from './auth.models';
 
 type PasskeyBegin = ResponseEnvelope<{
   challengeId: string | null;
+  verificationChallengeId?: string | null;
+  enrollmentId?: string | null;
   options: Record<string, unknown> | null;
   attempt?: 'passkey_default' | 'retry_available' | 'password_fallback' | 'authenticated';
 }>;
 
 type PasskeyComplete = ResponseEnvelope<{ authenticated: true; user: unknown }>;
+export type PasskeyCredential = {
+  id: string;
+  label: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  transports: string[];
+  backupEligible: boolean;
+  backupState: boolean;
+};
 
 @Injectable({ providedIn: 'root' })
 export class Passkey {
@@ -102,6 +114,28 @@ export class Passkey {
     }
 
     return credential;
+  }
+
+  async listCredentials(): Promise<PasskeyCredential[]> {
+    const response = await firstValueFrom(
+      this.http.get<ResponseEnvelope<{ credentials: PasskeyCredential[] }>>('/api/auth/passkey/credentials'),
+    );
+
+    return response.data.credentials;
+  }
+
+  async renameCredential(id: string, label: string): Promise<PasskeyCredential> {
+    const response = await firstValueFrom(
+      this.http.patch<ResponseEnvelope<PasskeyCredential>>(`/api/auth/passkey/credentials/${encodeURIComponent(id)}`, {
+        label,
+      }),
+    );
+
+    return response.data;
+  }
+
+  async revokeCredential(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`/api/auth/passkey/credentials/${encodeURIComponent(id)}`));
   }
 }
 

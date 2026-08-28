@@ -1,0 +1,142 @@
+[
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI pending enrollment\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED-ID]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"none\",\"excludeCredentials\":[],\"authenticatorSelection\":{\"residentKey\":\"preferred\",\"userVerification\":\"required\",\"requireResidentKey\":false},\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/complete",
+    "status": 201,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"data\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"label\":\"OpenAPI pending enrollment\",\"createdAt\":\"2026-08-27T23:50:49.840Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false},\"message\":\"Passkey registered.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/sign-up/verify",
+    "status": 200,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"pin\": \"[REDACTED]\"}",
+    "body": "{\"message\":\"Sign-up complete.\",\"data\":{\"authenticated\":true,\"user\":{\"accountId\":\"[REDACTED-ID]\",\"email\":\"[REDACTED]\",\"emailVerifiedAt\":\"2026-08-27T23:50:49.840Z\",\"id\":\"[REDACTED-ID]\",\"role\":\"owner\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"options\":{\"rpId\":\"localhost\",\"challenge\": \"[REDACTED]\",\"allowCredentials\":[{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"transports\":[\"internal\"],\"type\":\"public-key\"}],\"timeout\":60000,\"userVerification\":\"required\"},\"attempt\":\"passkey_default\"},\"message\":\"Passkey authentication options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/complete",
+    "status": 200,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"data\":{\"authenticated\":true,\"user\":{\"accountId\":\"[REDACTED-ID]\",\"email\":\"[REDACTED]\",\"emailVerifiedAt\":\"2026-08-27T23:50:49.840Z\",\"id\":\"[REDACTED-ID]\",\"role\":\"owner\",\"authenticationMethod\":\"passkey\",\"credentialId\": \"[REDACTED]\"}},\"message\":\"Passkey authentication complete.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI additional passkey\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":null,\"enrollmentId\":null,\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"none\",\"excludeCredentials\":[{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"transports\":[\"internal\"],\"type\":\"public-key\"}],\"authenticatorSelection\":{\"residentKey\":\"preferred\",\"userVerification\":\"required\",\"requireResidentKey\":false},\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 409,
+    "requestBody": "{\"email\":\"pzs005-run-265-mtc6emen@example.test\",\"label\":\"OpenAPI unauthorized\",\"pinVerified\":true}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"An account already exists for this email address.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI unverified email\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED-ID]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"none\",\"excludeCredentials\":[],\"authenticatorSelection\":{\"residentKey\":\"preferred\",\"userVerification\":\"required\",\"requireResidentKey\":false},\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"pzs005-run-265-mtc6emen@example.test\",\"label\":\"OpenAPI unverified PIN\",\"pinVerified\":false}",
+    "body": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"pzs005-run-265-mtc6emen@example.test\",\"pinVerified\":false}",
+    "body": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/complete",
+    "status": 400,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"Ob3kMBP9kXkYW8iNwh-loA\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"code\":\"challenge_mismatch\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/complete",
+    "status": 400,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"KgOb5B2hzGl3WfoPVBSCDA\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"code\":\"challenge_mismatch\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/complete",
+    "status": 201,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"Wuf1veFTqQJ5RFRwHTTV2w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"data\":{\"id\":\"Wuf1veFTqQJ5RFRwHTTV2w\",\"label\":\"OpenAPI smoke state\",\"createdAt\":\"2026-08-27T23:44:52.800Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false},\"message\":\"Passkey registered.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/complete",
+    "status": 409,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"code\":\"challenge_replayed\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/complete",
+    "status": 401,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"code\":\"platform_error\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/complete",
+    "status": 401,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"kaGvhxdz6SNDkEWC5ntwwQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"code\":\"platform_error\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 404,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 404,
+    "requestBody": "{\"email\":\"pzs005-run-265-mtc6emen@example.test\",\"pinVerified\":true}",
+    "body": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+  }
+]

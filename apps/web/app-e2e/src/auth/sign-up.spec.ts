@@ -11,11 +11,12 @@ test.describe('/app/sign-up', () => {
     await assertOpenDesignChrome(page);
     await expect(page.locator('[data-slot="kicker"]')).toContainText('New account');
     await expect(page.locator('[data-slot="title"]')).toContainText('Create your account');
-    await expect(page.locator('[data-slot="sub"]')).toContainText('Use 8+ characters.');
+    await expect(page.locator('[data-slot="sub"]')).toContainText('passkey');
   });
 
   test('shows validation errors for invalid credentials', async ({ page }) => {
     await page.goto(signUpRoute);
+    await page.getByRole('button', { name: 'Use password instead' }).click();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('Enter your email address.')).toBeVisible();

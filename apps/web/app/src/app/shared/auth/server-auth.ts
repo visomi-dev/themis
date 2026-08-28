@@ -179,6 +179,10 @@ export class ServerAuth extends Auth {
     this.setPendingChallenge(null);
   }
 
+  setPendingVerification(challenge: AuthChallenge): void {
+    this.setPendingChallenge(challenge);
+  }
+
   private hasSessionCookie(): boolean {
     const cookieHeader = this.request?.headers.get('cookie');
 

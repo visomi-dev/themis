@@ -1,0 +1,11 @@
+{
+  "runId": "RUN-261",
+  "scope": "^/auth/passkey/(registration|authentication)/",
+  "warnings": [
+    {
+      "observed": "Authentication failed: 1 operation returned authentication errors",
+      "disposition": "blocked-authentication-warning",
+      "reason": "The warning is current-run OpenAPI output for this run and scope; the warning is not converted into a pass. Authenticated transport evidence is retained only in this run's artifacts."
+    }
+  ]
+}

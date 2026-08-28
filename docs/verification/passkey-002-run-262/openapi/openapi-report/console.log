@@ -1,0 +1,131 @@
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+[13:58:06.289] [32mINFO[39m (3557976): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[13:58:06.289] [32mINFO[39m (3557976): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[13:58:06.289] [32mINFO[39m (3558858): [36mWorker runtime ready[39m
+[13:58:06.289] [32mINFO[39m (3557976): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[13:58:06.289] [32mINFO[39m (3557976): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[13:58:06.289] [32mINFO[39m (3557976): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8099
+[0mDELETE /api/test/mailbox [32m204[0m 0.607 ms - -[0m
+[0mPOST /api/auth/sign-up [32m201[0m 88.218 ms - 205[0m
+[0mGET /api/test/mailbox/latest?email=pzs005-run-262-mtby3f5g%40example.test&purpose=sign_up [32m200[0m 0.868 ms - 211[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 46.300 ms - 272[0m
+[0mPOST /api/auth/sign-up [32m201[0m 71.104 ms - 212[0m
+[0mGET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up [32m200[0m 0.275 ms - 218[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 36.271 ms - 279[0m
+[0mPOST /api/auth/sign-up [32m201[0m 66.158 ms - 217[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 69.455 ms - 824[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 10.067 ms - 252[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 3.314 ms - 88[0m
+[0mGET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up [32m200[0m 0.246 ms - 220[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 36.592 ms - 281[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.240 ms - 754[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.201 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.966 ms - 91[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.959 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.960 ms - 91[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.368 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 0.657 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.119 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 4.327 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 6.532 ms - 754[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 6.110 ms - 245[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.474 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/complete [32m200[0m 8.887 ms - 367[0m
+[ error ] API request failed { code: [32m'challenge_replayed'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m409[0m 4.251 ms - 86[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.213 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.312 ms - 82[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 2.884 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.131 ms - 82[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.053 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 2.959 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.155 ms - 747[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.579 ms - 392[0m
+[ error ] API request failed { code: [32m'[REDACTED-MATERIAL]'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m409[0m 1.056 ms - 97[0m
+[0mGET /api/openapi.json [32m200[0m 8.524 ms - [REDACTED-PIN][0m
+Schemathesis v4.24.3
+━━━━━━━━━━━━━━━━━━━━
+
+[?25l [32m🕛 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕛 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m
+[?25h[1A[2K[1A[2K [32m✅  [0m[97mLoaded specification from [0m
+ [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/opena[0m
+ [36mpi/run-262-openapi-schema.json[0m[97m (in 0.10s)[0m
+
+ [1;97m    [0m[1;97mBase URL:     [0m[1;97m    [0m[36mhttp://localhost:8099/api[0m[36m    [0m
+ [1;97m    [0m[1;97mSpecification:[0m[1;97m    [0m[36mOpen API 3.1.0           [0m[36m    [0m
+ [1;97m    [0m[1;97mOperations:   [0m[1;97m    [0m[36m2 selected / 2 total     [0m[36m    [0m
+
+[?25l [32m🕛 [0m [97mProbing API capabilities[0m[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 4.690 ms - 170[0m
+[2K [32m🕛 [0m [97mProbing API capabilities[0m
+[?25h[1A[2K [32m✅  [0m[97mAPI capabilities:[0m
+
+ [1;97m    [0m[1;97mSupports NULL byte in headers:                        [0m[1;97m    [0m[31m✘[0m[36m    [0m
+ [1;97m    [0m[1;97mAccepts backslash and control characters in URL paths:[0m[1;97m    [0m[32m✓[0m[36m    [0m
+
+[?25l[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m404[0m 1.188 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 4.681 ms - 747[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 0.989 ms - 88[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 2.775 ms - 392[0m
+   [37m  Examples[0m
+
+     [33m0:00:00[0m [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m 100% (2/2)
+
+
+     ✅ 2 passed[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K   [37m  Examples[0m
+
+     [33m0:00:00[0m [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m 100% (2/2)
+
+
+     ✅ 2 passed
+[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m✅  Examples (in 0.19s)[0m
+
+ [37m    ✅ 2 passed[0m
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 2/2
+  Tested: 2
+
+Test Phases:
+  ✅ Examples
+  ⏭  Coverage (disabled)
+  ⏭  Fuzzing (disabled)
+  ⏭  Stateful (disabled)
+
+Test cases:
+  4 generated, 4 passed
+
+Reports:
+  - JUNIT: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/openapi/junit-20260827T135813Z.xml
+  - HAR: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/openapi/har-20260827T135813Z.json
+
+Seed: not used in the deterministic mode
+
+=========================== No issues found in 0.23s ===========================

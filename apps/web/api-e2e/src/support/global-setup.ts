@@ -14,7 +14,7 @@ const teardownState = globalThis as typeof globalThis & { __TEARDOWN_MESSAGE__?:
 module.exports = async function () {
   const host = process.env.HOST ?? 'localhost';
 
-  const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8083;
+  const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
 
   const build = spawnSync('pnpm', ['exec', 'nx', 'run', 'server:build', '--skip-nx-cache'], {
     cwd: process.cwd(),

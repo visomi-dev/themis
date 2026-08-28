@@ -39,6 +39,8 @@ export abstract class Auth {
   abstract submitPasswordReset(password: string): Promise<void>;
 
   abstract clearPendingChallenge(): void;
+
+  abstract setPendingVerification(challenge: AuthChallenge): void;
 }
 
 export type { SessionResponse, ChallengeResponse, ChallengeOrAuthenticatedResponse };

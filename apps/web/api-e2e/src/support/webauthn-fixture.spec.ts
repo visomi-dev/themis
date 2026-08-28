@@ -12,7 +12,7 @@ function decode(value: unknown): Buffer {
 
 describe('WebAuthn HTTP fixture', () => {
   const options = { challenge: 'application-returned-challenge' };
-  const origin = 'http://localhost:8083';
+  const origin = 'http://localhost:8080';
   const rpId = 'localhost';
 
   it('creates a registration response with an attestation object and ephemeral credential key', () => {

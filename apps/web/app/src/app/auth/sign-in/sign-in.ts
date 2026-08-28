@@ -124,7 +124,13 @@ export class SignIn {
   protected async signInWithPasskey(): Promise<void> {
     const email = this.passkeyEmail().trim();
 
-    if (!email || this.passkeyState() === 'loading') return;
+    if (this.passkeyState() === 'loading') return;
+    if (!email) {
+      this.passkeyState.set('retry');
+      this.errorMessage.set('Enter your email address to continue.');
+
+      return;
+    }
     if (!this.passkey.isSupported()) {
       this.passkeyState.set('unsupported');
 
@@ -132,12 +138,13 @@ export class SignIn {
     }
 
     const pinVerified = this.passkeyState() === 'verification';
+    const retryRequested = this.passkeyState() === 'retry';
 
     this.passkeyState.set('loading');
     this.errorMessage.set('');
 
     try {
-      const begin = await this.passkey.beginAuthentication(email, pinVerified);
+      const begin = await this.passkey.beginAuthentication(email, pinVerified, retryRequested);
 
       if (!begin.options || !begin.challengeId) {
         this.passkeyState.set('fallback');
@@ -180,8 +187,9 @@ export class SignIn {
   }
 
   protected usePasswordFallback(): void {
+    this.signInModel.update((model) => ({ ...model, email: this.passkeyEmail() }));
     this.passkeyState.set('fallback');
-    this.errorMessage.set('Password sign-in is available because you selected it explicitly.');
+    this.errorMessage.set('');
   }
 
   protected readonly footerLink = SIGN_UP_URL;

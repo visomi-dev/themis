@@ -1,0 +1,437 @@
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+[20:15:05.837] INFO ([REDACTED-PIN]): API Mounted
+    path: "/api"
+[20:15:05.837] INFO ([REDACTED-PIN]): Realtime runtime ready
+    path: "/socket.io"
+[20:15:05.837] INFO ([REDACTED-PIN]): App Mounted
+    path: "/app"
+[20:15:05.837] INFO ([REDACTED-PIN]): Site Mounted
+    path: "/"
+[20:15:05.837] INFO ([REDACTED-PIN]): Gateway server ready
+    host: "localhost"
+    port: 8123
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+DELETE /api/test/mailbox 204 0.762 ms - -
+POST /api/auth/sign-up 201 94.565 ms - 205
+GET /api/test/mailbox/latest?email=pzs005-run-267-mtcbk8ih%40example.test&purpose=sign_up 200 1.279 ms - 211
+POST /api/auth/sign-up/verify 200 53.107 ms - 272
+POST /api/auth/sign-up 201 73.601 ms - 212
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.303 ms - 218
+POST /api/auth/sign-up/verify 200 39.693 ms - 279
+POST /api/auth/sign-up 201 69.314 ms - 217
+POST /api/auth/passkey/registration/begin 200 44.060 ms - 824
+POST /api/auth/passkey/registration/complete 201 10.843 ms - 252
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 4.314 ms - 88
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.280 ms - 220
+POST /api/auth/sign-up/verify 200 39.925 ms - 281
+POST /api/auth/passkey/authentication/begin 200 8.020 ms - 392
+POST /api/auth/passkey/authentication/complete 200 21.535 ms - 369
+POST /api/auth/passkey/registration/begin 200 7.153 ms - 833
+[ error ] API request failed { code: '[REDACTED-MATERIAL]', statusCode: 409 }
+POST /api/auth/passkey/registration/begin 409 2.297 ms - 97
+POST /api/auth/passkey/registration/begin 200 51.884 ms - 827
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/registration/begin 403 1.297 ms - 91
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 1.220 ms - 88
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 1.158 ms - 91
+POST /api/auth/passkey/registration/begin 200 5.990 ms - 833
+[ error ] API request failed { code: 'challenge_mismatch', statusCode: 400 }
+POST /api/auth/passkey/registration/complete 400 1.172 ms - 86
+POST /api/auth/passkey/registration/begin 200 5.793 ms - 833
+[ error ] API request failed { code: 'challenge_mismatch', statusCode: 400 }
+POST /api/auth/passkey/registration/complete 400 9.754 ms - 86
+POST /api/auth/passkey/registration/begin 200 6.619 ms - 833
+POST /api/auth/passkey/registration/complete 201 6.260 ms - 245
+[ error ] API request failed { code: 'challenge_replayed', statusCode: 409 }
+POST /api/auth/passkey/authentication/complete 409 3.937 ms - 86
+POST /api/auth/passkey/authentication/begin 200 6.159 ms - 470
+[ error ] API request failed { code: 'platform_error', statusCode: 401 }
+POST /api/auth/passkey/authentication/complete 401 2.104 ms - 82
+POST /api/auth/passkey/authentication/begin 200 3.292 ms - 470
+[ error ] API request failed { code: 'platform_error', statusCode: 401 }
+POST /api/auth/passkey/authentication/complete 401 2.203 ms - 82
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 1.222 ms - 88
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 2.577 ms - 88
+POST /api/auth/passkey/registration/begin 200 2.990 ms - 911
+POST /api/auth/passkey/authentication/begin 200 3.051 ms - 470
+GET /api/openapi.json 200 7.021 ms - [REDACTED-PIN]
+Schemathesis v4.24.3
+━━━━━━━━━━━━━━━━━━━━
+
+ 🕛  Loading specification from
+     [REPORT_ROOT]/test-results/api-e2e/o… 🕛  Loading specification from
+     [REPORT_ROOT]/test-results/api-e2e/o…
+ ✅  Loaded specification from
+ [REPORT_ROOT]/test-results/api-e2e/opena
+ pi/run-267-openapi-schema.json (in 0.10s)
+
+     Base URL:         http://localhost:8123/api
+     Specification:    Open API 3.1.0
+     Operations:       2 selected / 2 total
+
+ 🕛  Probing API capabilitiesGET /api/schemathesis-probe%5C%1B%01 404 5.151 ms - 170
+ 🕛  Probing API capabilities
+ ✅  API capabilities:
+
+     Supports NULL byte in headers:                            ✘
+     Accepts backslash and control characters in URL paths:    ✓
+
+[20:09:12.552] INFO ([REDACTED-PIN]): Worker runtime ready
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/registration/begin 404 1.085 ms - 88
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.549 ms - 84
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 0.964 ms - 88
+POST /api/auth/passkey/authentication/begin 200 3.460 ms - 470
+     Examples
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed     Examples
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed
+ ✅  Examples (in 0.19s)
+
+     ✅ 2 passed
+
+ 🕛  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠋ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕐  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠙ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕑  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠹ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕒  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠼ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕓  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠴ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕔  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠦ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕕  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠇ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕖  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠏ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕗  Coverage
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠋ 0:00:00  POST /auth/passkey/registration/begin
+
+       🕘  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠹ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕙  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠸ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕚  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠼ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕐  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠦ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕑  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠧ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕒  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠏ 0:00:01  POST /auth/passkey/registration/begin
+
+       🕓  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠋ 0:00:01  POST /auth/passkey/registration/begin
+
+      POST /api/auth/passkey/registration/begin 403 0.203 ms - 77
+TRACE /api/auth/passkey/registration/begin 405 0.133 ms - 78
+QUERY /api/auth/passkey/registration/begin 405 0.139 ms - 78
+PUT /api/auth/passkey/registration/begin 405 0.131 ms - 78
+PATCH /api/auth/passkey/registration/begin 405 0.141 ms - 78
+OPTIONS /api/auth/passkey/registration/begin 405 0.147 ms - 78
+GET /api/auth/passkey/registration/begin 405 0.132 ms - 78
+DELETE /api/auth/passkey/registration/begin 405 0.127 ms - 78
+ 🕔  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠙ 0:00:01  POST /auth/passkey/registration/begin
+
+      [ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.475 ms - 84
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.496 ms - 84
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.370 ms - 84
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.379 ms - 84
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.398 ms - 84
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.852 ms - 247
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.511 ms - 220
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.526 ms - 220
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.510 ms - 242
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.390 ms - 242
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.357 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.347 ms - 212
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.398 ms - 210
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.412 ms - 216
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.404 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.452 ms - 223
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.353 ms - 221
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 1.651 ms - 223
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 1.811 ms - 219
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 1.390 ms - 223
+ 🕕  Coverage
+
+     0:00:01 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0% (0/2)
+
+   ⠹ 0:00:01  POST /auth/passkey/registration/begin
+
+      [ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.724 ms - 297
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.387 ms - 138
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.341 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.385 ms - 212
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.375 ms - 210
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.355 ms - 216
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.355 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.319 ms - 205
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 403 0.201 ms - 77
+TRACE /api/auth/passkey/authentication/begin 405 0.161 ms - 78
+QUERY /api/auth/passkey/authentication/begin 405 0.411 ms - 78
+PUT /api/auth/passkey/authentication/begin 405 0.190 ms - 78
+ 🕖  Coverage
+
+     0:00:02 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50% (1/2)
+
+   ⠼ 0:00:00  POST /auth/passkey/authentication/begin
+
+     ✅ 1 passedPATCH /api/auth/passkey/authentication/begin 405 0.162 ms - 78
+OPTIONS /api/auth/passkey/authentication/begin 405 0.174 ms - 78
+GET /api/auth/passkey/authentication/begin 405 0.261 ms - 78
+DELETE /api/auth/passkey/authentication/begin 405 0.177 ms - 78
+POST /api/auth/passkey/authentication/begin 200 3.381 ms - 470
+POST /api/auth/passkey/authentication/begin 200 3.910 ms - 470
+POST /api/auth/passkey/authentication/begin 200 2.726 ms - 470
+POST /api/auth/passkey/authentication/begin 200 2.602 ms - 470
+POST /api/auth/passkey/authentication/begin 200 2.675 ms - 470
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.567 ms - 247
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.658 ms - 220
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.775 ms - 226
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.528 ms - 224
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.966 ms - 226
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 1.108 ms - 222
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.681 ms - 226
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.665 ms - 228
+ 🕗  Coverage
+
+     0:00:02 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50% (1/2)
+
+   ⠴ 0:00:00  POST /auth/passkey/authentication/begin
+
+     ✅ 1 passed[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.424 ms - 226
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.352 ms - 228
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.376 ms - 224
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.543 ms - 228
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.654 ms - 223
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.403 ms - 221
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.413 ms - 223
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.370 ms - 219
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.367 ms - 223
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.448 ms - 297
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.439 ms - 138
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.390 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.349 ms - 212
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.333 ms - 210
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.341 ms - 216
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.329 ms - 214
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.411 ms - 205
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+     Coverage
+
+     0:00:02 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed     Coverage
+
+     0:00:02 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed
+ ✅  Coverage (in 2.33s)
+
+     ✅ 2 passed
+
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.442 ms - 205
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.499 ms - 297
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/registration/begin 400 0.489 ms - 242
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+ 🕛  Fuzzing
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50% (1/2)
+
+
+     ✅ 1 passed[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.380 ms - 212
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.445 ms - 297
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+[ error ] API request failed { code: 'invalid_request', statusCode: 400 }
+POST /api/auth/passkey/authentication/begin 400 0.455 ms - 297
+     Fuzzing
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed     Fuzzing
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed
+ ✅  Fuzzing (in 0.24s)
+
+     ✅ 2 passed
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 2/2
+  Tested: 2
+
+Test Phases:
+  ✅ Examples
+  ✅ Coverage
+  ✅ Fuzzing
+  ⏭  Stateful (disabled)
+
+Test cases:
+  96 generated, 96 passed
+
+Reports:
+  - JUNIT: [REPORT_ROOT]/test-results/api-e2e/openapi/junit-20260827T201512Z.xml
+  - HAR: [REPORT_ROOT]/test-results/api-e2e/openapi/har-20260827T201512Z.json
+
+Seed: not used in the deterministic mode
+
+=========================== No issues found in 2.81s ===========================

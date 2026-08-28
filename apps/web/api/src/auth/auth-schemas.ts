@@ -84,6 +84,24 @@ export const passwordResetSessionSchema = z
   })
   .meta({ id: 'PasswordResetSession' });
 
+export const securityPasswordSchema = z
+  .object({
+    password: passwordSchema.min(12).max(128),
+    confirmPassword: z.string().max(128),
+  })
+  .refine((value) => value.password === value.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match.',
+  })
+  .meta({ id: 'SecurityPasswordSetup' });
+
+export const securityPasswordStatusSchema = z
+  .object({
+    configured: z.boolean(),
+    setupAvailable: z.boolean(),
+  })
+  .meta({ id: 'SecurityPasswordStatus' });
+
 export const sessionResponseSchema = z
   .object({
     authenticated: z.boolean(),
@@ -120,6 +138,27 @@ const rateLimitResponse = {
 };
 
 export const authOpenApiPaths = {
+  '/auth/security/password': {
+    get: {
+      responses: {
+        200: {
+          content: {
+            'application/json': {
+              schema: responseEnvelope(securityPasswordStatusSchema, 'SecurityPasswordStatusEnvelope'),
+            },
+          },
+          description: 'Password status.',
+        },
+      },
+    },
+    post: {
+      requestBody: { required: true, content: { 'application/json': { schema: securityPasswordSchema } } },
+      responses: { 204: { description: 'Password configured.' }, ...rateLimitResponse },
+    },
+  },
+  '/auth/security/password/reauthenticate': {
+    post: { responses: { 204: { description: 'Recent authentication recorded.' } } },
+  },
   '/auth/session': {
     get: {
       responses: {

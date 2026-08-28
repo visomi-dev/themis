@@ -1,0 +1,40 @@
+◇ injected env (5) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+[17:16:11.132] INFO ([REDACTED-PIN]): API Mounted
+    path: "/api"
+[17:16:11.132] INFO ([REDACTED-PIN]): Realtime runtime ready
+    path: "/socket.io"
+[17:16:11.132] INFO ([REDACTED-PIN]): App Mounted
+    path: "/app"
+[17:16:11.132] INFO ([REDACTED-PIN]): Site Mounted
+    path: "/"
+[17:16:11.132] INFO ([REDACTED-PIN]): Gateway server ready
+    host: "localhost"
+    port: 8114
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+[17:16:11.132] INFO ([REDACTED-PIN]): Worker runtime ready
+DELETE /api/test/mailbox 204 0.592 ms - -
+POST /api/auth/sign-up 201 103.645 ms - 205
+GET /api/test/mailbox/latest?email=pzs005-run-264-mtc562gp%40example.test&purpose=sign_up 200 0.694 ms - 211
+POST /api/auth/sign-up/verify 200 52.592 ms - 272
+POST /api/auth/sign-up 201 111.339 ms - 212
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.270 ms - 218
+POST /api/auth/sign-up/verify 200 46.525 ms - 279
+POST /api/auth/sign-up 201 77.096 ms - 217
+POST /api/auth/passkey/registration/begin 200 63.867 ms - 824
+POST /api/auth/passkey/registration/complete 201 18.010 ms - 252
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 4.097 ms - 88
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.471 ms - 220
+POST /api/auth/sign-up/verify 200 52.044 ms - 281
+[ error ] API request failed { code: '[REDACTED-MATERIAL]', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 2.129 ms - 111
+POST /api/auth/passkey/registration/begin 200 64.072 ms - 827
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/registration/begin 403 1.083 ms - 91
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 2.207 ms - 88
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 7.006 ms - 91

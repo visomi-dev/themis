@@ -7,6 +7,23 @@ ceremonies and Angular UX are delivered by later work.
 
 ## Account identity and gating
 
+The corrected P3/P4 contract consumes PASSKEY-010 research at
+`docs/product/passkey-ux-security-research.md#passkey-010-findings`,
+`#passkey-010-invariants`, `#passkey-010-flows`,
+`#passkey-010-state-translation`, `#passkey-010-threat-decisions`, and
+`#passkey-010-blockers`, including the downstream citation map in section 9.1.
+These are normative traceability references; PASSKEY-001 does not resolve the
+five blockers recorded there.
+
+Executable contract evidence is in
+`apps/web/api/src/auth/passkey-contract.spec.ts`. It maps pending activation and
+terminal cleanup to `#passkey-010-flows` and `#passkey-010-state-translation`,
+multi-passkey lifecycle and last-method protection to `#passkey-010-journeys`,
+and ownership, enumeration, password controls, audit redaction, and the
+account-session/vault boundary to `#passkey-010-threat-decisions`. Session
+effects remain caller-selected from an approved policy; `unresolved` fails
+closed so this contract does not decide the PASSKEY-010 session-policy blocker.
+
 An account-authentication flow always starts with a mandatory canonical email.
 Canonicalization applies Unicode NFKC normalization, trimming, and invariant
 lower-casing before lookup, uniqueness checks, or storage; equivalent email
@@ -22,13 +39,44 @@ retry before exposing password fallback. An explicit password choice may enter
 
 ## Durable model
 
+`account_passkey_enrollments` stores the canonical email, pending/terminal
+status, the bound credential identity, expiry, and activation timestamps. The
+bound credential is not session-eligible until mandatory email verification
+atomically activates that enrollment. Expired, replayed, mismatched, cancelled,
+and superseded enrollments are terminal; cleanup cannot activate their
+credentials.
+
+Activation is represented as one model operation that validates account, user,
+canonical-email, credential, and verification-challenge binding before
+returning the active account, consumed challenge, active enrollment, and active
+credential together. A failed binding, expired or consumed verification, or a
+terminal enrollment cannot produce a partially active result. Terminal cleanup
+makes the bound credential unusable before removing it, and retry requires a
+new enrollment.
+
 `account_passkey_credentials` is account-scoped and references both the account
 and owning user. It stores the credential ID, opaque COSE public key, RP ID,
 display label, transports, backup flags, sign count, use/revocation timestamps,
 and no private or PRF material. Credential IDs are unique at the RP and labels
-are unique within an account. Revocation is represented by `revoked_at`; a
+are unique within an account. Pending enrollment binding is represented by the
+enrollment's credential identity and terminal enrollment status. Revocation is represented by `revoked_at`; a
 revoked credential is never accepted again, while other credentials remain
 usable.
+
+Lifecycle operations select credentials by the external credential ID plus
+account and user ownership while preserving the stable internal ID. Missing,
+cross-account, and cross-user selections return the same `credential_not_found`
+result. Add, name, list, use, and revoke are independently modeled; repeated
+revoke is idempotent. Viability is calculated from credential records rather
+than a caller-provided count: only active passkeys and configured password
+access count, while pending, expired, revoked, and unusable methods do not.
+
+Later password setup fails closed unless recent reauthentication, password
+policy, CSRF, distributed rate-limit, approved session effect, audit, and
+redaction controls all pass independently. Its result contains only a redacted
+audit event and never contains the submitted password secret. Account discovery
+and cross-account credential failures use equivalent public outcomes to avoid
+account or ownership enumeration.
 
 `account_webauthn_challenges` stores a one-way challenge hash, purpose
 (`registration` or `authentication`), account/user binding, expected RP ID and

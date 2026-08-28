@@ -1,0 +1,111 @@
+{
+  "profileCoverage": ["web-webcrypto", "web-local-agent"],
+  "protectedBoundary": [
+    {
+      "name": "capability discovery",
+      "status": 200
+    },
+    {
+      "name": "Web-only negotiation",
+      "status": 200
+    },
+    {
+      "name": "agent-assisted negotiation",
+      "status": 200
+    },
+    {
+      "name": "opaque append",
+      "status": 201
+    },
+    {
+      "name": "opaque fetch",
+      "status": 200
+    }
+  ],
+  "operationalWorkspaceReadBoundary": [
+    {
+      "name": "authorized-versioned-read",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "unauthorized-read",
+      "status": 401,
+      "observed": true
+    },
+    {
+      "name": "tenant-isolated-read",
+      "status": 404,
+      "observed": true
+    },
+    {
+      "name": "fixture-unauthorized-read",
+      "status": 401,
+      "observed": true
+    },
+    {
+      "name": "unavailable-http-response",
+      "status": 503,
+      "observed": true
+    },
+    {
+      "name": "error-http-response",
+      "status": 500,
+      "observed": true
+    },
+    {
+      "name": "malformed-json-http-response",
+      "status": 502,
+      "observed": true
+    },
+    {
+      "name": "malformed-nested-schema-payload",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "protected-disclosure-redaction",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "visible",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "empty",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "locked",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "unavailable",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "stale",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "error",
+      "status": 200,
+      "observed": true
+    },
+    {
+      "name": "malformed",
+      "status": 200,
+      "observed": true
+    }
+  ],
+  "recoveryId": "[REDACTED-ID]",
+  "credentialId": "[REDACTED]",
+  "workspaceId": "[REDACTED-ID]",
+  "reports": ["junit-*.xml", "har-*.json"]
+}

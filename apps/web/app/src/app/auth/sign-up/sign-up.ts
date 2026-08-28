@@ -96,7 +96,9 @@ export class SignUp {
 
   readonly submitting = this.auth.submitting;
   readonly errorMessage = signal('');
-  readonly passkeyState = signal<'ready' | 'loading' | 'verification' | 'retry' | 'fallback' | 'success'>('ready');
+  readonly passkeyState = signal<
+    'ready' | 'loading' | 'unsupported' | 'verification' | 'retry' | 'fallback' | 'success'
+  >('ready');
   readonly passkeyEmail = signal('');
 
   readonly passwordValue = computed(() => this.signUpForm.password().value());
@@ -131,9 +133,16 @@ export class SignUp {
   protected async registerWithPasskey(): Promise<void> {
     const email = this.passkeyEmail().trim();
 
-    if (!email || !this.passkey.isSupported()) {
+    if (!email) {
       this.passkeyState.set('retry');
-      this.errorMessage.set('This browser does not support passkeys. You can choose password fallback.');
+      this.errorMessage.set('Enter your email address to continue.');
+
+      return;
+    }
+
+    if (!this.passkey.isSupported()) {
+      this.passkeyState.set('unsupported');
+      this.errorMessage.set('This browser does not support passkeys. Choose password sign-up below.');
 
       return;
     }
@@ -153,18 +162,32 @@ export class SignUp {
       const credential = await this.passkey.createCredential(begin.options);
 
       await this.passkey.completeRegistration(begin.challengeId, credential);
+      if (begin.verificationChallengeId) {
+        this.auth.setPendingVerification({
+          challengeId: begin.verificationChallengeId,
+          email,
+          expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+          purpose: 'sign_up',
+        });
+      }
       this.passkeyState.set('success');
+      await this.router.navigate([VERIFY_EMAIL_URL]);
     } catch (error) {
-      this.passkeyState.set(error instanceof DOMException && error.name === 'AbortError' ? 'retry' : 'verification');
+      const code = error instanceof HttpErrorResponse ? error.error?.code : '';
+
+      this.passkeyState.set(code === 'email_unverified' || code === 'pin_required' ? 'verification' : 'retry');
       this.errorMessage.set(
-        error instanceof DOMException && error.name === 'AbortError'
-          ? 'Passkey registration was cancelled. Try again when you are ready.'
-          : 'Verify your email and PIN before completing passkey registration.',
+        code === 'email_unverified' || code === 'pin_required'
+          ? 'Verify your email and PIN before completing passkey registration.'
+          : error instanceof DOMException && error.name === 'AbortError'
+            ? 'Passkey registration was cancelled. Try again when you are ready.'
+            : 'Passkey registration failed. Try again or choose password sign-up.',
       );
     }
   }
 
   protected usePasswordFallback(): void {
+    this.signUpModel.update((model) => ({ ...model, email: this.passkeyEmail() }));
     this.passkeyState.set('fallback');
   }
 

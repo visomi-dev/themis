@@ -80,24 +80,24 @@
 Schemathesis v4.24.3
 ━━━━━━━━━━━━━━━━━━━━
 
-[?25l [32m🕛 [0m [37mLoading specification from [0m                                                
-     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕐 [0m [37mLoading specification from [0m                                                
-     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕐 [0m [37mLoading specification from [0m                                                
+[?25l [32m🕛 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕐 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕐 [0m [37mLoading specification from [0m
      [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m
-[?25h[1A[2K[1A[2K [32m✅  [0m[97mLoaded specification from [0m                                                 
- [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/opena[0m 
- [36mpi/run-237-openapi-schema.json[0m[97m (in 0.18s)[0m                                      
+[?25h[1A[2K[1A[2K [32m✅  [0m[97mLoaded specification from [0m
+ [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/opena[0m
+ [36mpi/run-237-openapi-schema.json[0m[97m (in 0.18s)[0m
 
- [1;97m    [0m[1;97mBase URL:     [0m[1;97m    [0m[36mhttp://localhost:8084/api[0m[36m    [0m                            
- [1;97m    [0m[1;97mSpecification:[0m[1;97m    [0m[36mOpen API 3.1.0           [0m[36m    [0m                            
- [1;97m    [0m[1;97mOperations:   [0m[1;97m    [0m[36m12 selected / 12 total   [0m[36m    [0m                            
+ [1;97m    [0m[1;97mBase URL:     [0m[1;97m    [0m[36mhttp://localhost:8084/api[0m[36m    [0m
+ [1;97m    [0m[1;97mSpecification:[0m[1;97m    [0m[36mOpen API 3.1.0           [0m[36m    [0m
+ [1;97m    [0m[1;97mOperations:   [0m[1;97m    [0m[36m12 selected / 12 total   [0m[36m    [0m
 
 [?25l [32m🕛 [0m [97mProbing API capabilities[0m[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 5.048 ms - 170[0m
 [2K [32m🕛 [0m [97mProbing API capabilities[0m
-[?25h[1A[2K [32m✅  [0m[97mAPI capabilities:[0m                                                          
+[?25h[1A[2K [32m✅  [0m[97mAPI capabilities:[0m
 
- [1;97m    [0m[1;97mSupports NULL byte in headers:                        [0m[1;97m    [0m[31m✘[0m[36m    [0m            
- [1;97m    [0m[1;97mAccepts backslash and control characters in URL paths:[0m[1;97m    [0m[32m✓[0m[36m    [0m            
+ [1;97m    [0m[1;97mSupports NULL byte in headers:                        [0m[1;97m    [0m[31m✘[0m[36m    [0m
+ [1;97m    [0m[1;97mAccepts backslash and control characters in URL paths:[0m[1;97m    [0m[32m✓[0m[36m    [0m
 
 [?25l [32m🕛 [0m [37mExamples[0m
 
@@ -150,9 +150,9 @@ Schemathesis v4.24.3
 
 
      ✅ 12 passed
-[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m✅  Examples (in 0.47s)[0m                                                        
-                                                                                
- [37m    ✅ 12 passed[0m                                                               
+[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m✅  Examples (in 0.47s)[0m
+
+ [37m    ✅ 12 passed[0m
 
 [?25l [32m🕛 [0m [37mCoverage[0m
 
@@ -2653,9 +2653,9 @@ Schemathesis v4.24.3
 
 
      ✅ 12 passed
-[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m✅  Coverage (in 8.54s)[0m                                                        
-                                                                                
- [37m    ✅ 12 passed[0m                                                               
+[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m✅  Coverage (in 8.54s)[0m
+
+ [37m    ✅ 12 passed[0m
 
 =================================== WARNINGS ===================================
 

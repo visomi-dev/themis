@@ -33,7 +33,7 @@
           The fastest, phishing-resistant way to access your account.
         </p>
         <label class="mt-4 grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="passkey-sign-in-email">
-          <span i18n="@@signInPasskeyEmailLabel">Passkey account identifier</span>
+          <span i18n="@@signInPasskeyEmailLabel">Work email</span>
           <input
             id="passkey-sign-in-email"
             class="rounded-md border border-zinc-950/10 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 dark:border-white/10 dark:bg-zinc-950"
@@ -95,7 +95,7 @@
           >
         </div>
       }
-      @if (passkeyState() === 'retry' || passkeyState() === 'fallback') {
+      @if (passkeyState() === 'retry') {
         <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
       }
       @if (passkeyState() === 'success') {
@@ -105,87 +105,78 @@
       }
     </section>
 
-    <app-form class="grid w-full max-w-sm grid-cols-1 gap-4" [form]="signInForm">
-      <app-field>
-        <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
-        <app-input
-          autocomplete="email"
-          [formField]="signInForm.email"
-          required
-          type="email"
-          placeholder="name@organization.com"
-          controlId="sign-in-email"
-          name="email"
-        />
-        <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid">{{
-          emailError()
-        }}</app-error-message>
-      </app-field>
-
-      <app-field>
-        <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
-        <app-password-input
-          autocomplete="current-password"
-          [formField]="signInForm.password"
-          required
-          minLength="8"
-          placeholder="***************"
-          controlId="sign-in-password"
-          name="password"
-        />
-        <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength">{{
-          passwordError()
-        }}</app-error-message>
-      </app-field>
-
-      <div class="flex flex-col gap-4">
-        <app-link
-          i18n="@@signInForgottenPasswordLink"
-          [routerLink]="forgottenPasswordUrl"
-          [text]="'Forgotten password?'"
-          class="self-end text-sm font-semibold"
-        />
-
-        <label
-          for="sign-in-remember-device"
-          class="flex items-center gap-3 text-sm leading-6 font-medium text-zinc-950 select-none dark:text-zinc-50"
-        >
-          <app-checkbox
-            [formField]="signInForm.rememberDevice"
-            controlId="sign-in-remember-device"
-            name="rememberDevice"
+    @if (passkeyState() === 'fallback') {
+      <app-form class="grid w-full max-w-sm grid-cols-1 gap-4" [form]="signInForm">
+        <app-field>
+          <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
+          <app-input
+            autocomplete="email"
+            [formField]="signInForm.email"
+            required
+            type="email"
+            placeholder="name@organization.com"
+            controlId="sign-in-email"
+            name="email"
           />
-          <span i18n="@@signInRememberDeviceLabel">Remember this device</span>
-        </label>
-      </div>
+          <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid">{{
+            emailError()
+          }}</app-error-message>
+        </app-field>
 
-      <app-button
-        data-od-id="submit"
-        data-slot="submit"
-        i18n="@@signInSubmitButton"
-        tone="accent"
-        type="submit"
-        size="lg"
-        fullWidth
-        [loading]="submitting()"
-        >Sign in</app-button
-      >
+        <app-field>
+          <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
+          <app-password-input
+            autocomplete="current-password"
+            [formField]="signInForm.password"
+            required
+            minLength="8"
+            placeholder="***************"
+            controlId="sign-in-password"
+            name="password"
+          />
+          <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength">{{
+            passwordError()
+          }}</app-error-message>
+        </app-field>
 
-      @if (errorMessage()) {
-        <app-alert tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
-      }
+        <div class="flex flex-col gap-4">
+          <app-link
+            i18n="@@signInForgottenPasswordLink"
+            [routerLink]="forgottenPasswordUrl"
+            [text]="'Forgotten password?'"
+            class="self-end text-sm font-semibold"
+          />
 
-      <p class="text-center text-sm text-zinc-500 dark:text-zinc-400">
-        <span i18n="@@signInFooterPrompt">New to Themis?</span>
-        <app-link
-          data-slot="footer"
-          class="ml-2 font-semibold"
-          i18n="@@signInFooterLink"
-          [routerLink]="footerLink"
-          [text]="'Create an account'"
-        />
-      </p>
-    </app-form>
+          <label
+            for="sign-in-remember-device"
+            class="flex items-center gap-3 text-sm leading-6 font-medium text-zinc-950 select-none dark:text-zinc-50"
+          >
+            <app-checkbox
+              [formField]="signInForm.rememberDevice"
+              controlId="sign-in-remember-device"
+              name="rememberDevice"
+            />
+            <span i18n="@@signInRememberDeviceLabel">Remember this device</span>
+          </label>
+        </div>
+
+        <app-button
+          data-od-id="submit"
+          data-slot="submit"
+          i18n="@@signInSubmitButton"
+          tone="accent"
+          type="submit"
+          size="lg"
+          fullWidth
+          [loading]="submitting()"
+          >Sign in</app-button
+        >
+
+        @if (errorMessage()) {
+          <app-alert tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
+        }
+      </app-form>
+    }
     <button
       type="button"
       class="mb-6 w-full text-center text-sm font-semibold text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
@@ -194,5 +185,15 @@
     >
       Use password instead
     </button>
+    <p class="mt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+      <span i18n="@@signInFooterPrompt">New to Themis?</span>
+      <app-link
+        data-slot="footer"
+        class="ml-2 font-semibold"
+        i18n="@@signInFooterLink"
+        [routerLink]="footerLink"
+        [text]="'Create an account'"
+      />
+    </p>
   </app-auth-card>
 </app-auth-layout>

@@ -1,0 +1,218 @@
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[13:57:48.744] [32mINFO[39m (3554943): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[13:57:48.744] [32mINFO[39m (3554943): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[13:57:48.744] [32mINFO[39m (3556284): [36mWorker runtime ready[39m
+[13:57:48.744] [32mINFO[39m (3554943): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[13:57:48.744] [32mINFO[39m (3554943): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[13:57:48.744] [32mINFO[39m (3554943): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8100
+[0mDELETE /api/test/mailbox [32m204[0m 0.617 ms - -[0m
+[0mPOST /api/auth/sign-up [32m201[0m 95.996 ms - 205[0m
+[0mGET /api/test/mailbox/latest?email=pzs005-run-262-mtby32ej%40example.test&purpose=sign_up [32m200[0m 0.879 ms - 211[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 47.445 ms - 272[0m
+[0mPOST /api/auth/sign-up [32m201[0m 74.813 ms - 212[0m
+[0mGET /api/test/mailbox/latest?email=openapi-passkey-smoke-mtby32ej%40example.test&purpose=sign_up [32m200[0m 0.240 ms - 218[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 42.780 ms - 279[0m
+[0mPOST /api/auth/sign-up [32m201[0m 70.976 ms - 217[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 89.240 ms - 824[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 10.909 ms - 252[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 4.182 ms - 88[0m
+[0mGET /api/test/mailbox/latest?email=openapi-passkey-pending-mtby32ok%40example.test&purpose=sign_up [32m200[0m 0.269 ms - 220[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 45.485 ms - 281[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.895 ms - 754[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.354 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.122 ms - 91[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.259 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.209 ms - 91[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.627 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 0.720 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.956 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 4.941 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.267 ms - 754[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 5.104 ms - 245[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.005 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/complete [32m200[0m 10.456 ms - 367[0m
+[ error ] API request failed { code: [32m'challenge_replayed'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m409[0m 4.769 ms - 86[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.634 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.794 ms - 82[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.140 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.845 ms - 82[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.183 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 2.968 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.428 ms - 747[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.119 ms - 392[0m
+[ error ] API request failed { code: [32m'email_already_registered'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m409[0m 1.294 ms - 97[0m
+[0mGET /api/openapi.json [32m200[0m 12.918 ms - 141922[0m
+[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 5.548 ms - 170[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m404[0m 1.998 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 5.871 ms - 747[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.365 ms - 88[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 5.271 ms - 392[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.474 ms - 77[0m
+[0mTRACE /api/auth/passkey/registration/begin [33m405[0m 0.196 ms - 78[0m
+[0mQUERY /api/auth/passkey/registration/begin [33m405[0m 0.184 ms - 78[0m
+[0mPUT /api/auth/passkey/registration/begin [33m405[0m 0.159 ms - 78[0m
+[0mPATCH /api/auth/passkey/registration/begin [33m405[0m 0.403 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/registration/begin [33m405[0m 0.341 ms - 78[0m
+[0mGET /api/auth/passkey/registration/begin [33m405[0m 0.189 ms - 78[0m
+[0mDELETE /api/auth/passkey/registration/begin [33m405[0m 0.325 ms - 78[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.126 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.144 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.242 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.890 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 4.403 ms - 747[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.310 ms - 247[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.832 ms - 220[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.619 ms - 220[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.361 ms - 242[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.890 ms - 242[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.907 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.628 ms - 212[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.996 ms - 210[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.063 ms - 216[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.175 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.149 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.932 ms - 221[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.131 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.772 ms - 219[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.919 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 1.215 ms - 297[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.930 ms - 138[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.984 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.628 ms - 212[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.514 ms - 210[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.437 ms - 216[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.736 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.478 ms - 205[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.196 ms - 77[0m
+[0mTRACE /api/auth/passkey/authentication/begin [33m405[0m 0.149 ms - 78[0m
+[0mQUERY /api/auth/passkey/authentication/begin [33m405[0m 0.143 ms - 78[0m
+[0mPUT /api/auth/passkey/authentication/begin [33m405[0m 0.144 ms - 78[0m
+[0mPATCH /api/auth/passkey/authentication/begin [33m405[0m 0.194 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/authentication/begin [33m405[0m 0.482 ms - 78[0m
+[0mGET /api/auth/passkey/authentication/begin [33m405[0m 0.179 ms - 78[0m
+[0mDELETE /api/auth/passkey/authentication/begin [33m405[0m 0.147 ms - 78[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.079 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 5.097 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.462 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.646 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.025 ms - 392[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.512 ms - 247[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.520 ms - 220[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.495 ms - 226[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.395 ms - 224[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.385 ms - 226[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.442 ms - 222[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.609 ms - 226[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.452 ms - 228[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.433 ms - 226[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.388 ms - 228[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.379 ms - 224[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.345 ms - 228[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.427 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.404 ms - 221[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.408 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.394 ms - 219[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.365 ms - 223[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.393 ms - 297[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.377 ms - 138[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.405 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.393 ms - 212[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.521 ms - 210[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.373 ms - 216[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.418 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.528 ms - 205[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m400[0m 0.471 ms - 214[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.572 ms - 212[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.460 ms - 297[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m400[0m 0.470 ms - 297[0m

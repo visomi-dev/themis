@@ -5,7 +5,8 @@ const users = pgTable(
   {
     id: text('id').primaryKey(),
     email: text('email').notNull(),
-    passwordHash: text('password_hash').notNull(),
+    passwordHash: text('password_hash'),
+    passwordConfigured: boolean('password_configured').notNull().default(true),
     emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -67,6 +68,31 @@ const authVerificationChallenges = pgTable('auth_verification_challenges', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+const accountPasskeyEnrollments = pgTable(
+  'account_passkey_enrollments',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    credentialId: text('credential_id'),
+    status: text('status').notNull().default('pending'),
+    verificationChallengeId: text('verification_challenge_id').references(() => authVerificationChallenges.id, {
+      onDelete: 'set null',
+    }),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    activatedAt: timestamp('activated_at', { withTimezone: true }),
+    terminalAt: timestamp('terminal_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [index('account_passkey_enrollments_account_status_idx').on(table.accountId, table.status)],
+);
 
 const accountPasskeyCredentials = pgTable(
   'account_passkey_credentials',
@@ -407,6 +433,7 @@ export {
   asyncJobs,
   authVerificationChallenges,
   accountPasskeyCredentials,
+  accountPasskeyEnrollments,
   accountWebAuthnChallenges,
   projectDocuments,
   projects,

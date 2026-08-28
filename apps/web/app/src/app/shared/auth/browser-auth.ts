@@ -184,6 +184,10 @@ export class BrowserAuth extends Auth {
     this.setPendingChallenge(null);
   }
 
+  setPendingVerification(challenge: AuthChallenge): void {
+    this.setPendingChallenge(challenge);
+  }
+
   private hasSessionHint(): boolean {
     return this.readCookie(SESSION_PRESENCE_KEY) === '1';
   }

@@ -2,7 +2,7 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Auth } from '../../auth/auth';
-import { APP_URL, SIGN_IN_URL } from '../../constants/routes';
+import { APP_URL, SECURITY_URL, SIGN_IN_URL } from '../../constants/routes';
 import { Settings } from '../../settings';
 import { Avatar } from '../../ui/data/avatar/avatar';
 import { Icon } from '../../ui/media/icon/icon';
@@ -59,6 +59,7 @@ export class SidebarMenu {
           label: $localize`:@@layoutMenuWorkspace:Workspace`,
           url: APP_URL,
         },
+        { exact: true, icon: 'circle-info', label: $localize`:@@layoutMenuSecurity:Security`, url: SECURITY_URL },
       ],
     },
   ];

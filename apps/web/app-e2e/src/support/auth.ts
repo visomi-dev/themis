@@ -53,6 +53,9 @@ const fillCredentials = async (page: Page, email: string, password: string) => {
 
 const submitSignUpCredentials = async (page: Page, email: string, password: string) => {
   for (let attempt = 0; attempt < 2; attempt += 1) {
+    if (await page.getByRole('button', { name: 'Use password instead' }).isVisible()) {
+      await page.getByRole('button', { name: 'Use password instead' }).click();
+    }
     await fillCredentials(page, email, password);
     await page.getByRole('button', { name: 'Create account' }).click();
 
@@ -181,6 +184,7 @@ export const signIn = async (page: Page, email: string, password: string) => {
   await page.goto(signInRoute);
   await expect(page).toHaveURL(signInUrlPattern);
   await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+  await page.getByRole('button', { name: 'Use password instead' }).click();
   await fillCredentials(page, email, password);
   await page.getByRole('checkbox', { name: 'Remember this device' }).check();
   await page.getByRole('button', { name: 'Sign in' }).click();
@@ -193,6 +197,7 @@ export const signInWithRememberedDevice = async (page: Page, email: string, pass
   await page.goto(signInRoute);
   await expect(page).toHaveURL(signInUrlPattern);
   await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+  await page.getByRole('button', { name: 'Use password instead' }).click();
   await fillCredentials(page, email, password);
   await page.getByRole('checkbox', { name: 'Remember this device' }).check();
   await page.getByRole('button', { name: 'Sign in' }).click();

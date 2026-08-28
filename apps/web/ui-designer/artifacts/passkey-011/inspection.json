@@ -1,0 +1,1682 @@
+[
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=default",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=default",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=default",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=default",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=default",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--default--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=default",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=secondary-password",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=secondary-password",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=secondary-password",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=secondary-password",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=secondary-password",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--secondary-password--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "secondary-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=secondary-password",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=pending-verification",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=pending-verification",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=pending-verification",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=pending-verification",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=pending-verification",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--pending-verification--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "pending-verification",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=pending-verification",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=error",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=error",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=error",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=error",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=light&state=error",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-up--error--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-up",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-up/frame?theme=dark&state=error",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=default",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=default",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=default",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=default",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=default",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--default--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "default",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=default",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=retry",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=retry",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=retry",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=retry",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=retry",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--retry--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "retry",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=retry",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=disclosed-password",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=disclosed-password",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=disclosed-password",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=disclosed-password",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=disclosed-password",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--disclosed-password--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "disclosed-password",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=disclosed-password",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=error",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=error",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=error",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=error",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=light&state=error",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "passkey-sign-in--error--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "passkey-sign-in",
+    "state": "error",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/passkey-sign-in/frame?theme=dark&state=error",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=light&state=setup",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=dark&state=setup",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=light&state=setup",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=dark&state=setup",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=light&state=setup",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-password-setup--setup--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-password-setup",
+    "state": "setup",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-password-setup/frame?theme=dark&state=setup",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=list",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=list",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=list",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=list",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=list",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--list--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "list",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=list",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=add",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=add",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=add",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=add",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=add",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--add--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "add",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=add",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=name",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=name",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=name",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=name",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=name",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--name--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "name",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=name",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=revoke",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=revoke",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=revoke",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=revoke",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=revoke",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--revoke--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "revoke",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=revoke",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--mobile--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=last-access-blocked",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--mobile--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=last-access-blocked",
+    "viewport": "mobile"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--tablet--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=last-access-blocked",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--tablet--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=last-access-blocked",
+    "viewport": "tablet"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--desktop--light.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "light",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=light&state=last-access-blocked",
+    "viewport": "desktop"
+  },
+  {
+    "consoleErrors": [],
+    "filename": "security-passkeys--last-access-blocked--desktop--dark.png",
+    "focus": {
+      "outlineStyle": "solid",
+      "outlineWidth": "2px"
+    },
+    "inspection": {
+      "horizontalOverflow": false,
+      "undersizedTargets": [],
+      "passwordFieldsBlank": true,
+      "prohibitedSecretTermsVisible": false
+    },
+    "responseStatus": 200,
+    "slug": "security-passkeys",
+    "state": "last-access-blocked",
+    "theme": "dark",
+    "url": "http://localhost:4300/preview/security-passkeys/frame?theme=dark&state=last-access-blocked",
+    "viewport": "desktop"
+  }
+]

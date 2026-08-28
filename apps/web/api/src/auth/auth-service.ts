@@ -18,6 +18,8 @@ import { authUserSchema, challengeSchema } from './auth-schemas';
 
 import {
   accountMemberships,
+  accountPasskeyCredentials,
+  accountPasskeyEnrollments,
   accounts,
   authVerificationChallenges,
   db,
@@ -342,6 +344,63 @@ export async function signUp(email: string, password: string) {
   return createChallenge(user, 'sign_up');
 }
 
+export async function createPasskeyEnrollment(email: string, _label: string, existingUser?: typeof users.$inferSelect) {
+  const normalizedEmail = normalizeEmail(email);
+  const now = new Date();
+  const passwordHash = null;
+  const createdUsers = existingUser
+    ? []
+    : ((await safeInsert(
+        () =>
+          db
+            .insert(users)
+            .values({ createdAt: now, email: normalizedEmail, id: randomUUID(), passwordHash, updatedAt: now })
+            .returning(),
+        'users_email_idx',
+        {
+          code: 'email_already_registered',
+          message: 'An account already exists for this email address.',
+          statusCode: 409,
+        },
+      )) as Array<typeof users.$inferSelect>);
+  const user = existingUser ?? createdUsers[0];
+  const accountId = randomUUID();
+
+  await db.insert(accounts).values({
+    createdAt: now,
+    id: accountId,
+    name: normalizedEmail.split('@')[0],
+    ownerUserId: user.id,
+    slug: `${normalizeAccountSlug(normalizedEmail)}-${accountId.slice(0, 8)}`,
+    updatedAt: now,
+  });
+  const membership = (
+    await db
+      .insert(accountMemberships)
+      .values({ accountId, createdAt: now, id: randomUUID(), role: 'owner', updatedAt: now, userId: user.id })
+      .returning()
+  )[0];
+  const verification = await createChallenge(user, 'sign_up');
+  const enrollmentId = randomUUID();
+
+  await db.insert(accountPasskeyEnrollments).values({
+    id: enrollmentId,
+    accountId,
+    userId: user.id,
+    email: normalizedEmail,
+    credentialId: null,
+    status: 'pending',
+    verificationChallengeId: verification.challengeId,
+    expiresAt: new Date(now.getTime() + 15 * 60 * 1000),
+    activatedAt: null,
+    terminalAt: null,
+    createdAt: now,
+    updatedAt: now,
+  });
+
+  return { user, membership, enrollmentId, verificationChallengeId: verification.challengeId };
+}
+
 export async function resendChallenge(challengeId: string) {
   const [challenge] = await db
     .select()
@@ -457,27 +516,74 @@ export async function verifyChallenge(challengeId: string, pin: string, purpose:
 
   const now = new Date();
 
-  await db
-    .update(authVerificationChallenges)
-    .set({
-      consumedAt: now,
-      updatedAt: now,
-    })
-    .where(eq(authVerificationChallenges.id, challenge.id));
-
   let nextUser = user;
 
   if (purpose === 'sign_up' && !user.emailVerifiedAt) {
-    const [updatedUser] = await db
-      .update(users)
-      .set({
-        emailVerifiedAt: now,
-        updatedAt: now,
-      })
-      .where(eq(users.id, user.id))
+    // Email activation and the pending passkey linkage must share one
+    // persistence boundary. A failure in any statement rolls back the
+    // consumed verification challenge and leaves the account unverified.
+    nextUser = await db.transaction(async (tx) => {
+      const [updatedUser] = await tx
+        .update(users)
+        .set({ emailVerifiedAt: now, updatedAt: now })
+        .where(eq(users.id, user.id))
+        .returning();
+
+      if (!updatedUser) throw new Error('Account activation update returned no user.');
+
+      const [enrollment] = await tx
+        .select()
+        .from(accountPasskeyEnrollments)
+        .where(eq(accountPasskeyEnrollments.verificationChallengeId, challenge.id))
+        .limit(1);
+
+      if (enrollment && (enrollment.status !== 'pending' || !enrollment.credentialId)) {
+        throw new Error('Pending passkey enrollment is not activatable.');
+      }
+
+      if (enrollment?.status === 'pending' && enrollment.credentialId) {
+        const [activatedEnrollment] = await tx
+          .update(accountPasskeyEnrollments)
+          .set({ status: 'active', activatedAt: now, updatedAt: now })
+          .where(and(eq(accountPasskeyEnrollments.id, enrollment.id), eq(accountPasskeyEnrollments.status, 'pending')))
+          .returning();
+
+        if (!activatedEnrollment) throw new Error('Pending enrollment activation failed.');
+
+        const [credential] = await tx
+          .update(accountPasskeyCredentials)
+          .set({ updatedAt: now })
+          .where(
+            and(
+              eq(accountPasskeyCredentials.credentialId, enrollment.credentialId),
+              eq(accountPasskeyCredentials.accountId, enrollment.accountId),
+              eq(accountPasskeyCredentials.userId, enrollment.userId),
+              isNull(accountPasskeyCredentials.revokedAt),
+            ),
+          )
+          .returning();
+
+        if (!credential) throw new Error('Pending passkey credential activation failed.');
+      }
+
+      const [consumedChallenge] = await tx
+        .update(authVerificationChallenges)
+        .set({ consumedAt: now, updatedAt: now })
+        .where(and(eq(authVerificationChallenges.id, challenge.id), isNull(authVerificationChallenges.consumedAt)))
+        .returning();
+
+      if (!consumedChallenge) throw new Error('Verification challenge consumption failed.');
+
+      return updatedUser;
+    });
+  } else {
+    const [consumedChallenge] = await db
+      .update(authVerificationChallenges)
+      .set({ consumedAt: now, updatedAt: now })
+      .where(and(eq(authVerificationChallenges.id, challenge.id), isNull(authVerificationChallenges.consumedAt)))
       .returning();
 
-    nextUser = updatedUser;
+    if (!consumedChallenge) throw new Error('Verification challenge consumption failed.');
   }
 
   return resolveAuthUser(nextUser);
@@ -490,7 +596,7 @@ export async function verifyPassword(email: string, password: string) {
     return null;
   }
 
-  const matches = await verifySecret(password, user.passwordHash);
+  const matches = user.passwordHash ? await verifySecret(password, user.passwordHash) : false;
 
   return matches ? user : null;
 }
@@ -522,6 +628,7 @@ export async function submitPasswordReset(userId: string, newPassword: string) {
     .update(users)
     .set({
       passwordHash: await hashSecret(newPassword),
+      passwordConfigured: true,
       updatedAt: now,
     })
     .where(eq(users.id, user.id));

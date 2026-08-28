@@ -77,7 +77,7 @@
       "dependsOn": ["build"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "mkdir -p dist/apps/web/ui-designer/public/prototypes dist/apps/web/ui-designer/public/preview && cp apps/web/ui-designer/src/preview/chrome.html dist/apps/web/ui-designer/public/preview/chrome.html && cp apps/web/ui-designer/src/prototypes/*.html dist/apps/web/ui-designer/public/prototypes/ && pnpm exec tailwindcss -i apps/web/ui-designer/src/preview/preview.css -o dist/apps/web/ui-designer/public/tailwind.css"
+        "command": "mkdir -p dist/apps/web/ui-designer/public/prototypes dist/apps/web/ui-designer/public/preview dist/apps/web/ui-designer/public/files && cp apps/web/ui-designer/src/preview/chrome.html dist/apps/web/ui-designer/public/preview/chrome.html && cp apps/web/ui-designer/src/prototypes/*.html dist/apps/web/ui-designer/public/prototypes/ && cp node_modules/@fontsource/*/files/* dist/apps/web/ui-designer/public/files/ && pnpm exec tailwindcss -i apps/web/ui-designer/src/preview/preview.css -o dist/apps/web/ui-designer/public/tailwind.css"
       },
       "outputs": [
         "{workspaceRoot}/dist/apps/web/ui-designer/public/tailwind.css",

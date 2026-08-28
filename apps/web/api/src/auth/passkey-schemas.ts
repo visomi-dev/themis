@@ -30,7 +30,9 @@ const assertionResponseSchema = z
   })
   .strict();
 
-const passkeyEmailSchema = z.object({ email: emailSchema, pinVerified: z.boolean() }).strict();
+const passkeyEmailSchema = z
+  .object({ email: emailSchema, pinVerified: z.boolean().optional().default(false) })
+  .strict();
 const registrationBeginSchema = passkeyEmailSchema.extend({ label: z.string().trim().min(1).max(120) }).strict();
 const registrationCompleteSchema = z
   .object({ challengeId: z.string().min(1).max(200), response: credentialResponseSchema })
@@ -64,6 +66,24 @@ const authenticatedPasskeySchema = z
   .object({ authenticated: z.literal(true), user: z.record(z.string(), z.unknown()) })
   .strict();
 const credentialIdPathSchema = z.object({ credentialId: z.string().min(1).max(1024) }).strict();
+const passkeyLabelSchema = z
+  .string()
+  .refine(
+    (value) =>
+      [...value].every((character) => {
+        const codePoint = character.codePointAt(0) ?? 0;
+
+        return codePoint > 31 && codePoint !== 127;
+      }),
+    'Use a valid device or security key name.',
+  )
+  .trim()
+  .min(1)
+  .max(64)
+  .regex(/^[\p{L}\p{N}][\p{L}\p{N} ._'()&/-]*$/u, 'Use a valid device or security key name.');
+const credentialRenameSchema = z.object({ label: passkeyLabelSchema }).strict();
+const credentialActionSchema = z.object({ action: z.literal('revoke') }).strict();
+const credentialMutationSchema = z.union([credentialRenameSchema, credentialActionSchema]);
 
 const passkeyOpenApiPaths = {
   '/auth/passkey/registration/begin': {
@@ -74,7 +94,14 @@ const passkeyOpenApiPaths = {
           content: {
             'application/json': {
               schema: responseEnvelope(
-                z.object({ challengeId: z.string().nullable(), options: passkeyOptionsSchema.nullable() }).strict(),
+                z
+                  .object({
+                    challengeId: z.string().nullable(),
+                    verificationChallengeId: z.string().nullable().optional(),
+                    enrollmentId: z.string().nullable().optional(),
+                    options: passkeyOptionsSchema.nullable(),
+                  })
+                  .strict(),
                 'PasskeyRegistrationBeginEnvelope',
               ),
             },
@@ -160,7 +187,7 @@ const passkeyOpenApiPaths = {
       requestParams: { path: credentialIdPathSchema },
       requestBody: {
         required: true,
-        content: { 'application/json': { schema: z.object({ action: z.literal('revoke') }).strict() } },
+        content: { 'application/json': { schema: credentialMutationSchema } },
       },
       responses: {
         200: {
@@ -183,6 +210,10 @@ const passkeyOpenApiPaths = {
 export {
   authenticationBeginSchema,
   authenticationCompleteSchema,
+  credentialActionSchema,
+  credentialRenameSchema,
+  credentialMutationSchema,
+  credentialIdPathSchema,
   passkeyOpenApiPaths,
   registrationBeginSchema,
   registrationCompleteSchema,

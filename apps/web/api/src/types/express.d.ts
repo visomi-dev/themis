@@ -32,7 +32,11 @@ declare module 'express-session' {
       email: string;
       label: string;
       pinVerified: true;
+      enrollmentId?: string;
     };
+    authenticatedAt?: number;
+    reauthenticatedAt?: number;
+    passkeySecurityReauthenticatedAt?: number;
   }
 }
 

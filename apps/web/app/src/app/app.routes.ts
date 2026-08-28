@@ -21,6 +21,7 @@ import {
   RESET_PASSWORD_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
+  SECURITY_PATH,
   VERIFY_DEVICE_PATH,
   VERIFY_EMAIL_PATH,
 } from './shared/constants/routes';
@@ -75,6 +76,11 @@ export const appRoutes: Route[] = [
     path: DASHBOARD_PATH,
     canActivate: [activatedGuard],
     loadComponent: () => import('./dashboard/dashboard').then((module) => module.Dashboard),
+  },
+  {
+    path: SECURITY_PATH,
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./security/security').then((module) => module.Security),
   },
   {
     path: ACTIVATION_PATH,

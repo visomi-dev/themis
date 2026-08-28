@@ -20,31 +20,21 @@ test.describe('/app/sign-in', () => {
     await expect(page.locator('[data-slot="kicker"]')).toContainText('Account access');
     await expect(page.locator('[data-slot="title"]')).toContainText('Sign in');
     await expect(page.locator('[data-slot="sub"]')).toContainText('Welcome back.');
+    await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
   });
 
-  test('places recovery below password and toggles remember-device from its label', async ({ page }) => {
+  test('reveals password controls only after an explicit choice', async ({ page }) => {
     await page.goto(signInRoute);
 
-    const password = page.getByRole('textbox', { name: 'Password' });
-    const forgottenPassword = page.getByRole('link', { name: 'Forgotten password?' });
+    await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
+    await page.getByRole('button', { name: 'Use password instead' }).click();
+
     const rememberDevice = page.getByRole('checkbox', { name: 'Remember this device' });
     const rememberLabel = page.locator('label').filter({ hasText: 'Remember this device' });
 
-    await expect(forgottenPassword).toBeVisible();
-    await expect(rememberDevice).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Password' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Forgotten password?' })).toBeVisible();
     await expect(rememberDevice).not.toBeChecked();
-
-    const passwordBox = await password.boundingBox();
-    const forgottenBox = await forgottenPassword.boundingBox();
-    const rememberBox = await rememberDevice.boundingBox();
-
-    expect(passwordBox).not.toBeNull();
-    expect(forgottenBox).not.toBeNull();
-    expect(rememberBox).not.toBeNull();
-    expect(forgottenBox?.y).toBeGreaterThan(passwordBox?.y ?? 0);
-    expect(forgottenBox?.x).toBeGreaterThan((passwordBox?.x ?? 0) + (passwordBox?.width ?? 0) / 2);
-    expect(rememberBox?.y).toBeGreaterThan(forgottenBox?.y ?? 0);
-
     await rememberLabel.click();
     await expect(rememberDevice).toBeChecked();
 
@@ -70,6 +60,7 @@ test.describe('/app/sign-in', () => {
 
   test('stays on the route when credentials are invalid', async ({ page }) => {
     await page.goto(signInRoute);
+    await page.getByRole('button', { name: 'Use password instead' }).click();
     const emailField = page.getByRole('textbox', { name: 'Email' });
 
     const passwordField = page.getByRole('textbox', { name: 'Password' });
