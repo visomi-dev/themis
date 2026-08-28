@@ -10,11 +10,15 @@ test.describe('/app/sign-up', () => {
 
     await assertOpenDesignChrome(page);
     await expect(page.locator('[data-slot="title"]')).toContainText('Sign up to Themis with Passkeys');
+    await expect(page.locator('[data-slot="sub"]')).toContainText(
+      'Enter your email to create your account with a passkey.',
+    );
   });
 
   test('shows validation errors for invalid credentials', async ({ page }) => {
     await page.goto(signUpRoute);
     await page.getByRole('button', { name: 'Use password instead' }).click();
+    await expect(page.locator('[data-slot="sub"]')).toContainText('Create your account with an email and password.');
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('Enter your email address.')).toBeVisible();

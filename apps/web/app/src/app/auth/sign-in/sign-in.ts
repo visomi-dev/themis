@@ -11,6 +11,7 @@ import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
 import { Checkbox } from '../../shared/ui/forms/checkbox/checkbox';
+import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
 import { Form as AppForm } from '../../shared/ui/forms/form/form';
@@ -36,6 +37,7 @@ type SignInModel = {
     AuthLayout,
     Button,
     Checkbox,
+    Description,
     ErrorMessage,
     Field,
     FormField,

@@ -10,7 +10,7 @@ import { Alert } from '../../shared/ui/overlays/alert/alert';
 import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
 import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
 import { Button } from '../../shared/ui/actions/button/button';
-import {} from '../../shared/ui/forms/description/description';
+import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
 import { Form as AppForm } from '../../shared/ui/forms/form/form';
@@ -36,6 +36,7 @@ type SignUpModel = {
     AuthCard,
     AuthLayout,
     Button,
+    Description,
     ErrorMessage,
     Field,
     FormField,

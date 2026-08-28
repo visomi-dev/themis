@@ -18,6 +18,7 @@ test.describe('/app/sign-in', () => {
 
     await assertOpenDesignChrome(page);
     await expect(page.locator('[data-slot="title"]')).toContainText('Sign in to Themis with Passkeys');
+    await expect(page.locator('[data-slot="sub"]')).toContainText('Enter your email to continue with a passkey.');
     await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
   });
 
@@ -31,6 +32,9 @@ test.describe('/app/sign-in', () => {
     const rememberLabel = page.locator('label').filter({ hasText: 'Remember this device' });
 
     await expect(page.getByRole('textbox', { name: 'Password' })).toBeVisible();
+    await expect(page.locator('[data-slot="sub"]')).toContainText(
+      'Enter your email and password to access your account.',
+    );
     await expect(page.getByRole('link', { name: 'Forgotten password?' })).toBeVisible();
     await expect(rememberDevice).not.toBeChecked();
     await rememberLabel.click();

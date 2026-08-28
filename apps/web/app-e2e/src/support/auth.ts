@@ -175,7 +175,7 @@ export const authenticateViaDeterministicTestSession = async (
 export const signUp = async (page: Page, email: string, password: string) => {
   await page.goto(signUpRoute);
   await expect(page).toHaveURL(signUpUrlPattern);
-  await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sign up to Themis with Passkeys' })).toBeVisible();
   await submitSignUpCredentials(page, email, password);
   await expect(page.getByRole('heading', { name: 'Verify email' })).toBeVisible();
 };
