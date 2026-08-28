@@ -27,38 +27,18 @@
       </header>
     } @else {
       <header class="mb-7 space-y-2">
-        <p
-          data-slot="kicker"
-          class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
-          i18n="@@signInKicker"
-        >
-          Passkey first
-        </p>
         <h1
           data-slot="title"
           class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
-          i18n="@@signInTitle"
+          i18n="@@signInPasskeyHeading"
         >
-          Sign in to Themis
+          Sign in to Themis with Passkeys
         </h1>
-        <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signInSub">
-          Use a passkey saved on this device, another device, or a security key.
-        </p>
       </header>
     }
 
     @if (passkeyState() !== 'fallback') {
       <section class="grid gap-4" aria-labelledby="passkey-title" data-slot="passkey-panel">
-        <p
-          id="passkey-title"
-          class="font-heading text-base font-bold text-zinc-950 dark:text-zinc-50"
-          i18n="@@signInPasskeyTitle"
-        >
-          Sign in with your passkey
-        </p>
-        <p class="text-sm leading-5 text-zinc-600 dark:text-zinc-400" i18n="@@signInPasskeyDescription">
-          The fastest, phishing-resistant way to access your account.
-        </p>
         <form class="grid gap-4" (submit)="submitPasskey($event)">
           <label class="grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="passkey-sign-in-email">
             <span i18n="@@signInPasskeyEmailLabel">Work email</span>
