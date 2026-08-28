@@ -174,6 +174,11 @@ export class SignIn {
     }
   }
 
+  protected submitPasskey(event: Event): void {
+    event.preventDefault();
+    void this.signInWithPasskey();
+  }
+
   protected continueAfterVerification(): void {
     if (this.pin().trim().length >= 4) void this.signInWithPasskey();
   }
@@ -189,6 +194,11 @@ export class SignIn {
   protected usePasswordFallback(): void {
     this.signInModel.update((model) => ({ ...model, email: this.passkeyEmail() }));
     this.passkeyState.set('fallback');
+    this.errorMessage.set('');
+  }
+
+  protected returnToPasskey(): void {
+    this.passkeyState.set('ready');
     this.errorMessage.set('');
   }
 

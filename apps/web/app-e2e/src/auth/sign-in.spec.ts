@@ -17,9 +17,9 @@ test.describe('/app/sign-in', () => {
     await page.goto(signInRoute);
 
     await assertOpenDesignChrome(page);
-    await expect(page.locator('[data-slot="kicker"]')).toContainText('Account access');
-    await expect(page.locator('[data-slot="title"]')).toContainText('Sign in');
-    await expect(page.locator('[data-slot="sub"]')).toContainText('Welcome back.');
+    await expect(page.locator('[data-slot="kicker"]')).toContainText('Passkey first');
+    await expect(page.locator('[data-slot="title"]')).toContainText('Sign in to Themis');
+    await expect(page.locator('[data-slot="sub"]')).toContainText('Use a passkey saved');
     await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
   });
 

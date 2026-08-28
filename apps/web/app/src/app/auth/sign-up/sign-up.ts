@@ -186,9 +186,19 @@ export class SignUp {
     }
   }
 
+  protected submitPasskey(event: Event): void {
+    event.preventDefault();
+    void this.registerWithPasskey();
+  }
+
   protected usePasswordFallback(): void {
     this.signUpModel.update((model) => ({ ...model, email: this.passkeyEmail() }));
     this.passkeyState.set('fallback');
+  }
+
+  protected returnToPasskey(): void {
+    this.passkeyState.set('ready');
+    this.errorMessage.set('');
   }
 
   protected updatePasskeyEmail(event: Event): void {

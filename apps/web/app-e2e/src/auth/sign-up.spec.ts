@@ -9,7 +9,7 @@ test.describe('/app/sign-up', () => {
     await page.goto(signUpRoute);
 
     await assertOpenDesignChrome(page);
-    await expect(page.locator('[data-slot="kicker"]')).toContainText('New account');
+    await expect(page.locator('[data-slot="kicker"]')).toContainText('Passkey first');
     await expect(page.locator('[data-slot="title"]')).toContainText('Create your account');
     await expect(page.locator('[data-slot="sub"]')).toContainText('passkey');
   });

@@ -1,77 +1,106 @@
 <app-auth-layout>
   <app-auth-card>
-    <header class="mb-7 space-y-2">
-      <p
-        data-slot="kicker"
-        class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
-        i18n="@@signUpKicker"
-      >
-        New account
-      </p>
-      <h1
-        data-slot="title"
-        class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
-        i18n="@@signUpTitle"
-      >
-        Create your account
-      </h1>
-      <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signUpSub">
-        Create your account with a passkey. You can add a password later in Security.
-      </p>
-    </header>
-
-    <section class="mb-6 grid gap-4" aria-labelledby="registration-passkey-title" data-slot="passkey-panel">
-      <div class="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900">
-        <h2
-          id="registration-passkey-title"
-          class="font-heading text-base font-bold text-zinc-950 dark:text-zinc-50"
-          i18n="@@signUpPasskeyTitle"
-        >
-          Create with a passkey
-        </h2>
-        <p class="mt-1 text-sm leading-5 text-zinc-600 dark:text-zinc-400" i18n="@@signUpPasskeyDescription">
-          Passkeys keep your account protected without sharing a password.
-        </p>
-        <label class="mt-4 grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="passkey-sign-up-email">
-          <span i18n="@@signUpPasskeyEmailLabel">Work email</span>
-          <input
-            id="passkey-sign-up-email"
-            class="rounded-md border border-zinc-950/10 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 dark:border-white/10 dark:bg-zinc-950"
-            type="email"
-            autocomplete="email"
-            [value]="passkeyEmail()"
-            (input)="updatePasskeyEmail($event)"
-          />
-        </label>
-        <app-button
-          class="mt-4"
-          tone="accent"
+    @if (passkeyState() === 'fallback') {
+      <header class="mb-7 space-y-2">
+        <button
           type="button"
-          size="lg"
-          fullWidth
-          [loading]="passkeyState() === 'loading'"
-          (click)="registerWithPasskey()"
-          i18n="@@signUpPasskeyButton"
-          >Create account with passkey</app-button
+          class="-ml-2 inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-teal-700 dark:text-teal-300"
+          (click)="returnToPasskey()"
+          i18n="@@signUpBackToPasskey"
         >
-      </div>
-      @if (passkeyState() === 'unsupported') {
-        <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
-      }
-      @if (passkeyState() === 'verification') {
-        <app-alert tone="warning" variant="auth" role="status" i18n="@@signUpPasskeyVerification"
-          >Email verification and PIN confirmation are required before registration completes.</app-alert
+          Back to passkey
+        </button>
+        <h1
+          data-slot="title"
+          class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
+          i18n="@@signUpPasswordTitle"
         >
-      }
-      @if (passkeyState() === 'retry' || passkeyState() === 'fallback') {
-        <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
-      }
-      @if (passkeyState() === 'success') {
-        <p role="status" class="text-sm text-teal-700 dark:text-teal-300" i18n="@@signUpPasskeySuccess">
-          Passkey created. Email verification is still required before your account is complete.
+          Create with password
+        </h1>
+        <p
+          data-slot="sub"
+          class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400"
+          i18n="@@signUpPasswordSub"
+        >
+          Password sign-up is shown because you chose it. It is separate from passkey sign-up.
         </p>
-      }
-    </section>
+      </header>
+    } @else {
+      <header class="mb-7 space-y-2">
+        <p
+          data-slot="kicker"
+          class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400"
+          i18n="@@signUpKicker"
+        >
+          Passkey first
+        </p>
+        <h1
+          data-slot="title"
+          class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
+          i18n="@@signUpTitle"
+        >
+          Create your account
+        </h1>
+        <p data-slot="sub" class="text-[0.9375rem] leading-6 text-zinc-500 dark:text-zinc-400" i18n="@@signUpSub">
+          Use a passkey saved on this device, another device, or a security key.
+        </p>
+      </header>
+    }
+
+    @if (passkeyState() !== 'fallback') {
+      <section class="grid gap-4" aria-labelledby="registration-passkey-title" data-slot="passkey-panel">
+        <div class="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-900">
+          <h2
+            id="registration-passkey-title"
+            class="font-heading text-base font-bold text-zinc-950 dark:text-zinc-50"
+            i18n="@@signUpPasskeyTitle"
+          >
+            Create with a passkey
+          </h2>
+          <p class="mt-1 text-sm leading-5 text-zinc-600 dark:text-zinc-400" i18n="@@signUpPasskeyDescription">
+            Passkeys keep your account protected without sharing a password.
+          </p>
+          <form class="grid gap-4" (submit)="submitPasskey($event)">
+            <label class="grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="passkey-sign-up-email">
+              <span i18n="@@signUpPasskeyEmailLabel">Work email</span>
+              <input
+                id="passkey-sign-up-email"
+                class="rounded-md border border-zinc-950/10 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 dark:border-white/10 dark:bg-zinc-950"
+                type="email"
+                autocomplete="email"
+                [value]="passkeyEmail()"
+                (input)="updatePasskeyEmail($event)"
+              />
+            </label>
+            <app-button
+              tone="accent"
+              type="submit"
+              size="lg"
+              fullWidth
+              [loading]="passkeyState() === 'loading'"
+              i18n="@@signUpPasskeyButton"
+              >Create account with passkey</app-button
+            >
+          </form>
+        </div>
+        @if (passkeyState() === 'unsupported') {
+          <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
+        }
+        @if (passkeyState() === 'verification') {
+          <app-alert tone="warning" variant="auth" role="status" i18n="@@signUpPasskeyVerification"
+            >Email verification and PIN confirmation are required before registration completes.</app-alert
+          >
+        }
+        @if (passkeyState() === 'retry' || passkeyState() === 'fallback') {
+          <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
+        }
+        @if (passkeyState() === 'success') {
+          <p role="status" class="text-sm text-teal-700 dark:text-teal-300" i18n="@@signUpPasskeySuccess">
+            Passkey created. Email verification is still required before your account is complete.
+          </p>
+        }
+      </section>
+    }
 
     @if (passkeyState() === 'fallback') {
       <app-form class="grid w-full max-w-sm grid-cols-1 gap-4" [form]="signUpForm">
@@ -140,24 +169,28 @@
         }
       </app-form>
     }
-    <button
-      type="button"
-      class="mb-6 w-full text-center text-sm font-semibold text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
-      (click)="usePasswordFallback()"
-      i18n="@@signUpUsePassword"
-    >
-      Use password instead
-    </button>
+    @if (passkeyState() !== 'fallback') {
+      <button
+        type="button"
+        class="mt-4 w-full text-center text-sm font-semibold text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
+        (click)="usePasswordFallback()"
+        i18n="@@signUpUsePassword"
+      >
+        Use password instead
+      </button>
+    }
 
-    <p class="mt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-      <span i18n="@@signUpFooterPrompt">Already have an account?</span>
-      <app-link
-        data-slot="footer"
-        class="ml-2 font-semibold"
-        i18n="@@signUpFooterLink"
-        [routerLink]="footerLink"
-        [text]="'Back to sign in'"
-      />
-    </p>
+    @if (passkeyState() !== 'fallback') {
+      <p class="mt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+        <span i18n="@@signUpFooterPrompt">Already have an account?</span>
+        <app-link
+          data-slot="footer"
+          class="ml-2 font-semibold"
+          i18n="@@signUpFooterLink"
+          [routerLink]="footerLink"
+          [text]="'Back to sign in'"
+        />
+      </p>
+    }
   </app-auth-card>
 </app-auth-layout>
