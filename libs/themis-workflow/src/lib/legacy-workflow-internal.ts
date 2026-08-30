@@ -1,6 +1,12 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+import {
+  assertCurrentMatchesManifest,
+  commitProjectStore,
+  recoverProjectStoreTransaction,
+} from './project-store-persistence.ts';
+
 type WorkItemStatus =
   | 'draft'
   | 'ready'
@@ -229,6 +235,7 @@ const paths = (root: string) => {
     directory,
     state: join(directory, 'state.json'),
     events: join(directory, 'events.ndjson'),
+    manifest: join(directory, 'manifest.json'),
   };
 };
 
@@ -332,6 +339,10 @@ const migrateState = (raw: Partial<ThemisState>): ThemisState => {
 const readState = (root: string): ThemisState => {
   const location = paths(root);
   mkdirSync(location.directory, { recursive: true });
+  if (existsSync(location.manifest)) {
+    recoverProjectStoreTransaction(location.directory);
+    assertCurrentMatchesManifest(location.directory);
+  }
   if (!existsSync(location.state)) {
     const state = emptyState();
     writeFileSync(location.state, JSON.stringify(state, null, 2) + '\n', 'utf8');
@@ -340,8 +351,15 @@ const readState = (root: string): ThemisState => {
 
   const raw = JSON.parse(readFileSync(location.state, 'utf8')) as Partial<ThemisState>;
   const state = migrateState(raw);
-  if (raw.schemaVersion !== state.schemaVersion)
-    writeFileSync(location.state, JSON.stringify(state, null, 2) + '\n', 'utf8');
+  if (raw.schemaVersion !== state.schemaVersion) {
+    const stateText = JSON.stringify(state, null, 2) + '\n';
+    if (existsSync(location.manifest)) {
+      const eventsText = existsSync(location.events) ? readFileSync(location.events, 'utf8') : '';
+      const projectId =
+        (raw as { projectId?: string }).projectId ?? JSON.parse(readFileSync(location.manifest, 'utf8')).projectId;
+      commitProjectStore(location.directory, projectId, stateText, eventsText);
+    } else writeFileSync(location.state, stateText, 'utf8');
+  }
   return state;
 };
 
@@ -380,7 +398,7 @@ const appendEvent = (
     : [];
   const event: ThemisEvent = {
     schemaVersion: 1,
-    sequence: existing.length + 1,
+    sequence: (existing.at(-1)?.sequence ?? 0) + 1,
     timestamp: clock(),
     actor,
     type,
@@ -545,6 +563,26 @@ const mutate = <T>(
 ): T => {
   const state = readState(root);
   const result = operation(state);
+  const location = paths(root);
+  if (existsSync(location.manifest)) {
+    const existing = readEvents(root);
+    const event: ThemisEvent = {
+      schemaVersion: 1,
+      sequence: (existing.at(-1)?.sequence ?? 0) + 1,
+      timestamp: clock(),
+      actor,
+      type,
+      aggregateType,
+      aggregateId,
+      payload: payload(result),
+    };
+    const stateText = JSON.stringify(state, null, 2) + '\n';
+    const eventsText = [...existing, event].map((entry) => JSON.stringify(entry)).join('\n') + '\n';
+    const projectId = (state as ThemisState & { projectId?: string }).projectId ?? state.projects[0]?.id;
+    if (!projectId) throw new ThemisError('Project store mutation requires a project identity');
+    commitProjectStore(location.directory, projectId, stateText, eventsText);
+    return result;
+  }
   writeState(root, state);
   appendEvent(root, actor, type, aggregateType, aggregateId, payload(result), clock);
   return result;

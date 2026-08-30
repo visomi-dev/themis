@@ -14,6 +14,10 @@ import { join } from 'node:path';
 
 import { paths, readState, type ThemisState } from '../libs/themis-workflow/src/lib/legacy-workflow-internal.ts';
 import { WorkspaceRegistry } from '../libs/themis-workflow/src/index.ts';
+import {
+  commitProjectStore,
+  recoverProjectStoreTransaction,
+} from '../libs/themis-workflow/src/lib/project-store-persistence.ts';
 
 type ThemisEvent = {
   schemaVersion: number;
@@ -373,6 +377,7 @@ const writeStore = (
 
 const loadProjectStore = (root: string, projectId: string): { state: StoreState; events: ThemisEvent[] } => {
   const location = storeLocation(root, projectId);
+  recoverProjectStoreTransaction(location);
   const stateText = readFileSync(join(location, 'state.json'), 'utf8');
   const eventsText = readFileSync(join(location, 'events.ndjson'), 'utf8');
   const manifest = JSON.parse(readFileSync(join(location, 'manifest.json'), 'utf8')) as {
@@ -381,15 +386,277 @@ const loadProjectStore = (root: string, projectId: string): { state: StoreState;
   };
   if (checksum(stateText) !== manifest.stateChecksum || checksum(eventsText) !== manifest.eventsChecksum)
     throw new Error(`Project store checksum mismatch: ${projectId}`);
+  return parseProjectStoreContents(projectId, stateText, eventsText);
+};
+
+const parseProjectStoreContents = (
+  projectId: string,
+  stateText: string,
+  eventsText: string,
+): { state: StoreState; events: ThemisEvent[] } => {
   const state = JSON.parse(stateText) as StoreState;
-  if (state.projectId !== projectId) throw new Error(`Project store identity mismatch: ${projectId}`);
-  return {
-    state,
-    events: eventsText
+  const collectionNames = [
+    'projects',
+    'epics',
+    'workItems',
+    'dependencies',
+    'sprints',
+    'sprintItems',
+    'revisions',
+    'runs',
+    'evidence',
+    'sprintEvidence',
+    'reviews',
+  ] as const;
+  if (
+    state.schemaVersion !== 2 ||
+    state.projectId !== projectId ||
+    collectionNames.some((name) => !Array.isArray(state[name]))
+  ) {
+    throw new Error(`Project store identity or schema mismatch: ${projectId}`);
+  }
+  const events = eventsText
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as ThemisEvent);
+  if (events.some((event) => !Number.isInteger(event.sequence) || event.sequence < 1)) {
+    throw new Error(`Project store event sequence mismatch: ${projectId}`);
+  }
+  return { state, events };
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((entry) => typeof entry === 'string');
+
+const historicalForeignSequences = (root: string, projectId: string): Set<number> => {
+  const ledger = readLedger(root);
+  if (!ledger) return new Set();
+  const location = backupLocation(root, ledger.backupId);
+  const statePath = join(location, 'state.json');
+  const eventsPath = join(location, 'events.ndjson');
+  const manifestPath = join(location, 'manifest.json');
+  if (!existsSync(statePath) || !existsSync(eventsPath) || !existsSync(manifestPath)) return new Set();
+  const stateText = readFileSync(statePath, 'utf8');
+  const eventsText = readFileSync(eventsPath, 'utf8');
+  const backupManifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as {
+    stateChecksum?: string;
+    eventsChecksum?: string;
+  };
+  if (checksum(stateText) !== backupManifest.stateChecksum || checksum(eventsText) !== backupManifest.eventsChecksum) {
+    throw new Error('Project store repair rejected invalid migration provenance');
+  }
+  const sourceState = JSON.parse(stateText) as ThemisState;
+  const assignments = recordAssignment(sourceState);
+  const ids = new Map<string, string>();
+  for (const [key, assignment] of assignments) {
+    const separator = key.indexOf(':');
+    if (separator > -1 && assignment.projectId) ids.set(key.slice(separator + 1), assignment.projectId);
+  }
+  const scopedState = projectState(sourceState, projectId);
+  const scopedIds = new Set<string>([
+    projectId,
+    ...Object.values(scopedState).flatMap((value) =>
+      Array.isArray(value)
+        ? value.flatMap((entry) => {
+            const candidate = entry as Record<string, unknown>;
+            return typeof candidate.id === 'string' ? [candidate.id] : [];
+          })
+        : [],
+    ),
+  ]);
+  return new Set(
+    eventsText
       .split('\n')
       .filter(Boolean)
-      .map((line) => JSON.parse(line) as ThemisEvent),
+      .map((line) => JSON.parse(line) as ThemisEvent)
+      .filter((event) => {
+        if (eventProject(event, ids) !== projectId) return true;
+        const references = Object.entries(event.payload)
+          .filter(([key]) => key === 'id' || key.endsWith('Id') || key === 'from' || key === 'to')
+          .map(([, value]) => value);
+        return ![event.aggregateId, ...references].every((value) => typeof value !== 'string' || scopedIds.has(value));
+      })
+      .map((event) => event.sequence),
+  );
+};
+
+const assertRepairableProjectStore = (
+  root: string,
+  projectId: string,
+  state: StoreState,
+  events: ThemisEvent[],
+): void => {
+  const malformed = (kind: string): never => {
+    throw new Error(`Project store repair rejected malformed ${kind}: ${projectId}`);
   };
+  const records = (kind: keyof StoreState): Record<string, unknown>[] => {
+    const collection = state[kind];
+    if (!Array.isArray(collection) || !collection.every(isRecord)) malformed(String(kind));
+    return collection as unknown as Record<string, unknown>[];
+  };
+  const hasStrings = (entry: Record<string, unknown>, keys: string[]): boolean =>
+    keys.every((key) => isNonEmptyString(entry[key]));
+  const hasStringArrays = (entry: Record<string, unknown>, keys: string[]): boolean =>
+    keys.every((key) => isStringArray(entry[key]));
+
+  const projects = records('projects');
+  if (
+    projects.length !== 1 ||
+    projects[0]?.id !== projectId ||
+    !hasStrings(projects[0], ['id', 'name', 'summary', 'status', 'createdAt'])
+  ) {
+    malformed('project identity');
+  }
+
+  const epics = records('epics');
+  if (
+    epics.some(
+      (entry) =>
+        entry.projectId !== projectId ||
+        !hasStrings(entry, ['id', 'projectId', 'title', 'summary', 'goal', 'status', 'createdAt']),
+    )
+  )
+    malformed('epic');
+  const epicIds = new Set(epics.map((entry) => entry.id as string));
+
+  const workItems = records('workItems');
+  if (
+    workItems.some(
+      (entry) =>
+        entry.projectId !== projectId ||
+        !hasStrings(entry, ['id', 'projectId', 'title', 'summary', 'status']) ||
+        !hasStringArrays(entry, ['acceptanceCriteria', 'scopeIn', 'scopeOut', 'verificationStrategy']) ||
+        (entry.epicId !== undefined && (!isNonEmptyString(entry.epicId) || !epicIds.has(entry.epicId))),
+    )
+  )
+    malformed('work item');
+  const workItemIds = new Set(workItems.map((entry) => entry.id as string));
+
+  const sprints = records('sprints');
+  if (
+    sprints.some(
+      (entry) =>
+        entry.projectId !== projectId || !hasStrings(entry, ['id', 'projectId', 'goal', 'status', 'createdAt']),
+    )
+  )
+    malformed('sprint');
+  const sprintIds = new Set(sprints.map((entry) => entry.id as string));
+
+  const revisions = records('revisions');
+  if (
+    revisions.some(
+      (entry) =>
+        entry.projectId !== projectId ||
+        !hasStrings(entry, ['id', 'sprintId', 'projectId', 'status', 'why', 'what', 'how', 'createdAt']) ||
+        !Number.isInteger(entry.version) ||
+        !hasStringArrays(entry, ['workItemIds', 'epicIds', 'nonGoals', 'definitionOfDone', 'verificationStrategy']) ||
+        !sprintIds.has(entry.sprintId as string) ||
+        !(entry.workItemIds as string[]).every((id) => workItemIds.has(id)) ||
+        !(entry.epicIds as string[]).every((id) => epicIds.has(id)),
+    )
+  )
+    malformed('revision');
+
+  if (
+    records('dependencies').some(
+      (entry) =>
+        !hasStrings(entry, ['from', 'to', 'relation']) ||
+        entry.relation !== 'blocks' ||
+        !workItemIds.has(entry.from as string) ||
+        !workItemIds.has(entry.to as string),
+    )
+  )
+    malformed('dependency');
+  if (
+    records('sprintItems').some(
+      (entry) =>
+        !hasStrings(entry, ['sprintId', 'workItemId', 'addedAt']) ||
+        !sprintIds.has(entry.sprintId as string) ||
+        !workItemIds.has(entry.workItemId as string),
+    )
+  )
+    malformed('sprint membership');
+
+  const runs = records('runs');
+  if (
+    runs.some(
+      (entry) =>
+        !hasStrings(entry, ['id', 'workItemId', 'agent', 'status', 'startedAt']) ||
+        !workItemIds.has(entry.workItemId as string),
+    )
+  )
+    malformed('run');
+  const runIds = new Set(runs.map((entry) => entry.id as string));
+  if (
+    records('evidence').some(
+      (entry) =>
+        !hasStrings(entry, ['id', 'runId', 'kind', 'summary', 'value', 'createdAt']) ||
+        !runIds.has(entry.runId as string),
+    )
+  )
+    malformed('evidence');
+  if (
+    records('sprintEvidence').some(
+      (entry) =>
+        !hasStrings(entry, ['id', 'sprintId', 'kind', 'summary', 'value', 'createdAt']) ||
+        !sprintIds.has(entry.sprintId as string),
+    )
+  )
+    malformed('sprint evidence');
+  if (
+    records('reviews').some(
+      (entry) =>
+        !hasStrings(entry, ['id', 'workItemId', 'runId', 'reviewer', 'createdAt']) ||
+        !workItemIds.has(entry.workItemId as string) ||
+        !runIds.has(entry.runId as string),
+    )
+  )
+    malformed('review');
+
+  const ids = new Set<string>([
+    projectId,
+    ...epicIds,
+    ...workItemIds,
+    ...sprintIds,
+    ...revisions.map((entry) => entry.id as string),
+    ...runIds,
+    ...records('evidence').map((entry) => entry.id as string),
+    ...records('sprintEvidence').map((entry) => entry.id as string),
+    ...records('reviews').map((entry) => entry.id as string),
+  ]);
+  events.forEach((event, index) => {
+    if (
+      !isRecord(event) ||
+      event.schemaVersion !== 1 ||
+      !hasStrings(event, ['timestamp', 'actor', 'type', 'aggregateType', 'aggregateId']) ||
+      !isRecord(event.payload)
+    ) {
+      throw new Error(`Project store repair rejected event sequence or shape at ${index + 1}: ${projectId}`);
+    }
+    const references = Object.entries(event.payload)
+      .filter(([key]) => key === 'id' || key.endsWith('Id') || key === 'from' || key === 'to')
+      .map(([, value]) => value);
+    if (![event.aggregateId, ...references].every((value) => isNonEmptyString(value) && ids.has(value))) {
+      throw new Error(`Project store repair rejected foreign or dangling event ${event.sequence}: ${projectId}`);
+    }
+  });
+
+  const historicalForeign = historicalForeignSequences(root, projectId);
+  for (let index = 0; index < events.length; index += 1) {
+    const previousSequence = index === 0 ? 0 : events[index - 1]!.sequence;
+    const sequence = events[index]!.sequence;
+    if (sequence <= previousSequence) {
+      throw new Error(`Project store repair rejected event sequence at ${index + 1}: ${projectId}`);
+    }
+    for (let missing = previousSequence + 1; missing < sequence; missing += 1) {
+      if (!historicalForeign.has(missing)) {
+        throw new Error(`Project store repair rejected event sequence at ${index + 1}: ${projectId}`);
+      }
+    }
+  }
 };
 
 const validateProjectStore = (root: string, projectId: string): DomainManifest => {
@@ -417,9 +684,26 @@ const validateProjectStore = (root: string, projectId: string): DomainManifest =
   return manifest(loaded.state, loaded.events);
 };
 
+const repairProjectStore = (root: string, projectId: string): DomainManifest => {
+  const location = storeLocation(root, projectId);
+  const stateText = readFileSync(join(location, 'state.json'), 'utf8');
+  const eventsText = readFileSync(join(location, 'events.ndjson'), 'utf8');
+  const parsed = parseProjectStoreContents(projectId, stateText, eventsText);
+  assertRepairableProjectStore(root, projectId, parsed.state, parsed.events);
+  commitProjectStore(location, projectId, stateText, eventsText, { allowInvalidCurrent: true });
+  return validateProjectStore(root, projectId);
+};
+
 const synchronizeProjectStore = (root: string, projectId: string): DomainManifest => {
   const cutover = migrationPaths(root).cutover;
-  if (existsSync(cutover)) return validateProjectStore(root, projectId);
+  if (existsSync(cutover)) {
+    try {
+      return validateProjectStore(root, projectId);
+    } catch (error: unknown) {
+      if (!(error instanceof Error) || !error.message.includes('checksum mismatch')) throw error;
+      return repairProjectStore(root, projectId);
+    }
+  }
   const { state, events, sourceChecksum } = readGlobal(root);
   const recorded = readLedger(root);
   const existing = recorded?.phase === 'rolled-back' ? undefined : recorded;
@@ -465,20 +749,7 @@ const restoreProjectStore = (root: string, projectId: string, backupId = `projec
     throw new Error('Backup checksum mismatch');
   const state = JSON.parse(stateText) as StoreState;
   if (state.projectId !== projectId) throw new Error(`Backup project identity mismatch: ${projectId}`);
-  atomicWrite(join(storeLocation(root, projectId), 'state.json'), stateText);
-  atomicWrite(join(storeLocation(root, projectId), 'events.ndjson'), eventsText);
-  atomicWrite(join(storeLocation(root, projectId), 'manifest.json'), {
-    schemaVersion: 1,
-    projectId,
-    generation: 1,
-    stateChecksum: checksum(stateText),
-    eventsChecksum: checksum(eventsText),
-    entityCounts: Object.fromEntries(
-      Object.entries(state)
-        .filter(([, value]) => Array.isArray(value))
-        .map(([key, value]) => [key, value.length]),
-    ),
-  });
+  commitProjectStore(storeLocation(root, projectId), projectId, stateText, eventsText, { allowInvalidCurrent: true });
   return validateProjectStore(root, projectId);
 };
 
@@ -723,6 +994,7 @@ export {
   loadProjectStore,
   migrateProjectStores,
   readProjectState,
+  repairProjectStore,
   restoreProjectStore,
   rollbackProjectStores,
   synchronizeProjectStore,

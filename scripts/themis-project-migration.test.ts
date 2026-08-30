@@ -20,11 +20,13 @@ import {
   backupProjectStore,
   migrateProjectStores,
   readProjectState,
+  repairProjectStore,
   restoreProjectStore,
   rollbackProjectStores,
   synchronizeProjectStore,
   scanMigrationOutputs,
   validateProjectStore,
+  type StoreState,
 } from './themis-project-migration.ts';
 
 const roots: string[] = [];
@@ -309,6 +311,24 @@ describe('project-scoped Themis migration', () => {
     assert.deepEqual(restoreProjectStore(root, 'PRJ-A', backupId), original);
     assert.deepEqual(synchronizeProjectStore(root, 'PRJ-A'), original);
     assert.equal(readProjectState(root, 'PRJ-A').workItems[0]?.id, item.id);
+  });
+
+  it('repairs only explicit, structurally valid checksum mismatches and rejects corruption', () => {
+    const root = fixture();
+    makeProject(root, 'PRJ-A');
+    migrateProjectStores(root);
+    const statePath = join(root, '.themis', 'projects', 'PRJ-A', 'state.json');
+    const state = JSON.parse(readFileSync(statePath, 'utf8')) as StoreState;
+    state.projects[0] = { ...state.projects[0]!, summary: 'validated legacy write' };
+    writeFileSync(statePath, JSON.stringify(state, null, 2) + '\n', 'utf8');
+
+    assert.throws(() => validateProjectStore(root, 'PRJ-A'), /checksum mismatch/);
+    assert.equal(repairProjectStore(root, 'PRJ-A').entities.projects.length, 1);
+    assert.doesNotThrow(() => validateProjectStore(root, 'PRJ-A'));
+
+    writeFileSync(statePath, '{"schemaVersion":2}\n', 'utf8');
+    assert.throws(() => repairProjectStore(root, 'PRJ-A'), /identity or schema mismatch/);
+    assert.throws(() => validateProjectStore(root, 'PRJ-A'), /checksum mismatch/);
   });
 
   it('quarantines every orphan and ambiguous record exactly once', () => {

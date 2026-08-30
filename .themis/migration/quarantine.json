@@ -178,7 +178,7 @@
       "aggregateType": "sprint",
       "aggregateId": "agent-tracking-2026-08",
       "payload": {
-        "projectId": "core",
+        "projectId": "agent-tracking",
         "sprintId": "agent-tracking-2026-08",
         "revisionId": "REV-002",
         "status": "closed"

@@ -2,6 +2,9 @@ import { fileURLToPath } from 'node:url';
 
 import { boolean, command, run, string, type Command } from '@drizzle-team/brocli';
 
+import { ProjectWorkflowStore, WorkspaceRegistry, redactPortable } from '../libs/themis-workflow/src/index.ts';
+import { workspaceStatus } from '../libs/themis-workflow/src/lib/legacy-workflow-internal.ts';
+
 import {
   backupProjectStore,
   migrateProjectStores,
@@ -11,9 +14,10 @@ import {
   synchronizeProjectStore,
   validateProjectStore,
 } from './themis-project-migration.ts';
-
-import { ProjectWorkflowStore, WorkspaceRegistry, redactPortable } from '../libs/themis-workflow/src/index.ts';
-import { workspaceStatus } from '../libs/themis-workflow/src/lib/legacy-workflow-internal.ts';
+import {
+  reconcileProjectEventSequences,
+  rollbackProjectEventReconciliation,
+} from './themis-event-sequence-reconciliation.ts';
 
 const split = (value: string): string[] =>
   value
@@ -169,6 +173,30 @@ const projectSync = command({
   handler: (options) => {
     registeredProject(options.root, options.project);
     print(synchronizeProjectStore(options.root, options.project), options.json);
+  },
+});
+
+const projectSequenceReconcile = command({
+  name: 'project-sequence-reconcile',
+  desc: 'Inventory or reconcile one project event history with an auditable remapping ledger',
+  options: {
+    ...baseOptions(),
+    project: string().desc('Explicit registered project identifier').required(),
+    dryRun: boolean('dry-run').desc('Inventory and plan without writing').default(false),
+  },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(reconcileProjectEventSequences(options.root, options.project, { dryRun: options.dryRun }), options.json);
+  },
+});
+
+const projectSequenceRollback = command({
+  name: 'project-sequence-rollback',
+  desc: 'Rollback one unchanged reconciliation from its validated backup',
+  options: { ...baseOptions(), project: string().desc('Explicit registered project identifier').required() },
+  handler: (options) => {
+    registeredProject(options.root, options.project);
+    print(rollbackProjectEventReconciliation(options.root, options.project), options.json);
   },
 });
 
@@ -611,6 +639,8 @@ const commands: Command[] = [
   projectBackup,
   projectRestore,
   projectSync,
+  projectSequenceReconcile,
+  projectSequenceRollback,
   timelineCommand,
   projectCreate,
   projectList,

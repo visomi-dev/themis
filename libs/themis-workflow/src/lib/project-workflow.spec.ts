@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -12,6 +12,11 @@ import {
   redactPortable,
   translateEvent,
 } from './project-workflow.ts';
+import {
+  assertCurrentMatchesManifest,
+  commitProjectStore,
+  recoverProjectStoreTransaction,
+} from './project-store-persistence.ts';
 
 test('registry is explicit, redacts locators, and isolates project stores', () => {
   const root = mkdtempSync(join(tmpdir(), 'themis-workflow-'));
@@ -112,11 +117,14 @@ test('corrupt project state returns a bounded corruption error', () => {
     registry.register('one', 'One', root);
     const store = new ProjectWorkflowStore(registry, 'one');
     store.domain().createProject({ id: 'one', name: 'One', summary: 'One' });
-    writeFileSync(join(root, '.themis', 'projects', 'one', '.themis', 'state.json'), '{not-json', 'utf8');
+    const manifestPath = join(root, '.themis', 'projects', 'one', 'manifest.json');
+    const manifestBefore = readFileSync(manifestPath, 'utf8');
+    writeFileSync(join(root, '.themis', 'projects', 'one', 'state.json'), '{not-json', 'utf8');
     assert.throws(
       () => store.domain().listProjects(),
       (error: unknown) => error instanceof WorkflowError && error.code === 'CORRUPT_STORE',
     );
+    assert.equal(readFileSync(manifestPath, 'utf8'), manifestBefore, 'checksum mismatch must not be silently resealed');
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -362,7 +370,173 @@ test('serializes appends from separate runtimes with a filesystem lock', async (
       [1, 2],
     );
     assert.equal(new Set(events.map((event) => event.actor)).size, 2);
+    assertCurrentMatchesManifest(join(root, '.themis', 'projects', 'one'));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('refreshes the manifest after every workflow mutation family', () => {
+  const root = mkdtempSync(join(tmpdir(), 'themis-workflow-manifest-families-'));
+  try {
+    const registry = new WorkspaceRegistry(root);
+    registry.register('one', 'One', root);
+    const store = new ProjectWorkflowStore(registry, 'one');
+    const domain = store.domain();
+    const directory = join(root, '.themis', 'projects', 'one');
+    let generation = 1;
+    const mutation = <T>(operation: () => T): T => {
+      const result = operation();
+      generation += 1;
+      assert.equal(assertCurrentMatchesManifest(directory).generation, generation);
+      assert.equal(domain.validateState().valid, true);
+      return result;
+    };
+
+    mutation(() => domain.createProject({ id: 'one', name: 'One', summary: 'One' }));
+    const epic = mutation(() =>
+      domain.createEpic({ id: 'EPIC-ONE', projectId: 'one', title: 'Epic', summary: 'Epic', goal: 'Goal' }),
+    );
+    const first = mutation(() =>
+      domain.createWorkItem({
+        id: 'ITEM-ONE',
+        epicId: epic.id,
+        title: 'First',
+        summary: 'First',
+        acceptanceCriteria: ['done'],
+        scopeIn: ['scope'],
+        scopeOut: [],
+        verificationStrategy: ['test'],
+      }),
+    );
+    const second = mutation(() =>
+      domain.createWorkItem({
+        id: 'ITEM-TWO',
+        title: 'Second',
+        summary: 'Second',
+        acceptanceCriteria: ['done'],
+        scopeIn: ['scope'],
+        scopeOut: [],
+        verificationStrategy: ['test'],
+      }),
+    );
+    mutation(() => domain.updateWorkItem(first.id, { title: 'Updated' }));
+    mutation(() => domain.addDependency(first.id, second.id));
+    mutation(() => domain.transitionWorkItem(first.id, 'ready'));
+    mutation(() => domain.transitionWorkItem(second.id, 'ready'));
+    const revision = mutation(() =>
+      domain.proposeSprint({
+        projectId: 'one',
+        goal: 'Goal',
+        why: 'Why',
+        what: 'What',
+        how: 'How',
+        workItemIds: [first.id],
+        epicIds: [epic.id],
+        nonGoals: [],
+        definitionOfDone: ['done'],
+        verificationStrategy: ['test'],
+      }),
+    );
+    mutation(() => domain.approveSprint(revision.sprintId, revision.id));
+    mutation(() => domain.activateSprint(revision.sprintId, revision.id));
+    mutation(() => domain.claimWorkItem(first.id, 'executor'));
+    const run = mutation(() => domain.startRun(first.id, 'executor'));
+    mutation(() => domain.addEvidence(run.id, 'verification', 'verified', 'pass'));
+    mutation(() => domain.addEvidence(run.id, 'implementation-diff', 'diff', 'files'));
+    mutation(() => domain.finishRun(run.id, 'completed', 'complete'));
+    const review = mutation(() => domain.requestReview(first.id, 'reviewer'));
+    mutation(() => domain.submitReview(review.id, 'accepted', 'accepted'));
+    mutation(() => domain.addSprintEvidence(revision.sprintId, 'verification', 'verified', 'pass'));
+    mutation(() => domain.closeSprint(revision.sprintId));
+    mutation(() => domain.removeSprints());
+    assert.equal(domain.workspaceStatus().initialized, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('compatibility schema rewrites update the manifest before returning', () => {
+  const root = mkdtempSync(join(tmpdir(), 'themis-workflow-schema-rewrite-'));
+  try {
+    const registry = new WorkspaceRegistry(root);
+    registry.register('one', 'One', root);
+    new ProjectWorkflowStore(registry, 'one');
+    const directory = join(root, '.themis', 'projects', 'one');
+    const legacyState = {
+      schemaVersion: 1,
+      projectId: 'one',
+      projects: [{ id: 'one', name: 'One', summary: '', status: 'active', createdAt: '2026-01-01T00:00:00.000Z' }],
+      workItems: [],
+    };
+    commitProjectStore(directory, 'one', `${JSON.stringify(legacyState, null, 2)}\n`, '');
+    const generationBefore = assertCurrentMatchesManifest(directory).generation;
+
+    const state = new ProjectWorkflowStore(registry, 'one').domain().readState();
+
+    assert.equal(state.schemaVersion, 2);
+    assert.equal(assertCurrentMatchesManifest(directory).generation, generationBefore + 1);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('recovers an interrupted authority transition without accepting unrelated bytes', () => {
+  const root = mkdtempSync(join(tmpdir(), 'themis-workflow-recovery-'));
+  const directory = join(root, 'one');
+  const initial = { schemaVersion: 2, projectId: 'one', projects: [], workItems: [] };
+  const next = {
+    schemaVersion: 2,
+    projectId: 'one',
+    projects: [{ id: 'one', name: 'One' }],
+    workItems: [],
+  };
+  try {
+    commitProjectStore(directory, 'one', `${JSON.stringify(initial, null, 2)}\n`, '');
+    assert.throws(
+      () =>
+        commitProjectStore(directory, 'one', `${JSON.stringify(next, null, 2)}\n`, '{"sequence":1}\n', {
+          observe: (step) => {
+            if (step === 'state-installed') throw new Error('simulated interruption');
+          },
+        }),
+      /simulated interruption/,
+    );
+    assert.throws(() => assertCurrentMatchesManifest(directory), /checksum mismatch/);
+
+    recoverProjectStoreTransaction(directory);
+
+    assert.equal(JSON.parse(readFileSync(join(directory, 'state.json'), 'utf8')).projects.length, 1);
+    assert.equal(assertCurrentMatchesManifest(directory).generation, 2);
+    writeFileSync(join(directory, 'events.ndjson'), 'unrelated corruption\n', 'utf8');
+    assert.throws(() => assertCurrentMatchesManifest(directory), /checksum mismatch/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+for (const interruptedAt of ['prepared', 'state-installed', 'events-installed', 'manifest-installed'] as const) {
+  test(`recovers initial project-store creation interrupted at ${interruptedAt}`, () => {
+    const root = mkdtempSync(join(tmpdir(), 'themis-workflow-initial-recovery-'));
+    const directory = join(root, 'one');
+    const initial = { schemaVersion: 2, projectId: 'one', projects: [], workItems: [] };
+    try {
+      assert.throws(
+        () =>
+          commitProjectStore(directory, 'one', `${JSON.stringify(initial, null, 2)}\n`, '', {
+            observe: (step) => {
+              if (step === interruptedAt) throw new Error('simulated initial interruption');
+            },
+          }),
+        /simulated initial interruption/,
+      );
+
+      recoverProjectStoreTransaction(directory);
+
+      assert.equal(assertCurrentMatchesManifest(directory).generation, 1);
+      assert.equal(JSON.parse(readFileSync(join(directory, 'state.json'), 'utf8')).projectId, 'one');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+}

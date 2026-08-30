@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "runId": "RUN-243",
+  "projectId": "agent-tracking",
+  "reconciliationId": "d59bcda509a53aff",
+  "strategy": "position-preserving-remapping-ledger",
+  "eventCountBefore": 4407,
+  "anomalySummary": {
+    "duplicatePositions": 13,
+    "missingRanges": 4,
+    "missingLegacySequenceCount": 13,
+    "outOfOrderPositions": 1
+  },
+  "before": {
+    "stateChecksum": "bb46a535aafcc4d19a39d0cabcd26bdf35e8bb270f4ddd6e6500fa5853bc195e",
+    "eventsChecksum": "7351f5941fc0bd628ad588916015c9f67920c8c6ece7ac73bce624e79549ba97",
+    "manifestChecksum": "accfab4f7357d5f798e066333ea356360dfe42f624e54a2a833fbb4c919ff7ae"
+  },
+  "reconciled": {
+    "stateChecksum": "bb46a535aafcc4d19a39d0cabcd26bdf35e8bb270f4ddd6e6500fa5853bc195e",
+    "eventsChecksum": "33ee3406c3b4d6e492af0ee66a176e4c3481fcbb38d2cbdd83fcab0efced2d9f",
+    "manifestChecksum": "6e0c79728c03bf72b60f7f3a8b690399b6ecb91356ac2024b842f0e314e99e6d"
+  },
+  "postAppend": {
+    "eventCount": 4408,
+    "lastSequence": 4408,
+    "stateChecksum": "150fc87e3ca8ae8343269820a7b272f089b4e21b31f6ee5da95a08f1734dafd5",
+    "eventsChecksum": "171b1a28add1194f648128d479070447d613a96358c477b39526b8a1fcfe55d8",
+    "manifestChecksum": "e2be782ff541fab36c5c9ed0ed6ab1df19cba8634741d4edf9cbf4528661408e"
+  },
+  "finalEvidenceState": {
+    "eventCount": 4419,
+    "lastSequence": 4419,
+    "unique": true,
+    "monotonic": true,
+    "stateChecksum": "b9b7cd1ba11052551e03ec068b7f4d495dd8c2fafe815bcf50f746d8e3ea06ec",
+    "eventsChecksum": "a794c97ca8033e7efe826e2a20db8b894a9337d212092ea3e7b1501cbcffa967",
+    "manifestChecksum": "0f96603583fe995f3aa7656ecabcbcf8583b7900b7f996d107e16a7343325138"
+  },
+  "localArtifacts": {
+    "ledger": ".themis/reconciliation/agent-tracking/ledger.json",
+    "backupManifest": ".themis/reconciliation/agent-tracking/backups/sequence-d59bcda509a53aff/backup-manifest.json"
+  },
+  "disclosure": "No event payloads, state records, actors, secrets, or absolute paths are retained in this manifest."
+}

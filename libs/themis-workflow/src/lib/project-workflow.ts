@@ -1,5 +1,4 @@
 import {
-  appendFileSync,
   closeSync,
   existsSync,
   mkdirSync,
@@ -13,6 +12,11 @@ import {
 import { createHash, randomUUID } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 
+import {
+  commitProjectStore,
+  initializeProjectStore,
+  recoverProjectStoreTransaction,
+} from './project-store-persistence.ts';
 import {
   addDependency,
   addEvidence,
@@ -260,6 +264,24 @@ export class ProjectWorkflowStore {
     if (existsSync(join(registry.root(), '.themis', 'state.json')) && !existsSync(join(this.directory, 'state.json'))) {
       throw new WorkflowError(`Project ${projectId} requires the PZS-002 migration cutover`, 'MIGRATION_REQUIRED');
     }
+    withFilesystemLock(join(this.directory, '.project.lock'), () => {
+      initializeProjectStore(this.directory, projectId, {
+        schemaVersion: 2,
+        projectId,
+        projects: [],
+        epics: [],
+        workItems: [],
+        dependencies: [],
+        sprints: [],
+        sprintItems: [],
+        revisions: [],
+        runs: [],
+        evidence: [],
+        sprintEvidence: [],
+        reviews: [],
+      });
+      recoverProjectStoreTransaction(this.directory);
+    });
   }
 
   identity(): PortableProjectIdentity {
@@ -343,7 +365,9 @@ export class ProjectWorkflowStore {
         actor,
         payload,
       };
-      appendFileSync(eventsFile, `${JSON.stringify(event)}\n`, 'utf8');
+      const stateText = readFileSync(join(this.directory, 'state.json'), 'utf8');
+      const eventsText = `${existsSync(eventsFile) ? readFileSync(eventsFile, 'utf8') : ''}${JSON.stringify(event)}\n`;
+      commitProjectStore(this.directory, key, stateText, eventsText);
       return event;
     });
   }
