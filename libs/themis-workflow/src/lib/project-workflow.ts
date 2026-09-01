@@ -120,6 +120,19 @@ const atomicWrite = (file: string, value: unknown): void => {
 };
 
 type RegistryData = { schemaVersion: 1; registrations: ProjectRegistration[] };
+type CutoverMarker = { authority: string; writesFenced: boolean };
+
+const projectStoresAreAuthoritative = (root: string): boolean => {
+  const file = join(root, '.themis', 'migration', 'cutover.json');
+  if (!existsSync(file)) return false;
+  try {
+    const marker = JSON.parse(readFileSync(file, 'utf8')) as CutoverMarker;
+    return marker.authority === 'project-stores' && marker.writesFenced === true;
+  } catch {
+    return false;
+  }
+};
+
 const readRegistry = (root: string): RegistryData => {
   const file = registryFile(root);
   if (!existsSync(file)) return { schemaVersion: 1, registrations: [] };
@@ -261,7 +274,11 @@ export class ProjectWorkflowStore {
     this.registry = registry;
     this.registration = registry.resolve(projectId);
     this.directory = projectDirectory(registry.root(), projectId);
-    if (existsSync(join(registry.root(), '.themis', 'state.json')) && !existsSync(join(this.directory, 'state.json'))) {
+    if (
+      existsSync(join(registry.root(), '.themis', 'state.json')) &&
+      !existsSync(join(this.directory, 'state.json')) &&
+      !projectStoresAreAuthoritative(registry.root())
+    ) {
       throw new WorkflowError(`Project ${projectId} requires the PZS-002 migration cutover`, 'MIGRATION_REQUIRED');
     }
     withFilesystemLock(join(this.directory, '.project.lock'), () => {

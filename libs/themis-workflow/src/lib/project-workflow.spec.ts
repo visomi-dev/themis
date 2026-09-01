@@ -145,6 +145,31 @@ test('migration fencing rejects legacy global state before project activation', 
   }
 });
 
+test('project authority permits new project stores after migration cutover', () => {
+  const root = mkdtempSync(join(tmpdir(), 'themis-workflow-cutover-'));
+  try {
+    const registry = new WorkspaceRegistry(root);
+    registry.register('one', 'One', root);
+    writeFileSync(join(root, '.themis', 'state.json'), JSON.stringify({ schemaVersion: 2 }), 'utf8');
+    mkdirSync(join(root, '.themis', 'migration'), { recursive: true });
+    writeFileSync(
+      join(root, '.themis', 'migration', 'cutover.json'),
+      JSON.stringify({ authority: 'project-stores', writesFenced: true }),
+      'utf8',
+    );
+
+    const domain = new ProjectWorkflowStore(registry, 'one').domain();
+    domain.createProject({ id: 'one', name: 'One', summary: 'One' });
+
+    assert.deepEqual(
+      domain.listProjects().map((project) => project.id),
+      ['one'],
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('rejects traversal ids before deriving a project store path', () => {
   const root = mkdtempSync(join(tmpdir(), 'themis-workflow-path-'));
   try {

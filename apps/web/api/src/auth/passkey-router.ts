@@ -8,13 +8,13 @@ import {
   verifyRegistrationResponse,
   type WebAuthnCredential,
 } from '@simplewebauthn/server';
-import { Router } from 'express';
+import { Router, type CookieOptions } from 'express';
 
 import { getValidated, validateRequest } from '../shared/http/route-schemas';
 import { env } from '../shared/env';
 
 import { authed, authedRequest } from './auth-middleware';
-import { createPasskeyEnrollment, findUserByEmail, getPrimaryMembership, resolveAuthUser } from './auth-service';
+import { findUserById, resolveAuthUserForAccount } from './auth-service';
 import {
   authenticationBeginSchema,
   authenticationCompleteSchema,
@@ -24,26 +24,36 @@ import {
   registrationBeginSchema,
   registrationCompleteSchema,
 } from './passkey-schemas';
-import { emailGate, nextPasskeyAttempt } from './passkey-contract';
+import { nextPasskeyAttempt, nextPasskeyCounter } from './passkey-contract';
 import { csrfProtection, passkeyRateLimit } from './passkey-security';
 
 import {
   accountPasskeyCredentials,
-  accountPasskeyEnrollments,
-  accountWebAuthnChallenges,
+  authWebAuthnChallenges as accountWebAuthnChallenges,
   db,
   HttpError,
   users,
 } from 'shared';
 
+type ChallengePurpose =
+  | 'discoverable_authentication'
+  | 'restricted_registration'
+  | 'restricted_authentication'
+  | 'security_registration'
+  | 'security_authentication';
+
 const CHALLENGE_TTL_MS = 5 * 60 * 1000;
 const SECURITY_REAUTH_TTL_MS = 10 * 60 * 1000;
 const PASSKEY_ACCOUNT_UNAVAILABLE = 'credential_not_found';
+const SESSION_HINT_COOKIE = 'themis.hasSession';
 const rpId = process.env.WEBAUTHN_RP_ID ?? 'localhost';
 const origin = process.env.WEBAUTHN_ORIGIN ?? new URL(env.APP_BASE_URL).origin;
 
 function hashChallenge(challenge: string): string {
   return createHash('sha256').update(challenge).digest('hex');
+}
+function ceremonyType(purpose: ChallengePurpose): 'registration' | 'authentication' {
+  return purpose.endsWith('registration') ? 'registration' : 'authentication';
 }
 function credentialView(value: typeof accountPasskeyCredentials.$inferSelect) {
   return {
@@ -66,37 +76,31 @@ function requireFreshSecurityReauthentication(req: Parameters<typeof authedReque
   if (!verifiedAt || Date.now() - verifiedAt > SECURITY_REAUTH_TTL_MS)
     failure('reauthentication_required', 401, 'Confirm an existing passkey before changing security settings.');
 }
-async function requireVerifiedEmail(email: string, pinVerified: boolean) {
-  const user = await findUserByEmail(email);
-
-  if (!user) failure(PASSKEY_ACCOUNT_UNAVAILABLE, 404);
-  const gate = emailGate(email, user.emailVerifiedAt, pinVerified);
-
-  if (gate === 'email_required') failure('email_required', 400, 'An email address is required.');
-  if (gate === 'email_unverified') failure('email_unverified', 403, 'Verify the email address before using a passkey.');
-  if (gate === 'pin_required') failure('pin_required', 403, 'Complete email PIN verification before using a passkey.');
-  const membership = await getPrimaryMembership(user.id);
-
-  if (!membership) failure('account_membership_missing', 500);
-
-  return { user, membership };
-}
-async function createChallenge(
-  accountId: string,
-  userId: string | null,
-  purpose: 'registration' | 'authentication',
-  value: string,
-) {
+async function createChallenge(input: {
+  accountId: string | null;
+  allowCredentialIds?: string[];
+  credentialId?: string;
+  flowId?: string;
+  purpose: ChallengePurpose;
+  sessionBinding: string;
+  userId: string | null;
+  value: string;
+}) {
   const now = new Date();
   const expiresAt = new Date(now.getTime() + CHALLENGE_TTL_MS);
   const id = randomUUID();
 
   await db.insert(accountWebAuthnChallenges).values({
     id,
-    accountId,
-    userId,
-    challengeHash: hashChallenge(value),
-    purpose,
+    accountId: input.accountId,
+    userId: input.userId,
+    challengeHash: hashChallenge(input.value),
+    purpose: input.purpose,
+    ceremonyType: ceremonyType(input.purpose),
+    sessionBinding: input.sessionBinding,
+    flowId: input.flowId ?? null,
+    credentialId: input.credentialId ?? null,
+    allowCredentialIds: input.allowCredentialIds ?? [],
     rpId,
     origin,
     userVerification: 'required',
@@ -108,46 +112,76 @@ async function createChallenge(
 
   return { id, expiresAt };
 }
-async function consumeChallenge(id: string, value: string, purpose: 'registration' | 'authentication') {
+async function consumeChallenge(input: {
+  id: string;
+  purpose: ChallengePurpose;
+  sessionBinding: string;
+  value: string;
+}) {
   const now = new Date();
   const [updated] = await db
     .update(accountWebAuthnChallenges)
     .set({ consumedAt: now })
     .where(
       and(
-        eq(accountWebAuthnChallenges.id, id),
-        eq(accountWebAuthnChallenges.purpose, purpose),
-        eq(accountWebAuthnChallenges.challengeHash, hashChallenge(value)),
+        eq(accountWebAuthnChallenges.id, input.id),
+        eq(accountWebAuthnChallenges.purpose, input.purpose),
+        eq(accountWebAuthnChallenges.ceremonyType, ceremonyType(input.purpose)),
+        eq(accountWebAuthnChallenges.sessionBinding, input.sessionBinding),
+        eq(accountWebAuthnChallenges.rpId, rpId),
+        eq(accountWebAuthnChallenges.origin, origin),
+        eq(accountWebAuthnChallenges.userVerification, 'required'),
         isNull(accountWebAuthnChallenges.consumedAt),
         gt(accountWebAuthnChallenges.expiresAt, now),
       ),
     )
     .returning();
 
-  if (updated) return updated;
+  if (updated) {
+    if (updated.challengeHash !== hashChallenge(input.value)) failure('challenge_mismatch', 400);
+
+    return updated;
+  }
   const [existing] = await db
     .select()
     .from(accountWebAuthnChallenges)
-    .where(eq(accountWebAuthnChallenges.id, id))
+    .where(eq(accountWebAuthnChallenges.id, input.id))
     .limit(1);
 
-  if (!existing || existing.purpose !== purpose) failure('challenge_mismatch', 400);
+  if (!existing || existing.purpose !== input.purpose || existing.sessionBinding !== input.sessionBinding)
+    failure('challenge_mismatch', 400);
   if (existing.consumedAt) failure('challenge_replayed', 409);
   if (existing.expiresAt <= now) failure('challenge_expired', 410);
   failure('challenge_mismatch', 400);
 }
+
+function sessionHintCookieOptions(): CookieOptions {
+  return {
+    httpOnly: false,
+    maxAge: env.SESSION_MAX_AGE_MS,
+    path: '/',
+    sameSite: 'lax',
+    secure: env.COOKIE_SECURE,
+  };
+}
 async function loginPasskey(
   req: Parameters<typeof authedRequest>[0],
   user: typeof users.$inferSelect,
+  accountId: string,
   credentialId: string,
 ) {
-  const authUser = await resolveAuthUser(user);
+  const authUser = await resolveAuthUserForAccount(user, accountId);
   const authenticatedUser = { ...authUser, authenticationMethod: 'passkey' as const, credentialId };
+
+  await new Promise<void>((resolve, reject) => req.session.regenerate((error) => (error ? reject(error) : resolve())));
 
   await new Promise<void>((resolve, reject) =>
     req.login(authenticatedUser, (error) => (error ? reject(error) : resolve())),
   );
   req.session.authenticatedAt = Date.now();
+  req.session.cookie.maxAge = env.SESSION_MAX_AGE_MS;
+  delete req.session.restrictedAuth;
+  delete req.session.passkeyRegistration;
 
   return authenticatedUser;
 }
@@ -158,36 +192,24 @@ passkeyRouter.use(csrfProtection);
 passkeyRouter.use(passkeyRateLimit);
 
 passkeyRouter.post('/registration/begin', validateRequest({ body: registrationBeginSchema }), async (req, res) => {
-  const { email, label, pinVerified } = getValidated<{ body: typeof registrationBeginSchema }>(req).body!;
-  let verificationChallengeId: string | null = null;
-  let enrollmentId: string | null = null;
-  let user;
-  let membership;
+  const { label } = getValidated<{ body: typeof registrationBeginSchema }>(req).body!;
+  const restricted = req.session?.restrictedAuth;
 
-  if (!req.isAuthenticated()) {
-    user = await findUserByEmail(email);
-    if (user?.emailVerifiedAt)
-      failure('email_already_registered', 409, 'An account already exists for this email address.');
-    const enrollment = await createPasskeyEnrollment(email, label, user ?? undefined);
+  if (!restricted || restricted.expiresAt <= Date.now() || !restricted.selectedAccountId)
+    failure('restricted_session_required', 401, 'Verify an email code and select an account before registering.');
+  if (!restricted.allowedOperations.includes('passkeys:enroll')) failure('restricted_session_forbidden', 403);
+  const account = restricted.eligibleAccounts.find((candidate) => candidate.accountId === restricted.selectedAccountId);
 
-    user = enrollment.user;
-    membership = enrollment.membership;
-    verificationChallengeId = enrollment.verificationChallengeId;
-    enrollmentId = enrollment.enrollmentId;
-  } else {
-    const verified = await requireVerifiedEmail(email, pinVerified);
+  if (!account) failure('account_unavailable', 404);
+  const user = await findUserById(restricted.userId);
 
-    user = verified.user;
-    membership = verified.membership;
-    if (req.user.id !== user.id) failure('authentication_required', 401, 'Sign in before registering a passkey.');
-    requireFreshSecurityReauthentication(req);
-  }
+  if (!user || user.email !== restricted.verifiedEmail) failure('restricted_session_forbidden', 403);
   const existing = await db
     .select()
     .from(accountPasskeyCredentials)
     .where(
       and(
-        eq(accountPasskeyCredentials.accountId, membership.accountId),
+        eq(accountPasskeyCredentials.accountId, account.accountId),
         eq(accountPasskeyCredentials.userId, user.id),
         isNull(accountPasskeyCredentials.revokedAt),
       ),
@@ -202,20 +224,27 @@ passkeyRouter.post('/registration/begin', validateRequest({ body: registrationBe
     timeout: 60000,
     attestationType: 'none',
     excludeCredentials: existing.map((item) => ({ id: item.credentialId, transports: item.transports as never[] })),
-    authenticatorSelection: { residentKey: 'preferred', userVerification: 'required' },
+    authenticatorSelection: { residentKey: 'required', requireResidentKey: true, userVerification: 'required' },
   });
-  const stored = await createChallenge(membership.accountId, user.id, 'registration', options.challenge);
+  const stored = await createChallenge({
+    accountId: account.accountId,
+    allowCredentialIds: existing.map((item) => item.credentialId),
+    flowId: restricted.flowId,
+    purpose: 'restricted_registration',
+    sessionBinding: req.sessionID ?? 'anonymous',
+    userId: user.id,
+    value: options.challenge,
+  });
 
-  if (req.session)
-    req.session.passkeyRegistration = {
-      challengeId: stored.id,
-      email: user.email,
-      label,
-      pinVerified: true,
-      enrollmentId: enrollmentId ?? undefined,
-    };
+  req.session.passkeyRegistration = {
+    accountId: account.accountId,
+    challengeId: stored.id,
+    flowId: restricted.flowId,
+    label,
+    userId: user.id,
+  };
   res.json({
-    data: { challengeId: stored.id, verificationChallengeId, enrollmentId, options },
+    data: { challengeId: stored.id, options },
     message: 'Passkey registration options created.',
   });
 });
@@ -226,29 +255,49 @@ passkeyRouter.post(
   async (req, res) => {
     const body = getValidated<{ body: typeof registrationCompleteSchema }>(req).body!;
     const pending = req.session?.passkeyRegistration;
+    const restricted = req.session?.restrictedAuth;
 
-    if (!pending || pending.challengeId !== body.challengeId) failure('challenge_mismatch', 400);
-    const user = await findUserByEmail(pending.email);
+    if (
+      !pending ||
+      !restricted ||
+      restricted.expiresAt <= Date.now() ||
+      pending.challengeId !== body.challengeId ||
+      pending.flowId !== restricted.flowId ||
+      pending.accountId !== restricted.selectedAccountId ||
+      pending.userId !== restricted.userId
+    ) {
+      failure('challenge_mismatch', 400);
+    }
+    const user = await findUserById(pending.userId);
 
     if (!user) failure(PASSKEY_ACCOUNT_UNAVAILABLE, 404);
-    const membership = await getPrimaryMembership(user.id);
-
-    if (!membership) failure('account_membership_missing', 500);
     const [challenge] = await db
       .select()
       .from(accountWebAuthnChallenges)
       .where(eq(accountWebAuthnChallenges.id, body.challengeId))
       .limit(1);
 
-    if (!challenge) failure('challenge_mismatch', 400);
+    if (
+      !challenge ||
+      challenge.accountId !== pending.accountId ||
+      challenge.userId !== pending.userId ||
+      challenge.flowId !== pending.flowId
+    )
+      failure('challenge_mismatch', 400);
+    await consumeChallenge({
+      id: body.challengeId,
+      purpose: 'restricted_registration',
+      sessionBinding: req.sessionID ?? 'anonymous',
+      value: decodeChallengeFromResponse(body.response),
+    });
     let verified;
 
     try {
       verified = await verifyRegistrationResponse({
         response: body.response as never,
-        expectedChallenge: decodeChallengeFromResponse(body.response),
-        expectedOrigin: origin,
-        expectedRPID: rpId,
+        expectedChallenge: (candidate) => hashChallenge(candidate) === challenge.challengeHash,
+        expectedOrigin: challenge.origin,
+        expectedRPID: challenge.rpId,
         requireUserPresence: true,
         requireUserVerification: true,
       });
@@ -259,7 +308,7 @@ passkeyRouter.post(
     const credential = verified.registrationInfo.credential;
     const value = {
       id: randomUUID(),
-      accountId: membership.accountId,
+      accountId: pending.accountId,
       userId: user.id,
       credentialId: credential.id,
       publicKey: Buffer.from(credential.publicKey).toString('base64url'),
@@ -269,50 +318,43 @@ passkeyRouter.post(
       signCount: credential.counter,
       backupEligible: verified.registrationInfo.credentialDeviceType === 'multiDevice',
       backupState: verified.registrationInfo.credentialBackedUp,
+      status: 'pending',
+      enrollmentFlowId: pending.flowId,
       createdAt: new Date(),
+      activatedAt: null,
       lastUsedAt: null,
       revokedAt: null,
       updatedAt: new Date(),
     };
 
-    // Consume the ceremony, persist the credential, and link the enrollment
-    // atomically. This prevents a consumed challenge or orphan credential if
-    // either persistence step fails.
-    await db.transaction(async (tx) => {
-      const now = new Date();
-      const [consumed] = await tx
-        .update(accountWebAuthnChallenges)
-        .set({ consumedAt: now })
-        .where(
-          and(
-            eq(accountWebAuthnChallenges.id, body.challengeId),
-            eq(accountWebAuthnChallenges.purpose, 'registration'),
-            eq(accountWebAuthnChallenges.challengeHash, hashChallenge(decodeChallengeFromResponse(body.response))),
-            isNull(accountWebAuthnChallenges.consumedAt),
-            gt(accountWebAuthnChallenges.expiresAt, now),
-          ),
-        )
-        .returning();
-
-      if (!consumed) failure('challenge_mismatch', 400);
-      await tx.insert(accountPasskeyCredentials).values(value);
-      if (pending.enrollmentId) {
-        const [linked] = await tx
-          .update(accountPasskeyEnrollments)
-          .set({
-            credentialId: credential.id,
-            updatedAt: now,
-            status: user.emailVerifiedAt ? 'active' : 'pending',
-            activatedAt: user.emailVerifiedAt ? now : null,
-          })
-          .where(eq(accountPasskeyEnrollments.id, pending.enrollmentId))
-          .returning();
-
-        if (!linked) throw new Error('Passkey enrollment linkage failed.');
-      }
-    });
+    await db.insert(accountPasskeyCredentials).values(value);
     delete req.session?.passkeyRegistration;
-    res.status(201).json({ data: credentialView(value), message: 'Passkey registered.' });
+    const verificationOptions = await generateAuthenticationOptions({
+      allowCredentials: [{ id: credential.id, transports: value.transports as never[] }],
+      challenge: randomBytes(32).toString('base64url'),
+      rpID: rpId,
+      timeout: 60_000,
+      userVerification: 'required',
+    });
+    const verificationChallenge = await createChallenge({
+      accountId: pending.accountId,
+      allowCredentialIds: [credential.id],
+      credentialId: credential.id,
+      flowId: pending.flowId,
+      purpose: 'restricted_authentication',
+      sessionBinding: req.sessionID ?? 'anonymous',
+      userId: pending.userId,
+      value: verificationOptions.challenge,
+    });
+
+    res.status(201).json({
+      data: {
+        credential: credentialView(value),
+        verificationChallengeId: verificationChallenge.id,
+        verificationOptions,
+      },
+      message: 'Passkey registered. Verify it to finish signing in.',
+    });
   },
 );
 
@@ -332,44 +374,26 @@ function decodeChallengeFromResponse(response: { response: { clientDataJSON: str
 }
 
 passkeyRouter.post('/authentication/begin', validateRequest({ body: authenticationBeginSchema }), async (req, res) => {
-  const { email, explicitPassword, retryRequested, pinVerified } = getValidated<{
+  const { retryRequested } = getValidated<{
     body: typeof authenticationBeginSchema;
   }>(req).body!;
-  const { user, membership } = await requireVerifiedEmail(email, pinVerified);
-
-  if (explicitPassword) {
-    res.json({
-      data: { attempt: 'password_fallback', challengeId: null, options: null },
-      message: 'Password fallback selected.',
-    });
-
-    return;
-  }
-
-  const credentials = await db
-    .select()
-    .from(accountPasskeyCredentials)
-    .where(
-      and(
-        eq(accountPasskeyCredentials.accountId, membership.accountId),
-        eq(accountPasskeyCredentials.userId, user.id),
-        isNull(accountPasskeyCredentials.revokedAt),
-      ),
-    );
-
-  if (!credentials.length) failure(PASSKEY_ACCOUNT_UNAVAILABLE, 404);
   const challenge = randomBytes(32).toString('base64url');
   const options = await generateAuthenticationOptions({
     rpID: rpId,
     userVerification: 'required',
     timeout: 60000,
     challenge,
-    allowCredentials: credentials.map((item) => ({ id: item.credentialId, transports: item.transports as never[] })),
   });
-  const stored = await createChallenge(membership.accountId, user.id, 'authentication', options.challenge);
+  const stored = await createChallenge({
+    accountId: null,
+    purpose: 'discoverable_authentication',
+    sessionBinding: req.sessionID ?? 'anonymous',
+    userId: null,
+    value: options.challenge,
+  });
 
   res.json({
-    data: { challengeId: stored.id, options, attempt: nextPasskeyAttempt({ explicitPassword, retryRequested }) },
+    data: { challengeId: stored.id, options, attempt: nextPasskeyAttempt({ retryRequested }) },
     message: 'Passkey authentication options created.',
   });
 });
@@ -386,14 +410,36 @@ passkeyRouter.post(
       .limit(1);
     const challenge = pending[0];
 
-    if (!challenge || !challenge.userId) failure('challenge_mismatch', 400);
+    if (
+      !challenge ||
+      !['discoverable_authentication', 'restricted_authentication'].includes(challenge.purpose) ||
+      (challenge.purpose === 'restricted_authentication' &&
+        (!req.session?.restrictedAuth ||
+          req.session.restrictedAuth.flowId !== challenge.flowId ||
+          req.session.restrictedAuth.selectedAccountId !== challenge.accountId))
+    ) {
+      failure('challenge_mismatch', 400);
+    }
+
+    const challengeValue = decodeChallengeFromResponse(body.response);
+
+    await consumeChallenge({
+      id: body.challengeId,
+      purpose: challenge.purpose as ChallengePurpose,
+      sessionBinding: challenge.sessionBinding,
+      value: challengeValue,
+    });
     const [credential] = await db
       .select()
       .from(accountPasskeyCredentials)
       .where(eq(accountPasskeyCredentials.credentialId, body.response.id))
       .limit(1);
 
-    if (!credential || credential.accountId !== challenge.accountId || credential.userId !== challenge.userId)
+    if (!credential || (credential.status !== 'active' && credential.status !== 'pending'))
+      failure('credential_not_found', 401);
+    if (challenge.credentialId && challenge.credentialId !== credential.credentialId)
+      failure('credential_not_found', 401);
+    if (challenge.purpose === 'restricted_authentication' && credential.status !== 'pending')
       failure('credential_not_found', 401);
     if (credential.revokedAt) failure('credential_revoked', 401);
     let verified;
@@ -401,9 +447,9 @@ passkeyRouter.post(
     try {
       verified = await verifyAuthenticationResponse({
         response: body.response as never,
-        expectedChallenge: decodeChallengeFromResponse(body.response),
-        expectedOrigin: origin,
-        expectedRPID: rpId,
+        expectedChallenge: (candidate) => hashChallenge(candidate) === challenge.challengeHash,
+        expectedOrigin: challenge.origin,
+        expectedRPID: challenge.rpId,
         requireUserVerification: true,
         credential: {
           id: credential.credentialId,
@@ -415,24 +461,37 @@ passkeyRouter.post(
       failure('platform_error', 401);
     }
     if (!verified.verified) failure('platform_error', 401);
-    if (verified.authenticationInfo.newCounter < credential.signCount) failure('sign_count_regression', 401);
-    await consumeChallenge(body.challengeId, decodeChallengeFromResponse(body.response), 'authentication');
+    const counter = nextPasskeyCounter({
+      backupEligible: credential.backupEligible,
+      receivedSignCount: verified.authenticationInfo.newCounter,
+      storedSignCount: credential.signCount,
+    });
+
+    if (!counter.ok) {
+      failure(counter.failure, 401);
+    }
+
     const now = new Date();
 
     await db
       .update(accountPasskeyCredentials)
-      .set({ signCount: verified.authenticationInfo.newCounter, lastUsedAt: now, updatedAt: now })
+      .set({
+        activatedAt: challenge.purpose === 'restricted_authentication' ? now : credential.activatedAt,
+        lastUsedAt: now,
+        signCount: counter.value,
+        status: challenge.purpose === 'restricted_authentication' ? 'active' : credential.status,
+        updatedAt: now,
+      })
       .where(eq(accountPasskeyCredentials.id, credential.id));
-    const user = await findUserByEmail(
-      (await db.select().from(users).where(eq(users.id, challenge.userId)).limit(1))[0]?.email ?? '',
-    );
+    const user = await findUserById(credential.userId);
 
     if (!user) failure('credential_not_found', 401);
     const wasAuthenticated = req.isAuthenticated() && req.user?.id === user.id;
-    const authUser = await loginPasskey(req, user, credential.credentialId);
+    const authUser = await loginPasskey(req, user, credential.accountId, credential.credentialId);
 
     if (wasAuthenticated) req.session.passkeySecurityReauthenticatedAt = Date.now();
 
+    res.cookie(SESSION_HINT_COOKIE, '1', sessionHintCookieOptions());
     res.json({ data: { authenticated: true, user: authUser }, message: 'Passkey authentication complete.' });
   },
 );
@@ -536,7 +595,6 @@ async function revokeCredential(
     .limit(1);
 
   if (!active.length) return null;
-  const [accountUser] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
   const activeCredentials = await db
     .select({ id: accountPasskeyCredentials.id })
     .from(accountPasskeyCredentials)
@@ -548,8 +606,8 @@ async function revokeCredential(
       ),
     );
 
-  if (!accountUser?.passwordConfigured && activeCredentials.length <= 1)
-    failure('last_access_method', 409, 'Keep a password or another active passkey before revoking this credential.');
+  if (activeCredentials.length <= 1)
+    failure('last_passkey', 409, 'Keep another active passkey before revoking this credential.');
   await db
     .update(accountPasskeyCredentials)
     .set({ revokedAt: new Date(), updatedAt: new Date() })

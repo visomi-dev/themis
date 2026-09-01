@@ -7,7 +7,7 @@ declare global {
       emailVerifiedAt: string | null;
       id: string;
       role: string;
-      authenticationMethod?: 'passkey' | 'password';
+      authenticationMethod?: 'passkey';
       credentialId?: string;
     }
   }
@@ -22,17 +22,23 @@ declare module 'express-session' {
         id: string;
       };
     };
-    resetPassword?: {
-      challengeId: string;
-      email: string;
+    restrictedAuth?: {
+      allowedOperations: Array<'accounts:read' | 'accounts:select' | 'passkeys:enroll' | 'passkeys:verify'>;
+      eligibleAccounts: Array<{ accountId: string; name: string; role: string }>;
+      expiresAt: number;
+      flowId: string;
+      issuedAt: number;
+      purpose: 'bootstrap_recovery';
+      selectedAccountId?: string;
       userId: string;
+      verifiedEmail: string;
     };
     passkeyRegistration?: {
+      accountId: string;
       challengeId: string;
-      email: string;
+      flowId: string;
       label: string;
-      pinVerified: true;
-      enrollmentId?: string;
+      userId: string;
     };
     authenticatedAt?: number;
     reauthenticatedAt?: number;

@@ -1,0 +1,4931 @@
+{
+  "assetInspection": [
+    {
+      "assetPath": "assets/themis-isotype.svg",
+      "byteLength": 491,
+      "hasCurrentColor": true,
+      "safe": true,
+      "sha256": "4dfb8d293391e67e3436fbcefc81356aa4891a8ba5bffaf67cc307816b8acb6e"
+    },
+    {
+      "assetPath": "assets/themis-isotype-stroke.svg",
+      "byteLength": 1372,
+      "hasCurrentColor": true,
+      "safe": true,
+      "sha256": "e4651fff26ae12627ed585fb6c0b31d09dd2d9a63f0b7abfa25b4f6bc54d4e9e"
+    },
+    {
+      "assetPath": "assets/themis-logotype.svg",
+      "byteLength": 2455,
+      "hasCurrentColor": true,
+      "safe": true,
+      "sha256": "1b7d928293fbe1236ac7ff7984c256ca0d8e926416578e315e5d77ab339175b8"
+    },
+    {
+      "assetPath": "assets/themis-logotype-stroke.svg",
+      "byteLength": 3413,
+      "hasCurrentColor": true,
+      "safe": true,
+      "sha256": "59cd972bf44fa062912df9d528ca0885808fa0b60392643a724bd35b080f08fd"
+    }
+  ],
+  "generatedAt": "2026-08-31T00:00:00.000Z",
+  "results": [
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=ready",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=ready",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=ready",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=ready",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=ready",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--ready--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Continue with a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "ready",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=ready",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--loading--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--cancelled--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try passkey again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--error--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start a new passkey attempt",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=email",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=email",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=email",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=email",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=email",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--email--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Send code",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "email",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=email",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify email",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp-error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp-error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp-error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp-error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=otp-error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--otp-error--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try the code again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "otp-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=otp-error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=account-choice",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=account-choice",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=account-choice",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=account-choice",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=account-choice",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--account-choice--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "account-choice",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=account-choice",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Create passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-loading--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-cancelled--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try setup again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=verify-new-passkey",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=verify-new-passkey",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=verify-new-passkey",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=verify-new-passkey",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=verify-new-passkey",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--verify-new-passkey--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "verify-new-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=verify-new-passkey",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=enrollment-error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--enrollment-error--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Retry verification",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "enrollment-error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=enrollment-error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=recovery-expired",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=recovery-expired",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=recovery-expired",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=recovery-expired",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=recovery-expired",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--recovery-expired--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Start again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "recovery-expired",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=recovery-expired",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=success",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=success",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=success",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=success",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=light&state=success",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passwordless-access--success--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passwordless-access",
+      "state": "success",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passwordless-access/frame?theme=dark&state=success",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=list",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=list",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=list",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=list",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=list",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--list--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add a passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "list",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=list",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and add",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-loading",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-loading",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-loading--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-loading",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-loading",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-cancelled",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-cancelled",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=add-cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--add-cancelled--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Try again",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "add-cancelled",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=add-cancelled",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=rename",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=rename",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=rename",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=rename",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=rename",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--rename--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Save name",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "rename",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=rename",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=updated",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=updated",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=updated",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=updated",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=updated",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--updated--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "updated",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=updated",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.577 0.245 27.325)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 4.77
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=remove",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.505 0.213 27.518)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 6.42
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=remove",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.577 0.245 27.325)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 4.77
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=remove",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.505 0.213 27.518)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 6.42
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=remove",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.577 0.245 27.325)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 4.77
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=remove",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--remove--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.505 0.213 27.518)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Verify and remove",
+            "ratio": 6.42
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "remove",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=remove",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=removed",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=removed",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=removed",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=removed",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=removed",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--removed--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Return to passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "removed",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=removed",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=last-passkey",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=last-passkey",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=last-passkey",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=last-passkey",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=last-passkey",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--last-passkey--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Add another passkey",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "last-passkey",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=last-passkey",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=error",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=error",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.546 0.245 262.881)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 5.25
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--error--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [
+          {
+            "background": "oklch(0.488 0.243 264.376)",
+            "foreground": "rgb(255, 255, 255)",
+            "label": "Refresh passkeys",
+            "ratio": 6.83
+          }
+        ],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "error",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=error",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--mobile--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=brand-evaluation",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--mobile--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=brand-evaluation",
+      "viewport": "mobile"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--tablet--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=brand-evaluation",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--tablet--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=brand-evaluation",
+      "viewport": "tablet"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--desktop--light.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "light",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=light&state=brand-evaluation",
+      "viewport": "desktop"
+    },
+    {
+      "consoleErrors": [],
+      "failedRequests": [],
+      "filename": "passkey-management--brand-evaluation--desktop--dark.png",
+      "focus": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      },
+      "inspection": {
+        "contrastChecks": [],
+        "contrastFailures": [],
+        "externalResources": [],
+        "horizontalOverflow": false,
+        "imagesComplete": true,
+        "prohibitedControls": 0,
+        "prohibitedSecretTermsVisible": false,
+        "prohibitedMethodsVisible": false,
+        "undersizedTargets": []
+      },
+      "responseStatus": 200,
+      "slug": "passkey-management",
+      "state": "brand-evaluation",
+      "theme": "dark",
+      "url": "http://127.0.0.1:4312/preview/passkey-management/frame?theme=dark&state=brand-evaluation",
+      "viewport": "desktop"
+    }
+  ]
+}

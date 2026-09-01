@@ -43,12 +43,6 @@ const emailSchema = z
     id: 'AuthEmail',
   });
 
-const passwordSchema = z.string().min(8).meta({
-  description: 'Account password.',
-  example: 'S3cureAuth!',
-  id: 'AuthPassword',
-});
-
 const challengeIdSchema = z.string().min(1).meta({
   description: 'Verification challenge identifier.',
   example: 'challenge-123',
@@ -143,7 +137,6 @@ export {
   apiKeyIdParamSchema,
   challengeIdSchema,
   emailSchema,
-  passwordSchema,
   pinSchema,
   projectIdParamSchema,
   getValidated,

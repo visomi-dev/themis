@@ -1,50 +1,74 @@
-import { randomUUID } from 'node:crypto';
+import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 
-import { and, asc, desc, eq, gt, isNull } from 'drizzle-orm';
-import type { z } from 'zod';
+import { and, asc, eq, gt, isNull, lt, sql } from 'drizzle-orm';
 
 import { env } from '../shared/env';
 
-import {
-  generateUserDeviceToken,
-  generateVerificationPin,
-  hashSecret,
-  hashUserDeviceToken,
-  verifySecret,
-  verifyUserDeviceToken,
-} from './auth-crypto';
+import { generateVerificationPin } from './auth-crypto';
 import { sendVerificationMessage } from './auth-mail';
-import { authUserSchema, challengeSchema } from './auth-schemas';
+import type { AuthUser } from './auth-schemas';
 
-import {
-  accountMemberships,
-  accountPasskeyCredentials,
-  accountPasskeyEnrollments,
-  accounts,
-  authVerificationChallenges,
-  db,
-  HttpError,
-  safeInsert,
-  userDevices,
-  users,
-} from 'shared';
+import { accountMemberships, accounts, authEmailChallenges, db, HttpError, users } from 'shared';
 
-type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
-type AuthUser = z.infer<typeof authUserSchema>;
-type AuthChallengePayload = z.infer<typeof challengeSchema>;
-
+const OTP_PURPOSE = 'bootstrap_recovery' as const;
 const MAX_CHALLENGE_ATTEMPTS = 5;
+let failNextJitTransactionForTest = false;
 
-export function normalizeEmail(email: string) {
-  return email.trim().toLowerCase();
+type EmailOtpDelivery = {
+  flowId: string;
+  resendAvailableAt: string;
+};
+
+type RestrictedIdentity = {
+  accounts: Array<{ accountId: string; name: string; role: string }>;
+  email: string;
+  userId: string;
+};
+
+export function normalizeEmail(email: string): string {
+  return email.normalize('NFKC').trim().toLowerCase();
 }
 
-export function normalizeAccountSlug(email: string) {
-  return normalizeEmail(email)
+export function normalizeAccountSlug(email: string): string {
+  const base = normalizeEmail(email)
     .split('@')[0]
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 80);
+    .slice(0, 64);
+
+  return base || 'account';
+}
+
+export function clientContextHash(ip: string | undefined, userAgent: string | undefined): string {
+  return createHmac('sha256', env.SESSION_SECRET)
+    .update(`${ip ?? 'unknown'}\u0000${userAgent ?? 'unknown'}`)
+    .digest('hex');
+}
+
+export function induceNextJitTransactionFailureForTest(): void {
+  if (!env.ENABLE_TEST_API) throw new Error('The JIT failure hook is available only through the test API.');
+  failNextJitTransactionForTest = true;
+}
+
+function hashPin(flowId: string, normalizedEmail: string, contextHash: string, pin: string): string {
+  return createHmac('sha256', env.SESSION_SECRET)
+    .update(`${flowId}\u0000${normalizedEmail}\u0000${contextHash}\u0000${pin}`)
+    .digest('hex');
+}
+
+function pinMatches(expectedHash: string, actualHash: string): boolean {
+  const expected = Buffer.from(expectedHash, 'hex');
+  const actual = Buffer.from(actualHash, 'hex');
+
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function genericVerificationFailure(): never {
+  throw new HttpError({
+    code: 'verification_failed',
+    message: 'The verification request could not be completed.',
+    statusCode: 401,
+  });
 }
 
 export async function findUserByEmail(email: string) {
@@ -61,24 +85,6 @@ export async function findUserById(id: string) {
   const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
 
   return user;
-}
-
-export async function getLatestChallengeForUser(userId: string, purpose: VerificationPurpose) {
-  const [challenge] = await db
-    .select()
-    .from(authVerificationChallenges)
-    .where(
-      and(
-        eq(authVerificationChallenges.userId, userId),
-        eq(authVerificationChallenges.purpose, purpose),
-        isNull(authVerificationChallenges.consumedAt),
-        gt(authVerificationChallenges.expiresAt, new Date()),
-      ),
-    )
-    .orderBy(desc(authVerificationChallenges.createdAt))
-    .limit(1);
-
-  return challenge;
 }
 
 export async function getPrimaryMembership(userId: string) {
@@ -112,526 +118,258 @@ export async function resolveAuthUser(user: typeof users.$inferSelect): Promise<
   };
 }
 
-export async function createChallenge(
-  user: typeof users.$inferSelect,
-  purpose: VerificationPurpose,
-): Promise<AuthChallengePayload> {
-  const pin = generateVerificationPin();
-
-  const now = new Date();
-
-  const expiresAt = new Date(now.getTime() + env.PIN_EXPIRY_MINUTES * 60 * 1000);
-
-  const challengeId = randomUUID();
-
-  await db
-    .update(authVerificationChallenges)
-    .set({
-      consumedAt: now,
-      updatedAt: now,
-    })
-    .where(
-      and(
-        eq(authVerificationChallenges.userId, user.id),
-        eq(authVerificationChallenges.purpose, purpose),
-        isNull(authVerificationChallenges.consumedAt),
-      ),
-    );
-
-  const pinHash = await hashSecret(pin);
-
-  await safeInsert(
-    () =>
-      db.insert(authVerificationChallenges).values({
-        attemptCount: 0,
-        createdAt: now,
-        expiresAt,
-        id: challengeId,
-        lastSentAt: now,
-        pinHash,
-        purpose,
-        updatedAt: now,
-        userId: user.id,
-      }),
-    'auth_verification_challenges_pkey',
-    {
-      code: 'challenge_already_exists',
-      message: 'A verification challenge with that id already exists.',
-      statusCode: 409,
-    },
-  );
-
-  await sendVerificationMessage({
-    challengeId,
-    email: user.email,
-    expiresAt,
-    pin,
-    purpose,
-  });
-
-  return {
-    challengeId,
-    email: user.email,
-    expiresAt: expiresAt.toISOString(),
-    purpose,
-  };
-}
-
-export async function getOrCreateActiveChallenge(user: typeof users.$inferSelect, purpose: VerificationPurpose) {
-  const challenge = await getLatestChallengeForUser(user.id, purpose);
-
-  if (challenge) {
-    return {
-      challengeId: challenge.id,
-      email: user.email,
-      expiresAt: challenge.expiresAt.toISOString(),
-      purpose: challenge.purpose as VerificationPurpose,
-    };
-  }
-
-  return createChallenge(user, purpose);
-}
-
-export async function createUserDevice(userId: string) {
-  const token = generateUserDeviceToken();
-  const now = new Date();
-
-  await safeInsert(
-    () =>
-      db.insert(userDevices).values({
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + env.REMEMBERED_DEVICE_MAX_AGE_MS),
-        id: randomUUID(),
-        tokenHash: hashUserDeviceToken(token),
-        updatedAt: now,
-        userId,
-      }),
-    'user_devices_token_hash_idx',
-    {
-      code: 'device_token_collision',
-      message: 'A device with that token already exists.',
-      statusCode: 409,
-    },
-  );
-
-  return token;
-}
-
-export async function isRememberedDevice(userId: string, token: string | undefined) {
-  if (!token) {
-    return false;
-  }
-
-  const devices = await db
+export async function resolveAuthUserForAccount(user: typeof users.$inferSelect, accountId: string): Promise<AuthUser> {
+  const [membership] = await db
     .select()
-    .from(userDevices)
-    .where(and(eq(userDevices.userId, userId), gt(userDevices.expiresAt, new Date())));
+    .from(accountMemberships)
+    .where(and(eq(accountMemberships.userId, user.id), eq(accountMemberships.accountId, accountId)))
+    .limit(1);
 
-  for (const device of devices) {
-    if (verifyUserDeviceToken(token, device.tokenHash)) {
-      await db
-        .update(userDevices)
-        .set({
-          lastUsedAt: new Date(),
-          updatedAt: new Date(),
-        })
-        .where(eq(userDevices.id, device.id));
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-export async function beginSignIn(user: typeof users.$inferSelect, rememberedDeviceToken?: string) {
-  if (!user.emailVerifiedAt) {
-    return getOrCreateActiveChallenge(user, 'sign_up');
-  }
-
-  const rememberDevice = await isRememberedDevice(user.id, rememberedDeviceToken);
-
-  if (rememberDevice) {
-    return null;
-  }
-
-  // Always generate a fresh verification challenge to ensure a fresh email code is sent
-  // and any previous unconsumed sign-in challenges are invalidated.
-  return createChallenge(user, 'sign_in');
-}
-
-export async function signUp(email: string, password: string) {
-  const normalizedEmail = normalizeEmail(email);
-
-  const existingUser = await findUserByEmail(normalizedEmail);
-
-  if (existingUser) {
+  if (!membership) {
     throw new HttpError({
-      code: 'email_already_registered',
-      message: 'An account already exists for this email address.',
-      statusCode: 409,
+      code: 'account_membership_missing',
+      message: 'The account membership could not be found.',
+      statusCode: 500,
     });
   }
 
+  return {
+    accountId,
+    email: user.email,
+    emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+    id: user.id,
+    role: membership.role,
+  };
+}
+
+// AUTH-PWL-005 replaces the legacy pre-OTP registration ceremony. Until then,
+// fail closed rather than recreating identity rows before server OTP verification.
+export async function createPasskeyEnrollment(
+  _email: string,
+  _label: string,
+  _existingUser?: typeof users.$inferSelect,
+): Promise<{
+  enrollmentId: string;
+  membership: typeof accountMemberships.$inferSelect;
+  user: typeof users.$inferSelect;
+  verificationChallengeId: string;
+}> {
+  throw new HttpError({
+    code: 'restricted_session_required',
+    message: 'Verify an email code before registering a passkey.',
+    statusCode: 401,
+  });
+}
+
+async function deliverChallenge(
+  flowId: string,
+  normalizedEmail: string,
+  contextHash: string,
+): Promise<EmailOtpDelivery> {
   const now = new Date();
+  const expiresAt = new Date(now.getTime() + env.PIN_EXPIRY_MINUTES * 60_000);
+  const resendAvailableAt = new Date(now.getTime() + env.PIN_RESEND_COOLDOWN_SECONDS * 1_000);
+  const pin = generateVerificationPin();
+  const challengeId = randomUUID();
 
-  const passwordHash = await hashSecret(password);
+  await db.transaction(async (tx) => {
+    await tx
+      .update(authEmailChallenges)
+      .set({ supersededAt: now, updatedAt: now })
+      .where(
+        and(
+          eq(authEmailChallenges.flowId, flowId),
+          isNull(authEmailChallenges.consumedAt),
+          isNull(authEmailChallenges.supersededAt),
+        ),
+      );
+    await tx.insert(authEmailChallenges).values({
+      attemptCount: 0,
+      clientContextHash: contextHash,
+      createdAt: now,
+      expiresAt,
+      flowId,
+      id: challengeId,
+      lastSentAt: now,
+      normalizedEmail,
+      pinHash: hashPin(flowId, normalizedEmail, contextHash, pin),
+      purpose: OTP_PURPOSE,
+      updatedAt: now,
+    });
+  });
 
-  const [user] = (await safeInsert(
-    () =>
-      db
-        .insert(users)
-        .values({
-          createdAt: now,
-          email: normalizedEmail,
-          id: randomUUID(),
-          passwordHash,
-          updatedAt: now,
-        })
-        .returning(),
-    'users_email_idx',
-    {
-      code: 'email_already_registered',
-      message: 'An account already exists for this email address.',
-      statusCode: 409,
-    },
-  )) as Array<typeof users.$inferSelect>;
+  try {
+    await sendVerificationMessage({
+      challengeId,
+      email: normalizedEmail,
+      expiresAt,
+      flowId,
+      pin,
+      purpose: OTP_PURPOSE,
+    });
+  } catch {
+    // Delivery failures are intentionally hidden from the public response.
+  }
 
-  const accountId = randomUUID();
+  return { flowId, resendAvailableAt: resendAvailableAt.toISOString() };
+}
 
-  const baseSlug = normalizeAccountSlug(normalizedEmail);
+export async function requestEmailOtp(email: string, contextHash: string): Promise<EmailOtpDelivery> {
+  return deliverChallenge(randomUUID(), normalizeEmail(email), contextHash);
+}
 
-  const [existingAccount] = await db.select().from(accounts).where(eq(accounts.slug, baseSlug)).limit(1);
+export async function resendEmailOtp(flowId: string, contextHash: string): Promise<EmailOtpDelivery> {
+  const [challenge] = await db
+    .select()
+    .from(authEmailChallenges)
+    .where(
+      and(
+        eq(authEmailChallenges.flowId, flowId),
+        isNull(authEmailChallenges.consumedAt),
+        isNull(authEmailChallenges.supersededAt),
+      ),
+    )
+    .limit(1);
+  const now = Date.now();
+  const genericResult = {
+    flowId,
+    resendAvailableAt: new Date(now + env.PIN_RESEND_COOLDOWN_SECONDS * 1_000).toISOString(),
+  };
 
-  const accountSlug = existingAccount ? `${baseSlug}-${accountId.slice(0, 8)}` : baseSlug;
+  if (!challenge || challenge.clientContextHash !== contextHash) return genericResult;
 
-  await safeInsert(
-    () =>
-      db.insert(accounts).values({
+  const nextAllowedAt = challenge.lastSentAt.getTime() + env.PIN_RESEND_COOLDOWN_SECONDS * 1_000;
+
+  if (now < nextAllowedAt) {
+    throw new HttpError({
+      code: 'rate_limited',
+      message: 'Wait before requesting another verification code.',
+      statusCode: 429,
+    });
+  }
+
+  return deliverChallenge(flowId, challenge.normalizedEmail, contextHash);
+}
+
+export async function verifyEmailOtp(flowId: string, pin: string, contextHash: string): Promise<RestrictedIdentity> {
+  const [challenge] = await db
+    .select()
+    .from(authEmailChallenges)
+    .where(
+      and(
+        eq(authEmailChallenges.flowId, flowId),
+        isNull(authEmailChallenges.consumedAt),
+        isNull(authEmailChallenges.supersededAt),
+      ),
+    )
+    .limit(1);
+
+  if (
+    !challenge ||
+    challenge.clientContextHash !== contextHash ||
+    challenge.expiresAt <= new Date() ||
+    challenge.attemptCount >= MAX_CHALLENGE_ATTEMPTS
+  ) {
+    genericVerificationFailure();
+  }
+
+  const submittedHash = hashPin(flowId, challenge.normalizedEmail, contextHash, pin);
+
+  if (!pinMatches(challenge.pinHash, submittedHash)) {
+    const now = new Date();
+
+    await db
+      .update(authEmailChallenges)
+      .set({
+        attemptCount: sql`${authEmailChallenges.attemptCount} + 1`,
+        consumedAt: sql`CASE WHEN ${authEmailChallenges.attemptCount} + 1 >= ${MAX_CHALLENGE_ATTEMPTS} THEN ${now} ELSE ${authEmailChallenges.consumedAt} END`,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(authEmailChallenges.id, challenge.id),
+          isNull(authEmailChallenges.consumedAt),
+          isNull(authEmailChallenges.supersededAt),
+          lt(authEmailChallenges.attemptCount, MAX_CHALLENGE_ATTEMPTS),
+        ),
+      );
+    genericVerificationFailure();
+  }
+
+  const identity = await db.transaction(async (tx) => {
+    const now = new Date();
+    const [consumed] = await tx
+      .update(authEmailChallenges)
+      .set({ consumedAt: now, updatedAt: now })
+      .where(
+        and(
+          eq(authEmailChallenges.id, challenge.id),
+          eq(authEmailChallenges.clientContextHash, contextHash),
+          isNull(authEmailChallenges.consumedAt),
+          isNull(authEmailChallenges.supersededAt),
+          gt(authEmailChallenges.expiresAt, now),
+          lt(authEmailChallenges.attemptCount, MAX_CHALLENGE_ATTEMPTS),
+        ),
+      )
+      .returning();
+
+    if (!consumed) return null;
+
+    const [createdUser] = await tx
+      .insert(users)
+      .values({
+        createdAt: now,
+        email: challenge.normalizedEmail,
+        emailVerifiedAt: now,
+        id: randomUUID(),
+        updatedAt: now,
+      })
+      .onConflictDoNothing({ target: users.email })
+      .returning();
+    const [user] = createdUser
+      ? [createdUser]
+      : await tx.select().from(users).where(eq(users.email, challenge.normalizedEmail)).limit(1);
+
+    if (!user) throw new Error('Verified email identity could not be resolved.');
+
+    if (createdUser) {
+      const accountId = randomUUID();
+
+      await tx.insert(accounts).values({
         createdAt: now,
         id: accountId,
-        name: normalizedEmail.split('@')[0],
+        name: challenge.normalizedEmail.split('@')[0] || 'Personal account',
         ownerUserId: user.id,
-        slug: accountSlug,
+        slug: `${normalizeAccountSlug(challenge.normalizedEmail)}-${accountId.slice(0, 8)}`,
         updatedAt: now,
-      }),
-    'accounts_slug_idx',
-    {
-      code: 'account_slug_taken',
-      message: 'An account with that slug already exists.',
-      statusCode: 409,
-    },
-  );
-
-  await safeInsert(
-    () =>
-      db.insert(accountMemberships).values({
+      });
+      await tx.insert(accountMemberships).values({
         accountId,
         createdAt: now,
         id: randomUUID(),
         role: 'owner',
         updatedAt: now,
         userId: user.id,
-      }),
-    'account_memberships_account_user_idx',
-    {
-      code: 'membership_already_exists',
-      message: 'The account membership already exists.',
-      statusCode: 409,
-    },
-  );
+      });
+      if (failNextJitTransactionForTest) {
+        failNextJitTransactionForTest = false;
+        throw new Error('Induced JIT transaction failure.');
+      }
+    }
 
-  return createChallenge(user, 'sign_up');
-}
+    const memberships = await tx
+      .select({ accountId: accountMemberships.accountId, name: accounts.name, role: accountMemberships.role })
+      .from(accountMemberships)
+      .innerJoin(accounts, eq(accounts.id, accountMemberships.accountId))
+      .where(eq(accountMemberships.userId, user.id))
+      .orderBy(asc(accountMemberships.createdAt));
 
-export async function createPasskeyEnrollment(email: string, _label: string, existingUser?: typeof users.$inferSelect) {
-  const normalizedEmail = normalizeEmail(email);
-  const now = new Date();
-  const passwordHash = null;
-  const createdUsers = existingUser
-    ? []
-    : ((await safeInsert(
-        () =>
-          db
-            .insert(users)
-            .values({ createdAt: now, email: normalizedEmail, id: randomUUID(), passwordHash, updatedAt: now })
-            .returning(),
-        'users_email_idx',
-        {
-          code: 'email_already_registered',
-          message: 'An account already exists for this email address.',
-          statusCode: 409,
-        },
-      )) as Array<typeof users.$inferSelect>);
-  const user = existingUser ?? createdUsers[0];
-  const accountId = randomUUID();
+    if (!memberships.length) throw new Error('Verified email identity has no account membership.');
 
-  await db.insert(accounts).values({
-    createdAt: now,
-    id: accountId,
-    name: normalizedEmail.split('@')[0],
-    ownerUserId: user.id,
-    slug: `${normalizeAccountSlug(normalizedEmail)}-${accountId.slice(0, 8)}`,
-    updatedAt: now,
-  });
-  const membership = (
-    await db
-      .insert(accountMemberships)
-      .values({ accountId, createdAt: now, id: randomUUID(), role: 'owner', updatedAt: now, userId: user.id })
-      .returning()
-  )[0];
-  const verification = await createChallenge(user, 'sign_up');
-  const enrollmentId = randomUUID();
-
-  await db.insert(accountPasskeyEnrollments).values({
-    id: enrollmentId,
-    accountId,
-    userId: user.id,
-    email: normalizedEmail,
-    credentialId: null,
-    status: 'pending',
-    verificationChallengeId: verification.challengeId,
-    expiresAt: new Date(now.getTime() + 15 * 60 * 1000),
-    activatedAt: null,
-    terminalAt: null,
-    createdAt: now,
-    updatedAt: now,
+    return { accounts: memberships, email: user.email, userId: user.id };
   });
 
-  return { user, membership, enrollmentId, verificationChallengeId: verification.challengeId };
-}
+  if (!identity) genericVerificationFailure();
 
-export async function resendChallenge(challengeId: string) {
-  const [challenge] = await db
-    .select()
-    .from(authVerificationChallenges)
-    .where(eq(authVerificationChallenges.id, challengeId))
-    .limit(1);
-
-  if (!challenge) {
-    throw new HttpError({
-      code: 'challenge_not_found',
-      message: 'The verification request could not be found.',
-      statusCode: 404,
-    });
-  }
-
-  if (challenge.consumedAt) {
-    throw new HttpError({
-      code: 'challenge_consumed',
-      message: 'This verification request has already been completed.',
-      statusCode: 409,
-    });
-  }
-
-  const nextAllowedAt = challenge.lastSentAt.getTime() + env.PIN_RESEND_COOLDOWN_SECONDS * 1000;
-
-  if (Date.now() < nextAllowedAt) {
-    throw new HttpError({
-      code: 'challenge_cooldown',
-      message: 'Wait before requesting another verification code.',
-      statusCode: 429,
-    });
-  }
-
-  const user = await findUserById(challenge.userId);
-
-  if (!user) {
-    throw new HttpError({
-      code: 'user_not_found',
-      message: 'The verification request is no longer valid.',
-      statusCode: 404,
-    });
-  }
-
-  return createChallenge(user, challenge.purpose as VerificationPurpose);
-}
-
-export async function verifyChallenge(challengeId: string, pin: string, purpose: VerificationPurpose) {
-  const [challenge] = await db
-    .select()
-    .from(authVerificationChallenges)
-    .where(eq(authVerificationChallenges.id, challengeId))
-    .limit(1);
-
-  if (!challenge || challenge.purpose !== purpose) {
-    throw new HttpError({
-      code: 'challenge_not_found',
-      message: 'The verification request could not be found.',
-      statusCode: 404,
-    });
-  }
-
-  if (challenge.consumedAt) {
-    throw new HttpError({
-      code: 'challenge_consumed',
-      message: 'This verification request has already been completed.',
-      statusCode: 409,
-    });
-  }
-
-  if (challenge.expiresAt <= new Date()) {
-    throw new HttpError({
-      code: 'challenge_expired',
-      message: 'This verification code has expired.',
-      statusCode: 410,
-    });
-  }
-
-  if (challenge.attemptCount >= MAX_CHALLENGE_ATTEMPTS) {
-    throw new HttpError({
-      code: 'challenge_attempt_limit',
-      message: 'Too many invalid verification attempts.',
-      statusCode: 429,
-    });
-  }
-
-  const isValid = await verifySecret(pin, challenge.pinHash);
-
-  if (!isValid) {
-    await db
-      .update(authVerificationChallenges)
-      .set({
-        attemptCount: challenge.attemptCount + 1,
-        updatedAt: new Date(),
-      })
-      .where(eq(authVerificationChallenges.id, challenge.id));
-
-    throw new HttpError({
-      code: 'invalid_verification_code',
-      message: 'The verification code is invalid.',
-      statusCode: 401,
-    });
-  }
-
-  const [user] = await db.select().from(users).where(eq(users.id, challenge.userId)).limit(1);
-
-  if (!user) {
-    throw new HttpError({
-      code: 'user_not_found',
-      message: 'The account could not be found.',
-      statusCode: 404,
-    });
-  }
-
-  const now = new Date();
-
-  let nextUser = user;
-
-  if (purpose === 'sign_up' && !user.emailVerifiedAt) {
-    // Email activation and the pending passkey linkage must share one
-    // persistence boundary. A failure in any statement rolls back the
-    // consumed verification challenge and leaves the account unverified.
-    nextUser = await db.transaction(async (tx) => {
-      const [updatedUser] = await tx
-        .update(users)
-        .set({ emailVerifiedAt: now, updatedAt: now })
-        .where(eq(users.id, user.id))
-        .returning();
-
-      if (!updatedUser) throw new Error('Account activation update returned no user.');
-
-      const [enrollment] = await tx
-        .select()
-        .from(accountPasskeyEnrollments)
-        .where(eq(accountPasskeyEnrollments.verificationChallengeId, challenge.id))
-        .limit(1);
-
-      if (enrollment && (enrollment.status !== 'pending' || !enrollment.credentialId)) {
-        throw new Error('Pending passkey enrollment is not activatable.');
-      }
-
-      if (enrollment?.status === 'pending' && enrollment.credentialId) {
-        const [activatedEnrollment] = await tx
-          .update(accountPasskeyEnrollments)
-          .set({ status: 'active', activatedAt: now, updatedAt: now })
-          .where(and(eq(accountPasskeyEnrollments.id, enrollment.id), eq(accountPasskeyEnrollments.status, 'pending')))
-          .returning();
-
-        if (!activatedEnrollment) throw new Error('Pending enrollment activation failed.');
-
-        const [credential] = await tx
-          .update(accountPasskeyCredentials)
-          .set({ updatedAt: now })
-          .where(
-            and(
-              eq(accountPasskeyCredentials.credentialId, enrollment.credentialId),
-              eq(accountPasskeyCredentials.accountId, enrollment.accountId),
-              eq(accountPasskeyCredentials.userId, enrollment.userId),
-              isNull(accountPasskeyCredentials.revokedAt),
-            ),
-          )
-          .returning();
-
-        if (!credential) throw new Error('Pending passkey credential activation failed.');
-      }
-
-      const [consumedChallenge] = await tx
-        .update(authVerificationChallenges)
-        .set({ consumedAt: now, updatedAt: now })
-        .where(and(eq(authVerificationChallenges.id, challenge.id), isNull(authVerificationChallenges.consumedAt)))
-        .returning();
-
-      if (!consumedChallenge) throw new Error('Verification challenge consumption failed.');
-
-      return updatedUser;
-    });
-  } else {
-    const [consumedChallenge] = await db
-      .update(authVerificationChallenges)
-      .set({ consumedAt: now, updatedAt: now })
-      .where(and(eq(authVerificationChallenges.id, challenge.id), isNull(authVerificationChallenges.consumedAt)))
-      .returning();
-
-    if (!consumedChallenge) throw new Error('Verification challenge consumption failed.');
-  }
-
-  return resolveAuthUser(nextUser);
-}
-
-export async function verifyPassword(email: string, password: string) {
-  const user = await findUserByEmail(email);
-
-  if (!user) {
-    return null;
-  }
-
-  const matches = user.passwordHash ? await verifySecret(password, user.passwordHash) : false;
-
-  return matches ? user : null;
-}
-
-export async function requestPasswordReset(email: string) {
-  const user = await findUserByEmail(email);
-
-  if (!user || !user.emailVerifiedAt) {
-    return null;
-  }
-
-  return createChallenge(user, 'password_reset');
-}
-
-export async function submitPasswordReset(userId: string, newPassword: string) {
-  const user = await findUserById(userId);
-
-  if (!user) {
-    throw new HttpError({
-      code: 'user_not_found',
-      message: 'The account could not be found.',
-      statusCode: 404,
-    });
-  }
-
-  const now = new Date();
-
-  await db
-    .update(users)
-    .set({
-      passwordHash: await hashSecret(newPassword),
-      passwordConfigured: true,
-      updatedAt: now,
-    })
-    .where(eq(users.id, user.id));
-
-  await db.update(userDevices).set({ expiresAt: now, updatedAt: now }).where(eq(userDevices.userId, user.id));
+  return identity;
 }

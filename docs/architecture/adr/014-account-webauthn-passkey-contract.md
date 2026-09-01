@@ -2,8 +2,10 @@
 
 ## Status
 
-Accepted as the contract and persistence foundation for PASSKEY-001. HTTP
-ceremonies and Angular UX are delivered by later work.
+Superseded in part by ADR 016 for AUTH-PASSWORDLESS-001. This record remains the
+historical persistence and WebAuthn-verification baseline only where it does
+not conflict with ADR 016. ADR 016 replaces mandatory pre-passkey email,
+password fallback/configuration, and password-as-viable-method decisions.
 
 ## Account identity and gating
 

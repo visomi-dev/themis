@@ -86,7 +86,7 @@ atomicitySuite('passkey database transaction rollback', () => {
     const email = `atomic-registration-${randomUUID()}@example.test`;
     const begin = await axios.post(
       `${baseUrl}/auth/passkey/registration/begin`,
-      { email, label: 'Atomicity registration', pinVerified: true },
+      { email, label: 'Atomicity registration' },
       { headers: { Origin: webAuthnOrigin }, validateStatus: () => true },
     );
 

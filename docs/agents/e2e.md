@@ -40,6 +40,13 @@ Auth changes should keep the route suite green for:
 - Prefer focused route or project verification before broad e2e runs.
 - If an E2E run is too expensive for the current turn, report the exact Nx command to run later and explain why it was skipped.
 
+### API E2E durable suites
+
+- `pnpm exec nx run api-e2e:e2e` runs the default API suites with memory-backed tests first, then provisions isolated PostgreSQL and MinIO services for `sync-restart.spec.ts`. The explicit PZS-005 evidence suite is not part of this default target.
+- `pnpm exec nx run api-e2e:durable-integration` provisions isolated PostgreSQL and MinIO services, applies migrations, and runs the durable integration suite.
+- `pnpm exec nx run api-e2e:pzs-005-real` is the explicit PZS-005 evidence target. It provisions isolated PostgreSQL and MinIO services, applies migrations, and writes its evidence under `docs/verification/pzs-005-<run-id>/`.
+- Set `API_E2E_EXTERNAL_SERVICES=true` only when CI has already provisioned `DATABASE_URL`, `OPAQUE_SYNC_S3_ENDPOINT`, `OPAQUE_SYNC_S3_BUCKET`, `OPAQUE_SYNC_S3_ACCESS_KEY`, and `OPAQUE_SYNC_S3_SECRET_KEY`.
+
 ## Full-Server E2E Playbook
 
 These tests boot the real gateway (api + app + site + worker + realtime) and need Redis for the worker's BullMQ queues. They are gated by the pre-commit hook (`pnpm exec nx affected -t e2e`); understand the boot path before you try to skip the hook.

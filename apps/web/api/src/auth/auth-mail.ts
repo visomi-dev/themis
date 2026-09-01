@@ -3,16 +3,15 @@ import Mailgun from 'mailgun.js';
 
 import { env } from '../shared/env';
 
-import type { VerificationPurpose } from './auth-schemas';
-
 import { HttpError } from 'shared';
 
 export type VerificationMessage = {
   challengeId: string;
   email: string;
   expiresAt: Date;
+  flowId: string;
   pin: string;
-  purpose: VerificationPurpose;
+  purpose: 'bootstrap_recovery';
 };
 
 export type SentVerificationMessage = VerificationMessage & {
@@ -46,12 +45,10 @@ export function getMailgunClient() {
 }
 
 export function createMessageBody(message: VerificationMessage) {
-  const intent = message.purpose === 'sign_in' ? 'sign in' : 'finish creating your account';
-
   return {
-    html: `<p>Your Themis verification code is <strong>${message.pin}</strong>.</p><p>Use it to ${intent}. This code expires at ${message.expiresAt.toISOString()}.</p>`,
+    html: `<p>Your Themis verification code is <strong>${message.pin}</strong>.</p><p>Use it to continue. This code expires at ${message.expiresAt.toISOString()}.</p>`,
     subject: 'Your Themis verification code',
-    text: `Your Themis verification code is ${message.pin}. Use it to ${intent}. This code expires at ${message.expiresAt.toISOString()}.`,
+    text: `Your Themis verification code is ${message.pin}. Use it to continue. This code expires at ${message.expiresAt.toISOString()}.`,
   };
 }
 

@@ -1,0 +1,35 @@
+<svg class="themis-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 373" role="img" aria-labelledby="themis-isotype-stroke-title">
+  <title id="themis-isotype-stroke-title">Themis animated outline</title>
+  <style>
+    .themis-stroke {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: var(--themis-stroke-width, 3);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      vector-effect: non-scaling-stroke;
+      animation: themis-draw var(--themis-draw-duration, 1.6s) var(--themis-draw-easing, ease-in-out) forwards;
+    }
+    .themis-accent {
+      stroke: var(--themis-accent, currentColor);
+      animation-delay: var(--themis-accent-delay, 0.35s);
+    }
+    @keyframes themis-draw {
+      to { stroke-dashoffset: var(--themis-dashoffset, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .themis-stroke { animation: none; stroke-dashoffset: 0; }
+    }
+  </style>
+  <g class="themis-stroke">
+    <path pathLength="1" d="M2 64h276v22H150v224h-20V86H2V64Z" />
+    <path pathLength="1" d="M2 110h106v201H87V132H2v-22Z" />
+    <path pathLength="1" d="M172 110h106v22h-85v179h-21V110Z" />
+  </g>
+  <g class="themis-stroke themis-accent">
+    <path pathLength="1" d="m140 2 20 20-20 20-20-20 20-20Z" />
+    <path pathLength="1" d="M133 333h14v38h-14z" />
+  </g>
+</svg>

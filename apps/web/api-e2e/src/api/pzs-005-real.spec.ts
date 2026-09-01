@@ -446,10 +446,12 @@ describe('PZS-005 real durable HTTP evidence', () => {
     });
 
     try {
-      await pool.query(
-        "UPDATE opaque_sync_envelopes SET expires_at = now() - interval '1 second' WHERE account_id = $1 AND workspace_id = $2 AND cursor = $3",
+      const pruned = await pool.query(
+        'DELETE FROM opaque_sync_envelopes WHERE account_id = $1 AND workspace_id = $2 AND cursor = $3',
         [owner.accountId, owner.workspaceId, firstCursor],
       );
+
+      expect(pruned.rowCount).toBe(1);
       expect(
         (
           await observe('pruned_cursor', {

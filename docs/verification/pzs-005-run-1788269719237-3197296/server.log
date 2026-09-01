@@ -1,0 +1,16 @@
+PZS005_RUN_ID=RUN-1788269719237-3197296
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[07:35:39.582] [32mINFO[39m (3201774): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[07:35:39.595] [32mINFO[39m (3201774): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[07:35:39.586] [32mINFO[39m (3201774): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[07:35:39.587] [32mINFO[39m (3201774): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[07:35:39.598] [32mINFO[39m (3201774): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8080

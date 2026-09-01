@@ -3,27 +3,18 @@ import axios from 'axios';
 jest.setTimeout(15000);
 
 describe('composition server', () => {
-  it('exposes passkey ceremony boundaries without bypassing email PIN gating', async () => {
-    const email = `passkey-gateway-${Date.now()}@themis.dev`;
-    const signUp = await axios.post('/api/auth/sign-up', { email, password: 'S3cureAuth!' });
-    const unverified = await axios.post(
-      '/api/auth/passkey/authentication/begin',
-      { email, pinVerified: true },
-      { headers: { Origin: 'http://localhost:8080' }, validateStatus: () => true },
-    );
-    const fallback = await axios.post(
-      '/api/auth/passkey/authentication/begin',
-      { email, pinVerified: true, explicitPassword: true },
-      { headers: { Origin: 'http://localhost:8080' }, validateStatus: () => true },
+  it('proxies the non-enumerating OTP bootstrap without granting product authority', async () => {
+    const email = `otp-gateway-${Date.now()}@themis.dev`;
+    const requested = await axios.post(
+      '/api/auth/email-otp/request',
+      { email },
+      { headers: { Origin: 'http://localhost:8080' } },
     );
 
-    expect(signUp.status).toBe(201);
-    expect(unverified.status).toBe(403);
-    expect(unverified.data.code).toBe('email_unverified');
-    expect(fallback.status).toBe(403);
-    expect(fallback.data.code).toBe('email_unverified');
-    expect(JSON.stringify({ unverified: unverified.data, fallback: fallback.data })).not.toContain('prf');
-    expect(JSON.stringify({ unverified: unverified.data, fallback: fallback.data })).not.toContain('vault');
+    expect(requested.status).toBe(202);
+    expect(requested.data.data).toEqual({ flowId: expect.any(String), resendAvailableAt: expect.any(String) });
+    expect(JSON.stringify(requested.data)).not.toContain(email);
+    expect(JSON.stringify(requested.data)).not.toContain('password');
   });
 
   it('exposes a runtime health endpoint', async () => {

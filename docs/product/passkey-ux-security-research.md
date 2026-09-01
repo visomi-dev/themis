@@ -2,13 +2,20 @@
 
 **Work item:** PASSKEY-010
 **Phase:** P1 research and decision record
-**Status:** Ready for contract and prototype handoff
+**Status:** Historical research; password and pre-passkey-email decisions are superseded by ADR 016
 **Owner:** Account WebAuthn and Passkeys epic
 
 This document is the evidence-backed research and flow contract for
 PASSKEY-001 and PASSKEY-011. It defines product behavior and decision
 boundaries; it does not implement HTTP routes, Angular screens, or a
 prototype. Source copy in this document is English by repository policy.
+
+For AUTH-PASSWORDLESS-001, the canonical contract is
+[`auth-flow.md`](auth-flow.md) and ADR 016. Their unified discoverable-passkey
+flow supersedes this document wherever this research requires an email before
+the primary ceremony, permits a password, or leaves recovery and operational
+limits unresolved. The standards evidence and non-conflicting WebAuthn,
+accessibility, disclosure, and zero-knowledge findings remain applicable.
 
 ## 1. Repository context and research method
 

@@ -5,7 +5,6 @@ import {
   canEstablishSession,
   canRemoveAccessMethod,
   cleanupTerminalEnrollment,
-  configurePassword,
   emailGate,
   enrollmentRetryAction,
   listCredentials,
@@ -18,12 +17,10 @@ import {
   validateCeremony,
   viableAccessMethodIds,
   type PasskeyCredential,
-  type PasswordAccess,
-  type PasswordSetupInput,
   type PendingEnrollmentModel,
 } from './passkey-contract';
 
-import { accountPasskeyCredentials, accountPasskeyEnrollments, accountWebAuthnChallenges } from 'shared';
+import { accountPasskeyCredentials, authWebAuthnChallenges } from 'shared';
 
 const now = new Date('2026-08-22T00:00:00Z');
 
@@ -65,25 +62,17 @@ function pendingEnrollment(overrides: Partial<PendingEnrollmentModel> = {}): Pen
   };
 }
 
-function passwordAccess(configured: boolean, overrides: Partial<PasswordAccess> = {}): PasswordAccess {
-  return { accountId: 'account-1', configured, userId: 'user-1', ...overrides };
-}
-
 describe('account passkey contract', () => {
-  it('requires canonical email, verification, and PIN without enumerating account existence', () => {
-    expect(emailGate(null, null, false)).toBe('email_required');
-    expect(emailGate('person@example.test', null, false)).toBe('email_unverified');
-    expect(emailGate('person@example.test', new Date(), false)).toBe('pin_required');
-    expect(emailGate('person@example.test', new Date(), true)).toBe('ready');
+  it('requires canonical verified email without accepting a client verification assertion', () => {
+    expect(emailGate(null, null)).toBe('email_required');
+    expect(emailGate('person@example.test', null)).toBe('email_unverified');
+    expect(emailGate('person@example.test', new Date())).toBe('ready');
     expect(normalizeEmail('  Person@Example.TEST ')).toBe('person@example.test');
     expect(normalizeEmail('Ｐｅｒｓｏｎ＠Ｅｘａｍｐｌｅ．ｔｅｓｔ')).toBe('person@example.test');
     expect(accountDiscoveryResponse(true)).toEqual(accountDiscoveryResponse(false));
   });
 
   it('atomically activates the account, enrollment, bound credential, and verification once', () => {
-    expect(Object.keys(accountPasskeyEnrollments)).toEqual(
-      expect.arrayContaining(['accountId', 'userId', 'email', 'credentialId', 'status', 'expiresAt']),
-    );
     const result = activatePendingEnrollment(pendingEnrollment(), { challengeHash: 'verification-hash', now });
 
     expect(result).toMatchObject({
@@ -169,10 +158,9 @@ describe('account passkey contract', () => {
     });
   });
 
-  it('keeps passkey default and exposes retry before explicit password fallback', () => {
+  it('keeps passkey default and exposes a passkey retry', () => {
     expect(nextPasskeyAttempt({})).toBe('passkey_default');
     expect(nextPasskeyAttempt({ ceremonyFailed: true })).toBe('retry_available');
-    expect(nextPasskeyAttempt({ explicitPassword: true })).toBe('password_fallback');
     expect(enrollmentRetryAction('pending')).toBe('retry_verification');
   });
 
@@ -230,20 +218,20 @@ describe('account passkey contract', () => {
 
     expect(used).toMatchObject({ ok: true, credential: { id: 'credential-stable-2', lastUsedAt: now } });
     if (!used.ok) throw new Error('Expected use');
-    const revoked = revokeCredential(
-      used.credentials,
-      { accountId: 'account-1', credentialId: 'credential-external-2', userId: 'user-1' },
-      passwordAccess(false),
-    );
+    const revoked = revokeCredential(used.credentials, {
+      accountId: 'account-1',
+      credentialId: 'credential-external-2',
+      userId: 'user-1',
+    });
 
     expect(revoked).toMatchObject({ ok: true, credential: { id: 'credential-stable-2', status: 'revoked' } });
     if (!revoked.ok) throw new Error('Expected revoke');
     expect(
-      revokeCredential(
-        revoked.credentials,
-        { accountId: 'account-1', credentialId: 'credential-external-2', userId: 'user-1' },
-        passwordAccess(false),
-      ),
+      revokeCredential(revoked.credentials, {
+        accountId: 'account-1',
+        credentialId: 'credential-external-2',
+        userId: 'user-1',
+      }),
     ).toEqual(revoked);
   });
 
@@ -256,7 +244,7 @@ describe('account passkey contract', () => {
     expect(nameCredential(credentials, missing, 'Name')).toMatchObject({ ok: false, failure: 'credential_not_found' });
     expect(nameCredential(credentials, crossAccount, 'Name')).toEqual(nameCredential(credentials, crossUser, 'Name'));
     expect(useCredential(credentials, crossAccount, now)).toMatchObject({ ok: false, failure: 'credential_not_found' });
-    expect(revokeCredential(credentials, crossAccount, passwordAccess(true))).toMatchObject({
+    expect(revokeCredential(credentials, crossAccount)).toMatchObject({
       ok: false,
       failure: 'credential_not_found',
     });
@@ -274,61 +262,16 @@ describe('account passkey contract', () => {
       credential({ credentialId: 'foreign-user', id: 'foreign-user', userId: 'user-2' }),
     ];
 
-    expect(viableAccessMethodIds(credentials, owner, passwordAccess(false))).toEqual(['active']);
-    expect(canRemoveAccessMethod(credentials, owner, passwordAccess(false), 'active')).toBe(false);
-    expect(canRemoveAccessMethod(credentials, owner, passwordAccess(true), 'active')).toBe(true);
-    expect(canRemoveAccessMethod([], owner, passwordAccess(true), 'password')).toBe(false);
-    expect(canRemoveAccessMethod(credentials, owner, passwordAccess(true, { accountId: 'account-2' }), 'active')).toBe(
-      false,
-    );
+    expect(viableAccessMethodIds(credentials, owner)).toEqual(['active']);
+    expect(canRemoveAccessMethod(credentials, owner, 'active')).toBe(false);
+    expect(canRemoveAccessMethod([], owner, 'missing')).toBe(false);
     expect(
-      revokeCredential(
-        credentials,
-        { accountId: 'account-1', credentialId: 'credential-external-1', userId: 'user-1' },
-        passwordAccess(false),
-      ),
-    ).toMatchObject({ ok: false, failure: 'last_access_method' });
-  });
-
-  it('independently enforces every later-password security control and redacts audit output', () => {
-    const base: PasswordSetupInput = {
-      accountId: 'account-1',
-      auditEnabled: true,
-      csrfValid: true,
-      passwordPolicyValid: true,
-      passwordSecret: 'never-log-this-secret',
-      recentlyReauthenticated: true,
-      redactSecrets: true,
-      sessionEffect: 'rotate_current',
-      userId: 'user-1',
-      withinRateLimit: true,
-    };
-    const failures: Array<[keyof PasswordSetupInput, PasswordSetupInput[keyof PasswordSetupInput], string]> = [
-      ['recentlyReauthenticated', false, 'reauthentication'],
-      ['passwordPolicyValid', false, 'password_policy'],
-      ['csrfValid', false, 'csrf'],
-      ['withinRateLimit', false, 'rate_limit'],
-      ['sessionEffect', 'unresolved', 'session_policy'],
-      ['auditEnabled', false, 'audit'],
-      ['redactSecrets', false, 'redaction'],
-    ];
-
-    failures.forEach(([key, value, failedControl]) => {
-      expect(configurePassword({ ...base, [key]: value })).toEqual({
-        ok: false,
-        failure: 'password_setup_denied',
-        failedControl,
-      });
-    });
-    const result = configurePassword(base);
-
-    expect(result).toMatchObject({
-      ok: true,
-      passwordConfigured: true,
-      sessionEffect: 'rotate_current',
-      audit: { action: 'password_configured', redactedFields: ['password'] },
-    });
-    expect(JSON.stringify(result)).not.toContain(base.passwordSecret);
+      revokeCredential(credentials, {
+        accountId: 'account-1',
+        credentialId: 'credential-external-1',
+        userId: 'user-1',
+      }),
+    ).toMatchObject({ ok: false, failure: 'last_passkey' });
   });
 
   it('rejects missing and cross-account ceremony credentials without disclosing ownership', () => {
@@ -382,7 +325,7 @@ describe('account passkey contract', () => {
 
   it('keeps durable credential/challenge models free of vault and authentication secrets', () => {
     const credentialColumns = Object.keys(accountPasskeyCredentials);
-    const challengeColumns = Object.keys(accountWebAuthnChallenges);
+    const challengeColumns = Object.keys(authWebAuthnChallenges);
 
     expect(credentialColumns).toEqual(
       expect.arrayContaining(['accountId', 'credentialId', 'publicKey', 'signCount', 'revokedAt']),

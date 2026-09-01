@@ -2,10 +2,20 @@ import express, { json, type Request } from 'express';
 import request from 'supertest';
 
 import { PASSKEY_ACCOUNT_UNAVAILABLE, passkeyOpenApiPaths, passkeyRouter } from './passkey-router';
-import { findUserByEmail } from './auth-service';
 import { resetPasskeySecurityState } from './passkey-security';
 
 import { errorHandler } from 'shared';
+
+jest.mock('shared', () => {
+  const actual = jest.requireActual<typeof import('shared')>('shared');
+
+  return {
+    ...actual,
+    db: {
+      insert: jest.fn(() => ({ values: jest.fn().mockResolvedValue([]) })),
+    },
+  };
+});
 
 jest.mock('./auth-service', () => ({
   findUserByEmail: jest.fn(async () => ({ email: 'person@example.test', emailVerifiedAt: null, id: 'user-1' })),
@@ -49,61 +59,44 @@ describe('passkey account ceremony router', () => {
     );
   });
 
-  it('accepts an unverified PIN state and returns pin_required from both begin ceremonies', async () => {
-    jest.mocked(findUserByEmail).mockResolvedValueOnce({
-      email: 'person@example.test',
-      emailVerifiedAt: new Date(),
-      id: 'user-1',
-    } as Awaited<ReturnType<typeof findUserByEmail>>);
-    jest.mocked(findUserByEmail).mockResolvedValueOnce({
-      email: 'person@example.test',
-      emailVerifiedAt: new Date(),
-      id: 'user-1',
-    } as Awaited<ReturnType<typeof findUserByEmail>>);
+  it('rejects client-authoritative verification and password fallback fields', async () => {
     const app = createApp(true);
     const registration = await request(app)
       .post('/auth/passkey/registration/begin')
       .set('Origin', 'http://localhost:8080')
-      .send({ email: 'person@example.test', label: 'Laptop', pinVerified: false });
+      .send({ email: 'person@example.test', label: 'Laptop', pinVerified: true });
     const authentication = await request(app)
       .post('/auth/passkey/authentication/begin')
       .set('Origin', 'http://localhost:8080')
-      .send({ email: 'person@example.test', pinVerified: false });
+      .send({ email: 'person@example.test', explicitPassword: true });
 
-    expect(registration.status).toBe(403);
-    expect(authentication.status).toBe(403);
-    expect(registration.body.code).toBe('pin_required');
-    expect(authentication.body.code).toBe('pin_required');
-    expect(JSON.stringify({ registration: registration.body, authentication: authentication.body })).not.toMatch(
-      /password|challenge|credential/i,
-    );
+    expect(registration.status).toBe(400);
+    expect(authentication.status).toBe(400);
+    expect(registration.body.code).toBe('invalid_request');
+    expect(authentication.body.code).toBe('invalid_request');
   });
 
-  it('rejects unverified email before any ceremony state is created', async () => {
+  it('starts identifier-less discoverable authentication without accepting an email hint', async () => {
     const app = createApp();
     const response = await request(app)
       .post('/auth/passkey/authentication/begin')
       .set('Origin', 'http://localhost:8080')
-      .send({ email: 'person@example.test', pinVerified: true });
-
-    expect(response.status).toBe(403);
-    expect(response.body.code).toBe('email_unverified');
-  });
-
-  it('returns an explicit password fallback signal only after the verified-PIN gate', async () => {
-    jest.mocked(findUserByEmail).mockResolvedValueOnce({
-      email: 'person@example.test',
-      emailVerifiedAt: new Date(),
-      id: 'user-1',
-    } as Awaited<ReturnType<typeof findUserByEmail>>);
-    const app = createApp();
-    const response = await request(app)
-      .post('/auth/passkey/authentication/begin')
-      .set('Origin', 'http://localhost:8080')
-      .send({ email: 'person@example.test', explicitPassword: true, pinVerified: true });
+      .send({});
 
     expect(response.status).toBe(200);
-    expect(response.body.data).toEqual({ attempt: 'password_fallback', challengeId: null, options: null });
+    expect(response.body.data.options.allowCredentials).toBeUndefined();
+    expect(response.body.data.options.userVerification).toBe('required');
+  });
+
+  it('does not expose a password fallback branch', async () => {
+    const app = createApp();
+    const response = await request(app)
+      .post('/auth/passkey/authentication/begin')
+      .set('Origin', 'http://localhost:8080')
+      .send({ email: 'person@example.test', explicitPassword: true });
+
+    expect(response.status).toBe(400);
+    expect(response.body.code).toBe('invalid_request');
   });
 
   it('rejects malformed completion payloads and unauthenticated lifecycle access', async () => {
@@ -135,7 +128,7 @@ describe('passkey account ceremony router', () => {
     const response = await request(createApp())
       .post('/auth/passkey/authentication/begin')
       .set('Origin', 'https://evil.example.test')
-      .send({ email: 'person@example.test', pinVerified: true });
+      .send({ email: 'person@example.test' });
 
     expect(response.status).toBe(403);
     expect(response.body.code).toBe('csrf_origin_invalid');
@@ -148,34 +141,28 @@ describe('passkey account ceremony router', () => {
       await request(app)
         .post('/auth/passkey/authentication/begin')
         .set('Origin', 'http://localhost:8080')
-        .send({ email: 'rate@example.test', pinVerified: true });
+        .send({ email: 'rate@example.test' });
     }
 
     const response = await request(app)
       .post('/auth/passkey/authentication/begin')
       .set('Origin', 'http://localhost:8080')
-      .send({ email: 'rate@example.test', pinVerified: true });
+      .send({ email: 'rate@example.test' });
 
     expect(response.status).toBe(429);
     expect(response.headers['retry-after']).toBeDefined();
     expect(response.body.code).toBe('rate_limited');
   });
 
-  it('uses the same unavailable response for unknown accounts and accounts without credentials', async () => {
-    jest.mocked(findUserByEmail).mockResolvedValueOnce(null as never);
-    jest.mocked(findUserByEmail).mockResolvedValue({
-      email: 'person@example.test',
-      emailVerifiedAt: new Date(),
-      id: 'user-1',
-    } as Awaited<ReturnType<typeof findUserByEmail>>);
+  it('does not accept identity hints on the discoverable ceremony', async () => {
     const app = createApp();
     const unknown = await request(app)
       .post('/auth/passkey/authentication/begin')
       .set('Origin', 'http://localhost:8080')
-      .send({ email: 'unknown@example.test', pinVerified: true });
+      .send({ email: 'unknown@example.test' });
 
-    expect(unknown.status).toBe(404);
-    expect(unknown.body.code).toBe(PASSKEY_ACCOUNT_UNAVAILABLE);
+    expect(unknown.status).toBe(400);
+    expect(unknown.body.code).toBe('invalid_request');
     expect(PASSKEY_ACCOUNT_UNAVAILABLE).toBe('credential_not_found');
   });
 });

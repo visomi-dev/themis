@@ -178,21 +178,31 @@ async function main(): Promise<void> {
   const requestedRestart = requestedArgs.some((argument) => argument.includes('sync-restart.spec.ts'));
   const needsDurableRun = fullRun || requestedRestart || durableOnly || pzs005Real;
   const externalServices = process.env['API_E2E_EXTERNAL_SERVICES'] === 'true';
-  const needsPostgres = !databaseUrl || pzs005Real;
-  const needsMinio = !objectStoreEndpoint || pzs005Real;
 
-  selectedCli = needsDurableRun && !externalServices && (needsPostgres || needsMinio) ? runtimeCli() : undefined;
+  if (
+    needsDurableRun &&
+    externalServices &&
+    (!databaseUrl ||
+      !objectStoreEndpoint ||
+      !process.env['OPAQUE_SYNC_S3_BUCKET'] ||
+      !process.env['OPAQUE_SYNC_S3_ACCESS_KEY'] ||
+      !process.env['OPAQUE_SYNC_S3_SECRET_KEY'])
+  ) {
+    throw new Error(
+      'API_E2E_EXTERNAL_SERVICES=true requires DATABASE_URL and all OPAQUE_SYNC_S3_* settings to be provisioned.',
+    );
+  }
+
+  selectedCli = needsDurableRun && !externalServices ? runtimeCli() : undefined;
   const cli = selectedCli;
 
-  if (needsDurableRun && !externalServices && needsPostgres) postgresPort = await choosePort(postgresPort);
-  if (needsDurableRun && !externalServices && needsMinio) minioPort = await choosePort(minioPort);
+  if (needsDurableRun && !externalServices) postgresPort = await choosePort(postgresPort);
+  if (needsDurableRun && !externalServices) minioPort = await choosePort(minioPort);
 
-  const effectiveDatabaseUrl =
-    needsDurableRun && needsPostgres && !externalServices ? provisionPostgres(cli as string) : databaseUrl;
-  const effectiveEndpoint =
-    needsDurableRun && needsMinio && !externalServices ? provisionMinio(cli as string) : objectStoreEndpoint;
+  const effectiveDatabaseUrl = needsDurableRun && !externalServices ? provisionPostgres(cli as string) : databaseUrl;
+  const effectiveEndpoint = needsDurableRun && !externalServices ? provisionMinio(cli as string) : objectStoreEndpoint;
 
-  if (needsDurableRun && needsPostgres && !externalServices) {
+  if (needsDurableRun && !externalServices) {
     await waitFor(
       () =>
         spawnSync(
@@ -215,25 +225,18 @@ async function main(): Promise<void> {
   }
 
   const memoryEnvironment = { ...process.env, DATABASE_DRIVER: 'memory', OPAQUE_SYNC_STORAGE: 'memory' };
-  const runId = process.env['PZS005_RUN_ID'] ?? `RUN-${Date.now()}-${process.pid}`;
-  const artifactDirectory = process.env['PZS005_ARTIFACT_DIR'] ?? `docs/verification/pzs-005-${runId.toLowerCase()}`;
-
-  await mkdir(artifactDirectory, { recursive: true });
   const durableEnvironment = {
     ...process.env,
     DATABASE_URL: effectiveDatabaseUrl,
     DATABASE_DRIVER: 'pg',
     OPAQUE_SYNC_STORAGE: 'durable',
     OPAQUE_SYNC_S3_ENDPOINT: effectiveEndpoint,
-    OPAQUE_SYNC_S3_BUCKET: process.env['OPAQUE_SYNC_S3_BUCKET'] ?? runtimeBucket,
-    OPAQUE_SYNC_S3_ACCESS_KEY: process.env['OPAQUE_SYNC_S3_ACCESS_KEY'] ?? minioAccessKey,
-    OPAQUE_SYNC_S3_SECRET_KEY: process.env['OPAQUE_SYNC_S3_SECRET_KEY'] ?? minioSecretKey,
-    PZS005_RUN_ID: runId,
-    PZS005_ARTIFACT_DIR: artifactDirectory,
-    PZS005_SERVER_LOG: process.env['PZS005_SERVER_LOG'] ?? `${artifactDirectory}/server.log`,
+    OPAQUE_SYNC_S3_BUCKET: externalServices ? process.env['OPAQUE_SYNC_S3_BUCKET'] : runtimeBucket,
+    OPAQUE_SYNC_S3_ACCESS_KEY: externalServices ? process.env['OPAQUE_SYNC_S3_ACCESS_KEY'] : minioAccessKey,
+    OPAQUE_SYNC_S3_SECRET_KEY: externalServices ? process.env['OPAQUE_SYNC_S3_SECRET_KEY'] : minioSecretKey,
   };
 
-  if ((durableOnly || pzs005Real) && process.env['API_E2E_EXTERNAL_SERVICES'] !== 'true') {
+  if (needsDurableRun && !externalServices) {
     const migrationEnvironment = {
       ...durableEnvironment,
       DATABASE_URL: effectiveDatabaseUrl,
@@ -253,11 +256,27 @@ async function main(): Promise<void> {
   let exitCode: number;
 
   if (pzs005Real) {
-    exitCode = await runJest(durableEnvironment, ['--runTestsByPath', 'apps/web/api-e2e/src/api/pzs-005-real.spec.ts']);
+    const runId = process.env['PZS005_RUN_ID'] ?? `RUN-${Date.now()}-${process.pid}`;
+    const artifactDirectory = process.env['PZS005_ARTIFACT_DIR'] ?? `docs/verification/pzs-005-${runId.toLowerCase()}`;
+    const evidenceEnvironment = {
+      ...durableEnvironment,
+      PZS005_RUN_ID: runId,
+      PZS005_ARTIFACT_DIR: artifactDirectory,
+      PZS005_SERVER_LOG: process.env['PZS005_SERVER_LOG'] ?? `${artifactDirectory}/server.log`,
+    };
+
+    await mkdir(artifactDirectory, { recursive: true });
+    exitCode = await runJest(evidenceEnvironment, [
+      '--testPathIgnorePatterns=src/durable/',
+      '--runTestsByPath',
+      'apps/web/api-e2e/src/api/pzs-005-real.spec.ts',
+    ]);
   } else if (durableOnly) {
     exitCode = await runJest(durableEnvironment, requestedArgs, 'apps/web/api-e2e/durable-jest.config.cts');
   } else if (fullRun) {
-    exitCode = await runJest(memoryEnvironment, ['--testPathIgnorePatterns=sync-restart.spec.ts|durable/']);
+    exitCode = await runJest(memoryEnvironment, [
+      '--testPathIgnorePatterns=sync-restart.spec.ts|pzs-005-real.spec.ts|src/durable/',
+    ]);
     if (exitCode === 0)
       exitCode = await runJest(durableEnvironment, [
         '--runTestsByPath',

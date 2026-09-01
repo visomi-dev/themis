@@ -1,4 +1,4 @@
-import { emailSchema, responseEnvelope, z } from '../shared/http/route-schemas';
+import { responseEnvelope, z } from '../shared/http/route-schemas';
 
 const credentialResponseSchema = z
   .object({
@@ -30,19 +30,11 @@ const assertionResponseSchema = z
   })
   .strict();
 
-const passkeyEmailSchema = z
-  .object({ email: emailSchema, pinVerified: z.boolean().optional().default(false) })
-  .strict();
-const registrationBeginSchema = passkeyEmailSchema.extend({ label: z.string().trim().min(1).max(120) }).strict();
+const registrationBeginSchema = z.object({ label: z.string().trim().min(1).max(120) }).strict();
 const registrationCompleteSchema = z
   .object({ challengeId: z.string().min(1).max(200), response: credentialResponseSchema })
   .strict();
-const authenticationBeginSchema = passkeyEmailSchema
-  .extend({
-    explicitPassword: z.boolean().optional().default(false),
-    retryRequested: z.boolean().optional().default(false),
-  })
-  .strict();
+const authenticationBeginSchema = z.object({ retryRequested: z.boolean().optional().default(false) }).strict();
 const authenticationCompleteSchema = z
   .object({ challengeId: z.string().min(1).max(200), response: assertionResponseSchema })
   .strict();
@@ -60,7 +52,7 @@ const passkeyCredentialSchema = z
   })
   .strict()
   .meta({ id: 'PasskeyCredential' });
-const passkeyAttemptSchema = z.enum(['passkey_default', 'retry_available', 'password_fallback', 'authenticated']);
+const passkeyAttemptSchema = z.enum(['passkey_default', 'retry_available', 'authenticated']);
 const passkeyOptionsSchema = z.record(z.string(), z.unknown());
 const authenticatedPasskeySchema = z
   .object({ authenticated: z.literal(true), user: z.record(z.string(), z.unknown()) })
@@ -97,8 +89,6 @@ const passkeyOpenApiPaths = {
                 z
                   .object({
                     challengeId: z.string().nullable(),
-                    verificationChallengeId: z.string().nullable().optional(),
-                    enrollmentId: z.string().nullable().optional(),
                     options: passkeyOptionsSchema.nullable(),
                   })
                   .strict(),
@@ -118,7 +108,16 @@ const passkeyOpenApiPaths = {
         201: {
           content: {
             'application/json': {
-              schema: responseEnvelope(passkeyCredentialSchema, 'PasskeyRegistrationCompleteEnvelope'),
+              schema: responseEnvelope(
+                z
+                  .object({
+                    credential: passkeyCredentialSchema,
+                    verificationChallengeId: z.string(),
+                    verificationOptions: passkeyOptionsSchema,
+                  })
+                  .strict(),
+                'PasskeyRegistrationCompleteEnvelope',
+              ),
             },
           },
           description: 'Registered passkey.',
