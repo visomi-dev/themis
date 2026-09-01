@@ -1,51 +1,51 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormField, email, form, minLength, required, type FieldTree } from '@angular/forms/signals';
+import {
+  FormField,
+  email,
+  form,
+  maxLength,
+  minLength,
+  pattern,
+  required,
+  type FieldTree,
+} from '@angular/forms/signals';
 import { Router } from '@angular/router';
 
 import { Auth } from '../../shared/auth/auth';
+import type { RestrictedAccount } from '../../shared/auth/auth.models';
 import { Passkey } from '../../shared/auth/passkey';
-import { APP_URL, FORGOTTEN_PASSWORD_URL, SIGN_UP_URL, VERIFY_DEVICE_URL } from '../../shared/constants/routes';
-import { Alert } from '../../shared/ui/overlays/alert/alert';
-import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
-import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { APP_URL } from '../../shared/constants/routes';
 import { Button } from '../../shared/ui/actions/button/button';
-import { Checkbox } from '../../shared/ui/forms/checkbox/checkbox';
 import { Description } from '../../shared/ui/forms/description/description';
 import { ErrorMessage } from '../../shared/ui/forms/error-message/error-message';
 import { Field } from '../../shared/ui/forms/field/field';
 import { Form as AppForm } from '../../shared/ui/forms/form/form';
 import { Input } from '../../shared/ui/forms/input/input';
 import { Label } from '../../shared/ui/forms/label/label';
-import { Link } from '../../shared/ui/typography/link/link';
-import { PasswordInput } from '../../shared/ui/forms/password-input/password-input';
+import { AuthCard } from '../../shared/ui/layout/auth-card/auth-card';
+import { AuthLayout } from '../../shared/ui/layout/auth-layout/auth-layout';
+import { Alert } from '../../shared/ui/overlays/alert/alert';
 
-type SignInModel = {
-  email: string;
-  password: string;
-  rememberDevice: boolean;
-};
+type AccessState =
+  | 'ready'
+  | 'passkey-loading'
+  | 'passkey-error'
+  | 'email'
+  | 'otp'
+  | 'account-choice'
+  | 'enrollment'
+  | 'enrollment-loading'
+  | 'verification-loading'
+  | 'success';
+
+type EmailModel = { email: string };
+type OtpModel = { pin: string };
+type EnrollmentModel = { label: string };
 
 @Component({
-  host: {
-    class: /* tw */ 'block min-h-full w-full',
-  },
-  imports: [
-    Alert,
-    AppForm,
-    AuthCard,
-    AuthLayout,
-    Button,
-    Checkbox,
-    Description,
-    ErrorMessage,
-    Field,
-    FormField,
-    Input,
-    Label,
-    Link,
-    PasswordInput,
-  ],
+  host: { class: /* tw */ 'block min-h-full w-full' },
+  imports: [Alert, AppForm, AuthCard, AuthLayout, Button, Description, ErrorMessage, Field, FormField, Input, Label],
   selector: 'app-sign-in',
   templateUrl: './sign-in.html',
   styleUrl: './sign-in.css',
@@ -55,155 +55,179 @@ export class SignIn {
   private readonly passkey = inject(Passkey);
   private readonly router = inject(Router);
 
-  readonly signInModel = signal<SignInModel>({
-    email: '',
-    password: '',
-    rememberDevice: false,
+  readonly state = signal<AccessState>('ready');
+  readonly errorMessage = signal('');
+  readonly accounts = signal<RestrictedAccount[]>([]);
+  readonly selectedAccount = signal<RestrictedAccount | null>(null);
+  readonly flowId = signal('');
+
+  readonly emailModel = signal<EmailModel>({ email: '' });
+  readonly emailForm: FieldTree<EmailModel> = form(this.emailModel, (path) => {
+    required(path.email, { message: $localize`:@@accessEmailRequired:Enter an email you can verify.` });
+    email(path.email, { message: $localize`:@@accessEmailInvalid:Enter a valid email address.` });
+  });
+  readonly otpModel = signal<OtpModel>({ pin: '' });
+  readonly otpForm: FieldTree<OtpModel> = form(this.otpModel, (path) => {
+    required(path.pin, { message: $localize`:@@accessOtpRequired:Enter the 6-digit code.` });
+    minLength(path.pin, 6, { message: $localize`:@@accessOtpLength:Enter all 6 digits.` });
+    maxLength(path.pin, 6, { message: $localize`:@@accessOtpLength:Enter all 6 digits.` });
+    pattern(path.pin, /^\d{6}$/, { message: $localize`:@@accessOtpDigits:Use the 6 digits from your email.` });
+  });
+  readonly enrollmentModel = signal<EnrollmentModel>({ label: '' });
+  readonly enrollmentForm: FieldTree<EnrollmentModel> = form(this.enrollmentModel, (path) => {
+    required(path.label, { message: $localize`:@@accessPasskeyLabelRequired:Name this passkey.` });
+    maxLength(path.label, 64, { message: $localize`:@@accessPasskeyLabelLength:Use 64 characters or fewer.` });
   });
 
-  readonly signInForm: FieldTree<SignInModel> = form(
-    this.signInModel,
-    (p) => {
-      required(p.email, { message: $localize`:@@signInEmailErrorRequired:Enter your email address.` });
-      email(p.email, {
-        message: $localize`:@@signInEmailErrorInvalid:Enter a valid email address (e.g. you@company.com).`,
-      });
-      required(p.password, { message: $localize`:@@signInPasswordErrorRequired:Enter your password.` });
-      minLength(p.password, 8, { message: $localize`:@@signInPasswordErrorMinlength:Use at least 8 characters.` });
-    },
-    {
-      submission: {
-        action: async (field) => {
-          await this.submit(field);
-        },
-      },
-    },
-  );
+  readonly emailError = computed(() => this.emailForm.email().errors()[0]?.message ?? '');
+  readonly otpError = computed(() => this.otpForm.pin().errors()[0]?.message ?? '');
+  readonly labelError = computed(() => this.enrollmentForm.label().errors()[0]?.message ?? '');
 
-  readonly submitting = this.auth.submitting;
-  readonly errorMessage = signal('');
-  readonly passkeyState = signal<
-    'ready' | 'loading' | 'unsupported' | 'verification' | 'retry' | 'fallback' | 'success'
-  >('ready');
-  readonly pin = signal('');
-  readonly passkeyEmail = signal('');
+  protected async authenticateWithPasskey(): Promise<void> {
+    if (this.state() === 'passkey-loading') return;
 
-  readonly emailError = computed(() => this.signInForm.email().errors()[0]?.message ?? '');
-  readonly passwordError = computed(() => this.signInForm.password().errors()[0]?.message ?? '');
+    if (!this.passkey.isSupported()) {
+      this.failPasskey($localize`:@@accessPasskeyUnsupported:This browser cannot use a passkey here.`);
 
-  private async submit(field: FieldTree<SignInModel>): Promise<void> {
-    if (this.submitting()) {
       return;
     }
 
+    const retryRequested = this.state() === 'passkey-error';
+
+    this.state.set('passkey-loading');
     this.errorMessage.set('');
 
-    const value = field().value();
-
     try {
-      const result = await this.auth.signInWithPassword({
-        email: value.email,
-        password: value.password,
-        rememberDevice: value.rememberDevice,
-      });
+      const begin = await this.passkey.beginAuthentication(retryRequested);
 
-      if ('authenticated' in result) {
-        await this.router.navigate([APP_URL]);
+      if (!begin.challengeId || !begin.options) throw new Error('Passkey options were not returned.');
 
-        return;
-      }
+      const credential = await this.passkey.getCredential(begin.options);
+      const completed = await this.passkey.completeAuthentication(begin.challengeId, credential);
 
-      await this.router.navigate([VERIFY_DEVICE_URL]);
+      this.auth.acceptAuthenticatedUser(completed.user);
+      this.state.set('success');
+      await this.router.navigateByUrl(APP_URL);
     } catch (error) {
-      this.errorMessage.set(
-        error instanceof HttpErrorResponse
-          ? (error.error?.message ?? $localize`:@@signInAuthFailed:Authentication failed.`)
-          : $localize`:@@signInAuthFailed:Authentication failed.`,
+      this.failPasskey(
+        error instanceof DOMException && error.name === 'AbortError'
+          ? $localize`:@@accessPasskeyCancelled:Passkey sign-in was cancelled. No changes were made.`
+          : $localize`:@@accessPasskeyFailed:We could not verify that passkey.`,
       );
     }
   }
 
-  protected async signInWithPasskey(): Promise<void> {
-    const email = this.passkeyEmail().trim();
+  protected showEmailRecovery(): void {
+    this.errorMessage.set('');
+    this.state.set('email');
+  }
 
-    if (this.passkeyState() === 'loading') return;
-    if (!email) {
-      this.passkeyState.set('retry');
-      this.errorMessage.set('Enter your email address to continue.');
+  protected showReady(): void {
+    this.errorMessage.set('');
+    this.state.set('ready');
+  }
 
-      return;
-    }
-    if (!this.passkey.isSupported()) {
-      this.passkeyState.set('unsupported');
+  protected async requestCode(event: Event): Promise<void> {
+    event.preventDefault();
 
-      return;
-    }
+    if (this.emailForm().invalid()) return;
 
-    const pinVerified = this.passkeyState() === 'verification';
-    const retryRequested = this.passkeyState() === 'retry';
-
-    this.passkeyState.set('loading');
     this.errorMessage.set('');
 
     try {
-      const begin = await this.passkey.beginAuthentication(email, pinVerified, retryRequested);
+      const delivery = await this.auth.requestEmailOtp(this.emailForm.email().value());
 
-      if (!begin.options || !begin.challengeId) {
-        this.passkeyState.set('fallback');
-
-        return;
-      }
-
-      const credential = await this.passkey.getCredential(begin.options);
-
-      await this.passkey.completeAuthentication(begin.challengeId, credential);
-      await this.auth.ensureSessionLoaded();
-      this.passkeyState.set('success');
-      await this.router.navigate([APP_URL]);
+      this.flowId.set(delivery.flowId);
+      this.state.set('otp');
     } catch (error) {
-      const code = error instanceof HttpErrorResponse ? error.error?.code : '';
-
-      if (code === 'email_unverified' || code === 'pin_required') {
-        this.passkeyState.set('verification');
-        this.errorMessage.set('Verify your email and enter the PIN before using a passkey.');
-      } else if (error instanceof DOMException && error.name === 'AbortError') {
-        this.passkeyState.set('retry');
-        this.errorMessage.set('Passkey sign-in was cancelled. You can try again.');
-      } else {
-        this.passkeyState.set('retry');
-        this.errorMessage.set('Passkey sign-in failed. Try again or choose password sign-in.');
-      }
+      this.errorMessage.set(
+        this.safeError(error, $localize`:@@accessEmailFailed:We could not send a code yet. Try again.`),
+      );
     }
   }
 
-  protected submitPasskey(event: Event): void {
+  protected async verifyCode(event: Event): Promise<void> {
     event.preventDefault();
-    void this.signInWithPasskey();
-  }
 
-  protected continueAfterVerification(): void {
-    if (this.pin().trim().length >= 4) void this.signInWithPasskey();
-  }
+    if (this.otpForm().invalid() || !this.flowId()) return;
 
-  protected updatePin(event: Event): void {
-    this.pin.set((event.target as HTMLInputElement).value);
-  }
-
-  protected updatePasskeyEmail(event: Event): void {
-    this.passkeyEmail.set((event.target as HTMLInputElement).value);
-  }
-
-  protected usePasswordFallback(): void {
-    this.signInModel.update((model) => ({ ...model, email: this.passkeyEmail() }));
-    this.passkeyState.set('fallback');
     this.errorMessage.set('');
+
+    try {
+      await this.auth.verifyEmailOtp(this.flowId(), this.otpForm.pin().value());
+      const accounts = await this.auth.getRestrictedAccounts();
+      const selected = accounts.find((account) => account.selected) ?? null;
+
+      this.accounts.set(accounts);
+      this.selectedAccount.set(selected);
+      this.state.set(selected ? 'enrollment' : 'account-choice');
+    } catch (error) {
+      this.errorMessage.set(
+        this.safeError(error, $localize`:@@accessOtpFailed:That code is not valid. Check it and try again.`),
+      );
+    }
   }
 
-  protected returnToPasskey(): void {
-    this.passkeyState.set('ready');
+  protected async chooseAccount(account: RestrictedAccount): Promise<void> {
     this.errorMessage.set('');
+
+    try {
+      const selected = await this.auth.selectRestrictedAccount(account.accountId);
+
+      this.selectedAccount.set(selected);
+      this.state.set('enrollment');
+    } catch (error) {
+      this.errorMessage.set(
+        this.safeError(error, $localize`:@@accessAccountFailed:That account is no longer available.`),
+      );
+    }
   }
 
-  protected readonly footerLink = SIGN_UP_URL;
-  protected readonly forgottenPasswordUrl = FORGOTTEN_PASSWORD_URL;
+  protected async createPasskey(event: Event): Promise<void> {
+    event.preventDefault();
+
+    if (this.enrollmentForm().invalid()) return;
+
+    this.errorMessage.set('');
+    this.state.set('enrollment-loading');
+
+    try {
+      const begin = await this.passkey.beginRegistration(this.enrollmentForm.label().value());
+
+      if (!begin.challengeId || !begin.options) throw new Error('Passkey options were not returned.');
+
+      const credential = await this.passkey.createCredential(begin.options);
+      const registration = await this.passkey.completeRegistration(begin.challengeId, credential);
+
+      if (!registration.verificationChallengeId || !registration.verificationOptions) {
+        throw new Error('Passkey verification options were not returned.');
+      }
+
+      this.state.set('verification-loading');
+      const assertion = await this.passkey.getCredential(registration.verificationOptions);
+      const completed = await this.passkey.completeAuthentication(registration.verificationChallengeId, assertion);
+
+      this.auth.acceptAuthenticatedUser(completed.user);
+      this.state.set('success');
+      await this.router.navigateByUrl(APP_URL);
+    } catch (error) {
+      this.state.set('enrollment');
+      this.errorMessage.set(
+        error instanceof DOMException && error.name === 'AbortError'
+          ? $localize`:@@accessEnrollmentCancelled:Passkey setup was cancelled. You can try again.`
+          : this.safeError(error, $localize`:@@accessEnrollmentFailed:We could not create and verify that passkey.`),
+      );
+    }
+  }
+
+  private failPasskey(message: string): void {
+    this.errorMessage.set(message);
+    this.state.set('passkey-error');
+  }
+
+  private safeError(error: unknown, fallback: string): string {
+    return error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+      ? error.error.message
+      : fallback;
+  }
 }

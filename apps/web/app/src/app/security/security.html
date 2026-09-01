@@ -7,11 +7,11 @@
     Manage the ways you can securely access your account.
   </p>
 
-  @if (loading() || passkeyLoading()) {
+  @if (passkeyLoading()) {
     <p class="mt-8" role="status">Loading security settings...</p>
   } @else {
-    @if (error() || passkeyError()) {
-      <p class="mt-6 text-sm text-red-600 dark:text-red-400" role="alert">{{ error() || passkeyError() }}</p>
+    @if (passkeyError()) {
+      <p class="mt-6 text-sm text-red-600 dark:text-red-400" role="alert">{{ passkeyError() }}</p>
     }
     @if (view() === 'list') {
       <section class="mt-8" aria-labelledby="passkeys-title">
@@ -27,9 +27,7 @@
         @if (!credentials().length) {
           <app-card class="mt-6" padding="lg" tone="raised">
             <h3 class="font-heading text-xl font-bold">No passkeys yet</h3>
-            <p class="text-zinc-500 dark:text-zinc-400">
-              Add a passkey to sign in without a password. Your passkey stays on your device.
-            </p>
+            <p class="text-zinc-500 dark:text-zinc-400">Add a passkey for another device or security key.</p>
             <app-button class="mt-2" tone="blue" (click)="showAdd()">Add your first passkey</app-button>
           </app-card>
         } @else {
@@ -130,8 +128,7 @@
           This passkey will stop signing in immediately and cannot be restored.
         </p>
         <div class="rounded-lg bg-zinc-100 p-4 text-sm leading-6 dark:bg-zinc-800">
-          <strong class="block font-semibold">Access protection</strong> You must keep a password or another active
-          passkey.
+          <strong class="block font-semibold">Access protection</strong> You must keep another active passkey.
         </div>
         <div class="flex flex-col gap-3 sm:flex-row">
           <app-button tone="red" [disabled]="passkeySubmitting()" (click)="revokePasskey()">{{
@@ -140,52 +137,6 @@
           ><app-button variant="plain" (click)="cancelPasskeyAction()">Cancel</app-button>
         </div>
       </app-card>
-    }
-    @if (configured()) {
-      <app-card class="mt-8" padding="lg" tone="raised"
-        ><h2 class="font-heading text-xl font-bold">Password configured</h2>
-        <p class="text-zinc-500 dark:text-zinc-400">
-          Your password is another viable access method. Existing passkeys remain active.
-        </p></app-card
-      >
-    } @else if (setup()) {
-      <app-card class="mt-8" padding="lg" tone="raised"
-        ><h2 class="font-heading text-xl font-bold">Set up a password</h2>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400">
-          Use at least 12 characters. Password managers and paste are supported.
-        </p>
-        <form class="mt-6 grid gap-5" (submit)="$event.preventDefault(); savePassword()">
-          <label class="grid gap-2 text-sm font-semibold" for="security-password">New password</label
-          ><app-password-input
-            [formField]="passwordForm.password"
-            controlId="security-password"
-            autocomplete="new-password"
-            [required]="true"
-            [minLength]="12"
-          /><label class="grid gap-2 text-sm font-semibold" for="security-password-confirm">Confirm password</label
-          ><app-password-input
-            [formField]="passwordForm.confirmPassword"
-            controlId="security-password-confirm"
-            autocomplete="new-password"
-            [required]="true"
-            [minLength]="12"
-          />
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <app-button type="submit" [disabled]="submitting()">{{
-              submitting() ? 'Saving...' : 'Confirm and save'
-            }}</app-button
-            ><app-button type="button" variant="plain" (click)="setup.set(false)">Cancel</app-button>
-          </div>
-        </form></app-card
-      >
-    } @else {
-      <app-card class="mt-8" padding="lg" tone="raised"
-        ><h2 class="font-heading text-xl font-bold">No password configured</h2>
-        <p class="text-zinc-500 dark:text-zinc-400">
-          Add a password as a secondary way to access your account. It does not replace your passkeys.
-        </p>
-        <app-button class="mt-2" (click)="beginSetup()">Set up password</app-button></app-card
-      >
     }
   }
 </section>

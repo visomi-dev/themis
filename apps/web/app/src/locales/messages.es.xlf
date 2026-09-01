@@ -510,6 +510,60 @@
         <source>Help</source>
         <target>Ayuda</target>
       </trans-unit>
+      <trans-unit id="accessEyebrow" datatype="html"><source> Account access </source><target> Acceso a la cuenta </target></trans-unit>
+      <trans-unit id="accessTitle" datatype="html"><source> Sign in to Themis </source><target> Inicia sesión en Themis </target></trans-unit>
+      <trans-unit id="accessDescription" datatype="html"><source>Use a passkey to sign in. You can choose one saved on this or another device.</source><target>Usa una clave de acceso para iniciar sesión. Puedes elegir una guardada en este dispositivo o en otro.</target></trans-unit>
+      <trans-unit id="accessContinuePasskey" datatype="html"><source>Continue with a passkey</source><target>Continuar con una clave de acceso</target></trans-unit>
+      <trans-unit id="accessPasskeyGuidance" datatype="html"><source> Your passkey may be saved on this device, synced from another device, or available on a nearby device or security key. </source><target> Tu clave de acceso puede estar guardada en este dispositivo, sincronizada desde otro o disponible en un dispositivo cercano o una llave de seguridad. </target></trans-unit>
+      <trans-unit id="accessTryAnotherWay" datatype="html"><source> Try another way </source><target> Probar de otra forma </target></trans-unit>
+      <trans-unit id="accessPasskeyPromptEyebrow" datatype="html"><source> Passkey requested </source><target> Clave de acceso solicitada </target></trans-unit>
+      <trans-unit id="accessCheckDevice" datatype="html"><source>Check your device</source><target>Revisa tu dispositivo</target></trans-unit>
+      <trans-unit id="accessCheckDeviceDescription" datatype="html"><source>Follow your device&apos;s prompt to continue.</source><target>Sigue las indicaciones de tu dispositivo para continuar.</target></trans-unit>
+      <trans-unit id="accessWaitingPasskey" datatype="html"><source>Waiting for passkey</source><target>Esperando la clave de acceso</target></trans-unit>
+      <trans-unit id="accessPasskeyErrorEyebrow" datatype="html"><source> Unable to continue </source><target> No se puede continuar </target></trans-unit>
+      <trans-unit id="accessPasskeyErrorTitle" datatype="html"><source> Passkey sign-in did not finish. </source><target> El inicio de sesión con clave de acceso no finalizó. </target></trans-unit>
+      <trans-unit id="accessRetryPasskey" datatype="html"><source>Try passkey again</source><target>Volver a intentar con la clave de acceso</target></trans-unit>
+      <trans-unit id="accessErrorTryAnotherWay" datatype="html"><source> Try another way </source><target> Probar de otra forma </target></trans-unit>
+      <trans-unit id="accessBack" datatype="html"><source> Back </source><target> Volver </target></trans-unit>
+      <trans-unit id="accessRecoveryEyebrow" datatype="html"><source> Bootstrap or recover </source><target> Crear o recuperar el acceso </target></trans-unit>
+      <trans-unit id="accessRecoveryTitle" datatype="html"><source>Try another way</source><target>Probar de otra forma</target></trans-unit>
+      <trans-unit id="accessRecoveryDescription" datatype="html"><source>Enter an email you can verify. Email verification alone cannot sign you in.</source><target>Introduce un correo electrónico que puedas verificar. Verificar el correo por sí solo no permite iniciar sesión.</target></trans-unit>
+      <trans-unit id="accessEmailLabel" datatype="html"><source>Email address</source><target>Correo electrónico</target></trans-unit>
+      <trans-unit id="accessSendCode" datatype="html"><source>Send code</source><target>Enviar código</target></trans-unit>
+      <trans-unit id="accessOtpEyebrow" datatype="html"><source> Email verification </source><target> Verificación del correo </target></trans-unit>
+      <trans-unit id="accessOtpTitle" datatype="html"><source>Check for a 6-digit code</source><target>Busca un código de 6 dígitos</target></trans-unit>
+      <trans-unit id="accessOtpDescription" datatype="html"><source>If you can use that email, check for a 6-digit code. Delivery can take a few minutes.</source><target>Si puedes usar ese correo, busca un código de 6 dígitos. Puede tardar unos minutos en llegar.</target></trans-unit>
+      <trans-unit id="accessOtpLabel" datatype="html"><source>Verification code</source><target>Código de verificación</target></trans-unit>
+      <trans-unit id="accessVerifyEmail" datatype="html"><source>Verify email</source><target>Verificar correo</target></trans-unit>
+      <trans-unit id="accessVerifiedEyebrow" datatype="html"><source> Email verified </source><target> Correo verificado </target></trans-unit>
+      <trans-unit id="accessAccountTitle" datatype="html"><source> Choose the account you want to access. </source><target> Elige la cuenta a la que quieres acceder. </target></trans-unit>
+      <trans-unit id="accessEnrollmentEyebrow" datatype="html"><source> Final security step </source><target> Último paso de seguridad </target></trans-unit>
+      <trans-unit id="accessEnrollmentTitle" datatype="html"><source> Create a passkey to finish. </source><target> Crea una clave de acceso para finalizar. </target></trans-unit>
+      <trans-unit id="accessEnrollmentDescription" datatype="html"><source>Email verification alone cannot sign you in. Create and verify a passkey for <x id="INTERPOLATION" equiv-text="{{ selectedAccount()?.name }}"/>.</source><target>Verificar el correo por sí solo no permite iniciar sesión. Crea y verifica una clave de acceso para <x id="INTERPOLATION" equiv-text="{{ selectedAccount()?.name }}"/>.</target></trans-unit>
+      <trans-unit id="accessPasskeyLabel" datatype="html"><source>Passkey name</source><target>Nombre de la clave de acceso</target></trans-unit>
+      <trans-unit id="accessCreatePasskey" datatype="html"><source>Create passkey</source><target>Crear clave de acceso</target></trans-unit>
+      <trans-unit id="accessCreatingPasskey" datatype="html"><source>Create your passkey</source><target>Crea tu clave de acceso</target></trans-unit>
+      <trans-unit id="accessCreatingPasskeyDescription" datatype="html"><source>Follow your device&apos;s prompt. You will verify the new passkey once more before entering Themis.</source><target>Sigue las indicaciones de tu dispositivo. Verificarás la nueva clave de acceso una vez más antes de entrar en Themis.</target></trans-unit>
+      <trans-unit id="accessWaitingSetup" datatype="html"><source>Waiting for your device</source><target>Esperando a tu dispositivo</target></trans-unit>
+      <trans-unit id="accessVerifyNewPasskey" datatype="html"><source>Verify your new passkey</source><target>Verifica tu nueva clave de acceso</target></trans-unit>
+      <trans-unit id="accessVerifyNewPasskeyDescription" datatype="html"><source>Use the passkey you just created to finish signing in.</source><target>Usa la clave de acceso que acabas de crear para terminar de iniciar sesión.</target></trans-unit>
+      <trans-unit id="accessWaitingVerification" datatype="html"><source>Waiting for verification</source><target>Esperando la verificación</target></trans-unit>
+      <trans-unit id="accessSuccess" datatype="html"><source> Passkey verified. Opening Themis... </source><target> Clave de acceso verificada. Abriendo Themis... </target></trans-unit>
+      <trans-unit id="accessEmailRequired" datatype="html"><source>Enter an email you can verify.</source><target>Introduce un correo electrónico que puedas verificar.</target></trans-unit>
+      <trans-unit id="accessEmailInvalid" datatype="html"><source>Enter a valid email address.</source><target>Introduce un correo electrónico válido.</target></trans-unit>
+      <trans-unit id="accessOtpRequired" datatype="html"><source>Enter the 6-digit code.</source><target>Introduce el código de 6 dígitos.</target></trans-unit>
+      <trans-unit id="accessOtpLength" datatype="html"><source>Enter all 6 digits.</source><target>Introduce los 6 dígitos.</target></trans-unit>
+      <trans-unit id="accessOtpDigits" datatype="html"><source>Use the 6 digits from your email.</source><target>Usa los 6 dígitos de tu correo.</target></trans-unit>
+      <trans-unit id="accessPasskeyLabelRequired" datatype="html"><source>Name this passkey.</source><target>Asigna un nombre a esta clave de acceso.</target></trans-unit>
+      <trans-unit id="accessPasskeyLabelLength" datatype="html"><source>Use 64 characters or fewer.</source><target>Usa 64 caracteres o menos.</target></trans-unit>
+      <trans-unit id="accessPasskeyUnsupported" datatype="html"><source>This browser cannot use a passkey here.</source><target>Este navegador no puede usar una clave de acceso aquí.</target></trans-unit>
+      <trans-unit id="accessPasskeyCancelled" datatype="html"><source>Passkey sign-in was cancelled. No changes were made.</source><target>Se canceló el inicio de sesión con clave de acceso. No se realizó ningún cambio.</target></trans-unit>
+      <trans-unit id="accessPasskeyFailed" datatype="html"><source>We could not verify that passkey.</source><target>No pudimos verificar esa clave de acceso.</target></trans-unit>
+      <trans-unit id="accessEmailFailed" datatype="html"><source>We could not send a code yet. Try again.</source><target>No pudimos enviar el código. Inténtalo de nuevo.</target></trans-unit>
+      <trans-unit id="accessOtpFailed" datatype="html"><source>That code is not valid. Check it and try again.</source><target>Ese código no es válido. Revísalo e inténtalo de nuevo.</target></trans-unit>
+      <trans-unit id="accessAccountFailed" datatype="html"><source>That account is no longer available.</source><target>Esa cuenta ya no está disponible.</target></trans-unit>
+      <trans-unit id="accessEnrollmentCancelled" datatype="html"><source>Passkey setup was cancelled. You can try again.</source><target>Se canceló la configuración de la clave de acceso. Puedes intentarlo de nuevo.</target></trans-unit>
+      <trans-unit id="accessEnrollmentFailed" datatype="html"><source>We could not create and verify that passkey.</source><target>No pudimos crear y verificar esa clave de acceso.</target></trans-unit>
     </body>
   </file>
 </xliff>

@@ -5,10 +5,9 @@ import { promisify } from 'node:util';
 import { expect, test } from '@playwright/test';
 import { workspaceRoot } from '@nx/devkit';
 
-import { clearMailbox, readLatestPin } from '../support/mailbox';
-import { createCredentials, signUp } from '../support/auth';
-import { activationUrlPattern, appUrlPattern, projectsUrlPattern, verifyEmailUrlPattern } from '../support/routes';
-import { fillOtp } from '../support/otp';
+import { clearMailbox } from '../support/mailbox';
+import { createCredentials, signUp, verifyLatestCode } from '../support/auth';
+import { activationUrlPattern, appUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
 
 const execFileAsync = promisify(execFile);
 const evidenceDirectory = `${workspaceRoot}/docs/verification/isolated-passkey-run-242`;
@@ -22,8 +21,8 @@ function sanitize(value: string): string {
     .replace(/(Set-Cookie:|Cookie:|Authorization:)[^\n]*/gi, '$1 [REDACTED]');
 }
 
-test.describe('isolated passkey signup/session evidence', () => {
-  test('verifies signup, session, project-scoped CLI sync, and a separate authenticated screen', async ({
+test.describe('isolated passkey bootstrap/session evidence', () => {
+  test('verifies bootstrap, session, project-scoped CLI sync, and a separate authenticated screen', async ({
     page,
     request,
   }) => {
@@ -33,9 +32,8 @@ test.describe('isolated passkey signup/session evidence', () => {
     await mkdir(evidenceDirectory, { recursive: true });
     await clearMailbox(request);
 
-    await page.goto('/app/en/sign-up');
     await signUp(page, credentials.email, credentials.password);
-    expect(page.url()).toMatch(verifyEmailUrlPattern);
+    expect(page.url()).toMatch(signInUrlPattern);
 
     const beforeVerification = await page.request.get('/api/auth/session');
 
@@ -45,12 +43,10 @@ test.describe('isolated passkey signup/session evidence', () => {
       path: '/api/auth/session',
       status: beforeVerification.status(),
     });
-    expect(beforeVerification.status()).toBe(401);
+    expect(beforeVerification.status()).toBe(200);
+    expect(((await beforeVerification.json()) as { data: { kind: string } }).data.kind).toBe('anonymous');
 
-    const pin = await readLatestPin(request, credentials.email, 'sign_up');
-
-    await fillOtp(page, pin);
-    await page.getByRole('button', { name: 'Verify and continue' }).click();
+    await verifyLatestCode(page, request, credentials.email, 'sign_up', { completeActivation: false });
     await expect(page).toHaveURL(/\/app\/en\/(?:activation|projects|dashboard)?$/, { timeout: 15000 });
     if (activationUrlPattern.test(page.url())) {
       await page.getByRole('button', { name: /Skip for now/i }).click();
@@ -142,7 +138,7 @@ test.describe('isolated passkey signup/session evidence', () => {
       JSON.stringify(
         {
           runId: 'RUN-242',
-          test: 'isolated-passkey-signup-session',
+          test: 'isolated-passkey-bootstrap-session',
           screenshots: ['authenticated-session-light.png', 'authenticated-session-dark.png'],
           cliStatus: cliEvidence.status,
           redactions: ['cookie', 'authorization', 'password', 'pin', 'token', 'secret', 'challenge', 'credentialId'],

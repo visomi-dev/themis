@@ -26,28 +26,26 @@ describe('BrowserAuth', () => {
     TestBed.inject(HttpTestingController).verify();
   });
 
-  it('stores the pending challenge after credential submission', async () => {
+  it('uses the generic email OTP contract without password-era fields', async () => {
     const auth = TestBed.inject(Auth);
     const http = TestBed.inject(HttpTestingController);
 
-    const submitPromise = auth.signUp({
-      email: 'engineer@themis.dev',
-      password: 'S3cureAuth!',
-    });
+    const submitPromise = auth.requestEmailOtp('engineer@themis.dev');
 
-    http.expectOne('/api/auth/sign-up').flush({
+    const request = http.expectOne('/api/auth/email-otp/request');
+
+    expect(request.request.body).toEqual({ email: 'engineer@themis.dev' });
+    request.flush({
       data: {
-        challengeId: 'challenge-1',
-        email: 'engineer@themis.dev',
-        expiresAt: '2026-01-01T00:00:00.000Z',
-        purpose: 'sign_up',
+        flowId: 'flow-1',
+        resendAvailableAt: '2026-01-01T00:01:00.000Z',
       },
     });
 
-    await submitPromise;
-
-    expect(auth.pendingChallenge()?.challengeId).toBe('challenge-1');
-    expect(sessionStorage.getItem('themis.pendingChallenge')).toContain('challenge-1');
+    await expect(submitPromise).resolves.toEqual({
+      flowId: 'flow-1',
+      resendAvailableAt: '2026-01-01T00:01:00.000Z',
+    });
   });
 
   it('skips the session request when the hasSession cookie is absent', async () => {
@@ -73,6 +71,7 @@ describe('BrowserAuth', () => {
     request.flush({
       data: {
         authenticated: true,
+        kind: 'full',
         user: {
           accountId: 'account-1',
           email: 'engineer@themis.dev',
@@ -97,7 +96,7 @@ describe('BrowserAuth', () => {
     const promise = auth.ensureSessionLoaded();
 
     http.expectOne('/api/auth/session').flush({
-      data: { authenticated: false, user: null },
+      data: { authenticated: false, kind: 'anonymous', user: null },
     });
 
     await promise;

@@ -301,12 +301,7 @@ async function requestObservation(path: string, init: RequestInit): Promise<Http
   const text = await response.text();
   const timingMs = Math.round((performance.now() - startedAt) * 100) / 100;
 
-  if (
-    path.endsWith('/workspace') ||
-    path.startsWith('/sync/') ||
-    path.startsWith('/auth/passkey/') ||
-    path === '/auth/sign-up/verify'
-  ) {
+  if (path.endsWith('/workspace') || path.startsWith('/sync/') || path.startsWith('/auth/passkey/')) {
     rawHttpObservations.push({
       method: init.method ?? 'GET',
       path,
@@ -332,7 +327,7 @@ async function requestObservation(path: string, init: RequestInit): Promise<Http
       .map(([key, value]) => [key, key.toLowerCase() === 'set-cookie' ? '[PRESENT]' : value]),
   );
 
-  if (path.startsWith('/auth/passkey/') || path === '/auth/sign-up/verify') {
+  if (path.startsWith('/auth/passkey/')) {
     passkeyHttpObservations.push({
       method: init.method ?? 'GET',
       path,

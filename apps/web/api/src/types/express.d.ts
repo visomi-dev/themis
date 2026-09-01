@@ -36,8 +36,9 @@ declare module 'express-session' {
     passkeyRegistration?: {
       accountId: string;
       challengeId: string;
-      flowId: string;
+      flowId?: string;
       label: string;
+      purpose: 'restricted_registration' | 'security_registration';
       userId: string;
     };
     authenticatedAt?: number;

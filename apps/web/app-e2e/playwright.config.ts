@@ -8,7 +8,8 @@ import { LOCAL_AGENT_FIXTURE_PUBLIC_KEY } from './src/support/local-agent-fixtur
 // composed Playwright server must own its deterministic port so auth helpers,
 // browser navigation, and the local-agent callback all address one gateway.
 const gatewayPort = process.env['E2E_GATEWAY_PORT'] || '8081';
-const gatewayHost = process.env['E2E_GATEWAY_HOST'] || '127.0.0.1';
+// WebAuthn accepts localhost as a secure development RP ID; raw loopback IPs are not valid RP domains.
+const gatewayHost = process.env['E2E_GATEWAY_HOST'] || 'localhost';
 const baseURL = process.env['BASE_URL'] || `http://${gatewayHost}:${gatewayPort}`;
 
 process.env['BASE_URL'] = baseURL;

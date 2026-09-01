@@ -194,22 +194,41 @@ passkeyRouter.use(passkeyRateLimit);
 passkeyRouter.post('/registration/begin', validateRequest({ body: registrationBeginSchema }), async (req, res) => {
   const { label } = getValidated<{ body: typeof registrationBeginSchema }>(req).body!;
   const restricted = req.session?.restrictedAuth;
+  const restrictedAccount = restricted?.eligibleAccounts.find(
+    (candidate) => candidate.accountId === restricted.selectedAccountId,
+  );
+  let accountId: string;
+  let flowId: string | undefined;
+  let purpose: 'restricted_registration' | 'security_registration';
+  let userId: string;
 
-  if (!restricted || restricted.expiresAt <= Date.now() || !restricted.selectedAccountId)
+  if (restricted && restricted.expiresAt > Date.now() && restricted.selectedAccountId) {
+    if (!restricted.allowedOperations.includes('passkeys:enroll')) failure('restricted_session_forbidden', 403);
+    if (!restrictedAccount) failure('account_unavailable', 404);
+
+    accountId = restrictedAccount.accountId;
+    flowId = restricted.flowId;
+    purpose = 'restricted_registration';
+    userId = restricted.userId;
+  } else if (req.isAuthenticated()) {
+    const authenticated = authedRequest(req).user;
+
+    requireFreshSecurityReauthentication(authedRequest(req));
+    accountId = authenticated.accountId;
+    purpose = 'security_registration';
+    userId = authenticated.id;
+  } else {
     failure('restricted_session_required', 401, 'Verify an email code and select an account before registering.');
-  if (!restricted.allowedOperations.includes('passkeys:enroll')) failure('restricted_session_forbidden', 403);
-  const account = restricted.eligibleAccounts.find((candidate) => candidate.accountId === restricted.selectedAccountId);
+  }
+  const user = await findUserById(userId);
 
-  if (!account) failure('account_unavailable', 404);
-  const user = await findUserById(restricted.userId);
-
-  if (!user || user.email !== restricted.verifiedEmail) failure('restricted_session_forbidden', 403);
+  if (!user || (restricted && user.email !== restricted.verifiedEmail)) failure('restricted_session_forbidden', 403);
   const existing = await db
     .select()
     .from(accountPasskeyCredentials)
     .where(
       and(
-        eq(accountPasskeyCredentials.accountId, account.accountId),
+        eq(accountPasskeyCredentials.accountId, accountId),
         eq(accountPasskeyCredentials.userId, user.id),
         isNull(accountPasskeyCredentials.revokedAt),
       ),
@@ -227,20 +246,21 @@ passkeyRouter.post('/registration/begin', validateRequest({ body: registrationBe
     authenticatorSelection: { residentKey: 'required', requireResidentKey: true, userVerification: 'required' },
   });
   const stored = await createChallenge({
-    accountId: account.accountId,
+    accountId,
     allowCredentialIds: existing.map((item) => item.credentialId),
-    flowId: restricted.flowId,
-    purpose: 'restricted_registration',
+    flowId,
+    purpose,
     sessionBinding: req.sessionID ?? 'anonymous',
     userId: user.id,
     value: options.challenge,
   });
 
   req.session.passkeyRegistration = {
-    accountId: account.accountId,
+    accountId,
     challengeId: stored.id,
-    flowId: restricted.flowId,
+    flowId,
     label,
+    purpose,
     userId: user.id,
   };
   res.json({
@@ -256,15 +276,21 @@ passkeyRouter.post(
     const body = getValidated<{ body: typeof registrationCompleteSchema }>(req).body!;
     const pending = req.session?.passkeyRegistration;
     const restricted = req.session?.restrictedAuth;
+    const restrictedRegistration = pending?.purpose === 'restricted_registration';
 
     if (
       !pending ||
-      !restricted ||
-      restricted.expiresAt <= Date.now() ||
       pending.challengeId !== body.challengeId ||
-      pending.flowId !== restricted.flowId ||
-      pending.accountId !== restricted.selectedAccountId ||
-      pending.userId !== restricted.userId
+      (restrictedRegistration &&
+        (!restricted ||
+          restricted.expiresAt <= Date.now() ||
+          pending.flowId !== restricted.flowId ||
+          pending.accountId !== restricted.selectedAccountId ||
+          pending.userId !== restricted.userId)) ||
+      (!restrictedRegistration &&
+        (!req.isAuthenticated() ||
+          authedRequest(req).user.accountId !== pending.accountId ||
+          authedRequest(req).user.id !== pending.userId))
     ) {
       failure('challenge_mismatch', 400);
     }
@@ -281,12 +307,13 @@ passkeyRouter.post(
       !challenge ||
       challenge.accountId !== pending.accountId ||
       challenge.userId !== pending.userId ||
-      challenge.flowId !== pending.flowId
+      challenge.flowId !== (pending.flowId ?? null) ||
+      challenge.purpose !== pending.purpose
     )
       failure('challenge_mismatch', 400);
     await consumeChallenge({
       id: body.challengeId,
-      purpose: 'restricted_registration',
+      purpose: pending.purpose,
       sessionBinding: req.sessionID ?? 'anonymous',
       value: decodeChallengeFromResponse(body.response),
     });
@@ -318,10 +345,10 @@ passkeyRouter.post(
       signCount: credential.counter,
       backupEligible: verified.registrationInfo.credentialDeviceType === 'multiDevice',
       backupState: verified.registrationInfo.credentialBackedUp,
-      status: 'pending',
-      enrollmentFlowId: pending.flowId,
+      status: restrictedRegistration ? 'pending' : 'active',
+      enrollmentFlowId: pending.flowId ?? null,
       createdAt: new Date(),
-      activatedAt: null,
+      activatedAt: restrictedRegistration ? null : new Date(),
       lastUsedAt: null,
       revokedAt: null,
       updatedAt: new Date(),
@@ -329,6 +356,26 @@ passkeyRouter.post(
 
     await db.insert(accountPasskeyCredentials).values(value);
     delete req.session?.passkeyRegistration;
+
+    if (!restrictedRegistration) {
+      const authenticated = authedRequest(req).user;
+
+      await new Promise<void>((resolve, reject) =>
+        req.session.regenerate((error) => (error ? reject(error) : resolve())),
+      );
+      await new Promise<void>((resolve, reject) =>
+        req.login(authenticated, (error) => (error ? reject(error) : resolve())),
+      );
+      req.session.authenticatedAt = Date.now();
+      req.session.cookie.maxAge = env.SESSION_MAX_AGE_MS;
+      res.cookie(SESSION_HINT_COOKIE, '1', sessionHintCookieOptions());
+      res.status(201).json({
+        data: { credential: credentialView(value) },
+        message: 'Passkey registered.',
+      });
+
+      return;
+    }
     const verificationOptions = await generateAuthenticationOptions({
       allowCredentials: [{ id: credential.id, transports: value.transports as never[] }],
       challenge: randomBytes(32).toString('base64url'),

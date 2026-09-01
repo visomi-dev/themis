@@ -21,9 +21,8 @@ These instructions apply to Playwright and route-flow tests, especially auth and
 Auth changes should keep the route suite green for:
 
 - `/app/sign-in`
-- `/app/sign-up`
-- `/app/verify-email`
 - `/app/`
+- inline email OTP, account choice, and passkey enrollment states on `/app/sign-in`
 - theme behavior across auth and app routes
 
 ## Workflow
@@ -81,7 +80,7 @@ When iterating on a failing spec, run the same boot path the hook uses, but in a
    # env (same as the webServer block):
    #   DATABASE_AUTO_MIGRATE=true DATABASE_DRIVER=memory
    #   MAIL_TRANSPORT=memory ENABLE_TEST_API=true
-   #   HOST=127.0.0.1 NG_ALLOWED_HOSTS=127.0.0.1
+   #   HOST=localhost NG_ALLOWED_HOSTS=localhost
    #   PORT=8081 SESSION_SECRET=themis-app-e2e-secret
    ```
 3. Run only the project you care about:
@@ -97,15 +96,14 @@ The hook's lint/test/e2e pipeline runs in this order, so a unit-test failure sho
 
 `ENABLE_TEST_API=true` exposes the helpers in `apps/web/api/src/test/` so a probe can drive the flow without a browser:
 
-| Verb + path                                                       | Purpose                                                          |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `DELETE /api/test/mailbox`                                        | Wipe the in-memory mailbox before a flow.                        |
-| `GET /api/test/mailbox/latest?email=...&purpose=sign_up\|sign_in` | Read the latest OTP for an email.                                |
-| `POST /api/auth/sign-up` `{ email, password }`                    | Create an unverified account.                                    |
-| `POST /api/auth/sign-up/verify` `{ code }`                        | Verify the sign-up OTP.                                          |
-| `POST /api/auth/sign-in/password` `{ email, password }`           | Start the sign-in flow.                                          |
-| `POST /api/auth/sign-in/verify` `{ code }`                        | Verify the sign-in OTP.                                          |
-| `POST /api/activation/complete` `{ complete: true }`              | Skip the activation page in tests that need a logged-in session. |
+| Verb + path                                                         | Purpose                                                          |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `DELETE /api/test/mailbox`                                          | Wipe the in-memory mailbox before a flow.                        |
+| `GET /api/test/mailbox/latest?email=...&purpose=bootstrap_recovery` | Read the latest bootstrap or recovery OTP.                       |
+| `POST /api/auth/email-otp/request` `{ email }`                      | Start generic email bootstrap or recovery.                       |
+| `POST /api/auth/email-otp/verify` `{ flowId, pin }`                 | Create a restricted session after email verification.            |
+| `POST /api/test/auth/session` `{ email }`                           | Create a deterministic full session for non-auth E2E scenarios.  |
+| `POST /api/activation/complete` `{ complete: true }`                | Skip the activation page in tests that need a logged-in session. |
 
 Use these from Playwright's `request` fixture or from a probe script so you do not depend on UI selectors that are still in flux.
 
@@ -137,8 +135,8 @@ const { setTimeout: sleep } = require('node:timers/promises');
   });
   await sleep(6000);
   const browser = await chromium.launch();
-  const page = await browser.newContext({ baseURL: 'http://127.0.0.1:8081' }).then((c) => c.newPage());
-  await page.goto('http://127.0.0.1:8081/app/en/sign-in', { waitUntil: 'networkidle' });
+  const page = await browser.newContext({ baseURL: 'http://localhost:8081' }).then((c) => c.newPage());
+  await page.goto('http://localhost:8081/app/sign-in', { waitUntil: 'networkidle' });
   console.log(await page.$$eval('h1, h2', (els) => els.map((e) => `${e.tagName}: "${e.textContent?.trim()}"`)));
   await browser.close();
   server.kill('SIGTERM');

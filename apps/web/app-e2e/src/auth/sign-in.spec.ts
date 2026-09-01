@@ -1,95 +1,89 @@
 import { expect, test } from '@playwright/test';
 
 import {
+  addVirtualAuthenticator,
+  authenticateViaDeterministicTestSession,
   createCredentials,
   registerAndAuthenticate,
-  registerAndSignOut,
-  signIn,
-  signInWithRememberedDevice,
-  signOutViaApi,
-  verifyLatestCode,
 } from '../support/auth';
 import { assertOpenDesignChrome } from '../support/auth-layout';
-import { appUrlPattern, signInRoute, signInUrlPattern } from '../support/routes';
+import { activationUrlPattern, appUrlPattern, signInRoute, signInUrlPattern } from '../support/routes';
 
 test.describe('/app/sign-in', () => {
-  test('renders the Open Design auth shell and copy', async ({ page }) => {
+  test('renders the unified passkey-first access route', async ({ page }) => {
     await page.goto(signInRoute);
 
     await assertOpenDesignChrome(page);
-    await expect(page.locator('[data-slot="title"]')).toContainText('Sign in to Themis with Passkeys');
-    await expect(page.locator('[data-slot="sub"]')).toContainText('Enter your email to continue with a passkey.');
-    await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
+    await expect(page.getByRole('heading', { name: 'Sign in to Themis' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Continue with a passkey' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Try another way' })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Email address' })).toBeHidden();
+    await expect(page.getByRole('textbox', { name: /password/i })).toHaveCount(0);
   });
 
-  test('reveals password controls only after an explicit choice', async ({ page }) => {
+  test('opens email bootstrap inline without changing routes', async ({ page }) => {
     await page.goto(signInRoute);
+    await page.getByRole('button', { name: 'Try another way' }).click();
 
-    await expect(page.getByRole('textbox', { name: 'Password' })).toBeHidden();
-    await page.getByRole('button', { name: 'Use password instead' }).click();
-
-    const rememberDevice = page.getByRole('checkbox', { name: 'Remember this device' });
-    const rememberLabel = page.locator('label').filter({ hasText: 'Remember this device' });
-
-    await expect(page.getByRole('textbox', { name: 'Password' })).toBeVisible();
-    await expect(page.locator('[data-slot="sub"]')).toContainText(
-      'Enter your email and password to access your account.',
-    );
-    await expect(page.getByRole('link', { name: 'Forgotten password?' })).toBeVisible();
-    await expect(rememberDevice).not.toBeChecked();
-    await rememberLabel.click();
-    await expect(rememberDevice).toBeChecked();
-
-    await rememberLabel.click();
-    await expect(rememberDevice).not.toBeChecked();
+    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page.getByRole('heading', { name: 'Try another way' })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Email address' })).toBeEditable();
+    await expect(page.getByText('Email verification alone cannot sign you in.')).toBeVisible();
   });
 
-  test('signs an existing user in through email verification', async ({ page, request }) => {
+  test('offers passkey retry before retaining email recovery', async ({ page }) => {
+    const retryRequests: boolean[] = [];
+
+    await page.route('**/api/auth/passkey/authentication/begin', async (route) => {
+      const body = route.request().postDataJSON() as { retryRequested: boolean };
+
+      retryRequests.push(body.retryRequested);
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ code: 'platform_error', message: 'Passkey authentication failed.' }),
+      });
+    });
+    await page.goto(signInRoute);
+    await page.getByRole('button', { name: 'Continue with a passkey' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Passkey sign-in did not finish.' })).toBeVisible();
+    await page.getByRole('button', { name: 'Try passkey again' }).click();
+    await expect.poll(() => retryRequests).toEqual([false, true]);
+    await expect(page.getByRole('button', { name: 'Try another way' })).toBeVisible();
+  });
+
+  test('bootstraps a new account only after OTP and passkey verification', async ({ page, request }) => {
     const credentials = createCredentials();
 
-    await registerAndSignOut(page, request, credentials.email, credentials.password);
-    await signIn(page, credentials.email, credentials.password);
-    await verifyLatestCode(page, request, credentials.email, 'sign_in');
+    await registerAndAuthenticate(page, request, credentials.email, credentials.password, {
+      completeActivation: false,
+    });
 
-    await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
+    await expect(page).toHaveURL(activationUrlPattern);
+    const session = await page.request.get('/api/auth/session');
+    const payload = (await session.json()) as { data: { kind: string; user: { email: string } | null } };
 
-    await signOutViaApi(page);
-    await signInWithRememberedDevice(page, credentials.email, credentials.password);
+    expect(payload.data).toMatchObject({ kind: 'full', user: { email: credentials.email } });
 
-    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
-  });
+    await page.goto('/app/security');
+    await page.getByRole('button', { name: 'Add passkey' }).click();
+    await page.getByRole('textbox', { name: 'Passkey name' }).fill('Backup security key');
+    await page.route('**/api/auth/passkey/registration/begin', async (route) => {
+      await addVirtualAuthenticator(page, 'usb');
+      await route.continue();
+    });
+    await page.getByRole('button', { name: 'Confirm and add passkey' }).click();
 
-  test('stays on the route when credentials are invalid', async ({ page }) => {
-    await page.goto(signInRoute);
-    await page.getByRole('button', { name: 'Use password instead' }).click();
-    const emailField = page.getByRole('textbox', { name: 'Email' });
-
-    const passwordField = page.getByRole('textbox', { name: 'Password' });
-
-    await expect(page).toHaveURL(signInUrlPattern);
-    await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
-    await expect(emailField).toBeEditable();
-    await expect(passwordField).toBeEditable();
-
-    await emailField.fill('bad-email');
-    await expect(emailField).toHaveValue('bad-email');
-    await passwordField.fill('short');
-    await expect(passwordField).toHaveValue('short');
-    await page.getByRole('button', { name: 'Sign in' }).click();
-
-    await expect(page).toHaveURL(signInUrlPattern);
-    await expect(page.getByText(/Enter (a valid|your) email address/)).toBeVisible();
-    await expect(page.getByText('Use at least 8 characters.')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Backup security key' })).toBeVisible();
   });
 
   test('redirects authenticated users away from sign-in', async ({ page, request }) => {
     const credentials = createCredentials();
 
-    await registerAndAuthenticate(page, request, credentials.email, credentials.password);
+    await authenticateViaDeterministicTestSession(page, request, credentials.email, credentials.password);
     await page.goto(signInRoute);
 
     await expect(page).toHaveURL(appUrlPattern);
-    await expect(page.getByText('dashboard works!')).toBeVisible();
   });
 });

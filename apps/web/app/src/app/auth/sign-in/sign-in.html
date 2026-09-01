@@ -1,210 +1,241 @@
 <app-auth-layout>
   <app-auth-card>
-    @if (passkeyState() === 'fallback') {
-      <header class="mb-7 space-y-2">
-        <button
-          type="button"
-          class="-ml-2 inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-teal-700 dark:text-teal-300"
-          (click)="returnToPasskey()"
-          i18n="@@signInBackToPasskey"
+    @switch (state()) {
+      @case ('ready') {
+        <header class="text-center">
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400"
+            i18n="@@accessEyebrow"
+          >
+            Account access
+          </p>
+          <h1 class="font-heading mt-3 text-3xl leading-tight font-bold tracking-[-0.03em]" i18n="@@accessTitle">
+            Sign in to Themis
+          </h1>
+          <app-description class="mt-3 block" i18n="@@accessDescription"
+            >Use a passkey to sign in. You can choose one saved on this or another device.</app-description
+          >
+        </header>
+        <div class="mt-7 grid gap-3">
+          <app-button tone="blue" size="lg" fullWidth (click)="authenticateWithPasskey()" i18n="@@accessContinuePasskey"
+            >Continue with a passkey</app-button
+          >
+          <p class="px-2 text-center text-xs leading-5 text-zinc-500 dark:text-zinc-400" i18n="@@accessPasskeyGuidance">
+            Your passkey may be saved on this device, synced from another device, or available on a nearby device or
+            security key.
+          </p>
+          <div class="my-2 flex items-center gap-3" aria-hidden="true">
+            <span class="h-px flex-1 bg-zinc-950/10 dark:bg-white/10"></span
+            ><span class="font-mono text-[0.6875rem] tracking-widest text-zinc-400 uppercase">or</span
+            ><span class="h-px flex-1 bg-zinc-950/10 dark:bg-white/10"></span>
+          </div>
+          <button
+            type="button"
+            class="min-h-11 rounded-md px-4 text-sm font-semibold text-blue-600 underline underline-offset-4 hover:bg-blue-600/10 dark:text-blue-400"
+            (click)="showEmailRecovery()"
+            i18n="@@accessTryAnotherWay"
+          >
+            Try another way
+          </button>
+        </div>
+      }
+      @case ('passkey-loading') {
+        <header class="text-center" aria-live="polite">
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400"
+            i18n="@@accessPasskeyPromptEyebrow"
+          >
+            Passkey requested
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessCheckDevice">Check your device</h1>
+          <app-description class="mt-3 block" i18n="@@accessCheckDeviceDescription"
+            >Follow your device's prompt to continue.</app-description
+          >
+        </header>
+        <app-button class="mt-7" tone="blue" size="lg" fullWidth loading i18n="@@accessWaitingPasskey"
+          >Waiting for passkey</app-button
         >
-          Back to passkey
-        </button>
-        <h1
-          data-slot="title"
-          class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
-          i18n="@@signInPasswordTitle"
-        >
-          Sign in with password
-        </h1>
-        <app-description data-slot="sub" i18n="@@signInPasswordSub">
-          Enter your email and password to access your account.
-        </app-description>
-      </header>
-    } @else {
-      <header class="mb-7 space-y-2">
-        <h1
-          id="sign-in-title"
-          data-slot="title"
-          class="font-heading text-[1.625rem] leading-tight font-bold tracking-[-0.025em] text-zinc-950 dark:text-zinc-50"
-          i18n="@@signInPasskeyHeading"
-        >
-          Sign in to Themis with Passkeys
-        </h1>
-        <app-description data-slot="sub" i18n="@@signInPasskeySub">
-          Enter your email to continue with a passkey.
-        </app-description>
-      </header>
-    }
-
-    @if (passkeyState() !== 'fallback') {
-      <section class="grid gap-4" aria-labelledby="sign-in-title" data-slot="passkey-panel">
-        <form class="grid gap-4" (submit)="submitPasskey($event)">
-          <label class="grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="passkey-sign-in-email">
-            <span i18n="@@signInPasskeyEmailLabel">Email</span>
-            <input
-              id="passkey-sign-in-email"
-              class="rounded-md border border-zinc-950/10 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 dark:border-white/10 dark:bg-zinc-950"
+      }
+      @case ('passkey-error') {
+        <header>
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-red-600 uppercase dark:text-red-400"
+            i18n="@@accessPasskeyErrorEyebrow"
+          >
+            Unable to continue
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessPasskeyErrorTitle">
+            Passkey sign-in did not finish.
+          </h1>
+        </header>
+        <app-alert class="mt-5 block" tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
+        <div class="mt-6 grid gap-3">
+          <app-button tone="blue" size="lg" fullWidth (click)="authenticateWithPasskey()" i18n="@@accessRetryPasskey"
+            >Try passkey again</app-button
+          ><button
+            type="button"
+            class="min-h-11 rounded-md px-4 text-sm font-semibold text-blue-600 underline underline-offset-4 dark:text-blue-400"
+            (click)="showEmailRecovery()"
+            i18n="@@accessErrorTryAnotherWay"
+          >
+            Try another way
+          </button>
+        </div>
+      }
+      @case ('email') {
+        <header>
+          <button
+            type="button"
+            class="-ml-2 min-h-11 rounded-md px-2 text-sm font-semibold text-blue-600 dark:text-blue-400"
+            (click)="showReady()"
+            i18n="@@accessBack"
+          >
+            Back
+          </button>
+          <p
+            class="mt-2 font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400"
+            i18n="@@accessRecoveryEyebrow"
+          >
+            Bootstrap or recover
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessRecoveryTitle">Try another way</h1>
+          <app-description class="mt-3 block" i18n="@@accessRecoveryDescription"
+            >Enter an email you can verify. Email verification alone cannot sign you in.</app-description
+          >
+        </header>
+        <app-form class="mt-6 grid gap-5" [form]="emailForm" (submit)="requestCode($event)"
+          ><app-field
+            ><app-label for="access-email" i18n="@@accessEmailLabel">Email address</app-label
+            ><app-input
+              controlId="access-email"
+              name="email"
               type="email"
               autocomplete="email"
-              [value]="passkeyEmail()"
-              (input)="updatePasskeyEmail($event)"
-            />
-          </label>
-          <app-button
-            data-slot="passkey-submit"
-            tone="accent"
-            type="submit"
-            size="lg"
-            fullWidth
-            [loading]="passkeyState() === 'loading'"
-          >
-            @if (passkeyState() === 'retry') {
-              Try passkey again
-            } @else {
-              Continue with passkey
-            }
-          </app-button>
-        </form>
-
-        @if (passkeyState() === 'unsupported') {
-          <app-alert tone="danger" variant="auth" role="alert" i18n="@@signInPasskeyUnsupported">
-            This browser does not support passkeys. Choose password sign-in below.
-          </app-alert>
-        }
-        @if (passkeyState() === 'verification') {
-          <div
-            class="grid gap-3 rounded-lg border border-amber-950/10 bg-amber-50 p-4 dark:border-white/10 dark:bg-amber-950/30"
-          >
-            <p class="text-sm leading-5 text-amber-950 dark:text-amber-100" i18n="@@signInPasskeyVerification">
-              Verify your email first. Enter the PIN from your email to continue the passkey ceremony.
-            </p>
-            <label class="grid gap-1 text-sm font-medium text-zinc-950 dark:text-zinc-50" for="sign-in-pin">
-              <span i18n="@@signInPinLabel">Email PIN</span>
-              <input
-                id="sign-in-pin"
-                class="rounded-md border border-zinc-950/10 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500 dark:border-white/10 dark:bg-zinc-950"
-                inputmode="numeric"
-                autocomplete="one-time-code"
-                [value]="pin()"
-                (input)="updatePin($event)"
-              />
-            </label>
-            <app-button
-              type="button"
-              tone="neutral"
-              size="md"
-              [disabled]="pin().length < 4"
-              (click)="continueAfterVerification()"
-              i18n="@@signInPinContinue"
-              >Continue after verification</app-button
-            >
-          </div>
-        }
-        @if (passkeyState() === 'retry') {
-          <app-alert tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
-        }
-        @if (passkeyState() === 'success') {
-          <p role="status" class="text-sm text-teal-700 dark:text-teal-300" i18n="@@signInPasskeySuccess">
-            Signed in successfully. Your vault remains locked until you unlock it.
-          </p>
-        }
-      </section>
-    }
-
-    <app-form
-      class="grid w-full max-w-sm grid-cols-1 gap-4"
-      [form]="signInForm"
-      [hidden]="passkeyState() !== 'fallback'"
-    >
-      <app-field>
-        <app-label for="sign-in-email" i18n="@@signInEmailLabel">Email</app-label>
-        <app-input
-          autocomplete="email"
-          [formField]="signInForm.email"
-          required
-          type="email"
-          controlId="sign-in-email"
-          name="email"
-        />
-        <app-error-message controlId="sign-in-email-error" i18n="@@signInEmailErrorInvalid">{{
-          emailError()
-        }}</app-error-message>
-      </app-field>
-
-      <app-field>
-        <app-label for="sign-in-password" i18n="@@signInPasswordLabel">Password</app-label>
-        <app-password-input
-          autocomplete="current-password"
-          [formField]="signInForm.password"
-          required
-          minLength="8"
-          controlId="sign-in-password"
-          name="password"
-        />
-        <app-error-message controlId="sign-in-password-error" i18n="@@signInPasswordErrorMinlength">{{
-          passwordError()
-        }}</app-error-message>
-      </app-field>
-
-      <div class="flex flex-col gap-4">
-        <app-link
-          i18n="@@signInForgottenPasswordLink"
-          [routerLink]="forgottenPasswordUrl"
-          [text]="'Forgotten password?'"
-          class="self-end text-sm font-semibold"
-        />
-
-        <label
-          for="sign-in-remember-device"
-          class="flex items-center gap-3 text-sm leading-6 font-medium text-zinc-950 select-none dark:text-zinc-50"
+              [formField]="emailForm.email"
+            /><app-error-message controlId="access-email-error">{{ emailError() }}</app-error-message></app-field
+          ><app-button type="submit" tone="blue" size="lg" fullWidth i18n="@@accessSendCode"
+            >Send code</app-button
+          ></app-form
         >
-          <app-checkbox
-            [formField]="signInForm.rememberDevice"
-            controlId="sign-in-remember-device"
-            name="rememberDevice"
-          />
-          <span i18n="@@signInRememberDeviceLabel">Remember this device</span>
-        </label>
-      </div>
-
-      <app-button
-        data-od-id="submit"
-        data-slot="submit"
-        i18n="@@signInSubmitButton"
-        tone="accent"
-        type="submit"
-        size="lg"
-        fullWidth
-        [loading]="submitting()"
-        >Sign in</app-button
-      >
-
-      @if (errorMessage()) {
-        <app-alert tone="danger" variant="auth" i18n="@@signInAuthFailedAlert">{{ errorMessage() }}</app-alert>
       }
-    </app-form>
-    @if (passkeyState() !== 'fallback') {
-      <button
-        type="button"
-        class="mt-4 w-full text-center text-sm font-semibold text-zinc-600 underline-offset-4 hover:underline dark:text-zinc-400"
-        (click)="usePasswordFallback()"
-        i18n="@@signInUsePassword"
-      >
-        Use password instead
-      </button>
+      @case ('otp') {
+        <header>
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400"
+            i18n="@@accessOtpEyebrow"
+          >
+            Email verification
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessOtpTitle">Check for a 6-digit code</h1>
+          <app-description class="mt-3 block" i18n="@@accessOtpDescription"
+            >If you can use that email, check for a 6-digit code. Delivery can take a few minutes.</app-description
+          >
+        </header>
+        <app-form class="mt-6 grid gap-5" [form]="otpForm" (submit)="verifyCode($event)"
+          ><app-field
+            ><app-label for="access-pin" i18n="@@accessOtpLabel">Verification code</app-label
+            ><app-input
+              controlId="access-pin"
+              name="pin"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              [formField]="otpForm.pin"
+            /><app-error-message controlId="access-pin-error">{{ otpError() }}</app-error-message></app-field
+          ><app-button type="submit" tone="blue" size="lg" fullWidth i18n="@@accessVerifyEmail"
+            >Verify email</app-button
+          ></app-form
+        >
+      }
+      @case ('account-choice') {
+        <header>
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-green-700 uppercase dark:text-green-400"
+            i18n="@@accessVerifiedEyebrow"
+          >
+            Email verified
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessAccountTitle">
+            Choose the account you want to access.
+          </h1>
+        </header>
+        <div class="mt-6 grid gap-3">
+          @for (account of accounts(); track account.accountId) {
+            <button
+              type="button"
+              class="min-h-14 rounded-lg border border-zinc-950/10 px-4 text-left hover:border-blue-500 hover:bg-blue-50 dark:border-white/10 dark:hover:bg-blue-500/10"
+              (click)="chooseAccount(account)"
+            >
+              <span class="block font-semibold">{{ account.name }}</span
+              ><span class="block text-sm text-zinc-500 dark:text-zinc-400">{{ account.role }}</span>
+            </button>
+          }
+        </div>
+      }
+      @case ('enrollment') {
+        <header>
+          <p
+            class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400"
+            i18n="@@accessEnrollmentEyebrow"
+          >
+            Final security step
+          </p>
+          <h1 class="font-heading mt-3 text-2xl font-bold" i18n="@@accessEnrollmentTitle">
+            Create a passkey to finish.
+          </h1>
+          <app-description class="mt-3 block" i18n="@@accessEnrollmentDescription"
+            >Email verification alone cannot sign you in. Create and verify a passkey for
+            {{ selectedAccount()?.name }}.</app-description
+          >
+        </header>
+        <app-form class="mt-6 grid gap-5" [form]="enrollmentForm" (submit)="createPasskey($event)"
+          ><app-field
+            ><app-label for="passkey-label" i18n="@@accessPasskeyLabel">Passkey name</app-label
+            ><app-input
+              controlId="passkey-label"
+              name="label"
+              autocomplete="off"
+              [formField]="enrollmentForm.label"
+            /><app-error-message controlId="passkey-label-error">{{ labelError() }}</app-error-message></app-field
+          ><app-button type="submit" tone="blue" size="lg" fullWidth i18n="@@accessCreatePasskey"
+            >Create passkey</app-button
+          ></app-form
+        >
+      }
+      @case ('enrollment-loading') {
+        <header class="text-center" aria-live="polite">
+          <h1 class="font-heading text-2xl font-bold" i18n="@@accessCreatingPasskey">Create your passkey</h1>
+          <app-description class="mt-3 block" i18n="@@accessCreatingPasskeyDescription"
+            >Follow your device's prompt. You will verify the new passkey once more before entering
+            Themis.</app-description
+          >
+        </header>
+        <app-button class="mt-7" tone="blue" size="lg" fullWidth loading i18n="@@accessWaitingSetup"
+          >Waiting for your device</app-button
+        >
+      }
+      @case ('verification-loading') {
+        <header class="text-center" aria-live="polite">
+          <h1 class="font-heading text-2xl font-bold" i18n="@@accessVerifyNewPasskey">Verify your new passkey</h1>
+          <app-description class="mt-3 block" i18n="@@accessVerifyNewPasskeyDescription"
+            >Use the passkey you just created to finish signing in.</app-description
+          >
+        </header>
+        <app-button class="mt-7" tone="blue" size="lg" fullWidth loading i18n="@@accessWaitingVerification"
+          >Waiting for verification</app-button
+        >
+      }
+      @case ('success') {
+        <p
+          class="text-center text-sm font-semibold text-green-700 dark:text-green-400"
+          role="status"
+          i18n="@@accessSuccess"
+        >
+          Passkey verified. Opening Themis...
+        </p>
+      }
     }
-    @if (passkeyState() !== 'fallback') {
-      <p class="mt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-        <span i18n="@@signInFooterPrompt">New to Themis?</span>
-        <app-link
-          data-slot="footer"
-          class="ml-2 font-semibold"
-          i18n="@@signInFooterLink"
-          [routerLink]="footerLink"
-          [text]="'Create an account'"
-        />
-      </p>
+    @if (errorMessage() && state() !== 'passkey-error') {
+      <app-alert class="mt-5 block" tone="danger" variant="auth" role="alert">{{ errorMessage() }}</app-alert>
     }
   </app-auth-card>
 </app-auth-layout>
