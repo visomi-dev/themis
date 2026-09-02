@@ -511,8 +511,8 @@
         <target>Ayuda</target>
       </trans-unit>
       <trans-unit id="accessEyebrow" datatype="html"><source> Account access </source><target> Acceso a la cuenta </target></trans-unit>
-      <trans-unit id="accessTitle" datatype="html"><source> Sign in to Themis </source><target> Inicia sesión en Themis </target></trans-unit>
-      <trans-unit id="accessDescription" datatype="html"><source>Use a passkey to sign in. You can choose one saved on this or another device.</source><target>Usa una clave de acceso para iniciar sesión. Puedes elegir una guardada en este dispositivo o en otro.</target></trans-unit>
+      <trans-unit id="accessTitle" datatype="html"><source> Sign in or create an account </source><target> Inicia sesión o crea una cuenta </target></trans-unit>
+      <trans-unit id="accessDescription" datatype="html"><source>If the email already belongs to an account we will sign you in. If it does not, we will create your account once you verify the email and finish setting up a passkey.</source><target>Si el correo ya pertenece a una cuenta, iniciaremos sesión. Si no, crearemos tu cuenta en cuanto verifiques el correo y termines de configurar una clave de acceso.</target></trans-unit>
       <trans-unit id="accessContinuePasskey" datatype="html"><source>Continue with a passkey</source><target>Continuar con una clave de acceso</target></trans-unit>
       <trans-unit id="accessPasskeyGuidance" datatype="html"><source> Your passkey may be saved on this device, synced from another device, or available on a nearby device or security key. </source><target> Tu clave de acceso puede estar guardada en este dispositivo, sincronizada desde otro o disponible en un dispositivo cercano o una llave de seguridad. </target></trans-unit>
       <trans-unit id="accessTryAnotherWay" datatype="html"><source> Try another way </source><target> Probar de otra forma </target></trans-unit>

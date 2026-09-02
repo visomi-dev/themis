@@ -8,6 +8,7 @@ import {
   APP_PATH,
   DASHBOARD_PATH,
   GALLERY_PATH,
+  IDENTITY_PATH,
   PROJECTS_PATH,
   PROJECT_ID_PATH,
   PROJECT_NEW_PATH,
@@ -16,7 +17,6 @@ import {
   TIMELINE_PATH,
   VALIDATION_PATH,
   ITERATION_PATH,
-  SIGN_IN_PATH,
   SECURITY_PATH,
 } from './shared/constants/routes';
 
@@ -29,10 +29,10 @@ export const appRoutes: Route[] = [
   },
 
   {
-    path: SIGN_IN_PATH,
+    path: IDENTITY_PATH,
     canActivate: [anonymousGuard],
     data: { hideAppShell: true },
-    loadComponent: () => import('./auth/sign-in/sign-in').then((module) => module.SignIn),
+    loadComponent: () => import('./auth/identity/identity').then((module) => module.Identity),
   },
   {
     path: DASHBOARD_PATH,

@@ -10,7 +10,7 @@ export const VALIDATION_PATH = 'validation';
 export const ITERATION_PATH = 'iterations/:iterationId';
 export const PROJECT_NEW_PATH = 'new';
 export const GALLERY_PATH = 'gallery';
-export const SIGN_IN_PATH = 'sign-in';
+export const IDENTITY_PATH = 'auth/identity';
 export const SECURITY_PATH = 'security';
 
 export const APP_URL = '/';
@@ -20,5 +20,5 @@ export const PROJECTS_URL = '/projects';
 export const PROJECT_DETAIL_URL = '/projects/:projectId';
 export const PROJECT_NEW_URL = '/projects/new';
 export const GALLERY_URL = '/gallery';
-export const SIGN_IN_URL = '/sign-in';
+export const IDENTITY_URL = '/auth/identity';
 export const SECURITY_URL = '/security';

@@ -7,7 +7,7 @@ import { workspaceRoot } from '@nx/devkit';
 
 import { clearMailbox } from '../support/mailbox';
 import { createCredentials, signUp, verifyLatestCode } from '../support/auth';
-import { activationUrlPattern, appUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
+import { activationUrlPattern, appUrlPattern, identityUrlPattern, projectsUrlPattern } from '../support/routes';
 
 const execFileAsync = promisify(execFile);
 const evidenceDirectory = `${workspaceRoot}/docs/verification/isolated-passkey-run-242`;
@@ -33,7 +33,7 @@ test.describe('isolated passkey bootstrap/session evidence', () => {
     await clearMailbox(request);
 
     await signUp(page, credentials.email, credentials.password);
-    expect(page.url()).toMatch(signInUrlPattern);
+    expect(page.url()).toMatch(identityUrlPattern);
 
     const beforeVerification = await page.request.get('/api/auth/session');
 

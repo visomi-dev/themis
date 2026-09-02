@@ -46,7 +46,7 @@ describe('composition server', () => {
   });
 
   it('serves the Angular auth surface under /app', async () => {
-    const response = await axios.get('/app/en/sign-in', {
+    const response = await axios.get('/app/en/auth/identity', {
       headers: {
         Accept: 'text/html',
       },

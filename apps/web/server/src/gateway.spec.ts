@@ -13,7 +13,7 @@ describe('createGatewayApp', () => {
 
     const angularHandler = express();
 
-    angularHandler.get('/sign-in', (_req, res) => {
+    angularHandler.get('/auth/identity', (_req, res) => {
       res.type('html').send('<base href="/app/en/" /><app-root></app-root>');
     });
 
@@ -72,7 +72,7 @@ describe('createGatewayApp', () => {
 
     const apiResponse = await request(app).get('/api/hello');
 
-    const angularResponse = await request(app).get('/app/sign-in');
+    const angularResponse = await request(app).get('/app/auth/identity');
 
     expect(apiResponse.status).toBe(200);
     expect(apiResponse.body).toEqual({ message: 'hello' });

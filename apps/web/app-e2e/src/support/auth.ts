@@ -7,10 +7,10 @@ import { fillOtp } from './otp';
 import {
   activationUrlPattern,
   appUrlPattern,
+  identityRoute,
+  identityUrlPattern,
   projectsRoute,
   projectsUrlPattern,
-  signInRoute,
-  signInUrlPattern,
 } from './routes';
 
 type VerificationOptions = {
@@ -111,8 +111,8 @@ async function completeActivationIfNeeded(page: Page): Promise<void> {
 }
 
 async function startEmailRecovery(page: Page, email: string): Promise<void> {
-  await page.goto(signInRoute);
-  await expect(page).toHaveURL(signInUrlPattern);
+  await page.goto(identityRoute);
+  await expect(page).toHaveURL(identityUrlPattern);
   await page.getByRole('button', { name: 'Try another way' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill(email);
   await page.getByRole('button', { name: 'Send code' }).click();
@@ -175,7 +175,7 @@ export const authenticateViaDeterministicTestSession = async (
   email: string,
   _password: string,
 ) => {
-  await page.goto(signInRoute);
+  await page.goto(identityRoute);
   const response = await request.post('/api/test/auth/session', { data: { email } });
 
   if (!response.ok()) throw new Error(`deterministic test session failed with ${response.status()}`);
@@ -214,7 +214,7 @@ export const signUp = async (page: Page, email: string, _password: string) => {
 
 export const signIn = async (page: Page, _email: string, _password: string) => {
   await ensureVirtualAuthenticator(page);
-  await page.goto(signInRoute);
+  await page.goto(identityRoute);
   await page.getByRole('button', { name: 'Continue with a passkey' }).click();
   await expect(page).toHaveURL(appUrlPattern, { timeout: 15_000 });
 };
@@ -258,6 +258,6 @@ export const signOutViaMenu = async (page: Page) => {
 export const registerAndSignOut = async (page: Page, request: APIRequestContext, email: string, password: string) => {
   await registerAndAuthenticate(page, request, email, password);
   await signOutViaApi(page);
-  await page.goto(signInRoute);
-  await expect(page).toHaveURL(signInUrlPattern);
+  await page.goto(identityRoute);
+  await expect(page).toHaveURL(identityUrlPattern);
 };

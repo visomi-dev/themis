@@ -146,7 +146,7 @@ async function inspectContextKeyStore(
 }
 
 async function createSession(page: Page, suffix: string, accountId?: string): Promise<Session> {
-  if (page.url() === 'about:blank') await page.goto('/app/en/sign-in');
+  if (page.url() === 'about:blank') await page.goto('/app/en/auth/identity');
   const credentials = createCredentials();
   const separator = credentials.email.indexOf('@');
   const email = `${credentials.email.slice(0, separator)}-${suffix}${credentials.email.slice(separator)}`;

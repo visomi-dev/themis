@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-import { signInRoute } from '../support/routes';
+import { identityRoute } from '../support/routes';
 
 type Theme = 'light' | 'dark';
 
@@ -18,19 +18,19 @@ async function setTheme(page: Page, theme: Theme): Promise<void> {
 }
 
 for (const theme of themes) {
-  test(`unified sign-in visual regression (${theme})`, async ({ page }) => {
-    await page.goto(signInRoute);
+  test(`unified identity visual regression (${theme})`, async ({ page }) => {
+    await page.goto(identityRoute);
     await setTheme(page, theme);
 
-    await expect(page).toHaveScreenshot(`sign-in-${theme}.png`, { fullPage: true });
+    await expect(page).toHaveScreenshot(`identity-${theme}.png`, { fullPage: true });
   });
 
   test(`email recovery visual regression (${theme})`, async ({ page }) => {
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
     await page.getByRole('button', { name: 'Try another way' }).click();
     await setTheme(page, theme);
 
-    await expect(page).toHaveScreenshot(`sign-in-email-${theme}.png`, { fullPage: true });
+    await expect(page).toHaveScreenshot(`identity-email-${theme}.png`, { fullPage: true });
   });
 
   test(`passkey retry visual regression (${theme})`, async ({ page }) => {
@@ -41,10 +41,10 @@ for (const theme of themes) {
         body: JSON.stringify({ code: 'platform_error', message: 'Passkey authentication failed.' }),
       }),
     );
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
     await page.getByRole('button', { name: 'Continue with a passkey' }).click();
     await setTheme(page, theme);
 
-    await expect(page).toHaveScreenshot(`sign-in-passkey-retry-${theme}.png`, { fullPage: true });
+    await expect(page).toHaveScreenshot(`identity-passkey-retry-${theme}.png`, { fullPage: true });
   });
 }

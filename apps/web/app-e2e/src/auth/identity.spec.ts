@@ -7,14 +7,14 @@ import {
   registerAndAuthenticate,
 } from '../support/auth';
 import { assertOpenDesignChrome } from '../support/auth-layout';
-import { activationUrlPattern, appUrlPattern, signInRoute, signInUrlPattern } from '../support/routes';
+import { activationUrlPattern, appUrlPattern, identityRoute, identityUrlPattern } from '../support/routes';
 
-test.describe('/app/sign-in', () => {
+test.describe('/app/auth/identity', () => {
   test('renders the unified passkey-first access route', async ({ page }) => {
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
 
     await assertOpenDesignChrome(page);
-    await expect(page.getByRole('heading', { name: 'Sign in to Themis' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Continue with a passkey' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Try another way' })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Email address' })).toBeHidden();
@@ -22,10 +22,10 @@ test.describe('/app/sign-in', () => {
   });
 
   test('opens email bootstrap inline without changing routes', async ({ page }) => {
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
     await page.getByRole('button', { name: 'Try another way' }).click();
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
     await expect(page.getByRole('heading', { name: 'Try another way' })).toBeVisible();
     await expect(page.getByRole('textbox', { name: 'Email address' })).toBeEditable();
     await expect(page.getByText('Email verification alone cannot sign you in.')).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('/app/sign-in', () => {
         body: JSON.stringify({ code: 'platform_error', message: 'Passkey authentication failed.' }),
       });
     });
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
     await page.getByRole('button', { name: 'Continue with a passkey' }).click();
 
     await expect(page.getByRole('heading', { name: 'Passkey sign-in did not finish.' })).toBeVisible();
@@ -66,7 +66,7 @@ test.describe('/app/sign-in', () => {
 
     expect(payload.data).toMatchObject({ kind: 'full', user: { email: credentials.email } });
 
-    await page.goto('/app/security');
+    await page.goto('/app/en/security');
     await page.getByRole('button', { name: 'Add passkey' }).click();
     await page.getByRole('textbox', { name: 'Passkey name' }).fill('Backup security key');
     await page.route('**/api/auth/passkey/registration/begin', async (route) => {
@@ -78,11 +78,11 @@ test.describe('/app/sign-in', () => {
     await expect(page.getByRole('heading', { name: 'Backup security key' })).toBeVisible();
   });
 
-  test('redirects authenticated users away from sign-in', async ({ page, request }) => {
+  test('redirects authenticated users away from /auth/identity', async ({ page, request }) => {
     const credentials = createCredentials();
 
     await authenticateViaDeterministicTestSession(page, request, credentials.email, credentials.password);
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
 
     await expect(page).toHaveURL(appUrlPattern);
   });

@@ -9,7 +9,11 @@
       class="font-heading inline-flex items-center gap-2 font-bold tracking-tight text-zinc-950 sm:gap-2.5 dark:text-zinc-50"
       aria-label="Themis home"
     >
-      <app-logo variant="mark-name" size="sm" />
+      <picture class="inline-flex items-center">
+        <source srcset="/isotype-stroke.svg" media="(prefers-color-scheme: dark)" />
+        <img src="/isotype.svg" width="28" height="28" alt="" aria-hidden="true" class="h-7 w-7" />
+      </picture>
+      <span class="text-base font-bold tracking-tight sm:text-[1.0625rem]">Themis</span>
     </a>
 
     <div class="flex items-center gap-1.5 sm:gap-2">

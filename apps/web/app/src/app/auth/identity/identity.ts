@@ -46,11 +46,11 @@ type EnrollmentModel = { label: string };
 @Component({
   host: { class: /* tw */ 'block min-h-full w-full' },
   imports: [Alert, AppForm, AuthCard, AuthLayout, Button, Description, ErrorMessage, Field, FormField, Input, Label],
-  selector: 'app-sign-in',
-  templateUrl: './sign-in.html',
-  styleUrl: './sign-in.css',
+  selector: 'app-identity',
+  templateUrl: './identity.html',
+  styleUrl: './identity.css',
 })
-export class SignIn {
+export class Identity {
   private readonly auth = inject(Auth);
   private readonly passkey = inject(Passkey);
   private readonly router = inject(Router);

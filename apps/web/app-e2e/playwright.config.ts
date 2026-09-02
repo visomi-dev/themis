@@ -61,7 +61,7 @@ export default defineConfig({
     },
     reuseExistingServer: false,
     timeout: 180_000,
-    url: `${baseURL}/app/en/sign-in`,
+    url: `${baseURL}/app/en/auth/identity`,
   },
   projects: [
     {

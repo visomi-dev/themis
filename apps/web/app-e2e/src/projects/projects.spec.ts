@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { authenticateViaApi, createCredentials, signOutViaMenu } from '../support/auth';
-import { projectsUrlPattern, signInUrlPattern } from '../support/routes';
+import { identityUrlPattern, projectsUrlPattern } from '../support/routes';
 
 const project = {
   id: 'authorized-project',
@@ -71,6 +71,6 @@ test.describe('/app/projects', () => {
     await openProjects(page, request);
     await signOutViaMenu(page);
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
   });
 });

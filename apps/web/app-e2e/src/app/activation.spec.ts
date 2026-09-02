@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, registerAndAuthenticate, signOutViaMenu } from '../support/auth';
-import { activationRoute, activationUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
+import { activationRoute, activationUrlPattern, identityUrlPattern, projectsUrlPattern } from '../support/routes';
 
 test.describe('/app (first-run activation)', () => {
   test('shows activation screen after auth instead of the old placeholder', async ({ page, request }) => {
@@ -105,7 +105,7 @@ test.describe('/app (first-run activation)', () => {
     await expect(page).toHaveURL(projectsUrlPattern);
   });
 
-  test('sign out returns to sign-in', async ({ page, request }) => {
+  test('sign out returns to /auth/identity', async ({ page, request }) => {
     const credentials = createCredentials();
 
     await registerAndAuthenticate(page, request, credentials.email, credentials.password, {
@@ -115,6 +115,6 @@ test.describe('/app (first-run activation)', () => {
 
     await signOutViaMenu(page);
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
   });
 });

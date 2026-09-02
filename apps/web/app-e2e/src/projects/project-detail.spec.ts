@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
-import { projectsRoute, signInUrlPattern } from '../support/routes';
+import { identityUrlPattern, projectsRoute } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
 
@@ -52,6 +52,6 @@ test.describe('/app/projects/:projectId', () => {
 
     await signOutViaMenu(page);
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
   });
 });
