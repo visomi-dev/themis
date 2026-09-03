@@ -225,6 +225,23 @@
           >Waiting for verification</app-button
         >
       }
+      @case ('verification') {
+        <header class="text-center">
+          <h1 class="font-heading text-2xl font-bold" i18n="@@accessVerifyNewPasskey">Verify your new passkey</h1>
+          <app-description class="mt-3 block" i18n="@@accessVerifyNewPasskeyDescription"
+            >Use the passkey you just created to finish signing in.</app-description
+          >
+        </header>
+        <app-button
+          class="mt-7"
+          tone="blue"
+          size="lg"
+          fullWidth
+          (click)="verifyNewPasskey()"
+          i18n="@@accessVerifyNewPasskeyAction"
+          >Verify passkey</app-button
+        >
+      }
       @case ('success') {
         <p
           class="text-center text-sm font-semibold text-green-700 dark:text-green-400"

@@ -141,11 +141,13 @@ export class Passkey {
 function serializeCredential(credential: Credential): Record<string, unknown> {
   const publicKey = credential as PublicKeyCredential;
   const response = publicKey.response as AuthenticatorAssertionResponse | AuthenticatorAttestationResponse;
-  const encoded = (value: ArrayBuffer): string =>
-    btoa(String.fromCharCode(...new Uint8Array(value)))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+  const encoded = (value: ArrayBuffer): string => {
+    let binary = '';
+
+    for (const byte of new Uint8Array(value)) binary += String.fromCharCode(byte);
+
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
 
   const result: Record<string, unknown> = {
     id: credential.id,

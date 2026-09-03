@@ -36,6 +36,7 @@ type AccessState =
   | 'account-choice'
   | 'enrollment'
   | 'enrollment-loading'
+  | 'verification'
   | 'verification-loading'
   | 'success';
 
@@ -60,6 +61,8 @@ export class Identity {
   readonly accounts = signal<RestrictedAccount[]>([]);
   readonly selectedAccount = signal<RestrictedAccount | null>(null);
   readonly flowId = signal('');
+  readonly verificationChallengeId = signal('');
+  readonly verificationOptions = signal<Record<string, unknown> | null>(null);
 
   readonly emailModel = signal<EmailModel>({ email: '' });
   readonly emailForm: FieldTree<EmailModel> = form(this.emailModel, (path) => {
@@ -203,19 +206,39 @@ export class Identity {
         throw new Error('Passkey verification options were not returned.');
       }
 
-      this.state.set('verification-loading');
-      const assertion = await this.passkey.getCredential(registration.verificationOptions);
-      const completed = await this.passkey.completeAuthentication(registration.verificationChallengeId, assertion);
-
-      this.auth.acceptAuthenticatedUser(completed.user);
-      this.state.set('success');
-      await this.router.navigateByUrl(APP_URL);
+      this.verificationChallengeId.set(registration.verificationChallengeId);
+      this.verificationOptions.set(registration.verificationOptions);
+      this.state.set('verification');
     } catch (error) {
       this.state.set('enrollment');
       this.errorMessage.set(
         error instanceof DOMException && error.name === 'AbortError'
           ? $localize`:@@accessEnrollmentCancelled:Passkey setup was cancelled. You can try again.`
           : this.safeError(error, $localize`:@@accessEnrollmentFailed:We could not create and verify that passkey.`),
+      );
+    }
+  }
+
+  protected async verifyNewPasskey(): Promise<void> {
+    const challengeId = this.verificationChallengeId();
+    const options = this.verificationOptions();
+
+    if (!challengeId || !options) return;
+
+    this.errorMessage.set('');
+    this.state.set('verification-loading');
+
+    try {
+      const assertion = await this.passkey.getCredential(options);
+      const completed = await this.passkey.completeAuthentication(challengeId, assertion);
+
+      this.auth.acceptAuthenticatedUser(completed.user);
+      this.state.set('success');
+      await this.router.navigateByUrl(APP_URL);
+    } catch (error) {
+      this.state.set('verification');
+      this.errorMessage.set(
+        this.safeError(error, $localize`:@@accessVerificationFailed:We could not verify the new passkey. Try again.`),
       );
     }
   }

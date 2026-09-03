@@ -612,6 +612,7 @@ passkeyRouter.delete(
   '/credentials/:credentialId',
   validateRequest({ params: credentialIdPathSchema }),
   async (req, res) => {
+    requireFreshSecurityReauthentication(req);
     await revokeCredential(req, pathCredentialId(req));
     res.status(204).send();
   },
