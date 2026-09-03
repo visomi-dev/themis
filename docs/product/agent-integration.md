@@ -60,3 +60,21 @@ Guidelines:
 - never silently rewrite task intent
 - log important automated changes as decisions or updates
 - require explicit approval for destructive or scope-changing actions
+
+## Distribution
+
+The repository keeps `.opencode` as the canonical source for agents, commands,
+skills, and tools. `.agents` exposes the same resources through relative
+symbolic links for portable distribution without maintaining duplicate files.
+
+The Nx application `apps/themis-agent-cli` builds the public `@visomi/themis`
+package. Its `core` alias resolves to `visomi-dev/themis/.agents` and can be
+installed into a project with:
+
+```bash
+npx @visomi/themis add core
+```
+
+Remote installations materialize resources in the consumer project and write
+`.themis/agents.lock.json`; they do not copy the source repository's symbolic
+links blindly.

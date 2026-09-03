@@ -1,0 +1,20 @@
+(node:3731244) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-adapter-operation-matrix.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3731244) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/tools/themis.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/package.json.
+▶ adapter operation-to-test authorization matrix
+  ✔ rejects missing project scope for every CLI project operation (3330.226379ms)
+  ✔ rejects unregistered, foreign, disabled, and moved roots for every CLI operation family (9752.259877ms)
+  ✔ proves OpenCode tools require a registered project and reject a foreign read (1.971855ms)
+✔ adapter operation-to-test authorization matrix (13085.573389ms)
+ℹ tests 3
+ℹ suites 1
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13248.51162

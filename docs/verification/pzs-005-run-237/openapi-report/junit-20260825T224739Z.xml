@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites errors="0" failures="0" skipped="0" tests="12" time="8.[REDACTED-PIN]">
+  <testsuite name="schemathesis" hostname="viconsole" errors="0" failures="0" skipped="0" tests="12" time="8.[REDACTED-PIN]">
+    <testcase name="POST /sync/{workspaceId}/checkpoints" time="2.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/devices" time="0.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/devices/recover" time="1.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/devices/{deviceId}/approval" time="0.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/devices/{deviceId}/enroll" time="1.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/devices/{deviceId}/revoke" time="0.[REDACTED-PIN]" />
+    <testcase name="POST /sync/{workspaceId}/envelopes" time="1.[REDACTED-PIN]" />
+    <testcase name="GET /sync/{workspaceId}/devices" time="0.[REDACTED-PIN]" />
+    <testcase name="GET /sync/{workspaceId}/devices/audit" time="0.[REDACTED-PIN]" />
+    <testcase name="GET /sync/{workspaceId}/envelopes" time="1.[REDACTED-PIN]" />
+    <testcase name="GET /sync/{workspaceId}/checkpoints/{checkpointId}" time="0.[REDACTED-PIN]" />
+    <testcase name="GET /sync/{workspaceId}/recovery" time="0.[REDACTED-PIN]" />
+  </testsuite>
+</testsuites>

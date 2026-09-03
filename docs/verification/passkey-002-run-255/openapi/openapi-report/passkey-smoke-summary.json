@@ -1,0 +1,127 @@
+{
+  "fixture": "PASSKEY-005",
+  "execution": "real-http",
+  "resolvedVersions": {
+    "schemathesis": "4.24.3",
+    "jsonschemaRs": "0.49.1"
+  },
+  "cases": [
+    {
+      "name": "registration-begin-success",
+      "path": "/auth/passkey/registration/begin",
+      "status": 200,
+      "observed": true,
+      "assertion": "Registration begin returned application-generated persisted ceremony options over real HTTP."
+    },
+    {
+      "name": "registration-begin-no-session-unauthorized",
+      "path": "/auth/passkey/registration/begin",
+      "status": 409,
+      "observed": true,
+      "assertion": "The application denied a real HTTP request without the authenticated session cookie."
+    },
+    {
+      "name": "registration-begin-unverified-email",
+      "path": "/auth/passkey/registration/begin",
+      "status": 403,
+      "observed": true,
+      "assertion": "The persisted unverified account was denied by the application with code email_unverified."
+    },
+    {
+      "name": "registration-begin-unverified-pin",
+      "path": "/auth/passkey/registration/begin",
+      "status": 403,
+      "observed": true,
+      "assertion": "The application denied pinVerified=false with code pin_required over real HTTP."
+    },
+    {
+      "name": "authentication-begin-unverified-email",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 403,
+      "observed": true,
+      "assertion": "The persisted unverified account was denied by the application with code email_unverified."
+    },
+    {
+      "name": "authentication-begin-unverified-pin",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 403,
+      "observed": true,
+      "assertion": "The application denied authentication with pinVerified=false and code pin_required over real HTTP."
+    },
+    {
+      "name": "registration-complete-persisted-challenge-mismatch",
+      "path": "/auth/passkey/registration/complete",
+      "status": 400,
+      "observed": true,
+      "assertion": "A valid response for one persisted begin challenge was submitted with another persisted challenge ID and the application returned challenge_mismatch: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "registration-complete-expired-challenge",
+      "path": "/auth/passkey/registration/complete",
+      "status": 400,
+      "observed": false,
+      "assertion": "A valid attestation for the application-returned challenge was rejected after the bounded test clock advanced: challenge_mismatch: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "registration-complete-success",
+      "path": "/auth/passkey/registration/complete",
+      "status": 201,
+      "observed": true,
+      "assertion": "Registration completion persisted the generated credential through the real HTTP application path."
+    },
+    {
+      "name": "authentication-begin-success",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 200,
+      "observed": true,
+      "assertion": "Authentication begin returned application-generated persisted ceremony options over real HTTP."
+    },
+    {
+      "name": "authentication-complete-consumed-replay",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 409,
+      "observed": true,
+      "assertion": "A second valid assertion targeted the already consumed challenge and the application returned challenge_replayed: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-origin-mismatch",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 401,
+      "observed": true,
+      "assertion": "A validly signed assertion with a wrong origin was rejected by the application: platform_error: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-rp-mismatch",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 401,
+      "observed": true,
+      "assertion": "A validly signed assertion with a wrong RP hash was rejected by the application: platform_error: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-success",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 200,
+      "observed": true,
+      "assertion": "Authentication completion returned the application-derived authenticated result over real HTTP."
+    },
+    {
+      "name": "account-enumeration-existing-vs-missing-no-credentials",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 404,
+      "observed": true,
+      "assertion": "Existing account without a credential and non-existing account returned indistinguishable safe responses: existing={\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":3.23,\"correlationId\":\"RUN-255-API-7ca2953b92210eba\",\"requestBody\":\"{\\\"email\\\":\\\"[REDACTED]\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-255-API-7ca2953b92210eba\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, missing={\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":1.76,\"correlationId\":\"RUN-255-API-1702e64447bac3b7\",\"requestBody\":\"{\\\"email\\\":\\\"[REDACTED]\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-255-API-1702e64447bac3b7\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}."
+    },
+    {
+      "name": "tenant-account-isolation-credential-and-session-attempts",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 401,
+      "observed": true,
+      "assertion": "Cross-account/tenant credential authentication was denied and the second session could list only its own credential; cross-account patch/delete were denied: accountA=[REDACTED-ID], accountB=[REDACTED-ID], complete={\"status\":401,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":2.92,\"correlationId\":\"RUN-255-API-7df683a82e3a4987\",\"requestBody\":\"{\\\"challengeId\\\": \\\"[REDACTED]\\\",\\\"response\\\":{\\\"id\\\":\\\"txSxNzV5JBB-9dD1EbV-2Q\\\",\\\"rawId\\\": \\\"[REDACTED]\\\",\\\"response\\\":{\\\"clientDataJSON\\\": \\\"[REDACTED]\\\",\\\"authenticatorData\\\": \\\"[REDACTED]\\\",\\\"signature\\\": \\\"[REDACTED]\\\",\\\"userHandle\\\":null},\\\"type\\\":\\\"public-key\\\",\\\"clientExtensionResults\\\":{},\\\"authenticatorAttachment\\\":\\\"platform\\\"}}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-255-API-7df683a82e3a4987\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, list={\"status\":200,\"body\":{\"data\":{\"credentials\":[{\"id\":\"i-Xvt2T8N-4IKgnxWU9HpA\",\"label\":\"Isolation fixture\",\"createdAt\":\"2026-08-27T07:14:40.944Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false}]},\"message\":\"Passkeys retrieved.\"},\"timingMs\":3.59,\"correlationId\":\"RUN-255-API-97c92727cd3025d4\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"x-request-id\":\"RUN-255-API-97c92727cd3025d4\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, patch={\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":3.45,\"correlationId\":\"RUN-255-API-c6a28d6dd82239a0\",\"requestBody\":\"{}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-255-API-c6a28d6dd82239a0\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, delete={\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":3.78,\"correlationId\":\"RUN-255-API-9c8da28c8250cc84\",\"requestHeaders\":{\"Origin\":\"http://localhost:8085\",\"x-request-id\":\"RUN-255-API-9c8da28c8250cc84\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}."
+    }
+  ],
+  "securityAssertions": [
+    "The fixture creates persisted ceremony state through real HTTP begin endpoints and uses returned challenge context.",
+    "Reports are sanitized and contain no passkey or private-key material.",
+    "Registration and assertion material use ephemeral P-256 keys and standards-valid WebAuthn CBOR structures generated only in this process."
+  ]
+}

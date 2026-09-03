@@ -1,0 +1,37 @@
+{
+  "runId": "RUN-216",
+  "results": [
+    {
+      "command": "node --experimental-strip-types --test scripts/pzs-005-run-215-evidence.test.ts",
+      "result": "PASS: 1 test passed; 20 case records, all required fields, all 12 device lifecycle paths, fixed stale-base/cursor 409 assertions"
+    },
+    {
+      "command": "node --experimental-strip-types --test scripts/plan-fidelity.test.ts",
+      "result": "PASS: 6 tests passed"
+    },
+    { "command": "pnpm exec nx run shared:test --skip-nx-cache", "result": "PASS: 22 suites, 134 tests" },
+    { "command": "pnpm exec nx run api:test --skip-nx-cache", "result": "PASS: 5 suites, 37 tests" },
+    {
+      "command": "pnpm exec nx run api-e2e:e2e --skip-nx-cache",
+      "result": "PASS: 3 suites, 14 tests; restart suite 1 test"
+    },
+    {
+      "command": "pnpm exec nx run api-e2e:openapi --skip-nx-cache",
+      "result": "PASS: 12/12 operations, 1065/1065 generated cases; retained reports at dist/test-results/api-e2e/openapi; warnings: 12 authentication and 10 schema mismatch"
+    },
+    {
+      "command": "pnpm exec nx run api-e2e:durable-integration --skip-nx-cache",
+      "result": "PASS: migration applied successfully; 1 suite, 1 test"
+    },
+    {
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/pzs-005-run-215",
+      "result": "PASS: filesScanned=18, findings=[]"
+    },
+    { "command": "pnpm exec nx run api:build --skip-nx-cache", "result": "PASS: production build" },
+    {
+      "command": "pnpm exec nx run api:lint --skip-nx-cache && pnpm exec nx run api-e2e:lint --skip-nx-cache",
+      "result": "PASS: both lint targets"
+    },
+    { "command": "git diff --check", "result": "PASS: no whitespace errors" }
+  ]
+}

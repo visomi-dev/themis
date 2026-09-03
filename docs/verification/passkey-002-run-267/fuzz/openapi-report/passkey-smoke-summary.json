@@ -1,0 +1,754 @@
+{
+  "fixture": "PASSKEY-002",
+  "execution": "real-http",
+  "resolvedVersions": {
+    "schemathesis": "4.24.3",
+    "jsonschemaRs": "0.49.1"
+  },
+  "cases": [
+    {
+      "name": "registration-begin-pending-enrollment",
+      "path": "/auth/passkey/registration/begin",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/begin",
+        "status": 200,
+        "body": {
+          "data": {
+            "challengeId": "[REDACTED]",
+            "verificationChallengeId": "[REDACTED]",
+            "enrollmentId": "[REDACTED-ID]",
+            "options": {
+              "challenge": "[REDACTED]",
+              "rp": {
+                "name": "Themis",
+                "id": "localhost"
+              },
+              "user": {
+                "id": "OGZjNGU0NjYtZDMwNC00ZTE5LWE5N2ItYThlNjk5ZTg2ZmVk",
+                "name": "[REDACTED]",
+                "displayName": ""
+              },
+              "pubKeyCredParams": [
+                {
+                  "alg": -8,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -7,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -257,
+                  "type": "public-key"
+                }
+              ],
+              "timeout": 60000,
+              "attestation": "[REDACTED]",
+              "excludeCredentials": "[REDACTED]",
+              "authenticatorSelection": "[REDACTED]",
+              "extensions": {
+                "credProps": true
+              },
+              "hints": []
+            }
+          },
+          "message": "Passkey registration options created."
+        },
+        "timingMs": 47,
+        "correlationId": "RUN-267-f6590659b62095fd",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI pending enrollment\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-f6590659b62095fd"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Registration begin created a pending enrollment and returned the application verification challenge over real HTTP."
+    },
+    {
+      "name": "registration-complete-pending-credential",
+      "path": "/auth/passkey/registration/complete",
+      "status": 201,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/complete",
+        "status": 201,
+        "body": {
+          "data": {
+            "id": "0IjBJdJ0-sAlDgKP48sP6w",
+            "label": "OpenAPI pending enrollment",
+            "createdAt": "2026-08-28T02:15:05.837Z",
+            "lastUsedAt": null,
+            "revokedAt": null,
+            "transports": ["internal"],
+            "backupEligible": false,
+            "backupState": false
+          },
+          "message": "Passkey registered."
+        },
+        "timingMs": 13.71,
+        "correlationId": "RUN-267-73ac0f3138a3992c",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"0IjBJdJ0-sAlDgKP48sP6w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-73ac0f3138a3992c"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Registration complete persisted a credential linked to the pending enrollment over real HTTP."
+    },
+    {
+      "name": "authentication-denied-before-verification",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 403,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 403,
+        "body": {
+          "code": "email_unverified",
+          "message": "Verify the email address before using a passkey."
+        },
+        "timingMs": 6.19,
+        "correlationId": "RUN-267-16d0d199eb313321",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-16d0d199eb313321"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8"
+        }
+      },
+      "observed": true,
+      "assertion": "Pending enrollment authentication was denied before verification: email_unverified: Verify the email address before using a passkey.."
+    },
+    {
+      "name": "verification-activation",
+      "path": "/auth/sign-up/verify",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/sign-up/verify",
+        "status": 200,
+        "body": {
+          "message": "Sign-up complete.",
+          "data": {
+            "authenticated": true,
+            "user": {
+              "accountId": "[REDACTED-ID]",
+              "email": "[REDACTED]",
+              "emailVerifiedAt": "2026-08-28T02:15:05.837Z",
+              "id": "[REDACTED-ID]",
+              "role": "owner"
+            }
+          }
+        },
+        "timingMs": 41.75,
+        "correlationId": "RUN-267-d83758a39ffa23f3",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"pin\": \"[REDACTED]\"}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-d83758a39ffa23f3"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "The application atomically activated the pending account and enrolled credential through the real verification route."
+    },
+    {
+      "name": "registration-begin-success",
+      "path": "/auth/passkey/registration/begin",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/begin",
+        "status": 200,
+        "body": {
+          "data": {
+            "challengeId": "[REDACTED]",
+            "verificationChallengeId": "[REDACTED]",
+            "enrollmentId": null,
+            "options": {
+              "challenge": "[REDACTED]",
+              "rp": {
+                "name": "Themis",
+                "id": "localhost"
+              },
+              "user": {
+                "id": "OGZjNGU0NjYtZDMwNC00ZTE5LWE5N2ItYThlNjk5ZTg2ZmVk",
+                "name": "[REDACTED]",
+                "displayName": ""
+              },
+              "pubKeyCredParams": [
+                {
+                  "alg": -8,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -7,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -257,
+                  "type": "public-key"
+                }
+              ],
+              "timeout": 60000,
+              "attestation": "[REDACTED]",
+              "excludeCredentials": "[REDACTED]",
+              "authenticatorSelection": "[REDACTED]",
+              "extensions": {
+                "credProps": true
+              },
+              "hints": []
+            }
+          },
+          "message": "Passkey registration options created."
+        },
+        "timingMs": 12.61,
+        "correlationId": "RUN-267-6620096a293011ed",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI additional passkey\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-6620096a293011ed"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Registration begin returned application-generated persisted ceremony options over real HTTP."
+    },
+    {
+      "name": "registration-begin-existing-email-conflict",
+      "path": "/auth/passkey/registration/begin",
+      "status": 409,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/begin",
+        "status": 409,
+        "body": {
+          "code": "email_already_registered",
+          "message": "An account already exists for this email address."
+        },
+        "timingMs": 4.34,
+        "correlationId": "RUN-267-714ab67262d56f88",
+        "requestBody": "{\"email\":\"pzs005-run-267-mtcbk8ih@example.test\",\"label\":\"OpenAPI unauthorized\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-714ab67262d56f88"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8"
+        }
+      },
+      "observed": true,
+      "assertion": "The application rejected registration for an existing email with code email_already_registered."
+    },
+    {
+      "name": "registration-begin-unverified-email-pending-enrollment",
+      "path": "/auth/passkey/registration/begin",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/begin",
+        "status": 200,
+        "body": {
+          "data": {
+            "challengeId": "[REDACTED]",
+            "verificationChallengeId": "[REDACTED]",
+            "enrollmentId": "[REDACTED-ID]",
+            "options": {
+              "challenge": "[REDACTED]",
+              "rp": {
+                "name": "Themis",
+                "id": "localhost"
+              },
+              "user": {
+                "id": "M2EzYzE4MTUtYzg1Zi00ZjE2LWFhYWItZjEzY2UxMTk2ZjZi",
+                "name": "[REDACTED]",
+                "displayName": ""
+              },
+              "pubKeyCredParams": [
+                {
+                  "alg": -8,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -7,
+                  "type": "public-key"
+                },
+                {
+                  "alg": -257,
+                  "type": "public-key"
+                }
+              ],
+              "timeout": 60000,
+              "attestation": "[REDACTED]",
+              "excludeCredentials": "[REDACTED]",
+              "authenticatorSelection": "[REDACTED]",
+              "extensions": {
+                "credProps": true
+              },
+              "hints": []
+            }
+          },
+          "message": "Passkey registration options created."
+        },
+        "timingMs": 53.93,
+        "correlationId": "RUN-267-b66d044db25f2cb2",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI unverified email\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-b66d044db25f2cb2"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "The application created a pending enrollment for the persisted unverified account over real HTTP."
+    },
+    {
+      "name": "registration-begin-unverified-pin",
+      "path": "/auth/passkey/registration/begin",
+      "status": 403,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/begin",
+        "status": 403,
+        "body": {
+          "code": "pin_required",
+          "message": "Complete email PIN verification before using a passkey."
+        },
+        "timingMs": 4.69,
+        "correlationId": "RUN-267-55e6ecd0de6d0447",
+        "requestBody": "{\"email\":\"pzs005-run-267-mtcbk8ih@example.test\",\"label\":\"OpenAPI unverified PIN\",\"pinVerified\":false}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-55e6ecd0de6d0447"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "The application denied pinVerified=false with code pin_required over real HTTP."
+    },
+    {
+      "name": "authentication-begin-unverified-email",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 403,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 403,
+        "body": {
+          "code": "email_unverified",
+          "message": "Verify the email address before using a passkey."
+        },
+        "timingMs": 5.14,
+        "correlationId": "RUN-267-d58ca1171fc935ba",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-d58ca1171fc935ba"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "The persisted unverified account was denied by the application with code email_unverified."
+    },
+    {
+      "name": "authentication-begin-unverified-pin",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 403,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 403,
+        "body": {
+          "code": "pin_required",
+          "message": "Complete email PIN verification before using a passkey."
+        },
+        "timingMs": 4.69,
+        "correlationId": "RUN-267-9525980aa8e38ade",
+        "requestBody": "{\"email\":\"pzs005-run-267-mtcbk8ih@example.test\",\"pinVerified\":false}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-9525980aa8e38ade"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "The application denied authentication with pinVerified=false and code pin_required over real HTTP."
+    },
+    {
+      "name": "registration-complete-persisted-challenge-mismatch",
+      "path": "/auth/passkey/registration/complete",
+      "status": 400,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/complete",
+        "status": 400,
+        "body": {
+          "code": "challenge_mismatch",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 6.58,
+        "correlationId": "RUN-267-cd874812d649e012",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"cg7T2124X5lI_PxvnDI36w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-cd874812d649e012"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "A valid response for one persisted begin challenge was submitted with another persisted challenge ID and the application returned challenge_mismatch: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "registration-complete-expired-challenge",
+      "path": "/auth/passkey/registration/complete",
+      "status": 400,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/complete",
+        "status": 400,
+        "body": {
+          "code": "challenge_mismatch",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 15.1,
+        "correlationId": "RUN-267-36750bbf0348a39e",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"ZaqKT0p5xJ2fMPHPOmBQyQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-36750bbf0348a39e"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "A valid attestation for the application-returned challenge was rejected after the bounded test clock advanced: challenge_mismatch: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "registration-complete-success",
+      "path": "/auth/passkey/registration/complete",
+      "status": 201,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/registration/complete",
+        "status": 201,
+        "body": {
+          "data": {
+            "id": "2-1nE55JLEH-TxubBmUdYw",
+            "label": "OpenAPI smoke state",
+            "createdAt": "2026-08-28T02:09:12.552Z",
+            "lastUsedAt": null,
+            "revokedAt": null,
+            "transports": ["internal"],
+            "backupEligible": false,
+            "backupState": false
+          },
+          "message": "Passkey registered."
+        },
+        "timingMs": 10.94,
+        "correlationId": "RUN-267-d97d529b8d0586cd",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"2-1nE55JLEH-TxubBmUdYw\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-d97d529b8d0586cd"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Registration completion persisted the generated credential through the real HTTP application path."
+    },
+    {
+      "name": "authentication-begin-success",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 200,
+        "body": {
+          "data": {
+            "challengeId": "[REDACTED]",
+            "options": {
+              "rpId": "localhost",
+              "challenge": "[REDACTED]",
+              "allowCredentials": "[REDACTED]",
+              "timeout": 60000,
+              "userVerification": "required"
+            },
+            "attempt": "passkey_default"
+          },
+          "message": "Passkey authentication options created."
+        },
+        "timingMs": 14.17,
+        "correlationId": "RUN-267-fa568f6b98a4a306",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-fa568f6b98a4a306"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Authentication begin returned application-generated persisted ceremony options over real HTTP."
+    },
+    {
+      "name": "authentication-complete-consumed-replay",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 409,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/complete",
+        "status": 409,
+        "body": {
+          "code": "challenge_replayed",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 6.85,
+        "correlationId": "RUN-267-ea53e10377207c3e",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"0IjBJdJ0-sAlDgKP48sP6w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-ea53e10377207c3e"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "A second valid assertion targeted the already consumed challenge and the application returned challenge_replayed: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-origin-mismatch",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 401,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/complete",
+        "status": 401,
+        "body": {
+          "code": "platform_error",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 5.46,
+        "correlationId": "RUN-267-0a58e1f6d14201ca",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"0IjBJdJ0-sAlDgKP48sP6w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-0a58e1f6d14201ca"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "A validly signed assertion with a wrong origin was rejected by the application: platform_error: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-rp-mismatch",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 401,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/complete",
+        "status": 401,
+        "body": {
+          "code": "platform_error",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 6.99,
+        "correlationId": "RUN-267-1027d4b3cfd20a02",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"0IjBJdJ0-sAlDgKP48sP6w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-1027d4b3cfd20a02"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "A validly signed assertion with a wrong RP hash was rejected by the application: platform_error: The passkey ceremony could not be completed.."
+    },
+    {
+      "name": "authentication-complete-success",
+      "path": "/auth/passkey/authentication/complete",
+      "status": 200,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/complete",
+        "status": 200,
+        "body": {
+          "data": {
+            "authenticated": true,
+            "user": {
+              "accountId": "[REDACTED-ID]",
+              "email": "[REDACTED]",
+              "emailVerifiedAt": "2026-08-28T02:15:05.837Z",
+              "id": "[REDACTED-ID]",
+              "role": "owner",
+              "authenticationMethod": "passkey",
+              "credentialId": "[REDACTED]"
+            }
+          },
+          "message": "Passkey authentication complete."
+        },
+        "timingMs": 27.4,
+        "correlationId": "RUN-267-973f7e4aca6571d2",
+        "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"0IjBJdJ0-sAlDgKP48sP6w\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-973f7e4aca6571d2"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8",
+          "set-cookie": "[REDACTED]"
+        },
+        "sessionCookie": "[REDACTED]"
+      },
+      "observed": true,
+      "assertion": "Authentication completion returned the application-derived authenticated result over real HTTP."
+    },
+    {
+      "name": "account-enumeration-missing-account-no-credentials",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 404,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 404,
+        "body": {
+          "code": "credential_not_found",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 2.34,
+        "correlationId": "RUN-267-7a17a8313859c495",
+        "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-7a17a8313859c495"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8"
+        }
+      },
+      "observed": true,
+      "assertion": "The missing account returned the same safe response as the existing account without credentials: missing={\"method\":\"POST\",\"path\":\"/auth/passkey/authentication/begin\",\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":2.34,\"correlationId\":\"RUN-267-7a17a8313859c495\",\"requestBody\":\"{\\\"email\\\":\\\"[REDACTED]\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8123\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-267-7a17a8313859c495\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, existing={\"method\":\"POST\",\"path\":\"/auth/passkey/authentication/begin\",\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":3.54,\"correlationId\":\"RUN-267-0066a33760885255\",\"requestBody\":\"{\\\"email\\\":\\\"pzs005-run-267-mtcbk8ih@example.test\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8123\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-267-0066a33760885255\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}."
+    },
+    {
+      "name": "account-enumeration-existing-account-no-credentials",
+      "path": "/auth/passkey/authentication/begin",
+      "status": 404,
+      "observation": {
+        "method": "POST",
+        "path": "/auth/passkey/authentication/begin",
+        "status": 404,
+        "body": {
+          "code": "credential_not_found",
+          "message": "The passkey ceremony could not be completed."
+        },
+        "timingMs": 3.54,
+        "correlationId": "RUN-267-0066a33760885255",
+        "requestBody": "{\"email\":\"pzs005-run-267-mtcbk8ih@example.test\",\"pinVerified\":true}",
+        "requestHeaders": {
+          "Origin": "http://localhost:8123",
+          "Content-Type": "application/json",
+          "x-request-id": "RUN-267-0066a33760885255"
+        },
+        "responseHeaders": {
+          "content-type": "application/json; charset=utf-8"
+        }
+      },
+      "observed": true,
+      "assertion": "The existing account without credentials returned the same safe response as the missing account: existing={\"method\":\"POST\",\"path\":\"/auth/passkey/authentication/begin\",\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":3.54,\"correlationId\":\"RUN-267-0066a33760885255\",\"requestBody\":\"{\\\"email\\\":\\\"pzs005-run-267-mtcbk8ih@example.test\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8123\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-267-0066a33760885255\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}, missing={\"method\":\"POST\",\"path\":\"/auth/passkey/authentication/begin\",\"status\":404,\"body\":{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"},\"timingMs\":2.34,\"correlationId\":\"RUN-267-7a17a8313859c495\",\"requestBody\":\"{\\\"email\\\":\\\"[REDACTED]\\\",\\\"pinVerified\\\":true}\",\"requestHeaders\":{\"Origin\":\"http://localhost:8123\",\"Content-Type\":\"application/json\",\"x-request-id\":\"RUN-267-7a17a8313859c495\"},\"responseHeaders\":{\"content-type\":\"application/json; charset=utf-8\"}}."
+    }
+  ],
+  "counts": {
+    "total": 20,
+    "passed": 20,
+    "failed": 0
+  },
+  "securityAssertions": [
+    "The fixture creates persisted ceremony state through real HTTP begin endpoints and uses returned challenge context.",
+    "Reports are sanitized and contain no passkey or private-key material.",
+    "Registration and assertion material use ephemeral P-256 keys and standards-valid WebAuthn CBOR structures generated only in this process."
+  ]
+}

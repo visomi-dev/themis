@@ -1,0 +1,20 @@
+(node:758478) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/plan-fidelity.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ approved plan fidelity evaluation
+  ✔ loads the actual P0-P11 inventory without overstating deferred evidence (1.27342ms)
+  ✔ reports omitted phases and unrepresented rich steps instead of collapsing them (0.945159ms)
+  ✔ requires a traceability row before and after mutation (0.168541ms)
+  ✔ makes scope changes explicit and rejects incomplete validation matrices (0.471177ms)
+  ✔ makes traceability and evidence completeness executable (0.378815ms)
+  ✔ keeps mutation authorization and evidence semantics explicit in guidance (0.249031ms)
+✔ approved plan fidelity evaluation (4.43329ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.091568

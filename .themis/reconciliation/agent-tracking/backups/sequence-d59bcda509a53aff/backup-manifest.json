@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "projectId": "agent-tracking",
+  "reconciliationId": "d59bcda509a53aff",
+  "checksums": {
+    "state": "bb46a535aafcc4d19a39d0cabcd26bdf35e8bb270f4ddd6e6500fa5853bc195e",
+    "events": "7351f5941fc0bd628ad588916015c9f67920c8c6ece7ac73bce624e79549ba97",
+    "manifest": "accfab4f7357d5f798e066333ea356360dfe42f624e54a2a833fbb4c919ff7ae"
+  }
+}

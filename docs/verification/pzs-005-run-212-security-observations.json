@@ -1,0 +1,46 @@
+{
+  "run": "RUN-212",
+  "filesScanned": [
+    "dist/test-results/api-e2e/openapi/raw/http-responses.json",
+    "dist/test-results/api-e2e/openapi/raw/server.log"
+  ],
+  "observations": {
+    "postgresql": {
+      "command": "pnpm exec nx run api-e2e:durable-integration --skip-nx-cache",
+      "recordsScanned": "opaque_sync_envelopes rows and checkpoint/tombstone metadata created by the durable suite",
+      "finding": "PASS: account/workspace, cursor, revision, object key/hash, record type, retention, checkpoint and tombstone metadata only; no ciphertext-derived plaintext or keys."
+    },
+    "objectBlobs": {
+      "command": "pnpm exec nx run api-e2e:durable-integration --skip-nx-cache",
+      "recordsScanned": "MinIO PUT/GET objects created by the durable suite",
+      "finding": "PASS: serialized opaque envelope bytes and SHA-256/reference consistency; no decryption or domain parsing."
+    },
+    "rawHttp": {
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts dist/test-results/api-e2e/openapi/raw",
+      "recordsScanned": "15 sanitized HTTP observations in raw/http-responses.json",
+      "finding": "PASS: status, route, safe code/message only; no keys, secrets, protected IDs, local paths, or plaintext."
+    },
+    "logs": {
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts dist/test-results/api-e2e/openapi/raw",
+      "recordsScanned": "240302-byte sanitized server.log",
+      "finding": "PASS: routing/status/correlation metadata only; disclosure scan returned zero findings."
+    },
+    "traces": {
+      "recordsScanned": "opaque-sync trace exporter inventory: zero records by design",
+      "finding": "N/A: this API slice has no opaque-stream-specific trace exporter or sink; no trace payload is emitted by the changed boundary."
+    },
+    "metrics": {
+      "recordsScanned": "opaque-sync metric exporter inventory: zero records by design",
+      "finding": "N/A: this API slice has no opaque-stream-specific metric exporter or sink; no protected payload is emitted by the changed boundary."
+    },
+    "errors": {
+      "recordsScanned": "sync API server log and raw HTTP error responses",
+      "finding": "PASS: observed workspace_not_found, device_lifecycle_rejected, invalid_request, opaque_envelope_rejected, checkpoint_rejected, and recovery_chain_unavailable expose safe codes/messages only."
+    },
+    "disclosureScan": {
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts dist/test-results/api-e2e/openapi/raw",
+      "filesScanned": 2,
+      "findings": []
+    }
+  }
+}

@@ -1,0 +1,25 @@
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+[00:44:26.624] [32mINFO[39m (555792): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[00:44:26.633] [32mINFO[39m (555792): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[00:44:26.627] [32mINFO[39m (555792): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[00:44:26.627] [32mINFO[39m (555792): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[00:44:26.635] [32mINFO[39m (555792): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8080
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[00:44:26.905] [32mINFO[39m (555832): [36mWorker runtime ready[39m
+[0mPOST /api/test/auth/session [32m200[0m 194.674 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 13.924 ms - 370[0m
+[0mPOST /api/sync/cfa74201-095e-4767-9820-84c958d3de8e/devices [32m200[0m 33.507 ms - 326[0m
+[0mPOST /api/sync/cfa74201-095e-4767-9820-84c958d3de8e/devices/device-878afaa5-2e80-4ae5-9153-4ce7d2c69b39/approval [32m200[0m 31.516 ms - 173[0m
+[0mPOST /api/sync/cfa74201-095e-4767-9820-84c958d3de8e/devices [32m200[0m 27.954 ms - 328[0m
+[0mPOST /api/sync/cfa74201-095e-4767-9820-84c958d3de8e/devices/device-b447e461-5add-411f-be9e-3b81453bfc98/approval [32m200[0m 25.983 ms - 173[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cfa74201-095e-4767-9820-84c958d3de8e/devices/device-b447e461-5add-411f-be9e-3b81453bfc98/enroll [33m409[0m 21.927 ms - 83[0m

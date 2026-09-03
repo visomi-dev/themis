@@ -1,0 +1,401 @@
+
+ NX   Running target e2e for project app-e2e and 8 tasks it depends on:
+
+
+
+> nx run site:build
+
+> pnpm exec astro build --root apps/web/site
+
+[2m04:32:02[22m [34m[@astrojs/node][39m Enabling sessions with filesystem storage
+[2m04:32:02[22m [34m[types][39m Generated [2m48ms[22m
+[2m04:32:02[22m [34m[build][39m output: [34m"server"[39m
+[2m04:32:02[22m [34m[build][39m mode: [34m"server"[39m
+[2m04:32:02[22m [34m[build][39m directory: [34m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/site/[39m
+[2m04:32:02[22m [34m[build][39m adapter: [32m@astrojs/node[39m
+[2m04:32:02[22m [34m[build][39m Collecting build info...
+[2m04:32:02[22m [34m[build][39m [32m✓ Completed in 102ms.[39m
+[2m04:32:02[22m [34m[build][39m Building server entrypoints...
+[2m04:32:02[22m [34m[vite][39m [32m✓ built in 122ms[39m
+[2m04:32:02[22m [34m[vite][39m [32m✓ built in 240ms[39m
+[2m04:32:02[22m [34m[vite][39m [32m✓ built in 21ms[39m
+[2m04:32:02[22m [34m[build][39m Rearranging server assets...
+[2m04:32:02[22m [34m[build][39m [32m✓ Completed in 424ms.[39m
+[2m04:32:02[22m [34m[build][39m Server built in [1m529ms[22m
+[2m04:32:02[22m [34m[build][39m [1mComplete![22m
+
+> nx run shared:build
+
+Compiling TypeScript files for project "shared"...
+Done compiling TypeScript files for project "shared".
+
+> nx run projects:build
+
+Compiling TypeScript files for project "projects"...
+Done compiling TypeScript files for project "projects".
+
+> nx run realtime:build:production
+
+
+> nx run api:build:production
+
+
+> nx run worker:build:production
+
+
+> nx run app:build:production
+
+[33m❯[39m Building...
+(node:689658) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:689658) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[32m✔[39m Building...
+[37m[35mBrowser bundles[37m      
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-BAV34TKR.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m208.01 kB[37m[2m | [22m               [36m62.41 kB[37m
+[32mstyles-YN7SIKUS.css[37m  [2m | [22m[2mstyles[22m            [2m | [22m[36m132.33 kB[37m[2m | [22m               [36m15.47 kB[37m
+[32mchunk-GCBZXDI3.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m128.53 kB[37m[2m | [22m               [36m33.82 kB[37m
+[32mmain-NQ5O3OCJ.js[37m     [2m | [22m[2mmain[22m              [2m | [22m [36m73.41 kB[37m[2m | [22m               [36m19.51 kB[37m
+[32mchunk-UQY4AG5Y.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m59.92 kB[37m[2m | [22m               [36m14.45 kB[37m
+[32mchunk-NYYZYMVF.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m4.61 kB[37m[2m | [22m                [36m1.95 kB[37m
+[32mpolyfills-UMR42IW5.js[37m[2m | [22m[2mpolyfills[22m         [2m | [22m  [36m1.89 kB[37m[2m | [22m              [36m932 bytes[37m
+[32mchunk-27UYAA3G.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m748 bytes[37m[2m | [22m              [36m748 bytes[37m
+[32mchunk-SUVRAM7L.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m723 bytes[37m[2m | [22m              [36m723 bytes[37m
+[32mchunk-HKTXXOCG.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m143 bytes[37m[2m | [22m              [36m143 bytes[37m
+[32mchunk-O3LQLXTE.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m126 bytes[37m[2m | [22m              [36m126 bytes[37m
+
+[1m [22m                    [2m | [22m[1mInitial total[22m     [2m | [22m[1m[93m610.45 kB[37m[22m[2m | [22m              [1m150.28 kB[22m
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[39m[37m[22m             [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-DDHHNMUM.js[37m    [2m | [22m[2mgallery[22m           [2m | [22m [36m70.05 kB[37m[2m | [22m               [36m17.32 kB[37m
+[32mchunk-HHCLNZKV.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m64.20 kB[37m[2m | [22m               [36m16.17 kB[37m
+[32mchunk-CJCKVNQM.js[37m    [2m | [22m[2mproject-detail[22m    [2m | [22m [36m20.33 kB[37m[2m | [22m                [36m5.60 kB[37m
+[32mchunk-I76ZQYKV.js[37m    [2m | [22m[2mactivation[22m        [2m | [22m [36m15.29 kB[37m[2m | [22m                [36m4.00 kB[37m
+[32mchunk-MTMSLVUN.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m12.55 kB[37m[2m | [22m                [36m3.83 kB[37m
+[32mchunk-BVHTHJOP.js[37m    [2m | [22m[2msign-in[22m           [2m | [22m [36m11.45 kB[37m[2m | [22m                [36m3.55 kB[37m
+[32mchunk-EXPFZQXI.js[37m    [2m | [22m[2msign-up[22m           [2m | [22m [36m10.04 kB[37m[2m | [22m                [36m3.15 kB[37m
+[32mchunk-MOP4WISG.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m9.57 kB[37m[2m | [22m                [36m3.28 kB[37m
+[32mchunk-6NTIPARM.js[37m    [2m | [22m[2mreset-password[22m    [2m | [22m  [36m7.97 kB[37m[2m | [22m                [36m2.60 kB[37m
+[32mchunk-K5G6RGGD.js[37m    [2m | [22m[2mwork-item-detail[22m  [2m | [22m  [36m6.31 kB[37m[2m | [22m                [36m2.19 kB[37m
+[32mchunk-3AO5LFWL.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m5.57 kB[37m[2m | [22m                [36m1.91 kB[37m
+[32mchunk-SNWXWYGG.js[37m    [2m | [22m[2mforgotten-password[22m[2m | [22m  [36m5.23 kB[37m[2m | [22m                [36m1.94 kB[37m
+[32mchunk-QYVALJ66.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m4.67 kB[37m[2m | [22m                [36m1.73 kB[[39m[37m39m
+[32mchunk-JZ22J2SC.js[37m    [2m | [22m[2mproject-new[22m       [2m | [22m  [36m4.42 kB[37m[2m | [22m                [36m1.71 kB[37m
+[32mchunk-DR6EF43E.js[37m    [2m | [22m[2mprojects[22m          [2m | [22m  [36m4.28 kB[37m[2m | [22m                [36m1.64 kB[37m
+[2m...and 20 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+
+[35mServer bundles[37m       
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mserver.mjs[37m           [2m | [22m[2mserver[22m            [2m | [22m[36m817.59 kB[37m[2m | [22m                       
+[32mmain.server.mjs[37m      [2m | [22m[2mmain.server[22m       [2m | [22m[36m590.02 kB[37m[2m | [22m                       
+[32mpolyfills.server.mjs[37m [2m | [22m[2mpolyfills.server[22m  [2m | [22m[36m236.46 kB[37m[2m | [22m                       
+[32mchunk-GGLDUW74.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m206.34 kB[37m[2m | [22m                       
+[32mchunk-KH3JBAG5.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m130.04 kB[37m[2m | [22m                       
+[32mchunk-OTMM3HKY.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m59.99 kB[37m[2m | [22m                       
+[32mchunk-ZRGJTF2V.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m4.65 kB[37m[2m | [22m                       
+[32mchunk-JUIMI2TX.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m1.52 kB[37m[2m | [22m                       
+[32mchunk-OIUUXDCT.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m1.45 kB[37m[2m | [22m                       
+[32mchunk-XBMMAE5B.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m783 bytes[37m[2m | [22m                       
+[32mchunk-IZHJ5A4Q.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m756 bytes[37m[2m | [22m   [39m[37m                    
+[32mchunk-IFXKOZXU.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m176 bytes[37m[2m | [22m                       
+[32mchunk-DAK4BVL2.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m159 bytes[37m[2m | [22m                       
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mchunk-T7TUBPQM.mjs[37m   [2m | [22m[2mgallery[22m           [2m | [22m [36m70.13 kB[37m[2m | [22m                       
+[32mchunk-5GA2MR4R.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m63.56 kB[37m[2m | [22m                       
+[32mchunk-3NPECTMB.mjs[37m   [2m | [22m[2mproject-detail[22m    [2m | [22m [36m20.40 kB[37m[2m | [22m                       
+[32mchunk-4IDIBMTF.mjs[37m   [2m | [22m[2mactivation[22m        [2m | [22m [36m15.36 kB[37m[2m | [22m                       
+[32mchunk-AKWC7AUK.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m12.59 kB[37m[2m | [22m                       
+[32mchunk-IX33SQ4R.mjs[37m   [2m | [22m[2mxhr2[22m              [2m | [22m [36m12.24 kB[37m[2m | [22m                       
+[32mchunk-RG46UI4N.mjs[37m   [2m | [22m[2mxhr2[22m              [2m | [22m [36m12.15 kB[37m[2m | [22m                       
+[32mchunk-ZLBD2VIZ.mjs[37m   [2m | [22m[2msign-in[22m           [2m | [22m [36m11.52 kB[37m[2m | [22m                       
+[32mchunk-JH2RUQYJ.mjs[37m   [2m | [22m[2msign-up[22m           [2m | [22m [36m10.12 kB[37m[2m | [22m                       
+[32mchunk-DHOFG5C2.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m9.61 kB[37m[2m | [22m                       
+[32mchunk-KZBTACJ2.mjs[37m   [2m | [22m[2mreset-password[22m    [2m | [22m  [36m8.04 kB[37m[2m | [22m                       
+[32mchunk-GM2XXIWA.mjs[37m   [2m | [22m[2mwork-item-detail[22m  [2m | [22m  [36m6.37 kB[39m[37m[39m[2m | [22m                       
+[32mchunk-3VR66X5N.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m5.60 kB[37m[2m | [22m                       
+[32mchunk-NPXYCP3U.mjs[37m   [2m | [22m[2mforgotten-password[22m[2m | [22m  [36m5.30 kB[37m[2m | [22m                       
+[32mchunk-HWSBQ5CN.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m4.71 kB[37m[2m | [22m                       
+[2m...and 22 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+[35mPrerendered 0 static routes.[37m
+Application bundle generation complete. [6.818 seconds] - 2026-08-24T10:32:13.208Z
+[39m
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mbundle initial exceeded maximum budget. Budget 500.00 kB was not met by 110.45 kB with a total of 610.45 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "gallerySectionsNav" ("Gallery sections").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterLabel" ("Filter components").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "layoutMenuWorkspace" ("Workspace").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherLight" ("Light mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherDark" ("Dark mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyTitle" (" Sign in with your passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinLabel" ("Email PIN").[0m
+
+
+[33m▲ [43;[39m[22m[1m[33m33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinContinue" ("Continue after verification").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyTitle" (" Create with a passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyButton" ("Continue with passkey").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "gallerySectionsNav" ("Gallery sections").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterLabel" ("Filter components").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "layoutMenuWorkspace" ("Workspace").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwi[39m[22m[1m[33mtcherLight" ("Light mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherDark" ("Dark mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyTitle" (" Sign in with your passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinLabel" ("Email PIN").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinContinue" ("Continue after verification").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyTitle" (" Create with a passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[39m[22m[1m[33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyButton" ("Continue with passkey").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").[0m
+
+[39m[22m
+[37mOutput location: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/app
+[39m
+
+> nx run server:build:production
+
+
+> nx run app-e2e:e2e
+
+[1m[33mThe `@nx/playwright:playwright` executor is deprecated and will be removed in Nx v24. Run `nx g @nx/playwright:convert-to-inferred` to migrate to the `@nx/playwright/plugin` inferred targets. See https://nx.dev/docs/guides/tasks--caching/convert-to-inferred for details.[39m[22m
+[1A[2K
+[2m[WebServer] [22m(node:693360) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2mRunning [22m96[2m tests using [22m1[2m worker[22m
+[1A[2K[1/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:7:7 › /app (first-run activation) › shows activation screen after auth instead of the old placeholder
+[1A[2K[2/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:20:7 › /app (first-run activation) › shows API infrastructure section with key generation
+[1A[2K[3/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:32:7 › /app (first-run activation) › can generate an API key and see it displayed once
+[1A[2K[4/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:46:7 › /app (first-run activation) › shows workspace configuration section with copyable config
+[1A[2K[5/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:58:7 › /app (first-run activation) › shows seed configuration section
+[1A[2K[6/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:70:7 › /app (first-run activation) › has skip for now and continue to projects actions
+[1A[2K[7/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:82:7 › /app (first-run activation) › skip for now navigates to projects
+[1A[2K[8/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:95:7 › /app (first-run activation) › continue to projects navigates to projects
+[1A[2K[9/96] [chromium] › apps/web/app-e2e/src/app/activation.spec.ts:108:7 › /app (first-run activation) › sign out returns to sign-in
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[10/96] [chromium] › apps/web/app-e2e/src/app/gallery.spec.ts:17:7 › /app/gallery › renders the gallery sections with a heading and the filter input
+[1A[2K[11/96] [chromium] › apps/web/app-e2e/src/app/gallery.spec.ts:23:7 › /app/gallery › filters the visible cards by selector substring
+[1A[2K[12/96] [chromium] › apps/web/app-e2e/src/app/gallery.spec.ts:31:7 › /app/gallery › listbox supports keyboard navigation and selection
+[1A[2K[13/96] [chromium] › apps/web/app-e2e/src/app/index.spec.ts:7:7 › /app › redirects unauthenticated visitors to sign-in
+[1A[2K[14/96] [chromium] › apps/web/app-e2e/src/app/index.spec.ts:13:7 › /app › shows the authenticated dashboard
+[1A[2K[15/96] [chromium] › apps/web/app-e2e/src/app/sidebar.spec.ts:16:7 › /app sidebar › renders the sidebar with the sign-out button at the bottom
+[1A[2K[16/96] [chromium] › apps/web/app-e2e/src/app/sidebar.spec.ts:26:7 › /app sidebar › keeps the sign-out button visible when collapsed
+[1A[2K[17/96] [chromium] › apps/web/app-e2e/src/app/sidebar.spec.ts:39:7 › /app sidebar › highlights the active section in the navigation
+[1A[2K[18/96] [chromium] › apps/web/app-e2e/src/app/sidebar.spec.ts:46:7 › /app sidebar › signs out and redirects to /sign-in when the sign-out button is clicked
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[19/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility authorized (light)
+[1A[2K[20/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility locked (light)
+[1A[2K[21/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility unavailable (light)
+[1A[2K[22/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility stale (light)
+[1A[2K[23/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility error (light)
+[1A[2K[24/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility unauthorized (light)
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[25/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility empty (light)
+[1A[2K[26/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility authorized (dark)
+[1A[2K[27/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility locked (dark)
+[1A[2K[28/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility unavailable (dark)
+[1A[2K[29/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility stale (dark)
+[1A[2K[30/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility error (dark)
+[1A[2K[31/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility unauthorized (dark)
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[32/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:47:9 › project visibility empty (dark)
+[1A[2K[33/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:65:5 › authenticated session restores the guarded app route after reload
+[1A[2K[34/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:77:7 › protected visibility security fixtures › denies a project from another tenant without exposing protected data
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[35/96] [chromium] › apps/web/app-e2e/src/app/visibility.spec.ts:87:7 › protected visibility security fixtures › keeps locked-agent denial explicit and does not fall back to cloud data
+[1A[2K[36/96] [chromium] › apps/web/app-e2e/src/auth/forgotten-password.spec.ts:28:7 › /app/forgotten-password › renders the Open Design auth shell and copy
+[1A[2K[37/96] [chromium] › apps/web/app-e2e/src/auth/forgotten-password.spec.ts:37:7 › /app/forgotten-password › shows validation errors when submitting empty form
+[1A[2K[38/96] [chromium] › apps/web/app-e2e/src/auth/forgotten-password.spec.ts:44:7 › /app/forgotten-password › shows validation error for invalid email format
+[1A[2K[39/96] [chromium] › apps/web/app-e2e/src/auth/forgotten-password.spec.ts:57:7 › /app/forgotten-password › shows success card after valid submission
+[1A[2K[40/96] [chromium] › apps/web/app-e2e/src/auth/forgotten-password.spec.ts:70:7 › /app/forgotten-password › back to sign in link navigates to sign-in
+[1A[2K[41/96] [chromium] › apps/web/app-e2e/src/auth/reset-password.spec.ts:69:7 › /app/reset-password › renders the Open Design OTP step
+[1A[2K[42/96] [chromium] › apps/web/app-e2e/src/auth/reset-password.spec.ts:78:7 › /app/reset-password › reveals the password step after OTP verification
+[1A[2K[43/96] [chromium] › apps/web/app-e2e/src/auth/reset-password.spec.ts:95:7 › /app/reset-password › rejects mismatched passwords
+[1A[2K[44/96] [chromium] › apps/web/app-e2e/src/auth/reset-password.spec.ts:113:7 › /app/reset-password › shows the success state after a valid password update
+[1A[2K[45/96] [chromium] › apps/web/app-e2e/src/auth/sign-in.spec.ts:16:7 › /app/sign-in › renders the Open Design auth shell and copy
+[1A[2K[46/96] [chromium] › apps/web/app-e2e/src/auth/sign-in.spec.ts:25:7 › /app/sign-in › places recovery below password and toggles remember-device from its label
+[1A[2K[47/96] [chromium] › apps/web/app-e2e/src/auth/sign-in.spec.ts:55:7 › /app/sign-in › signs an existing user in through email verification
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[48/96] [chromium] › apps/web/app-e2e/src/auth/sign-in.spec.ts:71:7 › /app/sign-in › stays on the route when credentials are invalid
+[1A[2K[49/96] [chromium] › apps/web/app-e2e/src/auth/sign-in.spec.ts:93:7 › /app/sign-in › redirects authenticated users away from sign-in
+[1A[2K[50/96] [chromium] › apps/web/app-e2e/src/auth/sign-up.spec.ts:8:7 › /app/sign-up › renders the Open Design auth shell and copy
+[1A[2K[51/96] [chromium] › apps/web/app-e2e/src/auth/sign-up.spec.ts:17:7 › /app/sign-up › shows validation errors for invalid credentials
+[1A[2K[52/96] [chromium] › apps/web/app-e2e/src/auth/sign-up.spec.ts:26:7 › /app/sign-up › moves into verification after a valid submission
+[1A[2K[53/96] [chromium] › apps/web/app-e2e/src/auth/verify-email.spec.ts:9:7 › /app/verify-email › redirects to sign-in when no challenge is active
+[1A[2K[54/96] [chromium] › apps/web/app-e2e/src/auth/verify-email.spec.ts:15:7 › /app/verify-email › shows an inline error for an invalid verification code
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'invalid_verification_code'[39m, statusCode: [33m401[39m }
+[1A[2K[55/96] [chromium] › apps/web/app-e2e/src/auth/verify-email.spec.ts:30:7 › /app/verify-email › shows cooldown feedback when resend is requested too early
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'challenge_cooldown'[39m, statusCode: [33m429[39m }
+[1A[2K[56/96] [chromium] › apps/web/app-e2e/src/auth/verify-email.spec.ts:45:7 › /app/verify-email › completes sign-in verification with the latest code
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[57/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:49:7 › sign-in visual regression (light)
+[1A[2K[58/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:56:7 › sign-up visual regression (light)
+[1A[2K[59/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:63:7 › verify-email visual regression (light)
+[1A[2K[60/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:70:7 › forgotten-password visual regression (light)
+[1A[2K[61/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:77:7 › reset-password visual regression (light)
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[62/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:49:7 › sign-in visual regression (dark)
+[1A[2K[63/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:56:7 › sign-up visual regression (dark)
+[1A[2K[64/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:63:7 › verify-email visual regression (dark)
+[1A[2K[65/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:70:7 › forgotten-password visual regression (dark)
+[1A[2K[66/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:77:7 › reset-password visual regression (dark)
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[67/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:85:5 › verify-email validation visual regression
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'invalid_verification_code'[39m, statusCode: [33m401[39m }
+[1A[2K[68/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:94:7 › passkey retry and explicit fallback states (light)
+[1A[2K[69/96] [chromium] › apps/web/app-e2e/src/auth/visual.spec.ts:94:7 › passkey retry and explicit fallback states (dark)
+[1A[2K[70/96] [chromium] › apps/web/app-e2e/src/projects/gateway-operational-workspace.spec.ts:5:5 › composed gateway serves the protected read-only workspace surfaces
+[1A[2K[71/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:9:5 › Angular app boundary reads every operational state without mutation or protected disclosure
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'project_not_found'[39m, statusCode: [33m404[39m }
+[1A[2K[72/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:91:5 › Angular adapter rejects malformed nested entity payloads as malformed
+[1A[2K[73/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:107:5 › Angular adapter falls back safely when HTTP returns malformed JSON
+[1A[2K[74/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:123:5 › protected denial states remain semantic, keyboard reachable, and redacted
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[75/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:155:5 › loading is a rendered accessible route state and denial remains guarded
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[76/96] [chromium] › apps/web/app-e2e/src/projects/operational-workspace.spec.ts:208:5 › workspace routes expose deep links and deterministic responsive read-only snapshots
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[77/96] [chromium] › apps/web/app-e2e/src/projects/project-detail.spec.ts:26:7 › /app/projects/:projectId › navigates to the read-only project workspace
+[1A[2K[78/96] [chromium] › apps/web/app-e2e/src/projects/project-detail.spec.ts:31:7 › /app/projects/:projectId › shows project workspace state and denies mutation controls
+[1A[2K[79/96] [chromium] › apps/web/app-e2e/src/projects/project-detail.spec.ts:39:7 › /app/projects/:projectId › renders protected empty workspace state safely
+[1A[2K[80/96] [chromium] › apps/web/app-e2e/src/projects/project-detail.spec.ts:47:7 › /app/projects/:projectId › sign out returns to sign-in
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[81/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders visible projection without disclosure or mutation controls
+[1A[2K[82/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders empty projection without disclosure or mutation controls
+[1A[2K[83/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders locked projection without disclosure or mutation controls
+[1A[2K[84/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders stale projection without disclosure or mutation controls
+[1A[2K[85/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders unavailable projection without disclosure or mutation controls
+[1A[2K[86/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders error projection without disclosure or mutation controls
+[1A[2K[87/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders unauthorized projection without disclosure or mutation controls
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[1A[2K[88/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:34:9 › legacy project projection routes › renders malformed projection without disclosure or mutation controls
+[1A[2K[89/96] [chromium] › apps/web/app-e2e/src/projects/projection.spec.ts:53:7 › legacy project projection routes › rejects a projection read from another tenant
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'project_not_found'[39m, statusCode: [33m404[39m }
+[1A[2K[90/96] [chromium] › apps/web/app-e2e/src/projects/projects.spec.ts:28:7 › /app/projects › renders only authorized projects and supports workspace navigation
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'project_not_found'[39m, statusCode: [33m404[39m }
+[1A[2K[91/96] [chromium] › apps/web/app-e2e/src/projects/projects.spec.ts:46:7 › /app/projects › renders the explicit empty projection state
+[1A[2K[92/96] [chromium] › apps/web/app-e2e/src/projects/projects.spec.ts:58:7 › /app/projects › renders an unavailable state without exposing mutation controls
+[1A[2K[93/96] [chromium] › apps/web/app-e2e/src/projects/projects.spec.ts:70:7 › /app/projects › sign out returns to sign-in
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[1A[2K[94/96] [chromium] › apps/web/app-e2e/src/projects/sync.spec.ts:277:5 › real route/API integration shares a workspace across two users and two devices
+[1A[2K[95/96] [chromium] › apps/web/app-e2e/src/projects/sync.spec.ts:461:5 › real route/API integration enforces recovery quorum, all-device loss, re-enrollment, and stale denial
+[1A[2K[2m[WebServer] [22m[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[1A[2K[96/96] [chromium] › apps/web/app-e2e/src/theme/theme.spec.ts:6:7 › theme › toggles theme on auth routes and preserves it into the app
+[1A[2K
+[32m  96 passed[39m[2m (2.8m)[22m
+
+
+
+ NX   Successfully ran target e2e for project app-e2e and 8 tasks it depends on
+
+

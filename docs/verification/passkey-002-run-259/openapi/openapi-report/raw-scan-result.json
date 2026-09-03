@@ -1,0 +1,6 @@
+{
+  "command": "pnpm exec node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/passkey-002-run-259/openapi/openapi-report/raw",
+  "status": 0,
+  "stdout": "{\n  \"status\": \"PASS\",\n  \"filesScanned\": 2,\n  \"findings\": []\n}\n",
+  "stderr": ""
+}

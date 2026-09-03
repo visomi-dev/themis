@@ -1,0 +1,34 @@
+{
+  "runId": "RUN-1788271440294-3290535",
+  "streamId": "stream-9f4c00ca-5929-435f-987b-e0e4213230d3",
+  "rows": [
+    {
+      "workspace_id": "f3f72e99-bd99-472a-9bb9-a08006c32f18",
+      "envelope_id": "replay-target",
+      "revision": 5,
+      "cursor": 2,
+      "object_key": "c24f0d02-8e58-47f3-b449-f527a27fe295/f3f72e99-bd99-472a-9bb9-a08006c32f18/replay-target/5-9df59ee0-80cd-4e2e-9d2d-dc46fde28760.json",
+      "ciphertext_sha256": "1b7886cefbfaf76973dc4838fbb0550eb3a473c388bf79826cf198b5c0db0cda",
+      "tombstoned_at": null
+    },
+    {
+      "workspace_id": "f3f72e99-bd99-472a-9bb9-a08006c32f18",
+      "envelope_id": "tombstone-record",
+      "revision": 6,
+      "cursor": 3,
+      "object_key": "c24f0d02-8e58-47f3-b449-f527a27fe295/f3f72e99-bd99-472a-9bb9-a08006c32f18/tombstone-record/6-23a94406-42a9-4c47-bc05-46cd675987d7.json",
+      "ciphertext_sha256": "ea4a68e93519c7a7037729800eff9b442c13dd646a786582922881fda16ef1ef",
+      "tombstoned_at": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "checkpoint_id": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "object_key": "c24f0d02-8e58-47f3-b449-f527a27fe295/f3f72e99-bd99-472a-9bb9-a08006c32f18/checkpoint/checkpoint-1.json",
+      "ciphertext_sha256": "3d8538f9ed95eddb915812e1dbdfb544e57e493d050d3482c576d832d2659b93",
+      "created_at": "2026-09-01T14:04:21.541Z"
+    }
+  ]
+}

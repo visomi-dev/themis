@@ -1,0 +1,9 @@
+{
+  "runId": "RUN-239",
+  "command": "pnpm exec node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/pzs-005-run-239",
+  "status": "PASS",
+  "filesScanned": 32,
+  "findings": [],
+  "durableCustody": "PostgreSQL rows and MinIO object/hash observations are retained in postgres-rows.json and minio-object.json.",
+  "traceMetricDisposition": "N/A with explicit current-run reasons in traces.json and metrics.json; no exporter/collector is configured."
+}

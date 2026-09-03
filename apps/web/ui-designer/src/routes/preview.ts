@@ -40,9 +40,12 @@ export function previewRouter(): Router {
     }
 
     const theme = String(req.query['theme'] ?? 'light') === 'dark' ? 'dark' : 'light';
+    const state = String(req.query['state'] ?? 'review-pending').replace(/[^a-z-]/g, '');
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(prototypeHtml.replace('<html', `<html class="${theme}"`));
+    res.send(
+      prototypeHtml.replace('<html', `<html class="${theme}"`).replace('<body', `<body data-preview-state="${state}"`),
+    );
   });
 
   return router;

@@ -1,0 +1,6 @@
+{
+  "runId": "local-pzs005-second",
+  "streamId": "stream-03150b18-af7d-4fc6-8271-ce2c828e1d3b",
+  "status": "N/A",
+  "reason": "No trace exporter/collector is configured in the isolated API harness; current-run server log inspection is retained."
+}

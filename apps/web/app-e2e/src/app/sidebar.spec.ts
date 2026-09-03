@@ -1,16 +1,16 @@
 import { expect, test } from '@playwright/test';
 
 import { createCredentials, authenticateViaApi } from '../support/auth';
-import { dashboardRoute, signInUrlPattern } from '../support/routes';
+import { appRoute, identityUrlPattern } from '../support/routes';
 
 test.describe.configure({ timeout: 60000 });
 
-test.describe('/app/dashboard sidebar', () => {
+test.describe('/app sidebar', () => {
   test.beforeEach(async ({ page, request }) => {
     const credentials = createCredentials();
 
     await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto(dashboardRoute);
+    await page.goto(appRoute);
   });
 
   test('renders the sidebar with the sign-out button at the bottom', async ({ page }) => {
@@ -38,15 +38,15 @@ test.describe('/app/dashboard sidebar', () => {
 
   test('highlights the active section in the navigation', async ({ page }) => {
     const sidebar = page.locator('aside');
-    const overviewLink = sidebar.getByRole('link', { name: 'Overview' });
+    const workspaceLink = sidebar.getByRole('link', { name: 'Workspace' });
 
-    await expect(overviewLink).toHaveClass(/text-blue-600/);
+    await expect(workspaceLink).toHaveClass(/text-blue-600/);
   });
 
-  test('signs out and redirects to /sign-in when the sign-out button is clicked', async ({ page }) => {
+  test('signs out and redirects to /auth/identity when the sign-out button is clicked', async ({ page }) => {
     const signOut = page.locator('[data-od-id="sidebar-sign-out"]');
 
     await signOut.click();
-    await expect(page).toHaveURL(signInUrlPattern, { timeout: 15000 });
+    await expect(page).toHaveURL(identityUrlPattern, { timeout: 15000 });
   });
 });

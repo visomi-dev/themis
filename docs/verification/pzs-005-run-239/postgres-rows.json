@@ -1,0 +1,43 @@
+{
+  "runId": "RUN-239",
+  "streamId": "stream-fb3111b6-65bf-402a-bcc3-82c600b43f9d",
+  "rows": [
+    {
+      "workspace_id": "af0aca6e-4ad3-4cce-937d-47e9f602ea61",
+      "envelope_id": "authorized-append",
+      "revision": 1,
+      "cursor": 1,
+      "object_key": "bd0a0b94-f1d2-40bd-b49e-112fe3f81679/af0aca6e-4ad3-4cce-937d-47e9f602ea61/authorized-append/1-00b54c1e-e301-4060-9a50-c25cf3eb89d1.json",
+      "ciphertext_sha256": "007e718d1e96b1e272499d82ceb3c9a6b827fe409a4252fde1365c45c4c0b00a",
+      "tombstoned_at": null
+    },
+    {
+      "workspace_id": "af0aca6e-4ad3-4cce-937d-47e9f602ea61",
+      "envelope_id": "replay-target",
+      "revision": 5,
+      "cursor": 2,
+      "object_key": "bd0a0b94-f1d2-40bd-b49e-112fe3f81679/af0aca6e-4ad3-4cce-937d-47e9f602ea61/replay-target/5-7ebb0121-1746-4b5b-8974-fa16c05485ce.json",
+      "ciphertext_sha256": "f738002237da8a6f8e65391ebc758129a887201222f7e987e05d136bff605573",
+      "tombstoned_at": null
+    },
+    {
+      "workspace_id": "af0aca6e-4ad3-4cce-937d-47e9f602ea61",
+      "envelope_id": "tombstone-record",
+      "revision": 6,
+      "cursor": 3,
+      "object_key": "bd0a0b94-f1d2-40bd-b49e-112fe3f81679/af0aca6e-4ad3-4cce-937d-47e9f602ea61/tombstone-record/6-c9731e59-0c73-45f3-9407-50385173fcb0.json",
+      "ciphertext_sha256": "9599cf42a659e698a6ad82d9a54d3028e74c9c8591e26021ac0401c8258ac594",
+      "tombstoned_at": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "checkpoint_id": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "object_key": "bd0a0b94-f1d2-40bd-b49e-112fe3f81679/af0aca6e-4ad3-4cce-937d-47e9f602ea61/checkpoint/checkpoint-1.json",
+      "ciphertext_sha256": "007e718d1e96b1e272499d82ceb3c9a6b827fe409a4252fde1365c45c4c0b00a",
+      "created_at": "2026-08-26T05:45:31.880Z"
+    }
+  ]
+}

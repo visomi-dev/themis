@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Operational workspace · Themis</title>
+    <link rel="stylesheet" href="/public/tailwind.css" />
+  </head>
+  <body class="min-h-screen bg-white font-sans text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-blue-600 focus:px-4 focus:py-3 focus:text-white"
+      >Skip to workspace</a
+    >
+    <header
+      class="sticky top-0 z-20 border-b border-zinc-950/10 bg-white/95 backdrop-blur dark:border-white/10 dark:bg-zinc-950/95"
+    >
+      <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-3 md:px-8">
+        <div class="flex min-w-0 items-center gap-3">
+          <a href="#workspace" class="font-heading text-lg font-bold tracking-tight">Themis</a>
+          <span class="hidden text-zinc-300 sm:block dark:text-zinc-700">/</span>
+          <span class="hidden truncate text-sm text-zinc-500 sm:block dark:text-zinc-400">Operational workspace</span>
+        </div>
+        <nav aria-label="Workspace sections" class="flex items-center gap-1 overflow-x-auto text-sm">
+          <a
+            href="#workspace"
+            class="min-h-11 rounded-md px-3 py-2 font-semibold whitespace-nowrap text-blue-600 hover:bg-blue-600/10 dark:text-blue-400 dark:hover:bg-blue-400/10"
+            >Workspace</a
+          >
+          <a
+            href="#work-item"
+            class="min-h-11 rounded-md px-3 py-2 whitespace-nowrap text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            >Work item</a
+          >
+          <a
+            href="#timeline"
+            class="min-h-11 rounded-md px-3 py-2 whitespace-nowrap text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            >Timeline</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="mx-auto max-w-[1440px] px-4 py-8 md:px-8 md:py-12">
+      <section id="workspace" data-surface="project-workspace" aria-labelledby="workspace-title" class="scroll-mt-24">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-3xl space-y-3">
+            <p class="font-mono text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400">
+              Project workspace · read-only
+            </p>
+            <h1
+              id="workspace-title"
+              class="font-heading text-3xl leading-tight font-bold tracking-[-0.03em] md:text-5xl"
+            >
+              Agent Tracking
+            </h1>
+            <p class="max-w-2xl text-base leading-7 text-zinc-500 dark:text-zinc-400">
+              A calm view of what needs inspection, what is moving, and what evidence supports the current picture.
+            </p>
+          </div>
+          <div
+            class="rounded-lg border border-zinc-950/10 bg-zinc-50 px-4 py-3 text-sm dark:border-white/10 dark:bg-zinc-900"
+          >
+            <p class="font-semibold">Project context</p>
+            <p class="mt-1 text-zinc-500 dark:text-zinc-400">
+              <span class="font-mono text-xs">agent-tracking</span> · Tenant private
+            </p>
+            <p class="mt-2 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+              <span aria-hidden="true">◷</span> Updated 8 minutes ago · control plane
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          <article
+            class="rounded-lg border-l-4 border-amber-500 bg-amber-50 p-5 dark:border-amber-400 dark:bg-amber-400/10"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-amber-950 dark:text-amber-100">Needs attention</p>
+              <span
+                class="rounded-md border border-amber-600/30 px-2 py-1 font-mono text-xs text-amber-800 dark:border-amber-300/30 dark:text-amber-200"
+                >3 items</span
+              >
+            </div>
+            <p class="mt-3 text-sm leading-6 text-amber-900/80 dark:text-amber-100/80">
+              Review pending and missing validation are the next useful inspections, not a priority score.
+            </p>
+            <a
+              href="#work-item"
+              class="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-amber-900 underline underline-offset-4 dark:text-amber-100"
+              >Inspect reasons <span class="ml-2" aria-hidden="true">→</span></a
+            >
+          </article>
+          <article class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 dark:border-white/10 dark:bg-zinc-900">
+            <p class="text-sm font-semibold">Active execution</p>
+            <p class="font-heading mt-3 text-3xl font-bold">2</p>
+            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              Runs are in progress. No completion is inferred.
+            </p>
+          </article>
+          <article class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 dark:border-white/10 dark:bg-zinc-900">
+            <p class="text-sm font-semibold">Review confidence</p>
+            <p class="font-heading mt-3 text-3xl font-bold">
+              4 <span class="text-base font-normal text-zinc-500 dark:text-zinc-400">of 7 validated</span>
+            </p>
+            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Category-scoped results, not a release claim.</p>
+          </article>
+        </div>
+
+        <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div class="space-y-8">
+            <section
+              aria-labelledby="work-list-title"
+              class="rounded-lg border border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-950"
+            >
+              <div
+                class="flex flex-col gap-3 border-b border-zinc-950/10 px-5 py-5 sm:flex-row sm:items-end sm:justify-between md:px-6 dark:border-white/10"
+              >
+                <div>
+                  <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                    Active context
+                  </p>
+                  <h2 id="work-list-title" class="font-heading mt-1 text-xl font-bold">Work items</h2>
+                </div>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">7 items · ordered for inspection context</p>
+              </div>
+              <div class="divide-y divide-zinc-950/10 dark:divide-white/10">
+                <a href="#work-item" class="block p-5 transition hover:bg-zinc-50 md:p-6 dark:hover:bg-zinc-900">
+                  <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">THM-OWV-003</span
+                        ><span
+                          class="rounded-md border border-amber-600/40 bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-400/40 dark:bg-amber-400/20 dark:text-amber-200"
+                          >Review pending</span
+                        >
+                      </div>
+                      <h3 class="font-heading mt-2 text-lg font-bold">
+                        Prototype the operational workspace visual experience
+                      </h3>
+                      <p class="mt-2 max-w-2xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                        Prototype surfaces for workspace, work item detail, validation, evidence, and timeline.
+                      </p>
+                    </div>
+                    <span class="shrink-0 text-sm font-semibold text-blue-600 dark:text-blue-400">Inspect →</span>
+                  </div>
+                  <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    <span>↻ Run active · executor</span><span>⚠ 3 attention reasons</span
+                    ><span>Last event 12m ago</span>
+                  </div>
+                </a>
+                <article class="p-5 md:p-6">
+                  <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">OWV-002</span
+                        ><span
+                          class="rounded-md border border-green-600/40 bg-green-100 px-2 py-1 text-xs font-semibold text-green-800 dark:border-green-400/40 dark:bg-green-400/20 dark:text-green-200"
+                          >Accepted</span
+                        >
+                      </div>
+                      <h3 class="font-heading mt-2 text-lg font-bold">Define the workspace IA and UX flows</h3>
+                      <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        Independent review accepted this scope.
+                      </p>
+                    </div>
+                    <span class="text-sm text-zinc-500 dark:text-zinc-400">No action needed</span>
+                  </div>
+                  <div class="mt-5 text-xs text-zinc-500 dark:text-zinc-400">
+                    ✓ Review by independent reviewer · 1 day ago
+                  </div>
+                </article>
+                <article class="p-5 md:p-6">
+                  <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-mono text-xs text-zinc-500 dark:text-zinc-400">ZK-014</span
+                        ><span
+                          class="rounded-md border border-red-600/40 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-400/40 dark:bg-red-400/10 dark:text-red-300"
+                          >Blocked</span
+                        >
+                      </div>
+                      <h3 class="font-heading mt-2 text-lg font-bold">
+                        Conduct independent zero-knowledge security review
+                      </h3>
+                      <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                        Work is blocked: the device enrollment decision is unresolved.
+                      </p>
+                    </div>
+                    <span class="text-sm text-zinc-500 dark:text-zinc-400">Dependency ZK-007</span>
+                  </div>
+                  <div class="mt-5 text-xs text-zinc-500 dark:text-zinc-400">
+                    ▣ Changed by coordinator · 2 hours ago
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section
+              aria-labelledby="iteration-title"
+              class="rounded-lg border border-dashed border-zinc-950/20 bg-zinc-50 p-5 md:p-6 dark:border-white/20 dark:bg-zinc-900"
+            >
+              <div class="flex items-start gap-4">
+                <span class="mt-0.5 text-xl" aria-hidden="true">◌</span>
+                <div>
+                  <h2 id="iteration-title" class="font-heading text-lg font-bold">No iteration selected</h2>
+                  <p class="mt-1 max-w-2xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                    This project remains useful without a sprint or board. Work is grouped by outcome and lifecycle
+                    instead of a mandatory planning window.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside
+            aria-labelledby="attention-title"
+            class="h-fit rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 dark:border-white/10 dark:bg-zinc-900"
+          >
+            <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Derived signal</p>
+            <h2 id="attention-title" class="font-heading mt-1 text-xl font-bold">Why inspect next?</h2>
+            <ol class="mt-5 space-y-5">
+              <li class="flex gap-3">
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-800 dark:bg-amber-400/20 dark:text-amber-200"
+                  >1</span
+                >
+                <div>
+                  <p class="text-sm font-semibold">Independent review is pending</p>
+                  <p class="mt-1 text-sm leading-5 text-zinc-500 dark:text-zinc-400">
+                    THM-OWV-003 has evidence attached, but no reviewer verdict yet.
+                  </p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-800 dark:bg-amber-400/20 dark:text-amber-200"
+                  >2</span
+                >
+                <div>
+                  <p class="text-sm font-semibold">Required visual evidence is missing</p>
+                  <p class="mt-1 text-sm leading-5 text-zinc-500 dark:text-zinc-400">
+                    The latest run has not recorded all viewport snapshots.
+                  </p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-sm font-bold text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
+                  >3</span
+                >
+                <div>
+                  <p class="text-sm font-semibold">One source is stale</p>
+                  <p class="mt-1 text-sm leading-5 text-zinc-500 dark:text-zinc-400">
+                    Project context was last confirmed 8 minutes ago.
+                  </p>
+                </div>
+              </li>
+            </ol>
+            <p
+              class="mt-6 border-t border-zinc-950/10 pt-4 text-xs leading-5 text-zinc-500 dark:border-white/10 dark:text-zinc-400"
+            >
+              Attention is derived from authoritative records. It is not a priority score and does not authorize a
+              change.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        id="work-item"
+        data-surface="work-item-detail"
+        aria-labelledby="detail-title"
+        class="mt-20 scroll-mt-24 border-t border-zinc-950/10 pt-12 dark:border-white/10"
+      >
+        <div class="flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+          <a href="#workspace" class="font-semibold text-blue-600 underline underline-offset-4 dark:text-blue-400"
+            >Agent Tracking</a
+          ><span aria-hidden="true">/</span><span>Work item detail</span>
+        </div>
+        <div class="mt-5 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+              THM-OWV-003 · operational-workspace-visualization
+            </p>
+            <h2 id="detail-title" class="font-heading mt-2 max-w-4xl text-3xl font-bold tracking-[-0.03em] md:text-4xl">
+              Prototype the operational workspace visual experience
+            </h2>
+            <p class="mt-4 max-w-3xl text-base leading-7 text-zinc-500 dark:text-zinc-400">
+              Build the read-only comprehension layer before Angular implementation. The current run is assembling
+              visual evidence across the approved flows.
+            </p>
+          </div>
+          <span
+            class="inline-flex min-h-11 items-center gap-2 self-start rounded-md border border-amber-600/40 bg-amber-100 px-3 py-2 text-sm font-semibold text-amber-800 dark:border-amber-400/40 dark:bg-amber-400/20 dark:text-amber-200"
+            ><span aria-hidden="true">◷</span> Review pending</span
+          >
+        </div>
+
+        <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div class="space-y-8">
+            <section
+              aria-labelledby="meaning-title"
+              class="rounded-lg border-l-4 border-blue-600 bg-blue-600/10 p-5 md:p-6 dark:border-blue-500 dark:bg-blue-400/10"
+            >
+              <h3 id="meaning-title" class="font-heading text-lg font-bold">What this means</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-700 dark:text-zinc-200">
+                Evidence exists for this scoped prototype, and an independent review is still required. A finished run
+                is not the same as accepted work. A blocked state names a cause and changed time; it is not a rejected
+                review.
+              </p>
+              <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+                Source: Themis control plane · current as of 12 minutes ago
+              </p>
+            </section>
+            <section
+              aria-labelledby="scope-title"
+              class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 md:p-6 dark:border-white/10 dark:bg-zinc-900"
+            >
+              <h3 id="scope-title" class="font-heading text-xl font-bold">Intent and scope</h3>
+              <div class="mt-5 grid gap-6 md:grid-cols-2">
+                <div>
+                  <p class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                    Included
+                  </p>
+                  <ul class="mt-3 space-y-3 text-sm leading-6">
+                    <li class="flex gap-2">
+                      <span class="text-green-700 dark:text-green-300">✓</span> Workspace, detail, validation, evidence,
+                      timeline
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="text-green-700 dark:text-green-300">✓</span> Responsive light and dark visual
+                      language
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="text-green-700 dark:text-green-300">✓</span> Loading, locked, stale, error, and
+                      review states
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                    Not included
+                  </p>
+                  <ul class="mt-3 space-y-3 text-sm leading-6">
+                    <li class="flex gap-2">
+                      <span class="text-red-600 dark:text-red-400">×</span> Angular production routes or API behavior
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="text-red-600 dark:text-red-400">×</span> Write controls or execution actions
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="text-red-600 dark:text-red-400">×</span> Human evaluation beyond prototype readiness
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section
+              aria-labelledby="validation-title"
+              class="rounded-lg border border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-950"
+            >
+              <div class="border-b border-zinc-950/10 px-5 py-5 md:px-6 dark:border-white/10">
+                <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                  Category-scoped confidence
+                </p>
+                <h3 id="validation-title" class="font-heading mt-1 text-xl font-bold">Validation and evidence</h3>
+              </div>
+              <div class="divide-y divide-zinc-950/10 dark:divide-white/10">
+                <div class="bg-blue-600/10 p-5 md:px-6 dark:bg-blue-400/10">
+                  <p class="text-sm font-semibold">Evidence reading boundary</p>
+                  <p class="mt-1 text-sm leading-6 text-zinc-700 dark:text-zinc-200">
+                    Missing means a required category has no recorded artifact. Unavailable means the source cannot be
+                    trusted right now. Locked means protected content has no preview. Check the exact target before
+                    deciding.
+                  </p>
+                </div>
+                <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+                  <div>
+                    <p class="font-semibold">Unit</p>
+                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Not applicable · prototype-only work</p>
+                  </div>
+                  <span
+                    class="rounded-md border border-zinc-950/10 px-2 py-1 text-xs font-semibold text-zinc-500 dark:border-white/10 dark:text-zinc-400"
+                    >N/A</span
+                  >
+                </div>
+                <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+                  <div>
+                    <p class="font-semibold">Visual</p>
+                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                      Screenshots recorded for mobile, tablet, and desktop
+                    </p>
+                  </div>
+                  <span
+                    class="rounded-md border border-green-600/40 bg-green-100 px-2 py-1 text-xs font-semibold text-green-800 dark:border-green-400/40 dark:bg-green-400/20 dark:text-green-200"
+                    >Validated</span
+                  >
+                </div>
+                <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+                  <div>
+                    <p class="font-semibold">Security</p>
+                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                      Read-only and no protected preview while locked
+                    </p>
+                  </div>
+                  <span
+                    class="rounded-md border border-amber-600/40 bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-400/40 dark:bg-amber-400/20 dark:text-amber-200"
+                    >Review pending</span
+                  >
+                </div>
+                <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+                  <div>
+                    <p class="font-semibold">Build</p>
+                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">CSS and UI designer bundle</p>
+                  </div>
+                  <span
+                    class="rounded-md border border-green-600/40 bg-green-100 px-2 py-1 text-xs font-semibold text-green-800 dark:border-green-400/40 dark:bg-green-400/20 dark:text-green-200"
+                    >Validated</span
+                  >
+                </div>
+              </div>
+              <div class="bg-zinc-50 p-5 md:px-6 dark:bg-zinc-900">
+                <p class="text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+                  Evidence pointers expose check kind, command/result, and artifact location. Protected report content
+                  stays unavailable until an authorized mediated read succeeds.
+                </p>
+              </div>
+            </section>
+            <section
+              aria-labelledby="states-title"
+              class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 md:p-6 dark:border-white/10 dark:bg-zinc-900"
+            >
+              <h3 id="states-title" class="font-heading text-xl font-bold">State language gallery</h3>
+              <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div
+                  data-state="loading"
+                  class="rounded-md border border-zinc-950/10 bg-white p-4 dark:border-white/10 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Loading</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Reading control-plane state…</p>
+                  <div class="mt-3 h-2 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700"></div>
+                </div>
+                <div
+                  data-state="empty"
+                  class="rounded-md border border-dashed border-zinc-950/20 bg-white p-4 dark:border-white/20 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Empty</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">No evidence recorded yet.</p>
+                </div>
+                <div
+                  data-state="unavailable"
+                  class="rounded-md border border-dashed border-zinc-950/20 bg-white p-4 dark:border-white/20 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Unavailable</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Source is temporarily unavailable.</p>
+                </div>
+                <div
+                  data-state="locked"
+                  class="rounded-md border border-zinc-950/10 bg-white p-4 dark:border-white/10 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Locked</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Project context is locked. No preview.</p>
+                </div>
+                <div
+                  data-state="stale"
+                  class="rounded-md border border-amber-600/40 bg-white p-4 dark:border-amber-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Stale</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Last updated 2 hours ago.</p>
+                </div>
+                <div
+                  data-state="error"
+                  class="rounded-md border border-red-600/40 bg-white p-4 dark:border-red-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold">Error</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Read failed · reference ERR-218.</p>
+                </div>
+                <div
+                  data-state="attention"
+                  class="rounded-md border border-amber-600/40 bg-white p-4 dark:border-amber-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">Attention</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    A review or validation reason needs inspection.
+                  </p>
+                </div>
+                <div
+                  data-state="blocked"
+                  class="rounded-md border border-red-600/40 bg-white p-4 dark:border-red-400/10 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-red-700 dark:text-red-300">Blocked</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">A dependency prevents safe progress.</p>
+                </div>
+                <div
+                  data-state="active-execution"
+                  class="rounded-md border border-blue-600/40 bg-white p-4 dark:border-blue-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-blue-700 dark:text-blue-300">Active execution</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    A run is in progress; completion is not inferred.
+                  </p>
+                </div>
+                <div
+                  data-state="evidence-missing"
+                  class="rounded-md border border-amber-600/40 bg-white p-4 dark:border-amber-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">Evidence missing</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    A required validation artifact is not recorded.
+                  </p>
+                </div>
+                <div
+                  data-state="evidence-present"
+                  class="rounded-md border border-green-600/40 bg-white p-4 dark:border-green-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-green-800 dark:text-green-200">Evidence present</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    The command, result, and artifact pointer are available.
+                  </p>
+                </div>
+                <div
+                  data-state="review-pending"
+                  class="rounded-md border border-amber-600/40 bg-white p-4 dark:border-amber-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">Review pending</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Independent comparison has not completed.</p>
+                </div>
+                <div
+                  data-state="accepted"
+                  class="rounded-md border border-green-600/40 bg-white p-4 dark:border-green-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-green-800 dark:text-green-200">Accepted</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    An independent reviewer accepted the evidence.
+                  </p>
+                </div>
+                <div
+                  data-state="rejected"
+                  class="rounded-md border border-red-600/40 bg-white p-4 dark:border-red-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-red-700 dark:text-red-300">Rejected</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    The reviewer found a contract gap; acceptance is withheld.
+                  </p>
+                </div>
+                <div
+                  data-state="rework"
+                  class="rounded-md border border-blue-600/40 bg-white p-4 dark:border-blue-400/40 dark:bg-zinc-950"
+                >
+                  <p class="text-sm font-semibold text-blue-700 dark:text-blue-300">Rework</p>
+                  <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    The item is being corrected before another review.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <aside class="space-y-6">
+            <section
+              aria-labelledby="run-title"
+              class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 dark:border-white/10 dark:bg-zinc-900"
+            >
+              <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                Current execution
+              </p>
+              <h3 id="run-title" class="font-heading mt-1 text-xl font-bold">RUN-144</h3>
+              <div class="mt-5 space-y-4 text-sm">
+                <p class="flex items-start gap-3">
+                  <span class="mt-1 size-2 animate-pulse rounded-full bg-blue-600 dark:bg-blue-400"></span
+                  ><span
+                    ><strong>In progress</strong><br /><span class="text-zinc-500 dark:text-zinc-400"
+                      >Executor · started 22 minutes ago</span
+                    ></span
+                  >
+                </p>
+                <p class="border-t border-zinc-950/10 pt-4 text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+                  Latest evidence: implementation diff and preview observation recorded. Run status is not work-item
+                  acceptance.
+                </p>
+              </div>
+            </section>
+            <section
+              aria-labelledby="review-title"
+              class="rounded-lg border border-amber-600/40 bg-amber-50 p-5 dark:border-amber-400/40 dark:bg-amber-400/10"
+            >
+              <p class="font-mono text-xs tracking-widest text-amber-800 uppercase dark:text-amber-200">
+                Independent decision
+              </p>
+              <h3 id="review-title" class="font-heading mt-1 text-xl font-bold text-amber-950 dark:text-amber-50">
+                Review pending
+              </h3>
+              <p class="mt-3 text-sm leading-6 text-amber-900/80 dark:text-amber-100/80">
+                The reviewer has not compared this implementation with its contract yet. No accept or reject control is
+                available here.
+              </p>
+            </section>
+            <section class="rounded-lg border border-zinc-950/10 p-5 dark:border-white/10">
+              <h3 class="font-heading font-bold">Dependencies</h3>
+              <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">OWV-002 · IA/UX flows</p>
+              <p class="mt-2 text-xs text-green-700 dark:text-green-300">✓ Accepted and available</p>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        id="timeline"
+        data-surface="timeline"
+        aria-labelledby="timeline-title"
+        class="mt-20 scroll-mt-24 border-t border-zinc-950/10 pt-12 dark:border-white/10"
+      >
+        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="font-mono text-xs tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+              Append-only provenance
+            </p>
+            <h2 id="timeline-title" class="font-heading mt-1 text-3xl font-bold">Project timeline</h2>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+              Meaningful events, actors, and times remain distinct from current state. References may be minimized or
+              unavailable.
+            </p>
+          </div>
+          <span
+            class="rounded-md border border-zinc-950/10 px-3 py-2 text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400"
+            >Updated 8 minutes ago</span
+          >
+        </div>
+        <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <ol class="relative space-y-0 border-l border-zinc-950/15 pl-6 dark:border-white/15">
+            <li class="relative pb-8">
+              <span
+                class="absolute -left-[1.9rem] flex size-4 items-center justify-center rounded-full border-4 border-white bg-blue-600 dark:border-zinc-950 dark:bg-blue-400"
+              ></span>
+              <p class="font-mono text-xs text-zinc-500 dark:text-zinc-400">12 minutes ago · executor</p>
+              <h3 class="mt-1 font-semibold">Recorded visual evidence for THM-OWV-003</h3>
+              <p class="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                Screenshots cover the responsive prototype surfaces.
+                <a href="#work-item" class="font-semibold text-blue-600 underline underline-offset-4 dark:text-blue-400"
+                  >Inspect work item</a
+                >
+              </p>
+            </li>
+            <li class="relative pb-8">
+              <span
+                class="absolute -left-[1.9rem] flex size-4 items-center justify-center rounded-full border-4 border-white bg-amber-500 dark:border-zinc-950 dark:bg-amber-400"
+              ></span>
+              <p class="font-mono text-xs text-zinc-500 dark:text-zinc-400">22 minutes ago · coordinator</p>
+              <h3 class="mt-1 font-semibold">Independent review requested</h3>
+              <p class="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                Review pending for the current implementation scope.
+              </p>
+            </li>
+            <li class="relative pb-8">
+              <span
+                class="absolute -left-[1.9rem] flex size-4 items-center justify-center rounded-full border-4 border-white bg-green-600 dark:border-zinc-950 dark:bg-green-400"
+              ></span>
+              <p class="font-mono text-xs text-zinc-500 dark:text-zinc-400">1 hour ago · verifier</p>
+              <h3 class="mt-1 font-semibold">Validation passed for build category</h3>
+              <p class="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                CSS and UI designer bundle completed successfully.
+              </p>
+            </li>
+            <li class="relative">
+              <span
+                class="absolute -left-[1.9rem] flex size-4 items-center justify-center rounded-full border-4 border-white bg-zinc-400 dark:border-zinc-950 dark:bg-zinc-500"
+              ></span>
+              <p class="font-mono text-xs text-zinc-500 dark:text-zinc-400">Yesterday · control plane</p>
+              <h3 class="mt-1 font-semibold">OWV-002 review accepted</h3>
+              <p class="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                Independent reviewer accepted the IA/UX contract.
+              </p>
+            </li>
+          </ol>
+          <aside class="space-y-6">
+            <section
+              class="rounded-lg border border-dashed border-zinc-950/20 bg-zinc-50 p-5 dark:border-white/20 dark:bg-zinc-900"
+            >
+              <h3 class="font-heading font-bold">Reference unavailable</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                One older event refers to a protected report that is not available in this read. The event record
+                remains visible without fabricating its contents.
+              </p>
+              <p class="mt-4 font-mono text-xs text-zinc-500 dark:text-zinc-400">event evt_•••72a</p>
+            </section>
+            <section class="rounded-lg border border-zinc-950/10 bg-zinc-50 p-5 dark:border-white/10 dark:bg-zinc-900">
+              <h3 class="font-heading font-bold">What the timeline proves</h3>
+              <ul class="mt-3 space-y-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                <li>• An event was recorded.</li>
+                <li>• The named actor and time are preserved.</li>
+                <li>• Current state still comes from its source record.</li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <footer
+        class="mt-20 border-t border-zinc-950/10 py-8 text-xs leading-5 text-zinc-500 dark:border-white/10 dark:text-zinc-400"
+      >
+        <p>Prototype scope · read-only operational workspace · protected content is never shown in a locked state.</p>
+        <p class="mt-2">
+          Before implementation questions: token authority, mediated-read boundary, freshness policy, and evidence
+          redaction remain explicit review gates.
+        </p>
+      </footer>
+    </main>
+    <script>
+      (() => {
+        const state = new URLSearchParams(window.location.search).get('state') ?? 'review-pending';
+        const states = {
+          loading: [
+            'Loading',
+            'Reading authoritative workspace state…',
+            'Waiting for the source record before showing content.',
+          ],
+          empty: ['Empty', 'No evidence recorded', 'This surface has no state-specific records to inspect yet.'],
+          attention: ['Attention', 'Inspection recommended', 'A review or validation reason needs inspection next.'],
+          blocked: [
+            'Blocked',
+            'Dependency prevents progress',
+            'The dependency must resolve before safe progress can continue.',
+          ],
+          'active-execution': [
+            'Active execution',
+            'Run is in progress',
+            'Completion is not inferred while the executor is active.',
+          ],
+          'evidence-missing': [
+            'Evidence missing',
+            'Required artifact is absent',
+            'The missing validation artifact keeps confidence incomplete.',
+          ],
+          'evidence-present': [
+            'Evidence present',
+            'Artifact is available',
+            'The command, result, and artifact pointer can be inspected.',
+          ],
+          'review-pending': [
+            'Review pending',
+            'Independent comparison is pending',
+            'No reviewer verdict has been recorded for this state.',
+          ],
+          accepted: ['Accepted', 'Evidence accepted', 'An independent reviewer accepted the recorded evidence.'],
+          rejected: ['Rejected', 'Acceptance withheld', 'The reviewer found a contract gap that requires correction.'],
+          rework: ['Rework', 'Correction is in progress', 'The item is being corrected before another review.'],
+          locked: [
+            'Locked',
+            'Protected context is unavailable',
+            'No preview or protected report content is shown while locked.',
+          ],
+          unavailable: [
+            'Unavailable',
+            'Source cannot be read',
+            'The source is temporarily unavailable; no value is fabricated.',
+          ],
+          stale: ['Stale', 'Freshness needs review', 'The source is older than the freshness policy allows.'],
+          error: ['Error', 'Read failed', 'The state could not be read; reference ERR-218 for investigation.'],
+        };
+        const copy = states[state] ?? states['review-pending'];
+        document.body.dataset.captureState = state;
+        document.querySelectorAll('[data-surface], [aria-labelledby="validation-title"]').forEach((surface) => {
+          const panel = document.createElement('aside');
+          panel.dataset.captureStatePanel = state;
+          panel.className =
+            'mb-6 rounded-lg border border-blue-600/40 bg-blue-600/10 p-4 dark:border-blue-400/40 dark:bg-blue-400/10';
+          panel.innerHTML = `<p class="font-mono text-xs font-semibold tracking-widest text-blue-700 uppercase dark:text-blue-300">Capture state · ${state}</p><p class="mt-2 font-heading text-lg font-bold">${copy[0]} · ${copy[1]}</p><p class="mt-1 text-sm leading-6 text-zinc-700 dark:text-zinc-200">${copy[2]}</p>`;
+          surface.prepend(panel);
+        });
+      })();
+    </script>
+  </body>
+</html>

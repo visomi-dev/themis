@@ -1,0 +1,25 @@
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+[00:26:22.539] [32mINFO[39m (433446): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[00:26:22.548] [32mINFO[39m (433446): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[00:26:22.541] [32mINFO[39m (433446): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[00:26:22.542] [32mINFO[39m (433446): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[00:26:22.550] [32mINFO[39m (433446): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8083
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+[00:26:22.830] [32mINFO[39m (433506): [36mWorker runtime ready[39m
+[0mPOST /api/test/auth/session [32m200[0m 185.741 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 9.225 ms - 370[0m
+[0mPOST /api/sync/3ab2f394-536e-4825-a7dc-2f2a7b65b43e/devices [32m200[0m 11.091 ms - 326[0m
+[0mPOST /api/sync/3ab2f394-536e-4825-a7dc-2f2a7b65b43e/devices/device-fdcd1679-f547-4a80-acd3-64d1baddcfff/approval [32m200[0m 12.042 ms - 173[0m
+[0mPOST /api/sync/3ab2f394-536e-4825-a7dc-2f2a7b65b43e/devices [32m200[0m 9.217 ms - 328[0m
+[0mPOST /api/sync/3ab2f394-536e-4825-a7dc-2f2a7b65b43e/devices/device-e3f330aa-e587-4e17-9f4c-b4e350309d06/approval [32m200[0m 10.294 ms - 173[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/3ab2f394-536e-4825-a7dc-2f2a7b65b43e/devices/device-e3f330aa-e587-4e17-9f4c-b4e350309d06/enroll [33m409[0m 27.593 ms - 83[0m

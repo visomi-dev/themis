@@ -1,0 +1,659 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "harfile",
+      "version": "0.5.0"
+    },
+    "browser": {
+      "name": "",
+      "version": ""
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-08-28T02:14:46.[REDACTED-PIN]+00:00",
+        "time": 4.14,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "User-Agent",
+              "value": "schemathesis/4.24.3"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, zstd"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "X-Schemathesis-TestCaseId",
+              "value": "k0ulmS"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Length",
+              "value": "68"
+            }
+          ],
+          "queryString": [],
+          "headersSize": 246,
+          "bodySize": 68,
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\": \"engineer@themis.dev\", \"pinVerified\": false, \"label\": \"0\"}"
+          }
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "content-security-policy",
+              "value": "default-src 'self';base-uri 'self';connect-src 'self';font-src 'self' data:;form-action 'self';frame-ancestors 'self';img-src 'self' data: blob:;object-src 'none';script-src 'self' 'unsafe-inline';script-src-attr 'unsafe-inline';style-src 'self' 'unsafe-inline'"
+            },
+            {
+              "name": "cross-origin-opener-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "cross-origin-resource-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "origin-agent-cluster",
+              "value": "?1"
+            },
+            {
+              "name": "referrer-policy",
+              "value": "no-referrer"
+            },
+            {
+              "name": "strict-transport-security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "name": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "name": "x-dns-prefetch-control",
+              "value": "off"
+            },
+            {
+              "name": "x-download-options",
+              "value": "noopen"
+            },
+            {
+              "name": "x-frame-options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "name": "x-permitted-cross-domain-policies",
+              "value": "none"
+            },
+            {
+              "name": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "name": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "content-length",
+              "value": "88"
+            },
+            {
+              "name": "etag",
+              "value": "W/\"58-REbstmIlDSRYSOO+30arKlMmZG0\""
+            },
+            {
+              "name": "set-cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "date",
+              "value": "Fri, 28 Aug 2026 02:14:46 GMT"
+            },
+            {
+              "name": "connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "keep-alive",
+              "value": "timeout=5"
+            }
+          ],
+          "content": {
+            "size": 88,
+            "mimeType": "",
+            "text": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          },
+          "redirectURL": "",
+          "headersSize": 913,
+          "bodySize": 88
+        },
+        "timings": {
+          "send": 0,
+          "wait": 0,
+          "receive": 4.14,
+          "blocked": 0,
+          "dns": 0,
+          "connect": 0,
+          "ssl": 0
+        },
+        "cache": {}
+      },
+      {
+        "startedDateTime": "2026-08-28T02:14:46.[REDACTED-PIN]+00:00",
+        "time": 3.61,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "User-Agent",
+              "value": "schemathesis/4.24.3"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, zstd"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "X-Schemathesis-TestCaseId",
+              "value": "JT48lG"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Length",
+              "value": "116"
+            }
+          ],
+          "queryString": [],
+          "headersSize": 247,
+          "bodySize": 116,
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\": \"[REDACTED]\", \"label\": \"OpenAPI contract example\", \"pinVerified\": true}"
+          }
+        },
+        "response": {
+          "status": 401,
+          "statusText": "Unauthorized",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "content-security-policy",
+              "value": "default-src 'self';base-uri 'self';connect-src 'self';font-src 'self' data:;form-action 'self';frame-ancestors 'self';img-src 'self' data: blob:;object-src 'none';script-src 'self' 'unsafe-inline';script-src-attr 'unsafe-inline';style-src 'self' 'unsafe-inline'"
+            },
+            {
+              "name": "cross-origin-opener-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "cross-origin-resource-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "origin-agent-cluster",
+              "value": "?1"
+            },
+            {
+              "name": "referrer-policy",
+              "value": "no-referrer"
+            },
+            {
+              "name": "strict-transport-security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "name": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "name": "x-dns-prefetch-control",
+              "value": "off"
+            },
+            {
+              "name": "x-download-options",
+              "value": "noopen"
+            },
+            {
+              "name": "x-frame-options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "name": "x-permitted-cross-domain-policies",
+              "value": "none"
+            },
+            {
+              "name": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "name": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "content-length",
+              "value": "84"
+            },
+            {
+              "name": "etag",
+              "value": "W/\"54-6r+gdOgkrxPxSe5TpMTiKqPzEQk\""
+            },
+            {
+              "name": "set-cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "date",
+              "value": "Fri, 28 Aug 2026 02:14:46 GMT"
+            },
+            {
+              "name": "connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "keep-alive",
+              "value": "timeout=5"
+            }
+          ],
+          "content": {
+            "size": 84,
+            "mimeType": "",
+            "text": "{\"code\":\"authentication_required\",\"message\":\"Sign in before registering a passkey.\"}"
+          },
+          "redirectURL": "",
+          "headersSize": 913,
+          "bodySize": 84
+        },
+        "timings": {
+          "send": 0,
+          "wait": 0,
+          "receive": 3.61,
+          "blocked": 0,
+          "dns": 0,
+          "connect": 0,
+          "ssl": 0
+        },
+        "cache": {}
+      },
+      {
+        "startedDateTime": "2026-08-28T02:14:46.[REDACTED-PIN]+00:00",
+        "time": 4.72,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "User-Agent",
+              "value": "schemathesis/4.24.3"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, zstd"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "X-Schemathesis-TestCaseId",
+              "value": "5gLjpr"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Length",
+              "value": "106"
+            }
+          ],
+          "queryString": [],
+          "headersSize": 247,
+          "bodySize": 106,
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\": \"engineer@themis.dev\", \"pinVerified\": false, \"explicitPassword\": false, \"retryRequested\": false}"
+          }
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "content-security-policy",
+              "value": "default-src 'self';base-uri 'self';connect-src 'self';font-src 'self' data:;form-action 'self';frame-ancestors 'self';img-src 'self' data: blob:;object-src 'none';script-src 'self' 'unsafe-inline';script-src-attr 'unsafe-inline';style-src 'self' 'unsafe-inline'"
+            },
+            {
+              "name": "cross-origin-opener-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "cross-origin-resource-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "origin-agent-cluster",
+              "value": "?1"
+            },
+            {
+              "name": "referrer-policy",
+              "value": "no-referrer"
+            },
+            {
+              "name": "strict-transport-security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "name": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "name": "x-dns-prefetch-control",
+              "value": "off"
+            },
+            {
+              "name": "x-download-options",
+              "value": "noopen"
+            },
+            {
+              "name": "x-frame-options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "name": "x-permitted-cross-domain-policies",
+              "value": "none"
+            },
+            {
+              "name": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "name": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "content-length",
+              "value": "88"
+            },
+            {
+              "name": "etag",
+              "value": "W/\"58-REbstmIlDSRYSOO+30arKlMmZG0\""
+            },
+            {
+              "name": "set-cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "date",
+              "value": "Fri, 28 Aug 2026 02:14:46 GMT"
+            },
+            {
+              "name": "connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "keep-alive",
+              "value": "timeout=5"
+            }
+          ],
+          "content": {
+            "size": 88,
+            "mimeType": "",
+            "text": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          },
+          "redirectURL": "",
+          "headersSize": 913,
+          "bodySize": 88
+        },
+        "timings": {
+          "send": 0,
+          "wait": 0,
+          "receive": 4.72,
+          "blocked": 0,
+          "dns": 0,
+          "connect": 0,
+          "ssl": 0
+        },
+        "cache": {}
+      },
+      {
+        "startedDateTime": "2026-08-28T02:14:46.[REDACTED-PIN]+00:00",
+        "time": 6.7,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "User-Agent",
+              "value": "schemathesis/4.24.3"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, zstd"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "X-Schemathesis-TestCaseId",
+              "value": "LUKMBp"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Length",
+              "value": "79"
+            }
+          ],
+          "queryString": [],
+          "headersSize": 246,
+          "bodySize": 79,
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\": \"[REDACTED]\", \"pinVerified\": true}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": "[REDACTED]",
+          "headers": [
+            {
+              "name": "content-security-policy",
+              "value": "default-src 'self';base-uri 'self';connect-src 'self';font-src 'self' data:;form-action 'self';frame-ancestors 'self';img-src 'self' data: blob:;object-src 'none';script-src 'self' 'unsafe-inline';script-src-attr 'unsafe-inline';style-src 'self' 'unsafe-inline'"
+            },
+            {
+              "name": "cross-origin-opener-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "cross-origin-resource-policy",
+              "value": "same-origin"
+            },
+            {
+              "name": "origin-agent-cluster",
+              "value": "?1"
+            },
+            {
+              "name": "referrer-policy",
+              "value": "no-referrer"
+            },
+            {
+              "name": "strict-transport-security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "name": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "name": "x-dns-prefetch-control",
+              "value": "off"
+            },
+            {
+              "name": "x-download-options",
+              "value": "noopen"
+            },
+            {
+              "name": "x-frame-options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "name": "x-permitted-cross-domain-policies",
+              "value": "none"
+            },
+            {
+              "name": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "name": "x-powered-by",
+              "value": "Express"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "content-length",
+              "value": "470"
+            },
+            {
+              "name": "etag",
+              "value": "W/\"1d6-D8evW46BRlCppQytMQ8HtKqsEHg\""
+            },
+            {
+              "name": "set-cookie",
+              "value": "[Filtered]"
+            },
+            {
+              "name": "date",
+              "value": "Fri, 28 Aug 2026 02:14:46 GMT"
+            },
+            {
+              "name": "connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "keep-alive",
+              "value": "timeout=5"
+            }
+          ],
+          "content": {
+            "size": 470,
+            "mimeType": "",
+            "text": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"options\":{\"rpId\":\"localhost\",\"challenge\": \"[REDACTED]\",\"allowCredentials\":[{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"transports\":[\"internal\"],\"type\":\"public-key\"},{\"id\":\"WASb1QNSORfe7y_J51XSdw\",\"transports\":[\"internal\"],\"type\":\"public-key\"}],\"timeout\":60000,\"userVerification\":\"required\"},\"attempt\":\"passkey_default\"},\"message\":\"Passkey authentication options created.\"}"
+          },
+          "redirectURL": "",
+          "headersSize": 915,
+          "bodySize": 470
+        },
+        "timings": {
+          "send": 0,
+          "wait": 0,
+          "receive": 6.7,
+          "blocked": 0,
+          "dns": 0,
+          "connect": 0,
+          "ssl": 0
+        },
+        "cache": {}
+      }
+    ]
+  }
+}

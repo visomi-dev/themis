@@ -3,13 +3,11 @@
     <header class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
         <p class="text-accent font-mono text-xs font-semibold tracking-widest uppercase">Themis</p>
-        <app-heading i18n="@@projectsTitle" level="1" [text]="'Projects'" />
+        <app-heading i18n="@@projectsTitle" level="1" [text]="'Project Workspace'" />
         <p class="mt-3 max-w-xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-          Software projects registered in Themis.
+          Read-only operational workspaces for projects you are authorized to inspect.
         </p>
       </div>
-
-      <app-link-button i18n="@@projectsNewButton" [routerLink]="projectNewUrl" [text]="'New project'" />
     </header>
 
     @if (errorMessage()) {
@@ -25,7 +23,9 @@
       </app-card>
     } @else if (projects().length === 0) {
       <app-card padding="md" tone="raised">
-        <p class="text-sm text-zinc-500 dark:text-zinc-400">No projects yet. Create the first one to get started.</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+          No authorized project workspace is available in this read-only projection.
+        </p>
       </app-card>
     } @else {
       <app-card padding="md" tone="raised" class="overflow-hidden">
@@ -33,7 +33,6 @@
           <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Project</span>
           <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Status</span>
           <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Created</span>
-          <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Actions</span>
         </div>
 
         @for (project of projects(); track project.id) {
@@ -43,7 +42,7 @@
             <div class="min-w-0">
               <a
                 class="hover:text-accent font-medium text-zinc-950 no-underline dark:text-zinc-50"
-                [routerLink]="['/projects', project.id]"
+                [routerLink]="['/projects', project.id, 'workspace']"
               >
                 {{ project.name }}
               </a>
@@ -56,18 +55,11 @@
             <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ formatDate(project.createdAt) }}</span>
             <div class="flex items-center gap-2">
               <a
-                [routerLink]="['/projects', project.id]"
+                [routerLink]="['/projects', project.id, 'workspace']"
                 class="text-accent text-sm font-medium no-underline hover:underline"
               >
                 View
               </a>
-              <button
-                type="button"
-                class="text-sm font-medium text-red-600 hover:underline dark:text-red-400"
-                (click)="deleteProject(project.id, $event)"
-              >
-                Delete
-              </button>
             </div>
           </article>
         }

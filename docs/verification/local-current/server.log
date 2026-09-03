@@ -1,0 +1,76 @@
+PZS005_RUN_ID=local-current
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[14:16:03.468] [32mINFO[39m (1449436): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[14:16:03.476] [32mINFO[39m (1449436): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+[14:16:03.470] [32mINFO[39m (1449436): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[14:16:03.470] [32mINFO[39m (1449436): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[14:16:03.478] [32mINFO[39m (1449436): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8080
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[14:16:03.762] [32mINFO[39m (1449609): [36mWorker runtime ready[39m
+[0mPOST /api/test/auth/session [32m200[0m 156.610 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 7.206 ms - 370[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices [32m200[0m 20.377 ms - 326[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices/device-f3b207ef-b49f-4adc-85e1-ce637b899901/approval [32m200[0m 12.499 ms - 173[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices/device-f3b207ef-b49f-4adc-85e1-ce637b899901/enroll [32m200[0m 43.596 ms - 758[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices [32m200[0m 18.823 ms - 328[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices/device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a/enroll [32m200[0m 23.880 ms - 734[0m
+[0mPOST /api/test/auth/session [32m200[0m 135.695 ms - 109[0m
+[0mPOST /api/projects [32m201[0m 5.397 ms - 370[0m
+[0mPOST /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/devices [32m200[0m 16.807 ms - 326[0m
+[0mPOST /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/devices/device-f9bb3e37-797e-41e8-b379-d7b4040628f4/approval [32m200[0m 11.313 ms - 173[0m
+[0mPOST /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/devices/device-f9bb3e37-797e-41e8-b379-d7b4040628f4/enroll [32m200[0m 24.460 ms - 758[0m
+[0mPOST /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/devices [32m200[0m 10.365 ms - 328[0m
+[0mPOST /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/devices/device-e511be68-5ec9-435d-9ce3-237b23617b2f/enroll [32m200[0m 24.953 ms - 734[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [32m201[0m 26.039 ms - 546[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [32m200[0m 9.256 ms - 545[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m409[0m 5.556 ms - 84[0m
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes?deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [32m200[0m 7.718 ms - 546[0m
+[0mPOST /api/projects [32m201[0m 4.821 ms - 388[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/56dda021-b0f2-44d5-943d-069a899c6e5d/envelopes?deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [33m409[0m 2.248 ms - 90[0m
+[ error ] API request failed { code: [32m'workspace_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/sync/05b23ec9-8480-49bb-abb6-367be7491a6d/envelopes?deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [33m404[0m 1.580 ms - 76[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices [32m200[0m 9.418 ms - 310[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices/device-3028a814-fa5c-4b9c-bc69-ff9982b9e4f6/revoke [32m200[0m 10.602 ms - 114[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes?deviceId=device-3028a814-fa5c-4b9c-bc69-ff9982b9e4f6&enrollmentVersion=1 [33m409[0m 3.872 ms - 90[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices [32m200[0m 8.708 ms - 316[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes?deviceId=device-ff0bf393-9f28-4b44-8407-a3024992b25c&enrollmentVersion=1 [33m409[0m 3.431 ms - 90[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m400[0m 1.062 ms - 236[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m400[0m 1.138 ms - 267[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m400[0m 1.090 ms - 177[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m409[0m 10.164 ms - 84[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m409[0m 10.878 ms - 84[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [32m201[0m 29.743 ms - 530[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m409[0m 4.890 ms - 84[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/checkpoints [32m201[0m 21.716 ms - 571[0m
+[ error ] API request failed { code: [32m'checkpoint_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/checkpoints [33m409[0m 7.018 ms - 71[0m
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/recovery?checkpointId=checkpoint-1&deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2&afterCursor=0&limit=10 [32m200[0m 8.602 ms - 1080[0m
+[ error ] API request failed { code: [32m'recovery_chain_unavailable'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/recovery?checkpointId=missing&deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [33m409[0m 4.224 ms - 92[0m
+[ error ] API request failed { code: [32m'cursor_recovery_required'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes?afterCursor=0&deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [33m409[0m 6.023 ms - 96[0m
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [32m201[0m 20.409 ms - 536[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes [33m409[0m 5.773 ms - 84[0m
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/envelopes?afterCursor=1&deviceId=device-2c8bccf8-bea6-4e5c-b15e-869b7a9d636a&enrollmentVersion=2 [32m200[0m 7.640 ms - 1009[0m
+[0mGET /api/sync/cf13c0ce-7ad5-40c5-ac32-9847a0ec236f/devices [32m200[0m 2.194 ms - 1229[0m
+[0mGET /api/openapi.json [32m200[0m 7.971 ms - 141785[0m

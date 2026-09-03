@@ -8,6 +8,9 @@ import type { Express, NextFunction, Request, RequestHandler, Response } from 'e
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { createGatewayApp } from './gateway';
+import { DurableReplayStore } from './durable-replay-store';
+import { createLocalAgentProxy, publicKeyFromPem } from './local-agent-proxy';
+import { resolveGatewayPort } from './runtime-config';
 
 import { createAuthRuntimeMiddleware, logger } from 'shared';
 
@@ -36,9 +39,29 @@ type AngularHandler = RequestHandler & {
   upgrade?: UpgradeHandler;
 };
 
-const port = process.env.GATEWAY_PORT ? Number(process.env.GATEWAY_PORT) : 8080;
+const port = resolveGatewayPort();
 
 const appDevServerUrl = process.env.APP_DEV_SERVER_URL;
+const localAgentUrl = process.env.LOCAL_AGENT_URL ?? 'http://localhost:4317';
+
+function createLocalAgentFixtureControl(target: URL): RequestHandler {
+  return async (req, res) => {
+    const state = req.path.split('/').filter(Boolean).pop();
+    const controlPath = req.path.includes('/network') ? '/__fixture__/network' : '/__fixture__/sync-phase';
+
+    try {
+      const response = await fetch(new URL(`${target.toString().replace(/\/$/, '')}${controlPath}`), {
+        body: JSON.stringify(req.path.includes('/network') ? { state } : { phase: state }),
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+      });
+
+      res.status(response.status).end();
+    } catch {
+      res.status(503).send('fixture control unavailable');
+    }
+  };
+}
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 
@@ -80,14 +103,41 @@ function startWorkerRuntime() {
 }
 
 function shutdown() {
+  if (shuttingDown) return;
   shuttingDown = true;
+  const exit = () => process.exit(0);
+  const timer = setTimeout(exit, 10_000);
+
+  timer.unref();
+
+  let serverClosed = !httpServer;
+  let workerClosed = !workerProcess || workerProcess.exitCode !== null;
+  const finish = () => {
+    if (serverClosed && workerClosed) {
+      clearTimeout(timer);
+      exit();
+    }
+  };
+
+  workerProcess?.once('exit', () => {
+    workerClosed = true;
+    finish();
+  });
   workerProcess?.kill('SIGTERM');
+  httpServer?.close(() => {
+    serverClosed = true;
+    finish();
+  });
+  finish();
+}
 
-  if (!httpServer) {
-    process.exit(0);
-  }
-
-  httpServer.close(() => process.exit(0));
+function failBootstrap(error: unknown): void {
+  logger.error({ err: error }, 'Failed to bootstrap gateway server');
+  // The worker is started before the gateway begins listening. If listen fails
+  // (most commonly because a stale gateway still owns the configured port),
+  // the parent process can exit while the child remains alive and poisons the
+  // next Playwright webServer attempt. Always tear down the child first.
+  shutdown();
 }
 
 async function loadApiApp() {
@@ -144,6 +194,7 @@ async function loadAngularHandler(): Promise<AngularHandler> {
 }
 
 async function bootstrap() {
+  const readiness = { ready: false };
   const [apiHandler, angularHandler, astroRequestHandler, attachRealtimeServer] = await Promise.all([
     loadApiApp(),
     loadAngularHandler(),
@@ -153,12 +204,31 @@ async function bootstrap() {
 
   startWorkerRuntime();
 
+  const localAgentPublicKey = publicKeyFromPem(process.env.LOCAL_AGENT_PUBLIC_KEY);
+  const localAgentTarget = new URL(localAgentUrl);
+
   const app = createGatewayApp({
     apiHandler,
     angularHandler,
     astroClientFolder,
     astroRequestHandler,
     authRuntimeHandlers: createAuthRuntimeMiddleware(),
+    localAgentHandler: localAgentPublicKey
+      ? createLocalAgentProxy({
+          publicKey: localAgentPublicKey,
+          replayStore: new DurableReplayStore(),
+          target: localAgentTarget,
+        })
+      : (_req, res) => {
+          res
+            .status(503)
+            .json({ code: 'local_agent_unconfigured', message: 'The protected visibility agent is not configured.' });
+        },
+    localAgentFixtureControl:
+      process.env.ENABLE_TEST_API === 'true' ? createLocalAgentFixtureControl(localAgentTarget) : undefined,
+    readiness: {
+      isReady: () => readiness.ready,
+    },
   });
 
   httpServer = app.listen(port, host, () => {
@@ -174,13 +244,12 @@ async function bootstrap() {
   }
 
   await attachRealtimeServer(httpServer);
+  readiness.ready = true;
 }
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
 bootstrap().catch((error: unknown) => {
-  logger.error({ err: error }, 'Failed to bootstrap gateway server');
-
-  process.exit(1);
+  failBootstrap(error);
 });

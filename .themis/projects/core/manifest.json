@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "projectId": "core",
+  "generation": 1,
+  "stateChecksum": "45e6c4b5e76e679cd5e3b41ec1e2cc72650b2c284e84df40894a777ef31ade8e",
+  "eventsChecksum": "cf0c15af76a6e4d3fbe1634b450103f0d882c78810ee52029f5b776d5554d584",
+  "entityCounts": {
+    "projects": 1,
+    "epics": 13,
+    "workItems": 76,
+    "dependencies": 121,
+    "sprints": 1,
+    "sprintItems": 5,
+    "revisions": 1,
+    "runs": 240,
+    "evidence": 2491,
+    "sprintEvidence": 0,
+    "reviews": 182
+  }
+}

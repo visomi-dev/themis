@@ -2,13 +2,15 @@ import { HttpError } from 'shared';
 
 import type { ProjectSeedJobInput, ProjectSeedJobResult } from '../contracts/project-seed';
 import { findAsyncJobById, updateAsyncJob } from '../records/async-job-records';
-import { createDocument, getProject } from '../projects-service';
+import { getProject } from '../projects-service';
 
 import { publishProjectAsyncJobEvent } from './events';
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+const projectSeedFailureMessage = 'Project seed failed.';
 
 async function queueProjectSeed(context: { accountId: string; userId: string }, projectId: string) {
   const project = await getProject(context, projectId);
@@ -55,30 +57,13 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
 
   await publishProjectAsyncJobEvent('job:progress', contextJob, 'Project context draft prepared.');
 
-  await createDocument(context, existing.projectId!, {
-    contentMarkdown: [
-      '# Seeded Project Overview',
-      '',
-      'This document was created by the base project seed job.',
-      '',
-      '- Route-level project metadata is now connected to async jobs.',
-      '- BullMQ handles orchestration and status transitions.',
-      '- Socket.io relays user-scoped async events to the frontend.',
-    ].join('\n'),
-    documentType: 'overview',
-    source: 'seeded',
-    status: 'active',
-    title: 'Seeded Project Overview',
-  });
-
   const result: ProjectSeedJobResult = {
-    summary: 'Initial project overview generated.',
+    summary: 'Project seed metadata prepared.',
   };
 
   const completedJob = await updateAsyncJob(context, existing.id, {
     completedAt: new Date(),
     progress: 100,
-    resultJson: JSON.stringify(result),
     status: 'completed',
   });
 
@@ -87,7 +72,7 @@ async function processProjectSeedJob(bullJob: { data: ProjectSeedJobInput }) {
   return result;
 }
 
-async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, error: Error) {
+async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, _error: Error) {
   const context = {
     accountId: bullJob.data.accountId,
     userId: bullJob.data.userId,
@@ -95,12 +80,11 @@ async function failProjectSeedJob(bullJob: { data: ProjectSeedJobInput }, error:
 
   const failedJob = await updateAsyncJob(context, bullJob.data.jobId, {
     completedAt: new Date(),
-    errorMessage: error.message,
     progress: 100,
     status: 'failed',
   });
 
-  await publishProjectAsyncJobEvent('job:failed', failedJob, error.message);
+  await publishProjectAsyncJobEvent('job:failed', failedJob, projectSeedFailureMessage);
 }
 
-export { failProjectSeedJob, processProjectSeedJob, queueProjectSeed };
+export { failProjectSeedJob, processProjectSeedJob, projectSeedFailureMessage, queueProjectSeed };

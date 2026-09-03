@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites errors="0" failures="0" skipped="0" tests="4" time="4.[REDACTED-PIN]">
+  <testsuite name="schemathesis" hostname="viconsole" errors="0" failures="0" skipped="0" tests="4" time="4.[REDACTED-PIN]">
+    <testcase name="POST /auth/passkey/registration/begin" time="3.[REDACTED-PIN]" />
+    <testcase name="POST /auth/passkey/registration/complete" time="0.[REDACTED-PIN]" />
+    <testcase name="POST /auth/passkey/authentication/begin" time="0.[REDACTED-PIN]" />
+    <testcase name="POST /auth/passkey/authentication/complete" time="0.[REDACTED-PIN]" />
+  </testsuite>
+</testsuites>

@@ -1,0 +1,232 @@
+[
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"locked\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"locked\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 401,
+    "body": "{\"code\":\"authentication_required\",\"message\":\"Sign in to access this resource.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 404,
+    "body": "{\"code\":\"project_not_found\",\"message\":\"The project could not be found.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 401,
+    "body": "{\"code\":\"unauthorized\",\"message\":\"Project access is unavailable.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 503,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The operational projection is unavailable.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 500,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The operational projection failed.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 502,
+    "body": "{\"data\":"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"visible\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"epic-fixture\",\"projectId\":\"[REDACTED-ID]\",\"title\":\"Operational outcome\",\"summary\":null,\"status\":\"active\"}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"work-item-fixture\",\"epicId\":\"epic-fixture\",\"title\":\"Protected work item\",\"status\":\"in_progress\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\",\"intent\":\"Make the project state understandable without granting mutation authority.\",\"scope\":\"Read-only workspace, execution trace, validation evidence, and independent review context.\",\"dependencies\":[\"Protected local-agent projection\"],\"nextAction\":\"Inspect the recorded evidence and review decision before taking any action elsewhere.\"}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"run-fixture\",\"workItemId\":\"work-item-fixture\",\"status\":\"running\",\"startedAt\":\"2026-08-27T07:20:34.185Z\",\"finishedAt\":null}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"evidence-fixture\",\"runId\":\"run-fixture\",\"kind\":\"verification\",\"createdAt\":\"2026-08-27T07:20:34.185Z\",\"summary\":\"Focused read-model and route validation recorded.\",\"result\":\"passed\"}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"review-fixture\",\"workItemId\":\"work-item-fixture\",\"verdict\":\"pending\",\"createdAt\":\"2026-08-27T07:20:34.185Z\",\"reviewer\":\"Independent reviewer\",\"feedback\":\"Review decision is pending; no self-approval is available in this surface.\"}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"activity-fixture\",\"projectId\":\"[REDACTED-ID]\",\"kind\":\"status\",\"occurredAt\":\"2026-08-27T07:20:34.185Z\",\"summary\":\"Protected activity projection\"}],\"state\":\"visible\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"visible\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is visible\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"empty\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"empty\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"empty\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"locked\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"locked\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"locked\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is locked\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"unavailable\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"unavailable\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"unavailable\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is unavailable\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"stale\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"stale\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"stale\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is stale\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"error\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"error\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"error\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is error\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"malformed\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"malformed-item\"}],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"malformed\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"}}}"
+  },
+  {
+    "method": "GET",
+    "path": "/projects/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/workspace",
+    "status": 200,
+    "body": "{\"message\":\"Operational workspace retrieved.\",\"data\":{\"schemaVersion\":\"1\",\"readOnly\":true,\"project\":{\"authority\":\"control-plane\",\"items\":[{\"id\":\"[REDACTED-ID]\",\"name\":\"ZK-027 OpenAPI fixture\",\"status\":\"active\",\"visibility\":\"operational\",\"updatedAt\":\"2026-08-27T07:20:34.185Z\"}],\"state\":\"visible\",\"source\":\"themis-control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\"},\"protectedContext\":{\"authority\":\"local-agent\",\"items\":[],\"state\":\"malformed\",\"source\":\"[REDACTED-MATERIAL]\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"epics\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"workItems\":{\"authority\":\"opaque-encrypted-source\",\"items\":[{\"id\":\"malformed-item\"}],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"runs\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"evidence\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"reviews\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"activity\":{\"authority\":\"opaque-encrypted-source\",\"items\":[],\"state\":\"malformed\",\"source\":\"opaque-encrypted-source\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"},\"iteration\":{\"authority\":\"control-plane\",\"items\":[],\"state\":\"malformed\",\"source\":\"control-plane\",\"observedAt\":\"2026-08-27T07:20:34.185Z\",\"reason\":\"local-agent projection is malformed\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 201,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"message\":\"Envelope accepted.\",\"data\":{\"cursor\":2,\"duplicate\":false,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 200,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"message\":\"Envelope accepted.\",\"data\":{\"cursor\":2,\"duplicate\":true,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y29uZmxpY3Q\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/00000000-0000-4000-8000-000000000000/envelopes",
+    "status": 404,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"workspace_not_found\",\"message\":\"The workspace could not be found.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes?deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 404,
+    "body": "{\"code\":\"workspace_not_found\",\"message\":\"The workspace could not be found.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":999,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Invalid input: expected 1\",\"data\":{\"code\":\"invalid_value\",\"values\":[1],\"path\":[\"envelope\",\"version\"],\"message\":\"Invalid input: expected 1\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-oversized\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"[REDACTED-MATERIAL]\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Too big: expected string to have <=[REDACTED-PIN] characters\",\"data\":{\"origin\":\"string\",\"code\":\"too_big\",\"maximum\":[REDACTED-PIN],\"inclusive\":true,\"path\":[\"envelope\",\"ciphertext\"],\"message\":\"Too big: expected string to have <=[REDACTED-PIN] characters\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 400,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":2,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-unsupported\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Invalid input: expected 1\",\"data\":{\"code\":\"invalid_value\",\"values\":[1],\"path\":[\"envelope\",\"version\"],\"message\":\"Invalid input: expected 1\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-stale\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"baseCursor\":\"0\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-rollback\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":1,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/checkpoints",
+    "status": 201,
+    "requestBody": "{\"checkpointId\":\"run-255-api-checkpoint\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"message\":\"Checkpoint stored.\",\"data\":{\"checkpointId\":\"run-255-api-checkpoint\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/checkpoints",
+    "status": 409,
+    "requestBody": "{\"checkpointId\":\"[REDACTED-MATERIAL]\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-other\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"checkpoint_rejected\",\"message\":\"The checkpoint was rejected.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/recovery?checkpointId=run-255-api-checkpoint&deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2&afterCursor=0&limit=100",
+    "status": 200,
+    "body": "{\"message\":\"Recovery chain retrieved.\",\"data\":{\"checkpoint\":{\"checkpointId\":\"run-255-api-checkpoint\",\"cursor\":2,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"}},\"envelopes\":[]}}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/recovery?checkpointId=run-255-api-missing&deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The recovery chain could not be retrieved.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/recovery?checkpointId=&deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 400,
+    "body": "{\"code\":\"invalid_request\",\"message\":\"Too small: expected string to have >=1 characters\",\"data\":{\"origin\":\"string\",\"code\":\"too_small\",\"minimum\":1,\"inclusive\":true,\"path\":[\"checkpointId\"],\"message\":\"Too small: expected string to have >=1 characters\"}}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes?afterCursor=999999&limit=100&deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The requested cursor requires snapshot recovery.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 201,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"tombstone\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"deletedRecordId\":\"run-255-api-sync-stream\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"message\":\"Envelope accepted.\",\"data\":{\"cursor\":3,\"duplicate\":false,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"tombstone\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"deletedRecordId\":\"run-255-api-sync-stream\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":1,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/recovery?checkpointId=run-255-api-checkpoint&deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 404,
+    "body": "{\"code\":\"workspace_not_found\",\"message\":\"The workspace could not be found.\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes?deviceId=device-eYtLExGAV6ez_waI&enrollmentVersion=2",
+    "status": 409,
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"Device authorization is revoked or stale.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/sync/bb19aaf9-4fd2-4725-835d-12ce0d386d4e/envelopes",
+    "status": 409,
+    "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-255-api-revoked\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":4,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"The encrypted envelope was rejected.\"}"
+  }
+]

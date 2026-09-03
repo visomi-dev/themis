@@ -1,38 +1,28 @@
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
 
-import { findUserById, resolveAuthUser, verifyPassword } from './auth-service';
+import { findUserById, resolveAuthUser } from './auth-service';
 
-passport.use(
-  'local',
-  new LocalStrategy({ passwordField: 'password', usernameField: 'email' }, async (email, password, done) => {
-    try {
-      const user = await verifyPassword(email, password);
-
-      if (!user) {
-        return done(null, false, { message: 'Incorrect email or password.' });
-      }
-
-      return done(null, await resolveAuthUser(user));
-    } catch (error) {
-      return done(error as Error);
-    }
-  }),
-);
+type SerializedUser = {
+  accountId: string;
+  credentialId?: string;
+  id: string;
+};
 
 passport.serializeUser((user, done) => {
-  done(null, { accountId: user.accountId, id: user.id });
+  done(null, { accountId: user.accountId, credentialId: user.credentialId, id: user.id });
 });
 
-passport.deserializeUser(async (serializedUser: { accountId: string; id: string }, done) => {
+passport.deserializeUser(async (serializedUser: SerializedUser, done) => {
   try {
     const user = await findUserById(serializedUser.id);
 
-    if (!user) {
-      return done(null, false);
-    }
+    if (!user) return done(null, false);
 
-    return done(null, await resolveAuthUser(user));
+    return done(null, {
+      ...(await resolveAuthUser(user)),
+      authenticationMethod: 'passkey',
+      credentialId: serializedUser.credentialId,
+    });
   } catch (error) {
     return done(error as Error);
   }

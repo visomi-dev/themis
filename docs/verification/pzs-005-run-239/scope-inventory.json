@@ -1,0 +1,15 @@
+{
+  "runId": "RUN-239",
+  "projectName": "themis-local-e2e-586626",
+  "composeFile": "compose.local-e2e.yaml",
+  "provider": "podman",
+  "services": ["postgres", "redis", "minio", "minio-init"],
+  "ports": {
+    "postgres": "25432",
+    "minio": "29000"
+  },
+  "database": "themis_api_e2e",
+  "bucket": "themis-local-e2e-586626-opaque",
+  "artifacts": ["lifecycle-transcript.txt", "scope-inventory.json", "server.log"],
+  "cleanup": "compose down --volumes --remove-orphans"
+}

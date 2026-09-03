@@ -1,0 +1,229 @@
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[01:33:39.777] [32mINFO[39m (845812): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[01:33:39.777] [32mINFO[39m (845812): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[01:33:39.777] [32mINFO[39m (845812): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[01:33:39.777] [32mINFO[39m (845812): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[01:33:39.777] [32mINFO[39m (845812): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8085
+[0mDELETE /api/test/mailbox [32m204[0m 0.593 ms - -[0m
+[0mPOST /api/auth/sign-up [32m201[0m 90.603 ms - 205[0m
+[0mGET /api/test/mailbox/latest?email=pzs005-run-256-mtb7i293%40example.test&purpose=sign_up [32m200[0m 0.880 ms - 211[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 43.894 ms - 272[0m
+[0mGET /api/auth/session [32m200[0m 0.447 ms - 307[0m
+[0mPOST /api/projects [32m201[0m 4.372 ms - 388[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices [32m200[0m 4.994 ms - 397[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices/device-ilTuj3YR4l3RT89v/approval [32m200[0m 7.271 ms - 153[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices/device-ilTuj3YR4l3RT89v/enroll [32m200[0m 8.530 ms - 603[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices [32m200[0m 3.626 ms - 403[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices/device-QPUMnyFg5r6cSavO/enroll [32m200[0m 3.025 ms - 597[0m
+[0mPOST /api/webauthn/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/recovery [32m201[0m 3.497 ms - 171[0m
+[01:33:39.777] [32mINFO[39m (846722): [36mWorker runtime ready[39m
+[0mPOST /api/webauthn/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/credentials [32m201[0m 4.177 ms - 260[0m
+[0mPOST /api/auth/sign-up [32m201[0m 79.370 ms - 217[0m
+[0mGET /api/test/mailbox/latest?email=openapi-passkey-unverified-mtb7i293%40example.test&purpose=sign_up [32m200[0m 0.238 ms - 223[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 34.877 ms - 284[0m
+[0mGET /api/auth/session [32m200[0m 0.247 ms - 319[0m
+[0mPOST /api/auth/sign-up [32m201[0m 70.712 ms - 217[0m
+[0mGET /api/openapi.json [32m200[0m 8.577 ms - 141922[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices [32m200[0m 9.260 ms - 315[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices/device-0oUPtXDTM6TZ9hf-/enroll [32m200[0m 7.112 ms - 606[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 3.739 ms - 1949[0m
+[ error ] API request failed { code: [32m'authentication_required'[39m, statusCode: [33m401[39m }
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [33m401[0m 14.251 ms - 79[0m
+[ error ] API request failed { code: [32m'project_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [33m404[0m 5.551 ms - 72[0m
+[ error ] API request failed { code: [32m'unauthorized'[39m, statusCode: [33m401[39m }
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [33m401[0m 0.562 ms - 66[0m
+[ error ] API request failed { code: [32m'operational_workspace_unavailable'[39m, statusCode: [33m503[39m }
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [31m503[0m 0.430 ms - 99[0m
+[ error ] API request failed { code: [32m'operational_workspace_error'[39m, statusCode: [33m500[39m }
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [31m500[0m 0.388 ms - 85[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [31m502[0m 0.271 ms - 8[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.445 ms - 3310[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.410 ms - 1589[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.321 ms - 1949[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.323 ms - 2029[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.387 ms - 1933[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.268 ms - 1933[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.774 ms - 2020[0m
+[0mGET /api/projects/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/workspace [32m200[0m 1.308 ms - 2020[0m
+[0mGET /api/capabilities/016c77bb-cdee-4cc4-af9a-73bbc122c0c8 [32m200[0m 2.620 ms - 454[0m
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes?deviceId=device-0oUPtXDTM6TZ9hf-&enrollmentVersion=3 [32m200[0m 3.237 ms - 58[0m
+[0mPOST /api/capabilities/016c77bb-cdee-4cc4-af9a-73bbc122c0c8 [32m200[0m 4.644 ms - 256[0m
+[0mPOST /api/capabilities/016c77bb-cdee-4cc4-af9a-73bbc122c0c8 [32m200[0m 3.509 ms - 262[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [32m201[0m 2.989 ms - 481[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [32m201[0m 3.042 ms - 479[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [32m200[0m 3.056 ms - 478[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m409[0m 3.056 ms - 84[0m
+[ error ] API request failed { code: [32m'workspace_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/sync/00000000-0000-4000-8000-000000000000/envelopes [33m404[0m 1.651 ms - 76[0m
+[ error ] API request failed { code: [32m'workspace_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes?deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m404[0m 1.548 ms - 76[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m400[0m 1.005 ms - 177[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m400[0m 0.624 ms - 267[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m400[0m 0.444 ms - 177[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m409[0m 2.537 ms - 84[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m409[0m 2.630 ms - 84[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/checkpoints [32m201[0m 3.049 ms - 510[0m
+[ error ] API request failed { code: [32m'checkpoint_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/checkpoints [33m409[0m 2.577 ms - 71[0m
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/recovery?checkpointId=run-256-checkpoint&deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2&afterCursor=0&limit=100 [32m200[0m 2.903 ms - 547[0m
+[ error ] API request failed { code: [32m'recovery_chain_unavailable'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/recovery?checkpointId=run-256-missing&deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m409[0m 2.672 ms - 92[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/recovery?checkpointId=&deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m400[0m 0.512 ms - 249[0m
+[ error ] API request failed { code: [32m'cursor_recovery_required'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes?afterCursor=999999&limit=100&deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m409[0m 2.497 ms - 96[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [32m201[0m 2.452 ms - 456[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m409[0m 2.517 ms - 84[0m
+[ error ] API request failed { code: [32m'workspace_not_found'[39m, statusCode: [33m404[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/recovery?checkpointId=run-256-checkpoint&deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m404[0m 1.694 ms - 76[0m
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/devices/device-QPUMnyFg5r6cSavO/revoke [32m200[0m 2.591 ms - 94[0m
+[ error ] API request failed { code: [32m'device_lifecycle_rejected'[39m, statusCode: [33m409[39m }
+[0mGET /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes?deviceId=device-QPUMnyFg5r6cSavO&enrollmentVersion=2 [33m409[0m 2.789 ms - 90[0m
+[ error ] API request failed { code: [32m'opaque_envelope_rejected'[39m, statusCode: [33m409[39m }
+[0mPOST /api/sync/016c77bb-cdee-4cc4-af9a-73bbc122c0c8/envelopes [33m409[0m 3.340 ms - 84[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 5.433 ms - 747[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.928 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.090 ms - 91[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.135 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.872 ms - 91[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.791 ms - 747[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 0.963 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.767 ms - 747[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 6.708 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.803 ms - 747[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 5.211 ms - 245[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 6.215 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/complete [32m200[0m 30.217 ms - 360[0m
+[ error ] API request failed { code: [32m'challenge_replayed'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m409[0m 4.936 ms - 86[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.209 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.456 ms - 82[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.278 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.114 ms - 82[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 0.865 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 2.167 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 2.711 ms - 759[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 4.521 ms - 243[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 2.830 ms - 392[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 1.691 ms - 88[0m
+[0mGET /api/auth/passkey/credentials [32m200[0m 1.060 ms - 261[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPATCH /api/auth/passkey/credentials/undefined [33m404[0m 1.425 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mDELETE /api/auth/passkey/credentials/undefined [33m404[0m 1.336 ms - 88[0m
+[ error ] API request failed { code: [32m'email_already_registered'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m409[0m 0.959 ms - 97[0m
+[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 4.315 ms - 170[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.307 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.109 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.135 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.103 ms - 77[0m
+[0mTRACE /api/auth/passkey/registration/begin [33m405[0m 0.145 ms - 78[0m
+[0mQUERY /api/auth/passkey/registration/begin [33m405[0m 0.103 ms - 78[0m
+[0mPUT /api/auth/passkey/registration/begin [33m405[0m 0.253 ms - 78[0m
+[0mPATCH /api/auth/passkey/registration/begin [33m405[0m 0.125 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/registration/begin [33m405[0m 0.124 ms - 78[0m
+[0mGET /api/auth/passkey/registration/begin [33m405[0m 0.195 ms - 78[0m
+[0mDELETE /api/auth/passkey/registration/begin [33m405[0m 0.112 ms - 78[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.128 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.131 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.156 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.264 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.203 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.227 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.272 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.270 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.268 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.253 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.167 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.175 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.179 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.311 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.237 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.180 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.170 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.148 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.134 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.170 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.138 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.193 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.158 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mTRACE /api/auth/passkey/authentication/begin [33m405[0m 0.123 ms - 78[0m
+[0mQUERY /api/auth/passkey/authentication/begin [33m405[0m 0.091 ms - 78[0m
+[0mPUT /api/auth/passkey/authentication/begin [33m405[0m 0.082 ms - 78[0m
+[0mPATCH /api/auth/passkey/authentication/begin [33m405[0m 0.084 ms - 78[0m
+[0mOPTIONS /api/auth/passkey/authentication/begin [33m405[0m 0.080 ms - 78[0m
+[0mGET /api/auth/passkey/authentication/begin [33m405[0m 0.075 ms - 78[0m
+[0mDELETE /api/auth/passkey/authentication/begin [33m405[0m 0.073 ms - 78[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.113 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.124 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.244 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.359 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.256 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.148 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.239 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.244 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.236 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.149 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.146 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.134 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.178 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.142 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.155 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.238 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.201 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.110 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.114 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.120 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.121 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.102 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.153 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.163 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.204 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.233 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.306 ms - 77[0m
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 0.144 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.287 ms - 77[0m
+[ error ] API request failed { code: [32m'invalid_request'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.139 ms - 77[0m
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.129 ms - 77[0m

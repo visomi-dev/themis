@@ -1,0 +1,42 @@
+
+ NX   Running targets lint, typecheck, build for 2 projects:
+
+- themis-workflow
+- themis-agent-cli
+
+
+
+> nx run themis-workflow:build
+
+Compiling TypeScript files for project "themis-workflow"...
+Done compiling TypeScript files for project "themis-workflow".
+[1m[33mPackage type is set to "module" but "cjs" format is included. Going to use "esm" format instead. You can change the package type to "commonjs" or remove type in the package.json file.[39m[22m
+
+> nx run themis-workflow:typecheck
+
+> pnpm exec tsc --noEmit -p libs/themis-workflow/tsconfig.lib.json
+
+
+> nx run themis-workflow:lint
+
+> pnpm exec eslint libs/themis-workflow/src --rule '{"padding-line-between-statements":"off"}'
+
+
+> nx run themis-agent-cli:typecheck
+
+> pnpm exec tsc --noEmit -p apps/themis-agent-cli/tsconfig.app.json
+
+
+> nx run themis-agent-cli:lint
+
+> eslint .
+
+
+> nx run themis-agent-cli:build:production
+
+
+
+
+ NX   Successfully ran targets lint, typecheck, build for 2 projects
+
+

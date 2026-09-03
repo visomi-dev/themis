@@ -1,0 +1,630 @@
+{
+  "checkpointStatus": 201,
+  "cases": [
+    {
+      "case": "append-201",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 201,
+      "body": {
+        "message": "Envelope accepted.",
+        "data": {
+          "cursor": 1,
+          "duplicate": false,
+          "envelope": {
+            "format": "themis.encrypted-envelope",
+            "version": 1,
+            "kind": "sync-object",
+            "envelopeId": "run-239-sync-stream",
+            "workspaceId": "[REDACTED-ID]",
+            "recordType": "workspace-key-distribution",
+            "revision": 2,
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "associatedData": {},
+            "metadata": {
+              "recipientDeviceId": "[REDACTED]"
+            },
+            "nonce": "bm9uY2U",
+            "ciphertext": "Y2lwaGVydGV4dA",
+            "authTag": "dGFn"
+          }
+        }
+      },
+      "timingMs": 10.24,
+      "correlationId": "RUN-239-566987580e20e11e",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-566987580e20e11e"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "1f06766635efb545d62fb7bfad8791256fd0ddbf857b4d14f64e8880f43e147d"
+    },
+    {
+      "case": "duplicate-200",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 200,
+      "body": {
+        "message": "Envelope accepted.",
+        "data": {
+          "cursor": 1,
+          "duplicate": true,
+          "envelope": {
+            "format": "themis.encrypted-envelope",
+            "version": 1,
+            "kind": "sync-object",
+            "envelopeId": "run-239-sync-stream",
+            "workspaceId": "[REDACTED-ID]",
+            "recordType": "workspace-key-distribution",
+            "revision": 2,
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "associatedData": {},
+            "metadata": {
+              "recipientDeviceId": "[REDACTED]"
+            },
+            "nonce": "bm9uY2U",
+            "ciphertext": "Y2lwaGVydGV4dA",
+            "authTag": "dGFn"
+          }
+        }
+      },
+      "timingMs": 11.52,
+      "correlationId": "RUN-239-88789a9027182e99",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-88789a9027182e99"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "6fd20ecc826926073c2d772a063a79f424749c4d2b219167e9850e6c46dade95"
+    },
+    {
+      "case": "duplicate-conflict",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": {
+        "code": "opaque_envelope_rejected",
+        "message": "The encrypted envelope was rejected."
+      },
+      "timingMs": 11.54,
+      "correlationId": "RUN-239-12ad045a16409634",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-12ad045a16409634"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y29uZmxpY3Q\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "80dee28c6a11f7aa77224e685ee62cf524cfa951e56fed5012c7059ecd75a8a8"
+    },
+    {
+      "case": "cross-project",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 404,
+      "code": "workspace_not_found",
+      "body": {
+        "code": "workspace_not_found",
+        "message": "The workspace could not be found."
+      },
+      "timingMs": 6.01,
+      "correlationId": "RUN-239-887f84972e7fffa2",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-887f84972e7fffa2"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "53cb02474701f568cda1b4cc617c07bfe4a87c2876296dd5b7f691336ba2bed5"
+    },
+    {
+      "case": "cross-tenant",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/envelopes?deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 404,
+      "code": "workspace_not_found",
+      "body": {
+        "code": "workspace_not_found",
+        "message": "The workspace could not be found."
+      },
+      "timingMs": 9.32,
+      "correlationId": "RUN-239-fde702e02ea855b0",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-fde702e02ea855b0"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "86e7338486f0a9d877effd9fe273b9967b71b5c061e62d3aa2a17379b1f74483"
+    },
+    {
+      "case": "malformed",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 400,
+      "code": "invalid_request",
+      "body": {
+        "code": "invalid_request",
+        "message": "Invalid input: expected 1",
+        "data": {
+          "code": "invalid_value",
+          "values": [1],
+          "path": ["envelope", "version"],
+          "message": "Invalid input: expected 1"
+        }
+      },
+      "timingMs": 6.82,
+      "correlationId": "RUN-239-9f1d21c1801a8f09",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-9f1d21c1801a8f09"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":999,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "3f6045c348ac981d71cd63227b2eb2c2c0658149f8b77c0b53425b98e9db29e0"
+    },
+    {
+      "case": "oversized",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 400,
+      "code": "invalid_request",
+      "body": {
+        "code": "invalid_request",
+        "message": "Too big: expected string to have <=[REDACTED-PIN] characters",
+        "data": {
+          "origin": "string",
+          "code": "too_big",
+          "maximum": 100000,
+          "inclusive": true,
+          "path": ["envelope", "ciphertext"],
+          "message": "Too big: expected string to have <=[REDACTED-PIN] characters"
+        }
+      },
+      "timingMs": 5.21,
+      "correlationId": "RUN-239-a4b953b267831432",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-a4b953b267831432"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-oversized\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"[REDACTED-MATERIAL]\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "36708316f4fa52ff7cd5ca8bb6b23aeec5ccf15d2fe8f7abcbe72ad00ef06658"
+    },
+    {
+      "case": "unsupported-version",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 400,
+      "code": "invalid_request",
+      "body": {
+        "code": "invalid_request",
+        "message": "Invalid input: expected 1",
+        "data": {
+          "code": "invalid_value",
+          "values": [1],
+          "path": ["envelope", "version"],
+          "message": "Invalid input: expected 1"
+        }
+      },
+      "timingMs": 5.92,
+      "correlationId": "RUN-239-ccec36eead8716d7",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-ccec36eead8716d7"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":2,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-unsupported\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "0ec5c3d864efab7db77164cadbb912e96e75f36484e9dafd37e9ab346626f522"
+    },
+    {
+      "case": "stale-base",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": {
+        "code": "opaque_envelope_rejected",
+        "message": "The encrypted envelope was rejected."
+      },
+      "timingMs": 7.73,
+      "correlationId": "RUN-239-d2e360539daef04c",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-d2e360539daef04c"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-stale\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"baseCursor\":\"0\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "61d76b14472174ee818e83dab2e59af4bf082243ff59ae4b9b2f8f04e6047fdb"
+    },
+    {
+      "case": "replay-rollback",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": {
+        "code": "opaque_envelope_rejected",
+        "message": "The encrypted envelope was rejected."
+      },
+      "timingMs": 11.62,
+      "correlationId": "RUN-239-b0af011d1abcecf4",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-b0af011d1abcecf4"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-rollback\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":1,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "dd50c132a27e28dc6789f51060cdbe95178d9a8fdf5630704f2522cb008aa1b8"
+    },
+    {
+      "case": "checkpoint-success",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/checkpoints",
+      "status": 201,
+      "body": {
+        "message": "Checkpoint stored.",
+        "data": {
+          "checkpointId": "run-239-checkpoint",
+          "cursor": 1,
+          "revision": 2,
+          "envelope": {
+            "format": "themis.encrypted-envelope",
+            "version": 1,
+            "kind": "sync-object",
+            "envelopeId": "run-239-sync-stream",
+            "workspaceId": "[REDACTED-ID]",
+            "recordType": "workspace-key-distribution",
+            "revision": 2,
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "associatedData": {},
+            "metadata": {
+              "recipientDeviceId": "[REDACTED]"
+            },
+            "nonce": "bm9uY2U",
+            "ciphertext": "Y2lwaGVydGV4dA",
+            "authTag": "dGFn"
+          }
+        }
+      },
+      "timingMs": 10.64,
+      "correlationId": "RUN-239-c8e5f8151f488012",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-c8e5f8151f488012"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"checkpointId\":\"run-239-checkpoint\",\"cursor\":1,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "b8385fe5c79a716e0159ad5eb3c5a1bae2aa52d735a4e01f55f25e8314358240"
+    },
+    {
+      "case": "checkpoint-mismatch",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/checkpoints",
+      "status": 409,
+      "code": "checkpoint_rejected",
+      "body": {
+        "code": "checkpoint_rejected",
+        "message": "The checkpoint was rejected."
+      },
+      "timingMs": 9.71,
+      "correlationId": "RUN-239-fdb97e1b83c1500b",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-fdb97e1b83c1500b"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"checkpointId\":\"[REDACTED-MATERIAL]\",\"cursor\":1,\"revision\":2,\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-other\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":2,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "0daa70747f13040a0afce3431d90368fdf337b2bfaa865824ee06e3b23f63138"
+    },
+    {
+      "case": "recovery-success",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/recovery?checkpointId=run-239-checkpoint&deviceId=[REDACTED]&enrollmentVersion=2&afterCursor=0&limit=100",
+      "status": 200,
+      "body": {
+        "message": "Recovery chain retrieved.",
+        "data": {
+          "checkpoint": {
+            "checkpointId": "run-239-checkpoint",
+            "cursor": 1,
+            "revision": 2,
+            "envelope": {
+              "format": "themis.encrypted-envelope",
+              "version": 1,
+              "kind": "sync-object",
+              "envelopeId": "run-239-sync-stream",
+              "workspaceId": "[REDACTED-ID]",
+              "recordType": "workspace-key-distribution",
+              "revision": 2,
+              "createdAt": "2026-01-01T00:00:00.000Z",
+              "associatedData": {},
+              "metadata": {
+                "recipientDeviceId": "[REDACTED]"
+              },
+              "nonce": "bm9uY2U",
+              "ciphertext": "Y2lwaGVydGV4dA",
+              "authTag": "dGFn"
+            }
+          },
+          "envelopes": []
+        }
+      },
+      "timingMs": 13.36,
+      "correlationId": "RUN-239-48bc5e4a77e874b0",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-48bc5e4a77e874b0"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "8efdedd8cda96048134fb11ad491d732fc3b94c83e8f1e26d53e6ea58c7de55e"
+    },
+    {
+      "case": "recovery-missing-checkpoint",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/recovery?checkpointId=run-239-missing&deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 409,
+      "code": "recovery_chain_unavailable",
+      "body": {
+        "code": "recovery_chain_unavailable",
+        "message": "The recovery chain could not be retrieved."
+      },
+      "timingMs": 10.21,
+      "correlationId": "RUN-239-bca58d8c638ceb5d",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-bca58d8c638ceb5d"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "eee754f6b3dad25eb602eba3db9bb14ca1f55c41f6bba2b5899f2122f6f1296c"
+    },
+    {
+      "case": "recovery-malformed-query",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/recovery?checkpointId=&deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 400,
+      "code": "invalid_request",
+      "body": {
+        "code": "invalid_request",
+        "message": "Too small: expected string to have >=1 characters",
+        "data": {
+          "origin": "string",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": ["checkpointId"],
+          "message": "Too small: expected string to have >=1 characters"
+        }
+      },
+      "timingMs": 5.03,
+      "correlationId": "RUN-239-110e9234d90497c8",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-110e9234d90497c8"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "8f8e17eec0ec400ded524beea11444e1af689f76f7cde38025dcabbeba3d5cd1"
+    },
+    {
+      "case": "retention-pruned-cursor",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/envelopes?afterCursor=[REDACTED-PIN]&limit=100&deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 409,
+      "code": "cursor_recovery_required",
+      "body": {
+        "code": "cursor_recovery_required",
+        "message": "The requested cursor requires snapshot recovery."
+      },
+      "timingMs": 9.87,
+      "correlationId": "RUN-239-41a3c76f03001030",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-41a3c76f03001030"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "9083dcb5d89c2331dc91ab7b080c60553780578ee466b7f59617049daecb2105"
+    },
+    {
+      "case": "tombstone-append",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 201,
+      "body": {
+        "message": "Envelope accepted.",
+        "data": {
+          "cursor": 2,
+          "duplicate": false,
+          "envelope": {
+            "format": "themis.encrypted-envelope",
+            "version": 1,
+            "kind": "sync-object",
+            "envelopeId": "run-239-sync-stream",
+            "workspaceId": "[REDACTED-ID]",
+            "recordType": "tombstone",
+            "revision": 3,
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "associatedData": {},
+            "metadata": {
+              "deletedRecordId": "run-239-sync-stream"
+            },
+            "nonce": "bm9uY2U",
+            "ciphertext": "Y2lwaGVydGV4dA",
+            "authTag": "dGFn"
+          }
+        }
+      },
+      "timingMs": 9.69,
+      "correlationId": "RUN-239-04b33476c28d238a",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-04b33476c28d238a"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"tombstone\",\"revision\":3,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"deletedRecordId\":\"run-239-sync-stream\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "d50f45c40bc00820a98cd9187bc0c1bff6b792f87ef0cf12fb5e7f3e58b56e77"
+    },
+    {
+      "case": "tombstone-non-resurrection",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": {
+        "code": "opaque_envelope_rejected",
+        "message": "The encrypted envelope was rejected."
+      },
+      "timingMs": 13.12,
+      "correlationId": "RUN-239-eb9bbc23e041b0c0",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-eb9bbc23e041b0c0"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-sync-stream\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":1,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "6b2f59a081a490282edf8bf8d1b68712693d5bf1bd37b13689950a258c517772"
+    },
+    {
+      "case": "recovery-unauthorized-tenant",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/recovery?checkpointId=run-239-checkpoint&deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 404,
+      "code": "workspace_not_found",
+      "body": {
+        "code": "workspace_not_found",
+        "message": "The workspace could not be found."
+      },
+      "timingMs": 8.74,
+      "correlationId": "RUN-239-e546ce1b75b8753d",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-e546ce1b75b8753d"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "1303503c601f994f24c22e1f798b24a7851e9e260d98e6635d69caf74268bca1"
+    },
+    {
+      "case": "revoked-[REDACTED]",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "GET",
+      "path": "/sync/[REDACTED-ID]/envelopes?deviceId=[REDACTED]&enrollmentVersion=2",
+      "status": 409,
+      "code": "device_lifecycle_rejected",
+      "body": {
+        "code": "device_lifecycle_rejected",
+        "message": "Device authorization is revoked or stale."
+      },
+      "timingMs": 8.86,
+      "correlationId": "RUN-239-b168d71da95941d6",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-b168d71da95941d6"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "artifactHash": "4506581cf98996de63d737c2149f9ef7d601e4963b8c28a5285663afccf524ea"
+    },
+    {
+      "case": "revoked-[REDACTED]",
+      "acceptanceCriterion": "Authenticated opaque project-stream HTTP semantics and isolation",
+      "method": "POST",
+      "path": "/sync/[REDACTED-ID]/envelopes",
+      "status": 409,
+      "code": "opaque_envelope_rejected",
+      "body": {
+        "code": "opaque_envelope_rejected",
+        "message": "The encrypted envelope was rejected."
+      },
+      "timingMs": 8.83,
+      "correlationId": "RUN-239-34d5f6d5833deb48",
+      "requestHeaders": {
+        "Origin": "http://localhost:8080",
+        "Content-Type": "application/json",
+        "x-request-id": "RUN-239-34d5f6d5833deb48"
+      },
+      "responseHeaders": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "requestBody": "{\"envelope\":{\"format\":\"themis.encrypted-envelope\",\"version\":1,\"kind\":\"sync-object\",\"envelopeId\":\"run-239-revoked\",\"workspaceId\":\"[REDACTED-ID]\",\"recordType\":\"[REDACTED-MATERIAL]\",\"revision\":4,\"createdAt\":\"2026-01-01T00:00:00.000Z\",\"associatedData\":{},\"metadata\":{\"recipientDeviceId\":\"[REDACTED]\"},\"nonce\":\"bm9uY2U\",\"ciphertext\":\"Y2lwaGVydGV4dA\",\"authTag\":\"dGFn\"},\"deviceId\":\"[REDACTED]\",\"enrollmentVersion\":2}",
+      "artifactHash": "fe2b5761311d790d6f58ba7fba450493af437ab9810e75e4ae16dddde8bfa345"
+    }
+  ]
+}

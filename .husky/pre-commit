@@ -5,7 +5,7 @@ export PATH="$HOME/.local/share/fnm/node-versions/v24.14.1/installation/bin:$HOM
 # This is fast because it only operates on changed files.
 pnpm exec lint-staged
 
-# Run focused lint + unit tests on the whole workspace (not just staged files).
-# e2e is too slow for pre-commit; it runs in pre-push and CI instead.
-pnpm exec nx run-many -t lint
-pnpm exec nx run-many -t test
+# Run focused lint + unit tests on the affected projects
+pnpm exec nx affected -t lint
+pnpm exec nx affected -t test
+# pnpm exec nx affected -t e2e

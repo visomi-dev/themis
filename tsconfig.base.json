@@ -20,7 +20,8 @@
     "baseUrl": ".",
     "paths": {
       "shared": ["libs/shared/src/index.ts"],
-      "projects": ["libs/projects/src/index.ts"]
+      "projects": ["libs/projects/src/index.ts"],
+      "themis-workflow": ["libs/themis-workflow/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

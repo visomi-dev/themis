@@ -86,10 +86,9 @@ The first-run flow is successful if:
 
 ### Entry Condition
 
-The user has:
-
-- completed sign-up plus email verification, or
-- completed sign-in plus email verification
+The user has completed passwordless authentication and received a full session
+after a server-verified passkey assertion. An email-OTP restricted session does
+not satisfy this entry condition.
 
 After authentication, Themis decides whether the user should see the first-run activation screen.
 

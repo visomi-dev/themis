@@ -1,0 +1,19 @@
+{
+  "flow": "web-only-owner-to-themis-agent-member",
+  "users": {
+    "owner": "cfba55e4-f5d6-45cc-9a6a-cc8004ce8395",
+    "member": "360ae08d-a1d8-44eb-93f3-b632a6d5045d"
+  },
+  "devices": {
+    "owner": "device-XONvo21Ty1_nf9_y",
+    "member": "device-NWty3qMwBrb1ygs9"
+  },
+  "keyMaterial": "context-local non-exportable keys; identifiers only",
+  "bridgeResponses": [
+    {
+      "url": "http://127.0.0.1:8081/v1/local-agent/projections/374d169b-65c1-48a9-97db-77c4c8a5e7ea",
+      "status": 200
+    }
+  ],
+  "projection": "resolved local change"
+}

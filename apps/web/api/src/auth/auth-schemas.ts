@@ -1,217 +1,163 @@
-import { challengeIdSchema, emailSchema, passwordSchema, pinSchema, z } from '../shared/http/route-schemas';
+import { emailSchema, responseEnvelope, z } from '../shared/http/route-schemas';
 
 export const authUserSchema = z
   .object({
-    accountId: z
-      .string()
-      .meta({ description: 'Active account identifier.', example: 'account-123', id: 'AuthAccountId' }),
+    accountId: z.string().meta({ description: 'Active account identifier.', example: 'account-123' }),
     email: emailSchema,
-    emailVerifiedAt: z.string().nullable().meta({
-      description: 'Verification timestamp.',
-      example: '2026-01-01T00:00:00.000Z',
-      id: 'AuthEmailVerifiedAt',
-    }),
-    id: z.string().meta({ description: 'User identifier.', example: 'user-123', id: 'AuthUserId' }),
-    role: z.string().meta({ description: 'Active account role.', example: 'owner', id: 'AuthRole' }),
+    emailVerifiedAt: z.string().nullable(),
+    id: z.string().meta({ description: 'User identifier.', example: 'user-123' }),
+    role: z.string().meta({ description: 'Active account role.', example: 'owner' }),
+    authenticationMethod: z.literal('passkey').optional(),
+    credentialId: z.string().optional(),
   })
   .meta({ id: 'AuthUser' });
 
-export const challengeSchema = z
-  .object({
-    challengeId: challengeIdSchema,
-    email: emailSchema,
-    expiresAt: z.string().meta({ description: 'Challenge expiry timestamp.', example: '2026-01-01T00:10:00.000Z' }),
-    purpose: z
-      .enum(['sign_in', 'sign_up', 'password_reset'])
-      .meta({ description: 'Challenge purpose.', example: 'sign_up' }),
-  })
-  .meta({ id: 'AuthChallenge' });
-
 export type AuthUser = z.infer<typeof authUserSchema>;
-export type VerificationPurpose = z.infer<typeof challengeSchema>['purpose'];
-export type AuthChallengePayload = z.infer<typeof challengeSchema>;
 
-export const credentialsSchema = z
-  .object({
-    email: emailSchema,
-    password: passwordSchema,
-  })
-  .meta({ id: 'AuthCredentials' });
-
-export const challengeVerificationSchema = z
-  .object({
-    challengeId: challengeIdSchema,
-    pin: pinSchema,
-    rememberDevice: z.boolean().optional().default(false),
-  })
-  .meta({ id: 'AuthChallengeVerification' });
-
-export const resendVerificationSchema = z
-  .object({
-    challengeId: challengeIdSchema,
-  })
-  .meta({ id: 'AuthResendVerification' });
-
-export const forgottenPasswordSchema = z
+export const emailOtpRequestSchema = z
   .object({
     email: emailSchema,
   })
-  .meta({ id: 'ForgottenPasswordRequest' });
+  .strict()
+  .meta({ id: 'EmailOtpRequest' });
 
-export const passwordResetVerifySchema = challengeVerificationSchema.meta({
-  id: 'PasswordResetVerify',
-});
-
-export const passwordResetSchema = z
+export const emailOtpFlowSchema = z
   .object({
-    password: passwordSchema,
+    flowId: z.uuid().meta({ description: 'Opaque email bootstrap or recovery flow reference.' }),
   })
-  .meta({ id: 'PasswordResetSubmit' });
+  .strict()
+  .meta({ id: 'EmailOtpFlow' });
 
-export const passwordResetSessionSchema = z
-  .object({
-    active: z.boolean().meta({ description: 'Whether a reset session is currently active.' }),
-    email: z.string().nullable().meta({ description: 'Email of the account being reset.' }),
+export const emailOtpVerifySchema = emailOtpFlowSchema
+  .extend({
+    pin: z.string().regex(/^\d{6}$/),
   })
-  .meta({ id: 'PasswordResetSession' });
+  .strict()
+  .meta({ id: 'EmailOtpVerify' });
+
+export const emailOtpDeliverySchema = z
+  .object({
+    flowId: z.uuid(),
+    resendAvailableAt: z.string(),
+  })
+  .meta({ id: 'EmailOtpDelivery' });
+
+export const restrictedSessionSchema = z
+  .object({
+    authenticated: z.literal(false),
+    kind: z.literal('restricted'),
+    expiresAt: z.string(),
+    user: z.null(),
+    verifiedEmail: emailSchema,
+  })
+  .meta({ id: 'RestrictedAuthSession' });
+
+export const restrictedAccountChoiceSchema = z
+  .object({ accountId: z.string(), name: z.string(), role: z.string(), selected: z.boolean() })
+  .strict()
+  .meta({ id: 'RestrictedAccountChoice' });
+export const restrictedAccountSelectionSchema = z.object({ accountId: z.string().min(1) }).strict();
 
 export const sessionResponseSchema = z
-  .object({
-    authenticated: z.boolean(),
-    user: authUserSchema.nullable(),
-  })
+  .discriminatedUnion('kind', [
+    z.object({ authenticated: z.literal(false), kind: z.literal('anonymous'), user: z.null() }),
+    restrictedSessionSchema,
+    z.object({ authenticated: z.literal(true), kind: z.literal('full'), user: authUserSchema }),
+  ])
   .meta({ id: 'AuthSessionResponse' });
 
-export const authenticatedResponseSchema = z
-  .object({
-    authenticated: z.literal(true),
-    user: authUserSchema,
-  })
-  .meta({ id: 'AuthenticatedResponse' });
+const errorResponse = (description: string) => ({
+  content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } },
+  description,
+});
 
-export const messageResponseSchema = z
-  .object({
-    message: z.string(),
-  })
-  .meta({ id: 'MessageResponse' });
-
-export const challengeOrAuthSchema = z
-  .object({
-    authenticated: z.literal(true),
-    user: authUserSchema,
-  })
-  .or(challengeSchema)
-  .meta({ id: 'AuthChallengeOrAuthenticated' });
+const deliveryResponse = {
+  202: {
+    content: {
+      'application/json': { schema: responseEnvelope(emailOtpDeliverySchema, 'EmailOtpDeliveryEnvelope') },
+    },
+    description: 'Generic email OTP delivery response.',
+  },
+  400: errorResponse('The request payload is invalid.'),
+  403: errorResponse('Origin is not allowed.'),
+  429: errorResponse('Generic email OTP cooldown response.'),
+};
 
 export const authOpenApiPaths = {
+  '/auth/email-otp/request': {
+    post: {
+      requestBody: { required: true, content: { 'application/json': { schema: emailOtpRequestSchema } } },
+      responses: deliveryResponse,
+    },
+  },
+  '/auth/email-otp/resend': {
+    post: {
+      requestBody: { required: true, content: { 'application/json': { schema: emailOtpFlowSchema } } },
+      responses: deliveryResponse,
+    },
+  },
+  '/auth/email-otp/verify': {
+    post: {
+      requestBody: { required: true, content: { 'application/json': { schema: emailOtpVerifySchema } } },
+      responses: {
+        200: {
+          content: {
+            'application/json': {
+              schema: responseEnvelope(restrictedSessionSchema, 'RestrictedAuthSessionEnvelope'),
+            },
+          },
+          description: 'Restricted session established.',
+        },
+        400: errorResponse('The request payload is invalid.'),
+        401: errorResponse('The verification request could not be completed.'),
+        403: errorResponse('Origin is not allowed.'),
+        429: errorResponse('Generic email OTP cooldown response.'),
+      },
+    },
+  },
   '/auth/session': {
     get: {
       responses: {
         200: {
-          content: { 'application/json': { schema: sessionResponseSchema } },
-          description: 'Current authentication session.',
+          content: { 'application/json': { schema: responseEnvelope(sessionResponseSchema, 'AuthSessionEnvelope') } },
+          description: 'Current anonymous, restricted, or full session.',
         },
       },
     },
   },
-  '/auth/sign-up': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: credentialsSchema } } },
-      responses: {
-        201: {
-          content: { 'application/json': { schema: challengeSchema } },
-          description: 'Sign-up challenge created.',
-        },
-      },
-    },
-  },
-  '/auth/sign-up/verify': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: challengeVerificationSchema } } },
+  '/auth/restricted/accounts': {
+    get: {
       responses: {
         200: {
-          content: { 'application/json': { schema: authenticatedResponseSchema } },
-          description: 'Sign-up verification complete.',
+          content: {
+            'application/json': {
+              schema: responseEnvelope(
+                z.object({ accounts: z.array(restrictedAccountChoiceSchema) }).strict(),
+                'RestrictedAccountChoicesEnvelope',
+              ),
+            },
+          },
+          description: 'Eligible account choices available only after email verification.',
         },
       },
     },
   },
-  '/auth/sign-in/password': {
+  '/auth/restricted/accounts/select': {
     post: {
-      requestBody: { content: { 'application/json': { schema: credentialsSchema } } },
+      requestBody: { required: true, content: { 'application/json': { schema: restrictedAccountSelectionSchema } } },
       responses: {
         200: {
-          content: { 'application/json': { schema: challengeOrAuthSchema } },
-          description: 'Sign-in challenge created or already verified.',
-        },
-      },
-    },
-  },
-  '/auth/sign-in/verify': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: challengeVerificationSchema } } },
-      responses: {
-        200: {
-          content: { 'application/json': { schema: authenticatedResponseSchema } },
-          description: 'Sign-in verification complete.',
-        },
-      },
-    },
-  },
-  '/auth/verification/resend': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: resendVerificationSchema } } },
-      responses: {
-        200: {
-          content: { 'application/json': { schema: challengeSchema } },
-          description: 'Verification challenge resent.',
+          content: {
+            'application/json': {
+              schema: responseEnvelope(restrictedAccountChoiceSchema, 'RestrictedAccountSelectionEnvelope'),
+            },
+          },
+          description: 'Selected account bound immutably to the restricted session.',
         },
       },
     },
   },
   '/auth/sign-out': {
-    post: {
-      responses: { 204: { description: 'Signed out.' } },
-    },
-  },
-  '/auth/password/forgotten': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: forgottenPasswordSchema } } },
-      responses: {
-        200: {
-          content: { 'application/json': { schema: challengeSchema } },
-          description: 'Password reset challenge created.',
-        },
-      },
-    },
-  },
-  '/auth/password/reset/verify': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: passwordResetVerifySchema } } },
-      responses: {
-        200: {
-          content: { 'application/json': { schema: passwordResetSessionSchema } },
-          description: 'Reset session established.',
-        },
-      },
-    },
-  },
-  '/auth/password/reset': {
-    post: {
-      requestBody: { content: { 'application/json': { schema: passwordResetSchema } } },
-      responses: {
-        204: { description: 'Password updated.' },
-      },
-    },
-  },
-  '/auth/password/reset/session': {
-    get: {
-      responses: {
-        200: {
-          content: { 'application/json': { schema: passwordResetSessionSchema } },
-          description: 'Current reset session state.',
-        },
-      },
-    },
+    post: { responses: { 204: { description: 'Signed out.' }, 403: errorResponse('Origin is not allowed.') } },
   },
 };

@@ -1,0 +1,27 @@
+{
+  "origin": "http://127.0.0.1:36437",
+  "storedKeys": ["envelope", "envelopeId"],
+  "metadataKeys": ["key", "salt", "schemaVersion", "workspaceId", "wrapNonce", "wrappedWorkspaceKey"],
+  "containsPlaintext": false,
+  "containsRawKey": false,
+  "rawKeyExportRejected": true,
+  "locked": true,
+  "tampered": true,
+  "malformed": true,
+  "unsupported": true,
+  "authenticatorDenied": true,
+  "deniedLocked": true,
+  "quota": true,
+  "rollback": true,
+  "transactionAbort": true,
+  "migration": true,
+  "reloadId": "VEkfyXGQ7uN6j5aBbfq5IQ",
+  "nativeRoundTrip": {
+    "value": "survives browser reload"
+  },
+  "lockedAfterReload": true,
+  "readAfterUnlock": {
+    "value": "survives browser reload"
+  },
+  "otherOriginEmpty": true
+}

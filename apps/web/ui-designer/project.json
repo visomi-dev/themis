@@ -77,12 +77,23 @@
       "dependsOn": ["build"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "mkdir -p dist/apps/web/ui-designer/public/prototypes dist/apps/web/ui-designer/public/preview && cp apps/web/ui-designer/src/preview/chrome.html dist/apps/web/ui-designer/public/preview/chrome.html && cp apps/web/ui-designer/src/prototypes/*.html dist/apps/web/ui-designer/public/prototypes/ && pnpm exec tailwindcss -i apps/web/ui-designer/src/preview/preview.css -o dist/apps/web/ui-designer/public/tailwind.css"
+        "command": "mkdir -p dist/apps/web/ui-designer/public/prototypes dist/apps/web/ui-designer/public/preview dist/apps/web/ui-designer/public/files dist/apps/web/ui-designer/public/assets && cp apps/web/ui-designer/src/preview/chrome.html dist/apps/web/ui-designer/public/preview/chrome.html && cp apps/web/ui-designer/src/prototypes/*.html dist/apps/web/ui-designer/public/prototypes/ && cp node_modules/@fontsource/*/files/* dist/apps/web/ui-designer/public/files/ && cp assets/themis-isotype.svg assets/themis-isotype-stroke.svg assets/themis-logotype.svg assets/themis-logotype-stroke.svg dist/apps/web/ui-designer/public/assets/ && pnpm exec tailwindcss -i apps/web/ui-designer/src/preview/preview.css -o dist/apps/web/ui-designer/public/tailwind.css"
       },
       "outputs": [
         "{workspaceRoot}/dist/apps/web/ui-designer/public/tailwind.css",
         "{workspaceRoot}/dist/apps/web/ui-designer/public/prototypes",
         "{workspaceRoot}/dist/apps/web/ui-designer/public/preview"
+      ]
+    },
+    "capture-passwordless-auth": {
+      "dependsOn": ["build-css"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/web/ui-designer/artifacts/auth-pwl-002/capture.mjs"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/web/ui-designer/artifacts/auth-pwl-002/screenshots",
+        "{workspaceRoot}/apps/web/ui-designer/artifacts/auth-pwl-002/inspection.json"
       ]
     },
     "serve": {

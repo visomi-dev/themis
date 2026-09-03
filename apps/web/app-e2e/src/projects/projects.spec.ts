@@ -1,85 +1,76 @@
 import { expect, test } from '@playwright/test';
 
-import { createCredentials, authenticateViaApi, signOutViaMenu } from '../support/auth';
-import { projectNewUrlPattern, projectsUrlPattern, signInUrlPattern } from '../support/routes';
+import { authenticateViaApi, createCredentials, signOutViaMenu } from '../support/auth';
+import { identityUrlPattern, projectsUrlPattern } from '../support/routes';
 
-test.describe.configure({ timeout: 60000 });
+const project = {
+  id: 'authorized-project',
+  name: 'Authorized project',
+  sourceType: 'manual',
+  status: 'active',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  summary: 'Only this tenant-visible project is returned.',
+};
+
+async function openProjects(
+  page: Parameters<typeof authenticateViaApi>[0],
+  request: Parameters<typeof authenticateViaApi>[1],
+) {
+  const credentials = createCredentials();
+
+  await authenticateViaApi(page, request, credentials.email, credentials.password);
+  await page.goto('/app/en/projects');
+  await expect(page).toHaveURL(projectsUrlPattern);
+}
 
 test.describe('/app/projects', () => {
-  test.beforeEach(async ({ page, request }) => {
-    const credentials = createCredentials();
+  test('renders only authorized projects and supports workspace navigation', async ({ page, request }) => {
+    await openProjects(page, request);
+    await page.route('**/api/projects', async (route) => {
+      await route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ data: { projects: [project] } }),
+      });
+    });
+    await page.reload();
 
-    await authenticateViaApi(page, request, credentials.email, credentials.password);
-    await page.goto('/app/en/projects');
-    await expect(page).toHaveURL(projectsUrlPattern);
+    await expect(page.getByRole('heading', { name: 'Project Workspace' })).toBeVisible();
+    await expect(page.getByText(project.name)).toBeVisible();
+    await expect(page.getByText('another tenant project')).not.toBeVisible();
+
+    await page.getByRole('link', { name: project.name }).click();
+    await expect(page).toHaveURL(/\/app\/en\/projects\/authorized-project\/workspace$/);
   });
 
-  test('shows the projects list page', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Projects/i })).toBeVisible();
+  test('renders the explicit empty projection state', async ({ page, request }) => {
+    await openProjects(page, request);
+    await page.route('**/api/projects', async (route) => {
+      await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ data: { projects: [] } }) });
+    });
+    await page.reload();
+
+    await expect(
+      page.getByText('No authorized project workspace is available in this read-only projection.'),
+    ).toBeVisible();
   });
 
-  test('shows empty state when no projects exist', async ({ page }) => {
-    await expect(page.getByText(/No projects yet/i)).toBeVisible();
+  test('renders an unavailable state without exposing mutation controls', async ({ page, request }) => {
+    await openProjects(page, request);
+    await page.route('**/api/projects', async (route) => {
+      await route.fulfill({ status: 503, body: 'unavailable' });
+    });
+    await page.reload();
+
+    await expect(page.getByRole('alert')).toContainText('Projects could not be loaded.');
+    await expect(page.getByRole('link', { name: /New project/i })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: /Delete/i })).not.toBeVisible();
   });
 
-  test('has a new project button that navigates to the create form', async ({ page }) => {
-    const newProjectButton = page.getByRole('main').getByRole('link', { name: /New project/i });
-
-    await expect(newProjectButton).toBeVisible();
-
-    await newProjectButton.click();
-
-    await expect(page).toHaveURL(projectNewUrlPattern);
-    await expect(page.getByRole('heading', { name: /New project/i })).toBeVisible();
-  });
-
-  test('can create a project with a name', async ({ page }) => {
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-
-    const nameInput = page.getByLabel(/Project name/i);
-
-    await expect(nameInput).toBeVisible();
-
-    await nameInput.fill('Test Web App');
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await expect(page).toHaveURL(/\/app\/en\/projects\/[^/]+$/);
-    await expect(page.getByRole('heading', { name: 'Test Web App' })).toBeVisible();
-  });
-
-  test('shows created project in the list', async ({ page }) => {
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Existing Project');
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await page.goto('/app/en/projects');
-    await expect(page.getByText('Existing Project')).toBeVisible();
-  });
-
-  test('can delete a project from the list', async ({ page }) => {
-    await page
-      .getByRole('main')
-      .getByRole('link', { name: /New project/i })
-      .click();
-    await page.getByLabel(/Project name/i).fill('Project To Delete');
-    await page.getByRole('button', { name: /Create project/i }).click();
-
-    await page.goto('/app/en/projects');
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByRole('button', { name: /Delete/i }).click();
-
-    await expect(page.getByText('Project To Delete')).not.toBeVisible();
-  });
-
-  test('sign out returns to sign-in', async ({ page }) => {
+  test('sign out returns to sign-in', async ({ page, request }) => {
+    await openProjects(page, request);
     await signOutViaMenu(page);
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
   });
 });

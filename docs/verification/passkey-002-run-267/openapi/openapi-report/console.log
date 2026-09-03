@@ -1,0 +1,142 @@
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+[20:14:39.406] INFO ([REDACTED-PIN]): API Mounted
+    path: "/api"
+[20:14:39.406] INFO ([REDACTED-PIN]): Realtime runtime ready
+    path: "/socket.io"
+[20:14:39.406] INFO ([REDACTED-PIN]): App Mounted
+    path: "/app"
+[20:14:39.406] INFO ([REDACTED-PIN]): Site Mounted
+    path: "/"
+[20:14:39.406] INFO ([REDACTED-PIN]): Gateway server ready
+    host: "localhost"
+    port: 8122
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+[20:14:39.406] INFO ([REDACTED-PIN]): Worker runtime ready
+DELETE /api/test/mailbox 204 0.674 ms - -
+POST /api/auth/sign-up 201 93.937 ms - 205
+GET /api/test/mailbox/latest?email=pzs005-run-267-mtcbjnrg%40example.test&purpose=sign_up 200 0.985 ms - 211
+POST /api/auth/sign-up/verify 200 50.565 ms - 272
+POST /api/auth/sign-up 201 71.139 ms - 212
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.285 ms - 218
+POST /api/auth/sign-up/verify 200 35.901 ms - 279
+POST /api/auth/sign-up 201 68.622 ms - 217
+POST /api/auth/passkey/registration/begin 200 40.518 ms - 824
+POST /api/auth/passkey/registration/complete 201 10.578 ms - 252
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 3.148 ms - 88
+GET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up 200 0.224 ms - 220
+POST /api/auth/sign-up/verify 200 38.277 ms - 281
+POST /api/auth/passkey/authentication/begin 200 3.482 ms - 392
+POST /api/auth/passkey/authentication/complete 200 9.250 ms - 369
+POST /api/auth/passkey/registration/begin 200 3.370 ms - 833
+[ error ] API request failed { code: '[REDACTED-MATERIAL]', statusCode: 409 }
+POST /api/auth/passkey/registration/begin 409 1.647 ms - 97
+POST /api/auth/passkey/registration/begin 200 36.913 ms - 827
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/registration/begin 403 1.112 ms - 91
+[ error ] API request failed { code: 'email_unverified', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 1.666 ms - 88
+[ error ] API request failed { code: 'pin_required', statusCode: 403 }
+POST /api/auth/passkey/authentication/begin 403 1.647 ms - 91
+POST /api/auth/passkey/registration/begin 200 4.256 ms - 833
+[ error ] API request failed { code: 'challenge_mismatch', statusCode: 400 }
+POST /api/auth/passkey/registration/complete 400 0.634 ms - 86
+POST /api/auth/passkey/registration/begin 200 4.222 ms - 833
+[ error ] API request failed { code: 'challenge_mismatch', statusCode: 400 }
+POST /api/auth/passkey/registration/complete 400 5.351 ms - 86
+POST /api/auth/passkey/registration/begin 200 3.534 ms - 833
+POST /api/auth/passkey/registration/complete 201 5.481 ms - 245
+[ error ] API request failed { code: 'challenge_replayed', statusCode: 409 }
+POST /api/auth/passkey/authentication/complete 409 4.032 ms - 86
+POST /api/auth/passkey/authentication/begin 200 2.943 ms - 470
+[ error ] API request failed { code: 'platform_error', statusCode: 401 }
+POST /api/auth/passkey/authentication/complete 401 2.327 ms - 82
+POST /api/auth/passkey/authentication/begin 200 3.224 ms - 470
+[ error ] API request failed { code: 'platform_error', statusCode: 401 }
+POST /api/auth/passkey/authentication/complete 401 2.062 ms - 82
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 0.979 ms - 88
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 2.353 ms - 88
+POST /api/auth/passkey/registration/begin 200 3.663 ms - 911
+POST /api/auth/passkey/authentication/begin 200 4.189 ms - 470
+GET /api/openapi.json 200 10.706 ms - [REDACTED-PIN]
+Schemathesis v4.24.3
+━━━━━━━━━━━━━━━━━━━━
+
+ 🕛  Loading specification from
+     [REPORT_ROOT]/test-results/api-e2e/o… 🕛  Loading specification from
+     [REPORT_ROOT]/test-results/api-e2e/o…
+ ✅  Loaded specification from
+ [REPORT_ROOT]/test-results/api-e2e/opena
+ pi/run-267-openapi-schema.json (in 0.10s)
+
+     Base URL:         http://localhost:8122/api
+     Specification:    Open API 3.1.0
+     Operations:       2 selected / 2 total
+
+ 🕛  Probing API capabilitiesGET /api/schemathesis-probe%5C%1B%01 404 4.632 ms - 170
+ 🕛  Probing API capabilities
+ ✅  API capabilities:
+
+     Supports NULL byte in headers:                            ✘
+     Accepts backslash and control characters in URL paths:    ✓
+
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/registration/begin 404 0.966 ms - 88
+[ error ] API request failed { code: 'authentication_required', statusCode: 401 }
+POST /api/auth/passkey/registration/begin 401 1.392 ms - 84
+[ error ] API request failed { code: 'credential_not_found', statusCode: 404 }
+POST /api/auth/passkey/authentication/begin 404 1.408 ms - 88
+POST /api/auth/passkey/authentication/begin 200 3.298 ms - 470
+     Examples
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed     Examples
+
+     0:00:00 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (2/2)
+
+
+     ✅ 2 passed
+ ✅  Examples (in 0.18s)
+
+     ✅ 2 passed
+
+=================================== WARNINGS ===================================
+
+Missing test data: 1 operation repeatedly returned 404 Not Found, preventing tests from reaching your API's core logic
+
+  - POST /auth/passkey/registration/begin
+
+💡 Provide realistic parameter values in your config file so tests can access existing resources
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 2/2
+  Tested: 2
+
+Test Phases:
+  ✅ Examples
+  ⏭  Coverage (disabled)
+  ⏭  Fuzzing (disabled)
+  ⏭  Stateful (disabled)
+
+Warnings:
+  ⚠️ Missing valid test data: 1 operation repeatedly returned 404 responses
+
+Test cases:
+  4 generated, 4 passed
+
+Reports:
+  - JUNIT: [REPORT_ROOT]/test-results/api-e2e/openapi/junit-20260827T201445Z.xml
+  - HAR: [REPORT_ROOT]/test-results/api-e2e/openapi/har-20260827T201445Z.json
+
+Seed: not used in the deterministic mode
+
+============================== 1 warning in 0.23s ==============================

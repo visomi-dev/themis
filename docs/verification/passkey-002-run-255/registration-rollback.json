@@ -1,0 +1,24 @@
+{
+  "scenario": "registration-complete persistence rollback",
+  "request": {
+    "method": "POST",
+    "path": "/api/auth/passkey/registration/complete"
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "data": {
+        "id": "a30PdRfGMCckzHLcBDJkhQ",
+        "label": "Atomicity registration",
+        "createdAt": "2026-08-28T02:27:07.422Z",
+        "lastUsedAt": null,
+        "revokedAt": null,
+        "transports": ["internal"],
+        "backupEligible": false,
+        "backupState": false
+      },
+      "message": "Passkey registered."
+    }
+  },
+  "persistedState": {}
+}

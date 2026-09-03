@@ -1,0 +1,13 @@
+{
+  "runId": "RUN-259",
+  "scenario": "registration-complete persistence rollback",
+  "request": { "method": "POST", "path": "/api/auth/passkey/registration/complete" },
+  "response": {
+    "status": 500,
+    "body": { "code": "internal_server_error", "message": "The request could not be completed." }
+  },
+  "persistedState": {
+    "before": { "consumed_at": null, "credential_id": null, "status": "pending", "credential_count": 0 },
+    "after": { "consumed_at": null, "credential_id": null, "status": "pending", "credential_count": 0 }
+  }
+}

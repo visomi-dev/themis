@@ -1,0 +1,12 @@
+{
+  "runId": "RUN-267",
+  "scope": "^/auth/passkey/(registration|authentication)/",
+  "warnings": [
+    {
+      "operation": "POST /auth/passkey/registration/begin",
+      "message": "Missing test data: one generated example returned 404 Not Found.",
+      "impact": "The example did not reach registration core logic; the stateful real-HTTP report covers the complete passkey ceremony paths.",
+      "disposition": "Accepted as a bounded Schemathesis fixture limitation; not presented as a pass for that generated example."
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+runId=RUN-239
+project=themis-local-e2e-586626
+provider=podman
+$ podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+stdout=c2ad77420d33bb4ad8694457d3edf7188076428582bd24e3dd4d09d6a1d52872
+75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b
+487efc0616382465781b8fdc3d6d1db449e6fd80ae23bf48432a2da6b6929908
+69b2ec208575b69597784255eec6fa6a2985ee9e1a47f4411a51f7f5fdd193a9
+b96a6b2c61ddb9d6a152b620dcfe740ec83686b45398a4a0cffeb824771d4621
+cd1f432a1ec2c30e79cd976d958178540bca6551ea0e21bf1b0ff84d7c1dc4e3
+e4754c0c408fd8b5bd5dbf57c12e8c9bb7d3485b8faa0bf28087e20518b84429
+47101d5cb4b5116422199bc7f7e54db3e69be9bf7fe33e1d22db47a29324dbe9
+57aa44749904ab755fa8148c376d901c81246643b31ba8a60405ec0190fe31b5
+themis-local-e2e-586626_postgres_1
+themis-local-e2e-586626_redis_1
+themis-local-e2e-586626_minio_1
+themis-local-e2e-586626_minio-init_1
+stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+result=0 podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml up --detach postgres redis minio minio-init
+compose-up=completed
+healthcheck=postgres command=podman exec cd1f432a1ec2 pg_isready -U themis_api_e2e -d themis_api_e2e result=0
+postgres-readiness=passed
+healthcheck=redis command=podman exec e4754c0c408f redis-cli ping result=0
+redis-readiness=passed
+inspection-command=podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE                                 COMMAND               CREATED        STATUS                   PORTS                                             NAMES
+cd1f432a1ec2  docker.io/library/postgres:16-alpine  postgres              6 seconds ago  Up 5 seconds (healthy)   0.0.0.0:25432->5432/tcp                           themis-local-e2e-586626_postgres_1
+e4754c0c408f  docker.io/library/redis:7-alpine      redis-server          6 seconds ago  Up 4 seconds (healthy)   0.0.0.0:16379->6379/tcp                           themis-local-e2e-586626_redis_1
+47101d5cb4b5  quay.io/minio/minio:latest            server /data --ad...  5 seconds ago  Up 4 seconds (healthy)   0.0.0.0:19001->9001/tcp, 0.0.0.0:29000->9000/tcp  themis-local-e2e-586626_minio_1
+57aa44749904  quay.io/minio/mc:latest               mc alias set loca...  5 seconds ago  Exited (0) 1 second ago                                                    themis-local-e2e-586626_minio-init_1
+inspection-stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+healthcheck=minio-image-healthcheck-availability command=podman exec 47101d5cb4b5 sh -c command -v curl && curl --fail --silent http://127.0.0.1:9000/minio/health/ready result=0
+healthcheck=minio-http command=GET http://127.0.0.1:29000/minio/health/ready result=200
+minio-readiness=passed
+$ podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml run --rm minio-init
+stdout=69b2ec208575b69597784255eec6fa6a2985ee9e1a47f4411a51f7f5fdd193a9
+themis-local-e2e-586626_minio_1
+]11;?\[6n[32;1mmc: [0m[32;1mConfiguration written to `/root/.mc/config.json`. Please update your access credentials.[0;22m
+[32;1mmc: [0m[32;1mSuccessfully created `/root/.mc/share`.
+[0m[32;1mmc: [0m[32;1mInitialized share uploads `/root/.mc/share/uploads.json` file.
+[0m[32;1mmc: [0m[32;1mInitialized share downloads `/root/.mc/share/downloads.json` file.
+[0m[m[32mAdded `local` successfully.[0m[m
+]11;?\[6n[m[32;1mBucket created successfully `local/themis-local-e2e-586626-opaque`.[0;22m[m
+]11;?\[6n[m[32;1mAccess permission for `local/themis-local-e2e-586626-opaque` is set to `private`[0;22m[m
+stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0mtime="2026-08-25T23:44:23-06:00" level=warning msg="The input device is not a TTY. The --tty and --interactive flags might not work properly"
+result=0 podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml run --rm minio-init
+migration-config=DATABASE_URL:postgresql://themis_api_e2e:%5BREDACTED%5D@127.0.0.1:25432/themis_api_e2e schema:./libs/shared/src/lib/db/schema.ts out:./drizzle driver:postgresql
+$ pnpm exec drizzle-kit migrate --config=drizzle.config.ts
+stdout=Reading config file '/home/visomi/Projects/GitHub/visomi-dev/themis/drizzle.config.ts'
+Using 'pg' driver for database querying
+[⣷] applying migrations...[2K[1G[⣯] applying migrations...[2K[1G[⣟] applying migrations...[2K[1G[⡿] applying migrations...[2K[1G[⢿] applying migrations...[2K[1G[⣻] applying migrations...[2K[1G[✓] migrations applied successfully!
+result=0 pnpm exec drizzle-kit migrate --config=drizzle.config.ts
+$ pnpm nx run api-e2e:e2e --skip-nx-cache
+stdout=NX   Running target e2e for project api-e2e and 8 tasks it depends on:
+
+
+
+> nx run site:build
+
+> pnpm exec astro build --root apps/web/site
+
+[2m23:44:47[22m [34m[@astrojs/node][39m Enabling sessions with filesystem storage
+[2m23:44:48[22m [34m[types][39m Generated [2m50ms[22m
+[2m23:44:48[22m [34m[build][39m output: [34m"server"[39m
+[2m23:44:48[22m [34m[build][39m mode: [34m"server"[39m
+[2m23:44:48[22m [34m[build][39m directory: [34m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/site/[39m
+[2m23:44:48[22m [34m[build][39m adapter: [32m@astrojs/node[39m
+[2m23:44:48[22m [34m[build][39m Collecting build info...
+[2m23:44:48[22m [34m[build][39m [32m✓ Completed in 117ms.[39m
+[2m23:44:48[22m [34m[build][39m Building server entrypoints...
+[2m23:44:48[22m [34m[vite][39m [32m✓ built in 158ms[39m
+[2m23:44:48[22m [34m[vite][39m [32m✓ built in 342ms[39m
+[2m23:44:48[22m [34m[vite][39m [32m✓ built in 22ms[39m
+[2m23:44:48[22m [34m[build][39m Rearranging server assets...
+[2m23:44:48[22m [34m[build][39m [32m✓ Completed in 588ms.[39m
+[2m23:44:48[22m [34m[build][39m Server built in [1m708ms[22m
+[2m23:44:48[22m [34m[build][39m [1mComplete![22m
+
+> nx run shared:build
+
+Compiling TypeScript files for project "shared"...
+Done compiling TypeScript files for project "shared".
+
+> nx run projects:build
+
+Compiling TypeScript files for project "projects"...
+Done compiling TypeScript files for project "projects".
+
+> nx run realtime:build:production
+
+
+> nx run api:build:production
+
+
+> nx run worker:build:production
+
+
+> nx run app:build:production
+
+[33m❯[39m Building...
+(node:593353) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:593353) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[32m✔[39m Building...
+[37m[35mBrowser bundles[37m      
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-BAV34TKR.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m208.01 kB[37m[2m | [22m               [36m62.41 kB[37m
+[32mstyles-YN7SIKUS.css[37m  [2m | [22m[2mstyles[22m            [2m | [22m[36m132.33 kB[37m[2m | [22m               [36m15.47 kB[37m
+[32mchunk-GCBZXDI3.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m128.53 kB[37m[2m | [22m               [36m33.82 kB[37m
+[32mmain-NQ5O3OCJ.js[37m     [2m | [22m[2mmain[22m              [2m | [22m [36m73.41 kB[37m[2m | [22m               [36m19.51 kB[37m
+[32mchunk-UQY4AG5Y.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m59.92 kB[37m[2m | [22m               [36m14.45 kB[37m
+[32mchunk-NYYZYMVF.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m4.61 kB[37m[2m | [22m                [36m1.95 kB[37m
+[32mpolyfills-UMR42IW5.js[37m[2m | [22m[2mpolyfills[22m         [2m | [22m  [36m1.89 kB[37m[2m | [22m              [36m932 bytes[37m
+[32mchunk-27UYAA3G.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m748 bytes[37m[2m | [22m              [36m748 bytes[37m
+[32mchunk-SUVRAM7L.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m723 bytes[37m[2m | [22m              [36m723 bytes[37m
+[32mchunk-HKTXXOCG.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m143 bytes[37m[2m | [22m              [36m143 bytes[37m
+[32mchunk-O3LQLXTE.js[37m    [2m | [22m[2m-[22m                 [2m | [22m[36m126 bytes[37m[2m | [22m              [36m126 bytes[37m
+
+[1m [22m                    [2m | [22m[1mInitial total[22m     [2m | [22m[1m[93m610.45 kB[37m[22m[2m | [22m              [1m150.28 kB[22m
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[39m[37m[22m             [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-DDHHNMUM.js[37m    [2m | [22m[2mgallery[22m           [2m | [22m [36m70.05 kB[37m[2m | [22m               [36m17.32 kB[37m
+[32mchunk-HHCLNZKV.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m64.20 kB[37m[2m | [22m               [36m16.17 kB[37m
+[32mchunk-CJCKVNQM.js[37m    [2m | [22m[2mproject-detail[22m    [2m | [22m [36m20.33 kB[37m[2m | [22m                [36m5.60 kB[37m
+[32mchunk-I76ZQYKV.js[37m    [2m | [22m[2mactivation[22m        [2m | [22m [36m15.29 kB[37m[2m | [22m                [36m4.00 kB[37m
+[32mchunk-MTMSLVUN.js[37m    [2m | [22m[2m-[22m                 [2m | [22m [36m12.55 kB[37m[2m | [22m                [36m3.83 kB[37m
+[32mchunk-BVHTHJOP.js[37m    [2m | [22m[2msign-in[22m           [2m | [22m [36m11.45 kB[37m[2m | [22m                [36m3.55 kB[37m
+[32mchunk-EXPFZQXI.js[37m    [2m | [22m[2msign-up[22m           [2m | [22m [36m10.04 kB[37m[2m | [22m                [36m3.15 kB[37m
+[32mchunk-MOP4WISG.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m9.57 kB[37m[2m | [22m                [36m3.28 kB[37m
+[32mchunk-6NTIPARM.js[37m    [2m | [22m[2mreset-password[22m    [2m | [22m  [36m7.97 kB[37m[2m | [22m                [36m2.60 kB[37m
+[32mchunk-K5G6RGGD.js[37m    [2m | [22m[2mwork-item-detail[22m  [2m | [22m  [36m6.31 kB[37m[2m | [22m                [36m2.19 kB[37m
+[32mchunk-3AO5LFWL.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m5.57 kB[37m[2m | [22m                [36m1.91 kB[37m
+[32mchunk-SNWXWYGG.js[37m    [2m | [22m[2mforgotten-password[22m[2m | [22m  [36m5.23 kB[37m[2m | [22m                [36m1.94 kB[37m
+[32mchunk-QYVALJ66.js[37m    [2m | [22m[2m-[22m                 [2m | [22m  [36m4.67 kB[37m[2m | [22m                [36m1.73 kB[[39m[37m39m
+[32mchunk-JZ22J2SC.js[37m    [2m | [22m[2mproject-new[22m       [2m | [22m  [36m4.42 kB[37m[2m | [22m                [36m1.71 kB[37m
+[32mchunk-DR6EF43E.js[37m    [2m | [22m[2mprojects[22m          [2m | [22m  [36m4.28 kB[37m[2m | [22m                [36m1.64 kB[37m
+[2m...and 20 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+
+[35mServer bundles[37m       
+[1mInitial chunk files[22m  [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mserver.mjs[37m           [2m | [22m[2mserver[22m            [2m | [22m[36m817.59 kB[37m[2m | [22m                       
+[32mmain.server.mjs[37m      [2m | [22m[2mmain.server[22m       [2m | [22m[36m590.02 kB[37m[2m | [22m                       
+[32mpolyfills.server.mjs[37m [2m | [22m[2mpolyfills.server[22m  [2m | [22m[36m236.46 kB[37m[2m | [22m                       
+[32mchunk-GGLDUW74.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m206.34 kB[37m[2m | [22m                       
+[32mchunk-KH3JBAG5.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m130.04 kB[37m[2m | [22m                       
+[32mchunk-OTMM3HKY.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m59.99 kB[37m[2m | [22m                       
+[32mchunk-ZRGJTF2V.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m4.65 kB[37m[2m | [22m                       
+[32mchunk-JUIMI2TX.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m1.52 kB[37m[2m | [22m                       
+[32mchunk-OIUUXDCT.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m1.45 kB[37m[2m | [22m                       
+[32mchunk-XBMMAE5B.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m783 bytes[37m[2m | [22m                       
+[32mchunk-IZHJ5A4Q.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m756 bytes[37m[2m | [22m   [39m[37m                    
+[32mchunk-IFXKOZXU.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m176 bytes[37m[2m | [22m                       
+[32mchunk-DAK4BVL2.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m[36m159 bytes[37m[2m | [22m                       
+
+[1mLazy chunk files[22m     [2m | [22m[1mNames[22m             [2m | [22m [1mRaw size[22m
+[32mchunk-T7TUBPQM.mjs[37m   [2m | [22m[2mgallery[22m           [2m | [22m [36m70.13 kB[37m[2m | [22m                       
+[32mchunk-5GA2MR4R.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m63.56 kB[37m[2m | [22m                       
+[32mchunk-3NPECTMB.mjs[37m   [2m | [22m[2mproject-detail[22m    [2m | [22m [36m20.40 kB[37m[2m | [22m                       
+[32mchunk-4IDIBMTF.mjs[37m   [2m | [22m[2mactivation[22m        [2m | [22m [36m15.36 kB[37m[2m | [22m                       
+[32mchunk-AKWC7AUK.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m [36m12.59 kB[37m[2m | [22m                       
+[32mchunk-IX33SQ4R.mjs[37m   [2m | [22m[2mxhr2[22m              [2m | [22m [36m12.24 kB[37m[2m | [22m                       
+[32mchunk-RG46UI4N.mjs[37m   [2m | [22m[2mxhr2[22m              [2m | [22m [36m12.15 kB[37m[2m | [22m                       
+[32mchunk-ZLBD2VIZ.mjs[37m   [2m | [22m[2msign-in[22m           [2m | [22m [36m11.52 kB[37m[2m | [22m                       
+[32mchunk-JH2RUQYJ.mjs[37m   [2m | [22m[2msign-up[22m           [2m | [22m [36m10.12 kB[37m[2m | [22m                       
+[32mchunk-DHOFG5C2.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m9.61 kB[37m[2m | [22m                       
+[32mchunk-KZBTACJ2.mjs[37m   [2m | [22m[2mreset-password[22m    [2m | [22m  [36m8.04 kB[37m[2m | [22m                       
+[32mchunk-GM2XXIWA.mjs[37m   [2m | [22m[2mwork-item-detail[22m  [2m | [22m  [36m6.37 kB[39m[37m[39m[2m | [22m                       
+[32mchunk-3VR66X5N.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m5.60 kB[37m[2m | [22m                       
+[32mchunk-NPXYCP3U.mjs[37m   [2m | [22m[2mforgotten-password[22m[2m | [22m  [36m5.30 kB[37m[2m | [22m                       
+[32mchunk-HWSBQ5CN.mjs[37m   [2m | [22m[2m-[22m                 [2m | [22m  [36m4.71 kB[37m[2m | [22m                       
+[2m...and 22 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+[35mPrerendered 0 static routes.[37m
+Application bundle generation complete. [9.910 seconds] - 2026-08-26T05:45:03.518Z
+[39m
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mbundle initial exceeded maximum budget. Budget 500.00 kB was not met by 110.45 kB with a total of 610.45 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "gallerySectionsNav" ("Gallery sections").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterLabel" ("Filter components").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "layoutMenuWorkspace" ("Workspace").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherLight" ("Light mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherDark" ("Dark mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyTitle" (" Sign in with your passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinLabel" ("Email PIN").[0m
+
+
+[33m▲ [43;[39m[22m[1m[33m33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinContinue" ("Continue after verification").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyTitle" (" Create with a passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyButton" ("Continue with passkey").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterPlaceholder" ("Filter by name, description, or selector").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "gallerySectionsNav" ("Gallery sections").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "galleryFilterLabel" ("Filter components").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "layoutMenuWorkspace" ("Workspace").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwi[39m[22m[1m[33mtcherLight" ("Light mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "themeSwitcherDark" ("Dark mode").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyTitle" (" Sign in with your passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyDescription" (" The fastest, phishing-resistant way to access your account. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyUnsupported" (" This browser does not support passkeys. Choose password sign-in below. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeyVerification" (" Verify your email first. Enter the PIN from your email to continue the passkey ceremony. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinLabel" ("Email PIN").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPinContinue" ("Continue after verification").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signInPasskeySuccess" (" Signed in successfully. Your vault remains locked until you unlock it. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyTitle" (" Create with a passkey ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyDescription" (" Passkeys keep your account protected without sharing a password. ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyEmailLabel" ("Passkey account identifier").[0m
+
+
+[33m▲ [43;33m[39m[22m[1m[33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyButton" ("Continue with passkey").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpUsePassword" (" Use password instead ").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeyVerification" ("Email verification and PIN confirmation are required before registration completes.").[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNo translation found for "signUpPasskeySuccess" (" Passkey created. Email verification is still required before your account is complete. ").[0m
+
+[39m[22m
+[37mOutput location: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/app
+[39m
+
+> nx run server:build:production
+
+
+> nx run api-e2e:e2e
+
+> node --experimental-strip-types apps/web/api-e2e/src/support/run-api-e2e.ts
+
+  [2mconsole.log[22m
+    ◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[2m[22m
+[2m      [2mat _log ([22m[2m../../../node_modules/.pnpm/dotenv@17.4.2/node_modules/dotenv/lib/main.js[2m:131:11)[22m[2m[22m
+
+
+Tearing down composition server...
+
+
+
+
+ NX   Successfully ran target e2e for project api-e2e and 8 tasks it depends on
+stderr=$ nx run api-e2e:e2e --skip-nx-cache
+(node:594786) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/apps/web/api-e2e/src/support/run-api-e2e.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:594797) Warning: Failed to load the ES module: /home/visomi/Projects/GitHub/visomi-dev/themis/apps/web/api-e2e/jest.config.cts. Make sure to set "type": "module" in the nearest package.json file or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1mTest Suites: [22m[1m[32m1 passed[39m[22m, 1 total
+[1mTests:       [22m[1m[32m1 passed[39m[22m, 1 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        1.836 s, estimated 5 s
+[2mRan all test suites[22m[2m within paths[22m "apps/web/api-e2e/src/api/pzs-005-real.spec.ts"[2m.[22m
+result=0 pnpm nx run api-e2e:e2e --skip-nx-cache
+migrations=passed
+nx-api-e2e=passed
+$ podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml down --volumes --remove-orphans
+stdout=themis-local-e2e-586626_minio_1
+themis-local-e2e-586626_redis_1
+themis-local-e2e-586626_minio-init_1
+themis-local-e2e-586626_postgres_1
+themis-local-e2e-586626_minio-init_1
+themis-local-e2e-586626_minio_1
+themis-local-e2e-586626_redis_1
+themis-local-e2e-586626_postgres_1
+themis-local-e2e-586626_postgres-data
+themis-local-e2e-586626_minio-data
+b96a6b2c61ddb9d6a152b620dcfe740ec83686b45398a4a0cffeb824771d4621
+themis-local-e2e-586626_default
+stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+result=0 podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml down --volumes --remove-orphans
+compose-down=completed
+inspection-command=podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml ps
+inspection-result=0 podman compose --project-name themis-local-e2e-586626 --file compose.local-e2e.yaml ps
+inspection-stdout=CONTAINER ID  IMAGE       COMMAND     CREATED     STATUS      PORTS       NAMES
+inspection-stderr=[4m>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+[0m
+inspection-command=podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-586626
+inspection-result=0 podman volume ls --filter label=io.podman.compose.project=themis-local-e2e-586626
+inspection-stdout=DRIVER      VOLUME NAME

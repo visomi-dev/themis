@@ -1,0 +1,54 @@
+<main class="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8 md:px-12" aria-labelledby="timeline-title">
+  <a class="text-sm text-blue-600 underline dark:text-blue-400" [routerLink]="['/projects', projectId, 'workspace']"
+    >← Back to project workspace</a
+  >
+  <h1 id="timeline-title" class="font-heading text-4xl font-semibold">Timeline</h1>
+  @if (loading()) {
+    <p aria-live="polite">Loading recorded activity…</p>
+  } @else if (model(); as readModel) {
+    <p class="rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900" role="status">
+      {{
+        readModel.activity.state === 'visible'
+          ? 'Recorded activity from the authorized projection.'
+          : (readModel.activity.reason ?? 'Activity is not currently available.')
+      }}
+    </p>
+    @if (readModel.activity.items; as events) {
+      @if (events.length === 0) {
+        <section class="rounded-lg bg-zinc-100 p-6 dark:bg-zinc-900">
+          <h2>No timeline events yet</h2>
+          <p class="mt-2 text-sm">This authorized query completed without activity.</p>
+        </section>
+      } @else {
+        <ol class="border-l border-zinc-950/10 pl-6 dark:border-white/10">
+          @for (event of events; track event.id) {
+            <li class="relative pb-6">
+              <span
+                class="absolute -left-[1.65rem] mt-1 size-3 rounded-full border-2 border-blue-600 bg-white dark:bg-zinc-950"
+                aria-hidden="true"
+              ></span>
+              <p class="font-medium">{{ event.summary }}</p>
+              <p class="mt-1 text-sm text-zinc-500">
+                Recorded by {{ event.kind }} · {{ event.occurredAt | date: 'medium' }}
+              </p>
+              <p class="mt-1 font-mono text-xs text-zinc-400">{{ event.id }}</p>
+            </li>
+          }
+        </ol>
+      }
+    }
+    @if (readModel.activity.state !== 'visible') {
+      <section class="rounded-lg border border-amber-500/30 bg-amber-50 p-6 dark:bg-amber-950/20">
+        <h2>Timeline unavailable</h2>
+        <p class="mt-2 text-sm">
+          {{ readModel.activity.reason ?? 'The source did not provide a trustworthy response.' }}
+        </p>
+      </section>
+    }
+  } @else {
+    <section class="rounded-lg border border-amber-500/30 bg-amber-50 p-6 dark:bg-amber-950/20" role="alert">
+      <h2>Timeline unavailable</h2>
+      <p class="mt-2 text-sm">The protected activity projection could not be safely disclosed.</p>
+    </section>
+  }
+</main>

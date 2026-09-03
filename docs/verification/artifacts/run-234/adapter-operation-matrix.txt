@@ -1,0 +1,7 @@
+Command: node --experimental-strip-types --test scripts/themis-adapter-operation-matrix.test.ts
+Result: PASS
+Tests: 213
+Pass: 213
+Fail: 0
+Suites: 2
+Coverage: named CLI/OpenCode missing, unregistered, disabled, moved-root, foreign, project-list isolation, sprints_remove project-scope isolation, and nested redaction checks.

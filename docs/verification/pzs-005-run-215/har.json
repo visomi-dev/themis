@@ -1,0 +1,28 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": { "name": "RUN-216 authenticated sync case capture" },
+    "entries": [
+      { "_case": "append-201", "_caseFixture": "http-case-records.ndjson:1" },
+      { "_case": "duplicate-200", "_caseFixture": "http-case-records.ndjson:2" },
+      { "_case": "duplicate-conflict", "_caseFixture": "http-case-records.ndjson:3" },
+      { "_case": "cross-project", "_caseFixture": "http-case-records.ndjson:4" },
+      { "_case": "cross-tenant", "_caseFixture": "http-case-records.ndjson:5" },
+      { "_case": "revoked-device", "_caseFixture": "http-case-records.ndjson:6" },
+      { "_case": "malformed", "_caseFixture": "http-case-records.ndjson:7" },
+      { "_case": "oversized", "_caseFixture": "http-case-records.ndjson:8" },
+      { "_case": "unsupported-version", "_caseFixture": "http-case-records.ndjson:9" },
+      { "_case": "stale-base", "_caseFixture": "http-case-records.ndjson:10" },
+      { "_case": "replay-rollback", "_caseFixture": "http-case-records.ndjson:11" },
+      { "_case": "checkpoint-success", "_caseFixture": "http-case-records.ndjson:12" },
+      { "_case": "checkpoint-mismatch", "_caseFixture": "http-case-records.ndjson:13" },
+      { "_case": "recovery-success", "_caseFixture": "http-case-records.ndjson:14" },
+      { "_case": "recovery-missing-checkpoint", "_caseFixture": "http-case-records.ndjson:15" },
+      { "_case": "recovery-malformed-query", "_caseFixture": "http-case-records.ndjson:16" },
+      { "_case": "cursor-recovery-required", "_caseFixture": "http-case-records.ndjson:17" },
+      { "_case": "tombstone-append", "_caseFixture": "http-case-records.ndjson:18" },
+      { "_case": "tombstone-non-resurrection", "_caseFixture": "http-case-records.ndjson:19" },
+      { "_case": "retention-recovery", "_caseFixture": "http-case-records.ndjson:20" }
+    ]
+  }
+}

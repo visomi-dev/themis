@@ -53,3 +53,29 @@ When work is incomplete or another agent will continue, leave concise handoff no
 - Run focused Nx lint, test, build, or e2e targets relevant to the touched project when feasible.
 - Prefer focused verification before broad workspace verification.
 - If verification is skipped, state why and provide the exact command to run later.
+
+Every feature work item must carry a validation matrix covering `unit`, `api`,
+`app-e2e`, `gateway-e2e`, `site-e2e`, `visual`, `security`, and `build`.
+Each category is either required or explicitly not applicable with a reason.
+API changes require real HTTP/API E2E or the OpenAPI contract target
+`pnpm exec nx run api-e2e:openapi`. Angular route changes require route E2E;
+visual changes additionally require deterministic Playwright screenshots and
+snapshot review. Unit tests or builds do not substitute for missing API, E2E,
+visual, or security evidence.
+
+## Plan Fidelity And Mutation Traceability
+
+The confirmed plan is a phase inventory. Before and after any coordinator or
+planner mutation, present a traceability matrix with one row per phase:
+
+| Phase      | Work-item ID(s) or explicit sub-scope | Status  | Gaps                          |
+| ---------- | ------------------------------------- | ------- | ----------------------------- |
+| `phase-id` | `THM-...` or documented sub-scope     | `ready` | `none` or a concrete omission |
+
+Every phase must have a row. Omission is a blocking gap; it must not be hidden
+by merging the phase into generic implementation language. Rich plan steps,
+including UX research, user flows, evaluation, prototypes, and human-readable
+state/event translation, remain observable acceptance criteria or separate work
+items. Approved scope changes use item update plus rework or a new item; they do
+not overwrite the approved contract. The focused evaluator is
+`node --experimental-strip-types --test scripts/plan-fidelity.test.ts`.

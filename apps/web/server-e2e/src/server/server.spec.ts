@@ -1,6 +1,22 @@
 import axios from 'axios';
 
+jest.setTimeout(15000);
+
 describe('composition server', () => {
+  it('proxies the non-enumerating OTP bootstrap without granting product authority', async () => {
+    const email = `otp-gateway-${Date.now()}@themis.dev`;
+    const requested = await axios.post(
+      '/api/auth/email-otp/request',
+      { email },
+      { headers: { Origin: 'http://localhost:8080' } },
+    );
+
+    expect(requested.status).toBe(202);
+    expect(requested.data.data).toEqual({ flowId: expect.any(String), resendAvailableAt: expect.any(String) });
+    expect(JSON.stringify(requested.data)).not.toContain(email);
+    expect(JSON.stringify(requested.data)).not.toContain('password');
+  });
+
   it('exposes a runtime health endpoint', async () => {
     const response = await axios.get('/healthz');
 
@@ -30,7 +46,7 @@ describe('composition server', () => {
   });
 
   it('serves the Angular auth surface under /app', async () => {
-    const response = await axios.get('/app/en/sign-in', {
+    const response = await axios.get('/app/en/auth/identity', {
       headers: {
         Accept: 'text/html',
       },

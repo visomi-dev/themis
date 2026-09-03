@@ -1,41 +1,86 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
-import { Auth } from '../../shared/auth/auth';
-import { ProjectSeed } from '../../shared/jobs/project-seed';
-import { ProjectsApi } from '../../shared/projects/projects';
+import { OperationalWorkspaceAdapter } from '../../shared/projects/operational-workspace-adapter';
+import type { OperationalWorkspaceReadModel } from '../../shared/projects/projects.models';
 
 import { ProjectDetail } from './project-detail';
 
 describe('ProjectDetail', () => {
-  const getProject = vi.fn();
+  const read = vi.fn<OperationalWorkspaceAdapter['read']>();
 
-  const seedStart = vi.fn();
-
-  const signOut = vi.fn();
-
-  const navigate = vi.fn();
+  const model = (state: OperationalWorkspaceReadModel['workItems']['state'] = 'visible') => ({
+    schemaVersion: '1' as const,
+    readOnly: true as const,
+    project: {
+      authority: 'control-plane' as const,
+      items: [
+        {
+          id: 'project-1',
+          name: 'Themis Core',
+          status: 'active' as const,
+          updatedAt: '2026-01-01T00:00:00.000Z',
+          visibility: 'operational' as const,
+        },
+      ],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    protectedContext: {
+      authority: 'local-agent' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    epics: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    workItems: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    runs: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    evidence: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    reviews: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+    activity: {
+      authority: 'opaque-encrypted-source' as const,
+      items: [],
+      state,
+      source: 'test',
+      observedAt: '2026-01-01T00:00:00.000Z',
+    },
+  });
 
   beforeEach(async () => {
-    getProject.mockReset();
-    seedStart.mockReset();
-    signOut.mockReset();
-    navigate.mockReset();
-    getProject.mockResolvedValue({
-      accountId: 'account-1',
-      createdAt: '2026-01-01T00:00:00.000Z',
-      createdByUserId: 'user-1',
-      documents: [],
-      id: 'project-1',
-      jobs: [],
-      name: 'Themis Core',
-      slug: 'themis-core',
-      sourceType: 'manual',
-      status: 'active',
-      summary: 'Core workspace',
-      updatedAt: '2026-01-01T00:00:00.000Z',
-    });
-
+    read.mockReset();
+    read.mockResolvedValue(model());
     await TestBed.configureTestingModule({
       imports: [ProjectDetail],
       providers: [
@@ -44,65 +89,49 @@ describe('ProjectDetail', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              paramMap: {
-                get: () => 'project-1',
-              },
+              paramMap: { get: () => 'project-1' },
+              queryParamMap: { get: () => null },
             },
           },
         },
-        {
-          provide: Auth,
-          useValue: {
-            signOut,
-            user: () => ({ accountId: 'account-1', email: 'engineer@themis.dev', emailVerifiedAt: null, id: 'user-1' }),
-          },
-        },
-        {
-          provide: ProjectsApi,
-          useValue: {
-            getProject,
-          },
-        },
-        {
-          provide: ProjectSeed,
-          useValue: {
-            currentJob: () => null,
-            start: seedStart,
-          },
-        },
+        { provide: OperationalWorkspaceAdapter, useValue: { read } },
       ],
     }).compileComponents();
-
-    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(navigate as never);
   });
 
-  it('loads the current project on init', async () => {
+  it('loads the read-only workspace for the route project', async () => {
     const fixture = TestBed.createComponent(ProjectDetail);
 
     await fixture.componentInstance.ngOnInit();
 
-    expect(getProject).toHaveBeenCalledWith('project-1');
-    expect(fixture.componentInstance.project()?.name).toBe('Themis Core');
+    expect(read).toHaveBeenCalledWith('project-1');
+    expect(fixture.componentInstance['project']()?.name).toBe('Themis Core');
   });
 
-  it('starts the seed job for the current project', async () => {
+  it.each(['empty', 'locked', 'unavailable', 'stale', 'error', 'unauthorized', 'malformed'] as const)(
+    'renders the %s projection state without mutation controls',
+    async (state) => {
+      read.mockResolvedValue(model(state));
+      const fixture = TestBed.createComponent(ProjectDetail);
+
+      await fixture.componentInstance.ngOnInit();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('No execution or mutation controls are available.');
+      expect(fixture.nativeElement.querySelector('main')).not.toBeNull();
+    },
+  );
+
+  it('renders a safe error when the protected read fails', async () => {
+    read.mockRejectedValue(new Error('network failure'));
     const fixture = TestBed.createComponent(ProjectDetail);
 
     await fixture.componentInstance.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-    await fixture.componentInstance.runSeed();
-
-    expect(seedStart).toHaveBeenCalledWith('project-1');
-  });
-
-  it('surfaces an error if the seed job cannot start', async () => {
-    seedStart.mockRejectedValue(new Error('boom'));
-    const fixture = TestBed.createComponent(ProjectDetail);
-
-    await fixture.componentInstance.ngOnInit();
-
-    await fixture.componentInstance.runSeed();
-
-    expect(fixture.componentInstance.errorMessage()).toContain('could not be started');
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('without exposing protected data');
   });
 });

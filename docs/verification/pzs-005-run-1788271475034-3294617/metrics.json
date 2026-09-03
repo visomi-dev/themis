@@ -1,0 +1,6 @@
+{
+  "runId": "RUN-1788271475034-3294617",
+  "streamId": "stream-1f4307de-825b-4153-b3f0-ca8a06e0c6dc",
+  "status": "N/A",
+  "reason": "No metrics exporter/collector is configured in the isolated API harness; current-run server log inspection is retained."
+}

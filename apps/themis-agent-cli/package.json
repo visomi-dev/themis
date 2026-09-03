@@ -1,0 +1,16 @@
+{
+  "name": "@visomi/themis",
+  "version": "0.1.0",
+  "description": "Themis agent distribution CLI",
+  "bin": {
+    "themis": "./main.js"
+  },
+  "files": [
+    "main.js",
+    "main.js.map",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

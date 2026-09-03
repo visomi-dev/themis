@@ -1,0 +1,45 @@
+{
+  "runId": "RUN-223",
+  "workItemId": "PZS-005",
+  "status": "blocked",
+  "categories": [
+    {
+      "category": "unit",
+      "status": "passed",
+      "command": "pnpm exec nx run shared:test --skip-nx-cache && pnpm exec nx run api:test --skip-nx-cache",
+      "observed": "shared 22 suites/134 tests and api 5 suites/37 tests passed"
+    },
+    {
+      "category": "api",
+      "status": "blocked",
+      "command": "PZS005_REAL=true PZS005_RUN_ID=RUN-223 ... pnpm exec nx run api-e2e:e2e --skip-nx-cache; PZS005_SYNC_ONLY=true ... pnpm exec nx run api-e2e:openapi --skip-nx-cache",
+      "observed": "Real durable harness stopped during device enrollment with HTTP 409 device_lifecycle_rejected; no API PASS is claimed. OpenAPI was not run after this blocker."
+    },
+    {
+      "category": "app-e2e",
+      "status": "not-applicable",
+      "reason": "PZS-005 changes API/storage only; Angular route behavior is owned by later items."
+    },
+    {
+      "category": "gateway-e2e",
+      "status": "not-applicable",
+      "reason": "PZS-005 does not deliver WebSocket or gateway composition behavior."
+    },
+    { "category": "site-e2e", "status": "not-applicable", "reason": "No public Astro behavior changes." },
+    { "category": "visual", "status": "not-applicable", "reason": "No rendered UI changes." },
+    {
+      "category": "security",
+      "status": "blocked",
+      "command": "node --experimental-strip-types scripts/operational-workspace-security-scan.ts docs/verification/pzs-005-run-223",
+      "observed": "Blocked because the real harness did not complete and did not produce same-run custody/HAR/JUnit/OpenAPI artifacts; no security PASS is claimed."
+    },
+    {
+      "category": "build",
+      "status": "blocked",
+      "command": "pnpm exec nx run api:build --skip-nx-cache && pnpm exec nx run api-e2e:lint --skip-nx-cache && node --experimental-strip-types --test scripts/plan-fidelity.test.ts && git diff --check",
+      "observed": "Plan fidelity 6/6 and diff check passed; api-e2e lint initially failed on executor-local diagnostics and the full build matrix was not completed after the blocked harness."
+    }
+  ],
+  "artifacts": ["server.log"],
+  "gap": "The durable enrollment rejection prevented completion of the required 23 real cases and all same-run custody/OpenAPI evidence. RUN-217, ZK-027, and unrelated artifacts were not reused."
+}

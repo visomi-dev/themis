@@ -1,0 +1,33 @@
+{
+  "postgres": {
+    "result": "N/A",
+    "reason": "This authenticated API contract run intentionally uses DATABASE_DRIVER=memory; durable PostgreSQL rows are produced by the separate durable-integration target."
+  },
+  "objectStorage": {
+    "result": "N/A",
+    "reason": "This contract run intentionally uses OPAQUE_SYNC_STORAGE=memory; object listing/metadata/ciphertext hash are produced by the separate durable-integration target."
+  },
+  "rawHttp": {
+    "result": "OBSERVED",
+    "artifact": "raw/http-responses.json",
+    "syncCases": "sync-case-matrix.json"
+  },
+  "serverLogs": {
+    "result": "OBSERVED",
+    "artifact": "raw/server.log",
+    "syncRoutes": true
+  },
+  "traces": {
+    "result": "N/A",
+    "reason": "No trace exporter is configured for this local API process; raw/server.log contains no trace sink, and the stable raw scan records zero trace records."
+  },
+  "metrics": {
+    "result": "N/A",
+    "reason": "No metrics exporter is configured for this local API process; raw/server.log contains no metrics sink, and the stable raw scan records zero metric records."
+  },
+  "safeErrors": {
+    "result": "OBSERVED",
+    "artifact": "sync-case-matrix.json",
+    "disclosure": "Only safe error codes/messages are retained."
+  }
+}

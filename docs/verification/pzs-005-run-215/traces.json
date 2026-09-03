@@ -1,0 +1,5 @@
+{
+  "result": "N/A",
+  "reason": "The backend-only local API test target has no trace exporter or collector configured; retained sync logs prove no trace sink or trace records were emitted.",
+  "command": "test -f docs/verification/pzs-005-run-215/logs.ndjson && node --experimental-strip-types scripts/pzs-005-run-215-evidence.test.ts"
+}

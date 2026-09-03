@@ -52,14 +52,17 @@ function mapProject(record: typeof projects.$inferSelect): Project {
     slug: record.slug,
     sourceType: record.sourceType as ProjectSourceType,
     status: record.status as ProjectStatus,
-    summary: record.summary ?? null,
+    // Summary is legacy protected context. It remains out of the API until a
+    // local-agent projection is approved.
+    summary: null,
     updatedAt: record.updatedAt.toISOString(),
   };
 }
 
 function mapDocument(record: typeof projectDocuments.$inferSelect): ProjectDocument {
   return {
-    contentMarkdown: record.contentMarkdown,
+    // Legacy document bodies are containment-only, never an API authority.
+    contentMarkdown: '',
     createdAt: record.createdAt.toISOString(),
     createdByUserId: record.createdByUserId,
     documentType: record.documentType as ProjectDocumentType,
@@ -141,6 +144,14 @@ async function createProject(
     throw new HttpError({ code: 'invalid_source_type', message: 'The source type is not supported.', statusCode: 400 });
   }
 
+  if (data.summary !== undefined && data.summary.trim() !== '') {
+    throw new HttpError({
+      code: 'encrypted_context_required',
+      message: 'Protected project context must be written by the local agent.',
+      statusCode: 409,
+    });
+  }
+
   return withAccountContext(context, async (db) => {
     const now = new Date();
 
@@ -169,7 +180,6 @@ async function createProject(
         slug,
         sourceType,
         status: 'active',
-        summary: data.summary ?? null,
         updatedAt: now,
       })
       .returning();
@@ -213,7 +223,13 @@ async function updateProject(
     }
 
     if (data.summary !== undefined) {
-      updates.summary = data.summary;
+      if (data.summary !== null && data.summary.trim() !== '') {
+        throw new HttpError({
+          code: 'encrypted_context_required',
+          message: 'Protected project context must be written by the local agent.',
+          statusCode: 409,
+        });
+      }
     }
 
     const [updated] = await db
@@ -253,6 +269,14 @@ async function createDocument(
     title: string;
   },
 ) {
+  if (data.contentMarkdown.trim() !== '') {
+    throw new HttpError({
+      code: 'encrypted_context_required',
+      message: 'Protected document content must be written by the local agent.',
+      statusCode: 409,
+    });
+  }
+
   return withAccountContext(context, async (db) => {
     const [project] = await db
       .select()
@@ -288,7 +312,6 @@ async function createDocument(
       .insert(projectDocuments)
       .values({
         accountId: context.accountId,
-        contentMarkdown: data.contentMarkdown,
         createdAt: now,
         createdByUserId: context.userId,
         documentType: data.documentType,
@@ -305,5 +328,14 @@ async function createDocument(
   });
 }
 
-export { createDocument, createProject, deleteProject, getProject, listProjects, updateProject };
+export {
+  createDocument,
+  createProject,
+  deleteProject,
+  getProject,
+  listProjects,
+  mapDocument,
+  mapProject,
+  updateProject,
+};
 export type { ProjectsContext };

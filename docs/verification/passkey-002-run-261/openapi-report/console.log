@@ -1,0 +1,175 @@
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[13:42:45.985] [32mINFO[39m (3457056): [36mAPI Mounted[39m
+    [35mpath[39m: "/api"
+[13:42:45.985] [32mINFO[39m (3457056): [36mRealtime runtime ready[39m
+    [35mpath[39m: "/socket.io"
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[13:42:45.985] [32mINFO[39m (3458007): [36mWorker runtime ready[39m
+[13:42:45.985] [32mINFO[39m (3457056): [36mApp Mounted[39m
+    [35mpath[39m: "/app"
+[13:42:45.985] [32mINFO[39m (3457056): [36mSite Mounted[39m
+    [35mpath[39m: "/"
+[13:42:45.985] [32mINFO[39m (3457056): [36mGateway server ready[39m
+    [35mhost[39m: "localhost"
+    [35mport[39m: 8096
+[0mDELETE /api/test/mailbox [32m204[0m 0.603 ms - -[0m
+[0mPOST /api/auth/sign-up [32m201[0m 88.876 ms - 205[0m
+[0mGET /api/test/mailbox/latest?email=pzs005-run-261-mtbxjp1i%40example.test&purpose=sign_up [32m200[0m 0.885 ms - 211[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 48.436 ms - 272[0m
+[0mPOST /api/auth/sign-up [32m201[0m 82.645 ms - 212[0m
+[0mGET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up [32m200[0m 0.580 ms - 218[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 39.586 ms - 279[0m
+[0mPOST /api/auth/sign-up [32m201[0m 68.810 ms - 217[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 74.589 ms - 824[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 11.732 ms - 252[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 3.019 ms - 88[0m
+[0mGET /api/test/mailbox/latest?email=[REDACTED]&purpose=sign_up [32m200[0m 0.210 ms - 220[0m
+[0mPOST /api/auth/sign-up/verify [32m200[0m 36.674 ms - 281[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.543 ms - 754[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.214 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m403[0m 1.026 ms - 91[0m
+[ error ] API request failed { code: [32m'email_unverified'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 1.050 ms - 88[0m
+[ error ] API request failed { code: [32m'pin_required'[39m, statusCode: [33m403[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m403[0m 0.989 ms - 91[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 5.677 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 0.783 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.521 ms - 754[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 5.200 ms - 86[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.379 ms - 754[0m
+[0mPOST /api/auth/passkey/registration/complete [32m201[0m 4.335 ms - 245[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.067 ms - 392[0m
+[0mPOST /api/auth/passkey/authentication/complete [32m200[0m 9.043 ms - 367[0m
+[ error ] API request failed { code: [32m'challenge_replayed'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m409[0m 4.745 ms - 86[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.143 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 1.879 ms - 82[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 2.921 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 2.572 ms - 82[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.028 ms - 88[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 2.790 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 3.954 ms - 747[0m
+[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 3.289 ms - 392[0m
+[ error ] API request failed { code: [32m'[REDACTED-MATERIAL]'[39m, statusCode: [33m409[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m409[0m 3.300 ms - 97[0m
+[0mGET /api/openapi.json [32m200[0m 13.182 ms - [REDACTED-PIN][0m
+Schemathesis v4.24.3
+━━━━━━━━━━━━━━━━━━━━
+
+[?25l [32m🕛 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m[2K[1A[2K [32m🕛 [0m [37mLoading specification from [0m
+     [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/o…[0m
+[?25h[1A[2K[1A[2K [32m✅  [0m[97mLoaded specification from [0m
+ [36m/home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/opena[0m
+ [36mpi/run-261-openapi-schema.json[0m[97m (in 0.10s)[0m
+
+ [1;97m    [0m[1;97mBase URL:     [0m[1;97m    [0m[36mhttp://localhost:8096/api[0m[36m    [0m
+ [1;97m    [0m[1;97mSpecification:[0m[1;97m    [0m[36mOpen API 3.1.0           [0m[36m    [0m
+ [1;97m    [0m[1;97mOperations:   [0m[1;97m    [0m[36m4 selected / 4 total     [0m[36m    [0m
+
+[?25l [32m🕛 [0m [97mProbing API capabilities[0m[0mGET /api/schemathesis-probe%5C%1B%01 [33m404[0m 4.411 ms - 170[0m
+[2K [32m🕛 [0m [97mProbing API capabilities[0m
+[?25h[1A[2K [32m✅  [0m[97mAPI capabilities:[0m
+
+ [1;97m    [0m[1;97mSupports NULL byte in headers:                        [0m[1;97m    [0m[31m✘[0m[36m    [0m
+ [1;97m    [0m[1;97mAccepts backslash and control characters in URL paths:[0m[1;97m    [0m[32m✓[0m[36m    [0m
+
+[?25l[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/registration/begin [33m404[0m 2.372 ms - 88[0m
+[0mPOST /api/auth/passkey/registration/begin [32m200[0m 9.591 ms - 747[0m
+[ error ] API request failed { code: [32m'challenge_mismatch'[39m, statusCode: [33m400[39m }
+[0mPOST /api/auth/passkey/registration/complete [33m400[0m 1.088 ms - 86[0m
+[ error ] API request failed { code: [32m'credential_not_found'[39m, statusCode: [33m404[39m }
+[0mPOST /api/auth/passkey/authentication/begin [33m404[0m 1.678 ms - 88[0m
+ [32m🕛 [0m [37mExamples[0m
+
+     [33m0:00:00[0m [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m 50% (2/4)
+
+   [32m⠋[0m [33m0:00:00[0m  POST /auth/passkey/authentication/begin
+
+     ✅ 1 passed  ❌ 1 failed[0mPOST /api/auth/passkey/authentication/begin [32m200[0m 4.291 ms - 392[0m
+[ error ] API request failed { code: [32m'platform_error'[39m, statusCode: [33m401[39m }
+[0mPOST /api/auth/passkey/authentication/complete [33m401[0m 3.285 ms - 82[0m
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K   [37m  Examples[0m
+
+     [33m0:00:00[0m [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m 100% (4/4)
+
+
+     ✅ 3 passed  ❌ 1 failed[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K   [37m  Examples[0m
+
+     [33m0:00:00[0m [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m 100% (4/4)
+
+
+     ✅ 3 passed  ❌ 1 failed
+[?25h[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K [37m❌  Examples (in 0.23s)[0m
+
+ [37m    ✅ 3 passed  ❌ 1 failed[0m
+
+=================================== FAILURES ===================================
+___________________ POST /auth/passkey/registration/complete ___________________
+1. Test Case ID: INTWqi
+
+- API rejected schema-compliant request
+
+    Valid data should have been accepted
+    Expected: 2xx, 401, 403, 404, 409, 5xx
+
+[400] Bad Request:
+
+    `{"code":"challenge_mismatch","message":"The passkey ceremony could not be completed."}`
+
+Reproduce with:
+
+    curl -X POST -H 'Origin: http://localhost:8096' -H 'Cookie: [Filtered]' -H 'Content-Type: application/json' -d '{"challengeId": "[REDACTED]", "response": {"id": "TCqbNmds3LENfmaz40ugmw", "rawId": "[REDACTED]", "response": {"clientDataJSON": "[REDACTED]", "attestationObject": "[REDACTED]", "transports": ["internal"]}, "type": "public-key", "clientExtensionResults": {}, "authenticatorAttachment": "platform"}}' http://localhost:8096/api/auth/passkey/registration/complete
+
+    st replay INTWqi
+
+=================================== WARNINGS ===================================
+
+Authentication failed: 1 operation returned authentication errors
+
+401 Unauthorized (1 operation):
+  - POST /auth/passkey/authentication/complete
+
+💡 Ensure valid authentication credentials are set via --auth or -H
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 4/4
+  Tested: 4
+
+Test Phases:
+  ❌ Examples
+  ⏭  Coverage (disabled)
+  ⏭  Fuzzing (disabled)
+  ⏭  Stateful (disabled)
+
+Failures:
+  ❌ API rejected schema-compliant request: 1
+
+Warnings:
+  ⚠️ Missing authentication: 1 operation returned only 401/403 responses
+
+Test cases:
+  6 generated, 1 found 1 unique failures
+
+Reports:
+  - JUNIT: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/openapi/junit-20260827T134253Z.xml
+  - HAR: /home/visomi/Projects/GitHub/visomi-dev/themis/dist/test-results/api-e2e/openapi/har-20260827T134253Z.json
+
+Seed: not used in the deterministic mode
+
+======================== 1 failure, 1 warning in 0.27s =========================

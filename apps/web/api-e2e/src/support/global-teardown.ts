@@ -11,6 +11,15 @@ module.exports = async function () {
 
     if (!Number.isNaN(pid)) {
       process.kill(-pid, 'SIGTERM');
+      for (let attempt = 0; attempt < 40; attempt += 1) {
+        try {
+          process.kill(pid, 0);
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code === 'ESRCH') break;
+          throw error;
+        }
+      }
     }
   } catch (error) {
     const nodeError = error as NodeJS.ErrnoException;

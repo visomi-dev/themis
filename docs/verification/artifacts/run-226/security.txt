@@ -1,0 +1,75 @@
+(node:757087) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/plan-fidelity.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ approved plan fidelity evaluation
+  ✔ loads the actual P0-P11 inventory without overstating deferred evidence (2.644847ms)
+  ✔ reports omitted phases and unrepresented rich steps instead of collapsing them (0.325017ms)
+  ✔ requires a traceability row before and after mutation (0.164959ms)
+  ✔ makes scope changes explicit and rejects incomplete validation matrices (0.620532ms)
+  ✔ makes traceability and evidence completeness executable (0.520243ms)
+  ✔ keeps mutation authorization and evidence semantics explicit in guidance (0.294162ms)
+✔ approved plan fidelity evaluation (5.624043ms)
+(node:757088) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-cli.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ Themis CLI project authority
+  ✔ requires project scope and removes root aggregate commands (255.915317ms)
+  ✔ creates and reads only a registered project store (330.863001ms)
+✔ Themis CLI project authority (587.963003ms)
+(node:757089) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-core.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ local Themis workflow
+  ✔ detects first-run workspaces and scopes the audit timeline by project (3.443816ms)
+  ✔ executes the complete proposal to accepted review flow (5.164475ms)
+  ✔ updates a completed item, reopens it for rework, and preserves its history (2.968043ms)
+  ✔ requires final sprint evidence before closing and releases the project slot (5.036762ms)
+  ✔ executes ready work through project flow without an active sprint (1.074304ms)
+  ✔ removes sprint planning state and returns planned work to project flow (1.392014ms)
+  ✔ rejects blocked work and missing review evidence (2.88246ms)
+  ✔ moves rejected reviews to rework (3.293921ms)
+  ✔ requires the latest completed run after rework (3.270095ms)
+  ✔ rejects transitions outside the state machine (0.417704ms)
+  ✔ scopes active sprints by project and keeps epic ownership explicit (2.157948ms)
+✔ local Themis workflow (32.883131ms)
+(node:757100) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-project-migration.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+migration raw-output scan: filesScanned=["/tmp/themis-project-migration-GkrSBb/.themis/migration/backups/migration-migration-22d5380b51f1/events.ndjson","/tmp/themis-project-migration-GkrSBb/.themis/migration/backups/migration-migration-22d5380b51f1/manifest.json","/tmp/themis-project-migration-GkrSBb/.themis/migration/backups/migration-migration-22d5380b51f1/state.json","/tmp/themis-project-migration-GkrSBb/.themis/migration/quarantine.json","/tmp/themis-project-migration-GkrSBb/.themis/migration/ledger.json","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-A/events.ndjson","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-A/manifest.json","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-A/state.json","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-B/events.ndjson","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-B/manifest.json","/tmp/themis-project-migration-GkrSBb/.themis/projects/PRJ-B/state.json","/tmp/themis-project-migration-GkrSBb/.themis/migration/logs/migration-22d5380b51f1.json"], findings=[]
+▶ project-scoped Themis migration
+  ✔ preserves the complete domain, event order, backup, and quarantines unresolved history (12.354527ms)
+  ✔ resumes after a project failure and reruns idempotently (3.706205ms)
+  ✔ isolates a corrupt project store and rejects stale global replay (2.596774ms)
+  ✔ rolls back only while writes are fenced (1.637062ms)
+  ✔ validates, backs up, restores, and synchronizes a store independently (3.790032ms)
+  ✔ quarantines every orphan and ambiguous record exactly once (2.509038ms)
+✔ project-scoped Themis migration (27.711157ms)
+(node:757101) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-tools.e2e.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:757101) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/tools/themis.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/.opencode/package.json.
+▶ OpenCode project-authorized tools
+  ✔ uses registered project APIs and rejects a foreign project read (6.619867ms)
+✔ OpenCode project-authorized tools (7.396389ms)
+(node:757107) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/visomi/Projects/GitHub/visomi-dev/themis/scripts/themis-tui.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /home/visomi/Projects/GitHub/visomi-dev/themis/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ Themis TUI dashboard
+  ✔ renders a bounded dashboard from local state (7.13259ms)
+✔ Themis TUI dashboard (8.370555ms)
+ℹ tests 27
+ℹ suites 6
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 705.018452

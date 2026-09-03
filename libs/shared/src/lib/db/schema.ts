@@ -1,11 +1,11 @@
-import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { boolean, check, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 const users = pgTable(
   'users',
   {
     id: text('id').primaryKey(),
     email: text('email').notNull(),
-    passwordHash: text('password_hash').notNull(),
     emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
@@ -53,37 +53,139 @@ const userSessions = pgTable('user_sessions', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-const authVerificationChallenges = pgTable('auth_verification_challenges', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  purpose: text('purpose').notNull(),
-  pinHash: text('pin_hash').notNull(),
-  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-  consumedAt: timestamp('consumed_at', { withTimezone: true }),
-  attemptCount: integer('attempt_count').default(0).notNull(),
-  lastSentAt: timestamp('last_sent_at', { withTimezone: true }).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-});
-
-const userDevices = pgTable(
-  'user_devices',
+const authEmailChallenges = pgTable(
+  'auth_email_challenges',
   {
     id: text('id').primaryKey(),
-    userId: text('user_id')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    tokenHash: text('token_hash').notNull(),
+    flowId: text('flow_id').notNull(),
+    normalizedEmail: text('normalized_email').notNull(),
+    purpose: text('purpose').notNull().default('bootstrap_recovery'),
+    pinHash: text('pin_hash').notNull(),
+    clientContextHash: text('client_context_hash').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    supersededAt: timestamp('superseded_at', { withTimezone: true }),
+    attemptCount: integer('attempt_count').default(0).notNull(),
+    lastSentAt: timestamp('last_sent_at', { withTimezone: true }).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex('user_devices_token_hash_idx').on(table.tokenHash),
-    index('user_devices_user_expires_idx').on(table.userId, table.expiresAt),
+    uniqueIndex('auth_email_challenges_flow_active_idx')
+      .on(table.flowId)
+      .where(sql`${table.consumedAt} IS NULL AND ${table.supersededAt} IS NULL`),
+    uniqueIndex('auth_email_challenges_flow_pin_idx').on(table.flowId, table.pinHash),
+    index('auth_email_challenges_expiry_idx').on(table.expiresAt, table.consumedAt, table.supersededAt),
+    index('auth_email_challenges_attempt_idx').on(table.flowId, table.attemptCount),
+    index('auth_email_challenges_cooldown_idx').on(table.normalizedEmail, table.lastSentAt),
+    check('auth_email_challenges_purpose_check', sql`${table.purpose} = 'bootstrap_recovery'`),
+    check('auth_email_challenges_attempt_count_check', sql`${table.attemptCount} >= 0 AND ${table.attemptCount} <= 5`),
+    check('auth_email_challenges_expiry_check', sql`${table.expiresAt} > ${table.createdAt}`),
+    check(
+      'auth_email_challenges_consumed_check',
+      sql`${table.consumedAt} IS NULL OR ${table.consumedAt} >= ${table.createdAt}`,
+    ),
+    check(
+      'auth_email_challenges_superseded_check',
+      sql`${table.supersededAt} IS NULL OR ${table.supersededAt} >= ${table.createdAt}`,
+    ),
+  ],
+);
+
+const accountPasskeyCredentials = pgTable(
+  'account_passkey_credentials',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    credentialId: text('credential_id').notNull(),
+    publicKey: text('public_key').notNull(),
+    rpId: text('rp_id').notNull(),
+    label: text('label').notNull(),
+    status: text('status').notNull().default('pending'),
+    enrollmentFlowId: text('enrollment_flow_id'),
+    transports: jsonb('transports').$type<string[]>().notNull().default([]),
+    signCount: integer('sign_count').notNull().default(0),
+    backupEligible: boolean('backup_eligible').notNull().default(false),
+    backupState: boolean('backup_state').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    activatedAt: timestamp('activated_at', { withTimezone: true }),
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('account_passkey_credentials_credential_idx').on(table.credentialId),
+    uniqueIndex('account_passkey_credentials_account_label_idx')
+      .on(table.accountId, table.label)
+      .where(sql`${table.status} <> 'revoked'`),
+    index('account_passkey_credentials_account_status_idx').on(table.accountId, table.status),
+    index('account_passkey_credentials_enrollment_flow_idx').on(table.enrollmentFlowId, table.status),
+    check('account_passkey_credentials_status_check', sql`${table.status} IN ('pending', 'active', 'revoked')`),
+    check(
+      'account_passkey_credentials_activation_check',
+      sql`(${table.status} = 'pending' AND ${table.activatedAt} IS NULL AND ${table.revokedAt} IS NULL) OR (${table.status} = 'active' AND ${table.activatedAt} IS NOT NULL AND ${table.revokedAt} IS NULL) OR (${table.status} = 'revoked' AND ${table.revokedAt} IS NOT NULL)`,
+    ),
+  ],
+);
+
+const authWebAuthnChallenges = pgTable(
+  'auth_webauthn_challenges',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id').references(() => accounts.id, { onDelete: 'cascade' }),
+    userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+    challengeHash: text('challenge_hash').notNull(),
+    purpose: text('purpose').notNull(),
+    ceremonyType: text('ceremony_type').notNull(),
+    sessionBinding: text('session_binding').notNull(),
+    flowId: text('flow_id'),
+    credentialId: text('credential_id'),
+    allowCredentialIds: jsonb('allow_credential_ids').$type<string[]>().notNull().default([]),
+    rpId: text('rp_id').notNull(),
+    origin: text('origin').notNull(),
+    userVerification: text('user_verification').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    attemptCount: integer('attempt_count').notNull().default(0),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('auth_webauthn_challenges_hash_idx').on(table.challengeHash),
+    index('auth_webauthn_challenges_expiry_idx').on(table.expiresAt, table.consumedAt),
+    index('auth_webauthn_challenges_session_idx').on(table.sessionBinding, table.purpose, table.consumedAt),
+    index('auth_webauthn_challenges_flow_idx').on(table.flowId, table.purpose),
+    check(
+      'auth_webauthn_challenges_purpose_check',
+      sql`${table.purpose} IN ('discoverable_authentication', 'restricted_registration', 'restricted_authentication', 'security_registration', 'security_authentication')`,
+    ),
+    check('auth_webauthn_challenges_ceremony_check', sql`${table.ceremonyType} IN ('registration', 'authentication')`),
+    check(
+      'auth_webauthn_challenges_purpose_ceremony_check',
+      sql`(${table.purpose} IN ('restricted_registration', 'security_registration') AND ${table.ceremonyType} = 'registration') OR (${table.purpose} IN ('discoverable_authentication', 'restricted_authentication', 'security_authentication') AND ${table.ceremonyType} = 'authentication')`,
+    ),
+    check(
+      'auth_webauthn_challenges_attempt_count_check',
+      sql`${table.attemptCount} >= 0 AND ${table.attemptCount} <= 1`,
+    ),
+    check('auth_webauthn_challenges_expiry_check', sql`${table.expiresAt} > ${table.createdAt}`),
+    check(
+      'auth_webauthn_challenges_consumed_check',
+      sql`${table.consumedAt} IS NULL OR ${table.consumedAt} >= ${table.createdAt}`,
+    ),
+    check(
+      'auth_webauthn_challenges_discoverable_check',
+      sql`${table.purpose} <> 'discoverable_authentication' OR (${table.accountId} IS NULL AND ${table.userId} IS NULL AND ${table.flowId} IS NULL AND ${table.credentialId} IS NULL AND ${table.allowCredentialIds} = '[]'::jsonb)`,
+    ),
+    check(
+      'auth_webauthn_challenges_restricted_check',
+      sql`${table.purpose} NOT IN ('restricted_registration', 'restricted_authentication') OR ${table.flowId} IS NOT NULL`,
+    ),
   ],
 );
 
@@ -124,7 +226,6 @@ const projects = pgTable('projects', {
     .references(() => accounts.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   slug: text('slug').notNull(),
-  summary: text('summary'),
   status: text('status').notNull().default('active'),
   sourceType: text('source_type').notNull().default('manual'),
   createdByUserId: text('created_by_user_id')
@@ -145,7 +246,6 @@ const projectDocuments = pgTable('project_documents', {
   title: text('title').notNull(),
   documentType: text('document_type').notNull(),
   status: text('status').notNull().default('active'),
-  contentMarkdown: text('content_markdown').notNull(),
   source: text('source').notNull().default('manual'),
   createdByUserId: text('created_by_user_id')
     .notNull()
@@ -166,12 +266,186 @@ const asyncJobs = pgTable('async_jobs', {
   type: text('type').notNull(),
   status: text('status').notNull(),
   progress: integer('progress').default(0).notNull(),
-  inputJson: text('input_json'),
-  resultJson: text('result_json'),
-  errorMessage: text('error_message'),
   completedAt: timestamp('completed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+const opaqueSyncCursors = pgTable(
+  'opaque_sync_cursors',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    highWaterCursor: integer('high_water_cursor').notNull().default(0),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex('opaque_sync_cursors_account_workspace_idx').on(table.accountId, table.workspaceId)],
+);
+
+const opaqueSyncEnvelopes = pgTable(
+  'opaque_sync_envelopes',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    cursor: integer('cursor').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    recordType: text('record_type').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    tombstonedAt: timestamp('tombstoned_at', { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_envelopes_identity_idx').on(
+      table.accountId,
+      table.workspaceId,
+      table.envelopeId,
+      table.revision,
+    ),
+    uniqueIndex('opaque_sync_envelopes_cursor_idx').on(table.accountId, table.workspaceId, table.cursor),
+  ],
+);
+
+const opaqueSyncTombstones = pgTable(
+  'opaque_sync_tombstones',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_tombstones_identity_idx').on(
+      table.accountId,
+      table.workspaceId,
+      table.envelopeId,
+      table.revision,
+    ),
+  ],
+);
+
+const opaqueSyncCheckpoints = pgTable(
+  'opaque_sync_checkpoints',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    checkpointId: text('checkpoint_id').notNull(),
+    cursor: integer('cursor').notNull(),
+    revision: integer('revision').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('opaque_sync_checkpoints_identity_idx').on(table.accountId, table.workspaceId, table.checkpointId),
+    uniqueIndex('opaque_sync_checkpoints_cursor_idx').on(table.accountId, table.workspaceId, table.cursor),
+    index('opaque_sync_checkpoints_stream_idx').on(table.accountId, table.workspaceId, table.cursor),
+  ],
+);
+
+const encryptedContextMetadata = pgTable(
+  'encrypted_context_metadata',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    projectId: text('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    sourceId: text('source_id').notNull(),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    objectKey: text('object_key').notNull(),
+    ciphertextSha256: text('ciphertext_sha256').notNull(),
+    recordType: text('record_type').notNull(),
+    state: text('state').notNull().default('active'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+    tombstonedAt: timestamp('tombstoned_at', { withTimezone: true }),
+  },
+  (table) => [uniqueIndex('encrypted_context_metadata_scope_idx').on(table.accountId, table.projectId, table.sourceId)],
+);
+
+const encryptedContextTombstones = pgTable(
+  'encrypted_context_tombstones',
+  {
+    accountId: text('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    projectId: text('project_id')
+      .notNull()
+      .references(() => projects.id, { onDelete: 'cascade' }),
+    sourceId: text('source_id').notNull(),
+    envelopeId: text('envelope_id').notNull(),
+    revision: integer('revision').notNull(),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('encrypted_context_tombstones_scope_idx').on(table.accountId, table.projectId, table.sourceId),
+  ],
+);
+
+const syncDevices = pgTable('sync_devices', {
+  deviceId: text('device_id').primaryKey(),
+  accountId: text('account_id')
+    .notNull()
+    .references(() => accounts.id, { onDelete: 'cascade' }),
+  publicKey: text('public_key').notNull(),
+  fingerprint: text('fingerprint').notNull(),
+  label: text('label').notNull(),
+  status: text('status').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  revokedAt: timestamp('revoked_at', { withTimezone: true }),
+});
+const syncWorkspaceVersions = pgTable('sync_workspace_versions', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  version: integer('version').notNull().default(0),
+});
+const syncWorkspaceApprovals = pgTable('sync_workspace_approvals', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  approvedAt: timestamp('approved_at', { withTimezone: true }).notNull(),
+});
+const syncDeviceGrants = pgTable('sync_device_grants', {
+  accountId: text('account_id').notNull(),
+  workspaceId: text('workspace_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  enrollmentVersion: integer('enrollment_version').notNull(),
+  objectKey: text('object_key').notNull(),
+  ciphertextSha256: text('ciphertext_sha256').notNull(),
+  enrolledAt: timestamp('enrolled_at', { withTimezone: true }).notNull(),
+  revokedAt: timestamp('revoked_at', { withTimezone: true }),
+});
+const syncDeviceAudit = pgTable('sync_device_audit', {
+  id: integer('id').primaryKey(),
+  accountId: text('account_id').notNull(),
+  deviceId: text('device_id').notNull(),
+  kind: text('kind').notNull(),
+  workspaceId: text('workspace_id'),
+  at: timestamp('at', { withTimezone: true }).notNull(),
 });
 
 export {
@@ -179,11 +453,23 @@ export {
   accountMemberships,
   apiKeys,
   asyncJobs,
-  authVerificationChallenges,
+  authEmailChallenges,
+  accountPasskeyCredentials,
+  authWebAuthnChallenges,
   projectDocuments,
   projects,
   userActivationMilestones,
   userSessions,
-  userDevices,
   users,
+  opaqueSyncCursors,
+  opaqueSyncEnvelopes,
+  opaqueSyncTombstones,
+  opaqueSyncCheckpoints,
+  encryptedContextMetadata,
+  encryptedContextTombstones,
+  syncDevices,
+  syncWorkspaceVersions,
+  syncWorkspaceApprovals,
+  syncDeviceGrants,
+  syncDeviceAudit,
 };

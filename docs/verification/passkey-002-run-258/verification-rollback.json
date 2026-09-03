@@ -1,0 +1,30 @@
+{
+  "scenario": "sign-up verification persistence rollback",
+  "request": {
+    "method": "POST",
+    "path": "/api/auth/sign-up/verify"
+  },
+  "response": {
+    "status": 500,
+    "body": {
+      "code": "internal_server_error",
+      "message": "The request could not be completed."
+    }
+  },
+  "persistedState": {
+    "before": {
+      "email_verified_at": null,
+      "consumed_at": null,
+      "status": "pending",
+      "credential_id": "rollback-credential-b48abd84-bc42-47c1-925f-e62005155c93",
+      "credential_count": 1
+    },
+    "after": {
+      "email_verified_at": null,
+      "consumed_at": null,
+      "status": "pending",
+      "credential_id": "rollback-credential-b48abd84-bc42-47c1-925f-e62005155c93",
+      "credential_count": 1
+    }
+  }
+}

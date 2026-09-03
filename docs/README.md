@@ -65,6 +65,8 @@ Spec-driven development specs. Each feature has requirements, implementation pla
 - [Multi-Tenant Architecture](architecture/system/multi-tenant.md)
 - [Deployment Model](architecture/system/deployment.md)
 - [Runtime Boundaries](architecture/system/runtime-boundaries.md)
+- [Operational Workspace Foundation Audit](architecture/system/operational-workspace-foundation-audit.md)
+- [Operational Workspace IA and UX Flows](architecture/system/operational-workspace-ia-ux-flows.md)
 
 ### Backend
 
@@ -94,6 +96,10 @@ Spec-driven development specs. Each feature has requirements, implementation pla
 ## Testing
 
 - [Auth Testing Strategy](testing/auth-testing.md)
+
+## Guides
+
+- [Local OpenCode Control Plane](guides/local-opencode-control-plane.md)
 
 ## Sessions
 

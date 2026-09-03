@@ -13,7 +13,7 @@ describe('createGatewayApp', () => {
 
     const angularHandler = express();
 
-    angularHandler.get('/sign-in', (_req, res) => {
+    angularHandler.get('/auth/identity', (_req, res) => {
       res.type('html').send('<base href="/app/en/" /><app-root></app-root>');
     });
 
@@ -39,6 +39,25 @@ describe('createGatewayApp', () => {
     expect(response.body).toEqual({ status: 'ok' });
   });
 
+  it('exposes a readiness endpoint only after the gateway dependencies are mounted', async () => {
+    const response = await request(createGatewayApp(createDeps())).get('/readyz');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'ready' });
+  });
+
+  it('fails readiness closed while a composed dependency is bootstrapping', async () => {
+    const response = await request(
+      createGatewayApp({
+        ...createDeps(),
+        readiness: { isReady: () => false },
+      }),
+    ).get('/readyz');
+
+    expect(response.status).toBe(503);
+    expect(response.body).toEqual({ status: 'not_ready' });
+  });
+
   it('redirects the root path to the english site', async () => {
     const app = createGatewayApp(createDeps());
 
@@ -53,12 +72,30 @@ describe('createGatewayApp', () => {
 
     const apiResponse = await request(app).get('/api/hello');
 
-    const angularResponse = await request(app).get('/app/sign-in');
+    const angularResponse = await request(app).get('/app/auth/identity');
 
     expect(apiResponse.status).toBe(200);
     expect(apiResponse.body).toEqual({ message: 'hello' });
     expect(angularResponse.status).toBe(200);
     expect(angularResponse.text).toContain('<app-root>');
+  });
+
+  it('mounts the authenticated same-origin local-agent boundary without using the cloud API', async () => {
+    const deps = createDeps();
+    const localAgentHandler = express();
+
+    localAgentHandler.get('/projects/project-1', (req, res) => {
+      res.send({ cookie: req.headers.cookie ?? null });
+    });
+    const app = createGatewayApp({ ...deps, localAgentHandler });
+
+    const response = await request(app)
+      .get('/v1/product-visibility/projects/project-1')
+      .set('Cookie', 'sid=authenticated-session');
+
+    expect(response.status).toBe(200);
+
+    expect(response.body).toEqual({ cookie: 'sid=authenticated-session' });
   });
 
   it('sets gateway security headers with same-origin connect policy', async () => {

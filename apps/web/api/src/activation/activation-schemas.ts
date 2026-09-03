@@ -1,4 +1,4 @@
-import { apiKeyIdParamSchema, z } from '../shared/http/route-schemas';
+import { apiKeyIdParamSchema, responseEnvelope, z } from '../shared/http/route-schemas';
 
 export const activationMilestoneSchema = z.enum([
   'activation_completed',
@@ -59,7 +59,9 @@ export const activationOpenApiPaths = {
     get: {
       responses: {
         200: {
-          content: { 'application/json': { schema: activationStateSchema } },
+          content: {
+            'application/json': { schema: responseEnvelope(activationStateSchema, 'ActivationStateEnvelope') },
+          },
           description: 'Activation state.',
         },
       },
@@ -70,7 +72,7 @@ export const activationOpenApiPaths = {
       requestBody: { content: { 'application/json': { schema: createApiKeySchema } } },
       responses: {
         201: {
-          content: { 'application/json': { schema: createdApiKeySchema } },
+          content: { 'application/json': { schema: responseEnvelope(createdApiKeySchema, 'CreatedApiKeyEnvelope') } },
           description: 'API key created.',
         },
       },

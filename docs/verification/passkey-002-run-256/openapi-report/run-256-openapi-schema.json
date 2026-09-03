@@ -1,0 +1,2876 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Themis API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/auth/passkey/registration/begin": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "$ref": "#/components/schemas/AuthEmail"
+                  },
+                  "pinVerified": "[REDACTED]",
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                },
+                "required": ["email", "label"],
+                "additionalProperties": false
+              },
+              "examples": {
+                "smoke": {
+                  "value": {
+                    "email": "[REDACTED]",
+                    "label": "OpenAPI smoke",
+                    "pinVerified": "[REDACTED]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registration options.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasskeyRegistrationBeginEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Authentication required."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Access denied."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Resource not found."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request conflicts with current state."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal server error."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Upstream or mediated boundary returned an invalid response."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service temporarily unavailable."
+          }
+        }
+      }
+    },
+    "/auth/passkey/authentication/begin": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "$ref": "#/components/schemas/AuthEmail"
+                  },
+                  "pinVerified": "[REDACTED]",
+                  "explicitPassword": "[REDACTED]",
+                  "retryRequested": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": ["email"],
+                "additionalProperties": false
+              },
+              "examples": {
+                "smoke": {
+                  "value": {
+                    "email": "pzs005-run-256-mtb7i293@example.test",
+                    "pinVerified": "[REDACTED]",
+                    "explicitPassword": "[REDACTED]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication options and fallback signal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasskeyAuthenticationBeginEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Authentication required."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Access denied."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Resource not found."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request conflicts with current state."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Internal server error."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Upstream or mediated boundary returned an invalid response."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service temporarily unavailable."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthCredentials": "[REDACTED]",
+      "AuthEmail": {
+        "type": "string",
+        "maxLength": 254,
+        "format": "email",
+        "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+        "description": "Account email address.",
+        "example": "engineer@themis.dev"
+      },
+      "AuthPassword": "[REDACTED]",
+      "AuthChallengeVerification": "[REDACTED]",
+      "AuthChallengeId": "[REDACTED]",
+      "AuthPin": "[REDACTED]",
+      "AuthResendVerification": {
+        "type": "object",
+        "properties": {
+          "challengeId": "[REDACTED]"
+        },
+        "required": ["challengeId"]
+      },
+      "ForgottenPasswordRequest": "[REDACTED]",
+      "PasswordResetVerify": "[REDACTED]",
+      "PasswordResetSubmit": "[REDACTED]",
+      "CreateApiKeyRequest": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "API key label.",
+            "example": "Primary workspace key"
+          }
+        },
+        "required": ["label"]
+      },
+      "ActivationMilestoneRequest": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "milestone": {
+            "type": "string",
+            "enum": [
+              "activation_completed",
+              "activation_skipped",
+              "api_key_created",
+              "config_copied",
+              "seed_prompt_copied"
+            ]
+          }
+        },
+        "required": ["milestone"]
+      },
+      "ApiKeyId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "API key identifier.",
+        "example": "api-key-123"
+      },
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": ["imported", "manual", "seeded"]
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": ["name"]
+      },
+      "ProjectId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Project identifier.",
+        "example": "project-123"
+      },
+      "UpdateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "archived", "draft"]
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateProjectDocumentRequest": {
+        "type": "object",
+        "properties": {
+          "contentMarkdown": {
+            "type": "string"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": ["architecture", "brief", "imported_reference", "operational_notes", "overview", "setup"]
+          },
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "archived", "draft"]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["contentMarkdown", "documentType", "title"]
+      },
+      "OpaqueEnvelopeRequest": {
+        "type": "object",
+        "properties": {
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "themis.encrypted-envelope"
+              },
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["local-record", "sync-object"]
+              },
+              "envelopeId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "workspaceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recordType": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+              },
+              "associatedData": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "nonce": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "ciphertext": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100000,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "authTag": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "required": [
+              "format",
+              "version",
+              "kind",
+              "envelopeId",
+              "workspaceId",
+              "recordType",
+              "revision",
+              "createdAt",
+              "associatedData",
+              "metadata",
+              "nonce",
+              "ciphertext",
+              "authTag"
+            ],
+            "additionalProperties": false
+          },
+          "deviceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enrollmentVersion": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["envelope", "deviceId", "enrollmentVersion"],
+        "examples": [
+          {
+            "envelope": {
+              "format": "themis.encrypted-envelope",
+              "version": 1,
+              "kind": "sync-object",
+              "envelopeId": "envelope-1",
+              "workspaceId": "workspace-1",
+              "recordType": "project-context",
+              "revision": 1,
+              "createdAt": "2026-01-01T00:00:00.000Z",
+              "associatedData": {},
+              "metadata": {},
+              "nonce": "bm9uY2U",
+              "ciphertext": "Y2lwaGVydGV4dA",
+              "authTag": "dGFn"
+            },
+            "deviceId": "[REDACTED]",
+            "enrollmentVersion": 1
+          }
+        ]
+      },
+      "OpaqueCheckpointRequest": {
+        "type": "object",
+        "properties": {
+          "checkpointId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "cursor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "themis.encrypted-envelope"
+              },
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["local-record", "sync-object"]
+              },
+              "envelopeId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "workspaceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recordType": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+              },
+              "associatedData": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "nonce": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "ciphertext": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100000,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "authTag": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "required": [
+              "format",
+              "version",
+              "kind",
+              "envelopeId",
+              "workspaceId",
+              "recordType",
+              "revision",
+              "createdAt",
+              "associatedData",
+              "metadata",
+              "nonce",
+              "ciphertext",
+              "authTag"
+            ],
+            "additionalProperties": false
+          },
+          "deviceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enrollmentVersion": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["checkpointId", "cursor", "revision", "envelope", "deviceId", "enrollmentVersion"]
+      },
+      "WebAuthnCredentialRegistration": "[REDACTED]",
+      "WebAuthnRecoveryRegistration": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": ["requestId", "confirmed"],
+        "additionalProperties": false
+      },
+      "WebAuthnRecoveryUse": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "confirmed": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": ["requestId", "confirmed"],
+        "additionalProperties": false
+      },
+      "AuthSessionEnvelope": "[REDACTED]",
+      "AuthSessionResponse": "[REDACTED]",
+      "AuthUser": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "$ref": "#/components/schemas/AuthAccountId"
+          },
+          "email": {
+            "$ref": "#/components/schemas/AuthEmail"
+          },
+          "emailVerifiedAt": {
+            "$ref": "#/components/schemas/AuthEmailVerifiedAt"
+          },
+          "id": {
+            "$ref": "#/components/schemas/AuthUserId"
+          },
+          "role": {
+            "$ref": "#/components/schemas/AuthRole"
+          },
+          "authenticationMethod": {
+            "type": "string",
+            "enum": ["passkey", "password"]
+          },
+          "credentialId": "[REDACTED]"
+        },
+        "required": ["accountId", "email", "emailVerifiedAt", "id", "role"],
+        "additionalProperties": false
+      },
+      "AuthAccountId": {
+        "type": "string",
+        "description": "Active account identifier.",
+        "example": "account-123"
+      },
+      "AuthEmailVerifiedAt": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Verification timestamp.",
+        "example": "2026-01-01T00:00:00.000Z"
+      },
+      "AuthUserId": {
+        "type": "string",
+        "description": "User identifier.",
+        "example": "user-123"
+      },
+      "AuthRole": {
+        "type": "string",
+        "description": "Active account role.",
+        "example": "owner"
+      },
+      "AuthChallengeEnvelope": "[REDACTED]",
+      "AuthChallenge": "[REDACTED]",
+      "SignUpAuthenticatedEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuthenticatedResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "AuthenticatedResponse": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "const": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        },
+        "required": ["authenticated", "user"],
+        "additionalProperties": false
+      },
+      "AuthChallengeOrAuthenticatedEnvelope": "[REDACTED]",
+      "AuthChallengeOrAuthenticated": "[REDACTED]",
+      "SignInAuthenticatedEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuthenticatedResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ResentAuthChallengeEnvelope": "[REDACTED]",
+      "OptionalAuthChallengeEnvelope": "[REDACTED]",
+      "PasswordResetVerifyEnvelope": "[REDACTED]",
+      "PasswordResetSession": "[REDACTED]",
+      "PasswordResetSessionStateEnvelope": "[REDACTED]",
+      "PasskeyRegistrationBeginEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "challengeId": "[REDACTED]",
+              "verificationChallengeId": "[REDACTED]",
+              "enrollmentId": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "options": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": ["challengeId", "options"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "PasskeyRegistrationCompleteEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PasskeyCredential"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "PasskeyCredential": "[REDACTED]",
+      "PasskeyAuthenticationBeginEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "challengeId": "[REDACTED]",
+              "options": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "attempt": {
+                "type": "string",
+                "enum": ["passkey_default", "retry_available", "password_fallback", "authenticated"]
+              }
+            },
+            "required": ["challengeId", "options", "attempt"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "PasskeyAuthenticationCompleteEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "authenticated": {
+                "type": "boolean",
+                "const": true
+              },
+              "user": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            },
+            "required": ["authenticated", "user"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "PasskeyCredentialListEnvelope": "[REDACTED]",
+      "PasskeyCredentialRevokeEnvelope": "[REDACTED]",
+      "ActivationStateEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ActivationState"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ActivationState": {
+        "type": "object",
+        "properties": {
+          "apiKeys": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "createdAt": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "lastUsedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "revokedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "tokenPrefix": "[REDACTED]"
+              },
+              "required": ["createdAt", "id", "label", "lastUsedAt", "revokedAt", "tokenPrefix"],
+              "additionalProperties": false
+            }
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "activation_completed",
+                "activation_skipped",
+                "api_key_created",
+                "config_copied",
+                "seed_prompt_copied"
+              ]
+            }
+          },
+          "seedPrompt": {
+            "type": "string"
+          }
+        },
+        "required": ["apiKeys", "milestones", "seedPrompt"],
+        "additionalProperties": false
+      },
+      "CreatedApiKeyEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CreatedApiKey"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "CreatedApiKey": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "lastUsedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "plaintextToken": "[REDACTED]",
+          "revokedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tokenPrefix": "[REDACTED]"
+        },
+        "required": ["createdAt", "id", "label", "lastUsedAt", "plaintextToken", "revokedAt", "tokenPrefix"],
+        "additionalProperties": false
+      },
+      "ProjectsListEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectsListResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ProjectsListResponse": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          }
+        },
+        "required": ["projects"],
+        "additionalProperties": false
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": ["imported", "manual", "seeded"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "archived", "draft"]
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "createdAt",
+          "createdByUserId",
+          "id",
+          "name",
+          "slug",
+          "sourceType",
+          "status",
+          "summary",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ProjectWithDocumentsEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectWithDocuments"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ProjectWithDocuments": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": ["imported", "manual", "seeded"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "archived", "draft"]
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectDocument"
+            }
+          },
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AsyncJob"
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "createdAt",
+          "createdByUserId",
+          "id",
+          "name",
+          "slug",
+          "sourceType",
+          "status",
+          "summary",
+          "updatedAt",
+          "documents",
+          "jobs"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectDocument": {
+        "type": "object",
+        "properties": {
+          "contentMarkdown": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": ["architecture", "brief", "imported_reference", "operational_notes", "overview", "setup"]
+          },
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "archived", "draft"]
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contentMarkdown",
+          "createdAt",
+          "createdByUserId",
+          "documentType",
+          "id",
+          "projectId",
+          "source",
+          "status",
+          "title",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "AsyncJob": {
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "number"
+          },
+          "projectId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resultJson": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["completed", "failed", "queued", "running"]
+          },
+          "type": {
+            "type": "string",
+            "enum": ["project_seed"]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "completedAt",
+          "createdAt",
+          "errorMessage",
+          "id",
+          "progress",
+          "projectId",
+          "resultJson",
+          "status",
+          "type",
+          "updatedAt",
+          "userId"
+        ],
+        "additionalProperties": false
+      },
+      "UpdatedProjectEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OperationalWorkspaceEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OperationalWorkspaceReadModelV1"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OperationalWorkspaceReadModelV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "1"
+          },
+          "readOnly": {
+            "type": "boolean",
+            "const": true
+          },
+          "project": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["active", "archived", "draft"]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "operational"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "name", "status", "visibility", "updatedAt"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "protectedContext": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "projectId": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["description", "decision", "note"]
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "projectId", "kind", "value"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "epics": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "projectId": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["active", "closed"]
+                    }
+                  },
+                  "required": ["id", "projectId", "title", "summary", "status"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "workItems": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "epicId": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["draft", "ready", "in_progress", "review", "blocked", "done"]
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "epicId", "title", "status", "updatedAt"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "runs": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "workItemId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["running", "completed", "failed"]
+                    },
+                    "startedAt": {
+                      "type": "string"
+                    },
+                    "finishedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": ["id", "workItemId", "status", "startedAt", "finishedAt"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "runId": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["verification", "implementation-diff", "observation", "command"]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "runId", "kind", "createdAt"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "reviews": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "workItemId": {
+                      "type": "string"
+                    },
+                    "verdict": {
+                      "type": "string",
+                      "enum": ["accepted", "rejected", "pending"]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "workItemId", "verdict", "createdAt"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          },
+          "activity": {
+            "type": "object",
+            "properties": {
+              "authority": {
+                "type": "string",
+                "enum": ["control-plane", "local-agent", "opaque-encrypted-source"]
+              },
+              "state": {
+                "type": "string",
+                "enum": ["visible", "empty", "locked", "unavailable", "stale", "error", "unauthorized", "malformed"]
+              },
+              "source": {
+                "type": "string"
+              },
+              "observedAt": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "projectId": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["status", "progress", "run", "review"]
+                    },
+                    "occurredAt": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "projectId", "kind", "occurredAt", "summary"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["authority", "state", "source", "observedAt", "items"],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "readOnly",
+          "project",
+          "protectedContext",
+          "epics",
+          "workItems",
+          "runs",
+          "evidence",
+          "reviews",
+          "activity"
+        ],
+        "additionalProperties": false
+      },
+      "OperationalWorkspaceErrorEnvelope": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {}
+        },
+        "required": ["code", "message"],
+        "additionalProperties": false
+      },
+      "ProjectDocumentEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectDocument"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ProjectJobsEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProjectJobsResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ProjectJobsResponse": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AsyncJob"
+            }
+          }
+        },
+        "required": ["jobs"],
+        "additionalProperties": false
+      },
+      "AsyncJobEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AsyncJob"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueEnvelopeListEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "envelopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "cursor": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "envelope": {
+                      "type": "object",
+                      "properties": {
+                        "format": {
+                          "type": "string",
+                          "const": "themis.encrypted-envelope"
+                        },
+                        "version": {
+                          "type": "number",
+                          "const": 1
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": ["local-record", "sync-object"]
+                        },
+                        "envelopeId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "workspaceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "recordType": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+                        },
+                        "associatedData": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "nonce": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        },
+                        "ciphertext": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100000,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        },
+                        "authTag": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        }
+                      },
+                      "required": [
+                        "format",
+                        "version",
+                        "kind",
+                        "envelopeId",
+                        "workspaceId",
+                        "recordType",
+                        "revision",
+                        "createdAt",
+                        "associatedData",
+                        "metadata",
+                        "nonce",
+                        "ciphertext",
+                        "authTag"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["cursor", "envelope"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["envelopes"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueAppendResultEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cursor": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "duplicate": {
+                "type": "boolean"
+              },
+              "envelope": {
+                "type": "object",
+                "properties": {
+                  "format": {
+                    "type": "string",
+                    "const": "themis.encrypted-envelope"
+                  },
+                  "version": {
+                    "type": "number",
+                    "const": 1
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["local-record", "sync-object"]
+                  },
+                  "envelopeId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "workspaceId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "recordType": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+                  },
+                  "associatedData": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "nonce": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  "ciphertext": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100000,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  "authTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  }
+                },
+                "required": [
+                  "format",
+                  "version",
+                  "kind",
+                  "envelopeId",
+                  "workspaceId",
+                  "recordType",
+                  "revision",
+                  "createdAt",
+                  "associatedData",
+                  "metadata",
+                  "nonce",
+                  "ciphertext",
+                  "authTag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": ["cursor", "duplicate", "envelope"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueAppendResultCreatedEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cursor": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "duplicate": {
+                "type": "boolean"
+              },
+              "envelope": {
+                "type": "object",
+                "properties": {
+                  "format": {
+                    "type": "string",
+                    "const": "themis.encrypted-envelope"
+                  },
+                  "version": {
+                    "type": "number",
+                    "const": 1
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["local-record", "sync-object"]
+                  },
+                  "envelopeId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "workspaceId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "recordType": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+                  },
+                  "associatedData": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "nonce": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  "ciphertext": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100000,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  },
+                  "authTag": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  }
+                },
+                "required": [
+                  "format",
+                  "version",
+                  "kind",
+                  "envelopeId",
+                  "workspaceId",
+                  "recordType",
+                  "revision",
+                  "createdAt",
+                  "associatedData",
+                  "metadata",
+                  "nonce",
+                  "ciphertext",
+                  "authTag"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": ["cursor", "duplicate", "envelope"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueCheckpointEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OpaqueCheckpoint"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueCheckpoint": {
+        "type": "object",
+        "properties": {
+          "checkpointId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cursor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "const": "themis.encrypted-envelope"
+              },
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": ["local-record", "sync-object"]
+              },
+              "envelopeId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "workspaceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recordType": {
+                "type": "string",
+                "minLength": 1
+              },
+              "revision": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+              },
+              "associatedData": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "nonce": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "ciphertext": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100000,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "authTag": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "required": [
+              "format",
+              "version",
+              "kind",
+              "envelopeId",
+              "workspaceId",
+              "recordType",
+              "revision",
+              "createdAt",
+              "associatedData",
+              "metadata",
+              "nonce",
+              "ciphertext",
+              "authTag"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": ["checkpointId", "cursor", "revision", "envelope"],
+        "additionalProperties": false
+      },
+      "DeviceListEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "devices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "required": ["devices"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceCreatedEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceAuditEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "required": ["events"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceApprovalEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceEnrollmentEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceRevocationEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "DeviceRecoveryEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueCheckpointReadEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OpaqueCheckpoint"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "OpaqueRecoveryEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "checkpoint": {
+                "$ref": "#/components/schemas/OpaqueCheckpoint"
+              },
+              "envelopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "cursor": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "envelope": {
+                      "type": "object",
+                      "properties": {
+                        "format": {
+                          "type": "string",
+                          "const": "themis.encrypted-envelope"
+                        },
+                        "version": {
+                          "type": "number",
+                          "const": 1
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": ["local-record", "sync-object"]
+                        },
+                        "envelopeId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "workspaceId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "recordType": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}(?:Z))$"
+                        },
+                        "associatedData": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "nonce": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        },
+                        "ciphertext": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100000,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        },
+                        "authTag": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_-]+$"
+                        }
+                      },
+                      "required": [
+                        "format",
+                        "version",
+                        "kind",
+                        "envelopeId",
+                        "workspaceId",
+                        "recordType",
+                        "revision",
+                        "createdAt",
+                        "associatedData",
+                        "metadata",
+                        "nonce",
+                        "ciphertext",
+                        "authTag"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["cursor", "envelope"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["checkpoint", "envelopes"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "CapabilityDiscoveryEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CapabilityDiscoveryResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "CapabilityDiscoveryResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "const": 1
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "enum": ["web-local-agent", "web-webcrypto"]
+                },
+                "modes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["local-agent", "webcrypto"]
+                  }
+                },
+                "capabilities": {
+                  "type": "object",
+                  "properties": {
+                    "local-agent": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": ["vault-access", "unlock", "projection", "bridge", "sync", "recovery", "offline"]
+                      }
+                    },
+                    "webcrypto": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": ["vault-access", "unlock", "projection", "bridge", "sync", "recovery", "offline"]
+                      }
+                    }
+                  },
+                  "required": ["webcrypto"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["profile", "modes", "capabilities"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["version", "profiles"],
+        "additionalProperties": false
+      },
+      "ModeNegotiationEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ModeNegotiationResponse"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "ModeNegotiationResponse": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "themis.mode-negotiation-response"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number",
+            "const": 1
+          },
+          "clientProfile": {
+            "type": "string",
+            "enum": ["web-local-agent", "web-webcrypto"]
+          },
+          "selectedMode": {
+            "type": "string",
+            "enum": ["local-agent", "webcrypto"]
+          },
+          "grantedCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["vault-access", "unlock", "projection", "bridge", "sync", "recovery", "offline"]
+            }
+          },
+          "state": {
+            "type": "string",
+            "const": "ready"
+          }
+        },
+        "required": ["format", "requestId", "version", "clientProfile", "selectedMode", "grantedCapabilities", "state"],
+        "additionalProperties": false
+      },
+      "WebAuthnCredentialListEnvelope": "[REDACTED]",
+      "WebAuthnCredentialMetadata": "[REDACTED]",
+      "WebAuthnCredentialEnvelope": "[REDACTED]",
+      "WebAuthnCredentialRevocationEnvelope": "[REDACTED]",
+      "WebAuthnRecoveryListEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "recovery": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WebAuthnRecoveryMetadata"
+                }
+              }
+            },
+            "required": ["recovery"],
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "WebAuthnRecoveryMetadata": {
+        "type": "object",
+        "properties": {
+          "recoveryId": {
+            "type": "string"
+          },
+          "enrolledAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "used", "revoked"]
+          },
+          "usedAt": {
+            "type": "string"
+          },
+          "revokedAt": {
+            "type": "string"
+          }
+        },
+        "required": ["recoveryId", "enrolledAt", "status"],
+        "additionalProperties": false
+      },
+      "WebAuthnRecoveryEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebAuthnRecoveryMetadata"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "WebAuthnRecoveryRevocationEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebAuthnRecoveryMetadata"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "WebAuthnRecoveryUseEnvelope": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WebAuthnRecoveryMetadata"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["data", "message"],
+        "additionalProperties": false
+      },
+      "MailboxMessage": {
+        "type": "object",
+        "properties": {
+          "challengeId": "[REDACTED]",
+          "email": {
+            "$ref": "#/components/schemas/AuthEmail"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "pin": "[REDACTED]",
+          "purpose": {
+            "type": "string",
+            "enum": ["sign_in", "sign_up"]
+          }
+        },
+        "required": ["challengeId", "email", "expiresAt", "pin", "purpose"],
+        "additionalProperties": false
+      },
+      "ErrorEnvelope": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {}
+        }
+      }
+    }
+  }
+}

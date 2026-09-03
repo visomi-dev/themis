@@ -1,0 +1,860 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "RUN-267 PASSKEY-002 stateful HTTP contract runner"
+    },
+    "_provenance": {
+      "reportType": "stateful-http-contract",
+      "runner": "apps/web/api-e2e/src/support/run-openapi-contract.ts",
+      "source": "passkeyHttpObservations captured by requestObservation after actual fetch responses",
+      "schemathesis": false
+    },
+    "entries": [
+      {
+        "time": 43.36,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-5011183280987d36"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI pending enrollment\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"[REDACTED]\",\"excludeCredentials\":\"[REDACTED]\",\"authenticatorSelection\":\"[REDACTED]\",\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+          }
+        },
+        "_case": "registration-begin-pending-enrollment"
+      },
+      {
+        "time": 13.09,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-432df6602d8e440d"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 201,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"label\":\"OpenAPI pending enrollment\",\"createdAt\":\"2026-08-28T02:14:39.406Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false},\"message\":\"Passkey registered.\"}"
+          }
+        },
+        "_case": "registration-complete-pending-credential"
+      },
+      {
+        "time": 4.61,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-e246395dfcd2c3db"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 403,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+          }
+        },
+        "_case": "authentication-denied-before-verification"
+      },
+      {
+        "time": 39.87,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/sign-up/verify",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-fbb882113637f2fa"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"pin\": \"[REDACTED]\"}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"message\":\"Sign-up complete.\",\"data\":{\"authenticated\":true,\"user\":{\"accountId\":\"[REDACTED-ID]\",\"email\":\"[REDACTED]\",\"emailVerifiedAt\":\"2026-08-28T02:14:39.406Z\",\"id\":\"[REDACTED-ID]\",\"role\":\"owner\"}}}"
+          }
+        },
+        "_case": "verification-activation"
+      },
+      {
+        "time": 6.24,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-fd157f4294fb7e65"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI additional passkey\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED]\",\"enrollmentId\":null,\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"[REDACTED]\",\"excludeCredentials\":\"[REDACTED]\",\"authenticatorSelection\":\"[REDACTED]\",\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+          }
+        },
+        "_case": "registration-begin-success"
+      },
+      {
+        "time": 2.97,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-e690d0928551c634"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"pzs005-run-267-mtcbjnrg@example.test\",\"label\":\"OpenAPI unauthorized\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 409,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"An account already exists for this email address.\"}"
+          }
+        },
+        "_case": "registration-begin-existing-email-conflict"
+      },
+      {
+        "time": 38.46,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-05895af565897577"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI unverified email\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"[REDACTED]\",\"excludeCredentials\":\"[REDACTED]\",\"authenticatorSelection\":\"[REDACTED]\",\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+          }
+        },
+        "_case": "registration-begin-unverified-email-pending-enrollment"
+      },
+      {
+        "time": 4.09,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-f3220978e70f4162"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"pzs005-run-267-mtcbjnrg@example.test\",\"label\":\"OpenAPI unverified PIN\",\"pinVerified\":false}"
+          }
+        },
+        "response": {
+          "status": 403,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+          }
+        },
+        "_case": "registration-begin-unverified-pin"
+      },
+      {
+        "time": 5.73,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-1c7b8eec5022298a"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 403,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+          }
+        },
+        "_case": "authentication-begin-unverified-email"
+      },
+      {
+        "time": 7.78,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-b400dd3d1c7606ef"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"pzs005-run-267-mtcbjnrg@example.test\",\"pinVerified\":false}"
+          }
+        },
+        "response": {
+          "status": 403,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+          }
+        },
+        "_case": "authentication-begin-unverified-pin"
+      },
+      {
+        "time": 3.52,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-f52c77346c2d9bbf"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"Zj6eC62da5hjrl8Ea6QU5A\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 400,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"challenge_mismatch\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "registration-complete-persisted-challenge-mismatch"
+      },
+      {
+        "time": 8.48,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-d2228818ba1ad1c7"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"2yRs15Xl8YJg_aTbtondPw\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 400,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"challenge_mismatch\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "registration-complete-expired-challenge"
+      },
+      {
+        "time": 8.78,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/registration/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-8ada4513ab07afcc"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"WASb1QNSORfe7y_J51XSdw\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 201,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"id\":\"WASb1QNSORfe7y_J51XSdw\",\"label\":\"OpenAPI smoke state\",\"createdAt\":\"2026-08-28T02:08:45.573Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false},\"message\":\"Passkey registered.\"}"
+          }
+        },
+        "_case": "registration-complete-success"
+      },
+      {
+        "time": 7.03,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-1d56c93fc0dbf081"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"options\":{\"rpId\":\"localhost\",\"challenge\": \"[REDACTED]\",\"allowCredentials\":\"[REDACTED]\",\"timeout\":60000,\"userVerification\":\"required\"},\"attempt\":\"passkey_default\"},\"message\":\"Passkey authentication options created.\"}"
+          }
+        },
+        "_case": "authentication-begin-success"
+      },
+      {
+        "time": 6.79,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-3dd743606d2468e6"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 409,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"challenge_replayed\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "authentication-complete-consumed-replay"
+      },
+      {
+        "time": 5.49,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-00910af56d198264"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 401,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"platform_error\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "authentication-complete-origin-mismatch"
+      },
+      {
+        "time": 4.66,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-9a3447796f990ba3"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 401,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"platform_error\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "authentication-complete-rp-mismatch"
+      },
+      {
+        "time": 12.27,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/complete",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-7b23ed5f4dcd8305"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"zAiJ4685K9OosY9e0MHiRg\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"authenticatorData\": \"[REDACTED]\",\"signature\": \"[REDACTED]\",\"userHandle\":null},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}"
+          }
+        },
+        "response": {
+          "status": 200,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "set-cookie",
+              "value": "[PRESENT]"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"data\":{\"authenticated\":true,\"user\":{\"accountId\":\"[REDACTED-ID]\",\"email\":\"[REDACTED]\",\"emailVerifiedAt\":\"2026-08-28T02:14:39.406Z\",\"id\":\"[REDACTED-ID]\",\"role\":\"owner\",\"authenticationMethod\":\"passkey\",\"credentialId\": \"[REDACTED]\"}},\"message\":\"Passkey authentication complete.\"}"
+          }
+        },
+        "_case": "authentication-complete-success"
+      },
+      {
+        "time": 2.08,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-b4d7cb90e8397efa"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 404,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "account-enumeration-missing-account-no-credentials"
+      },
+      {
+        "time": 3.33,
+        "request": {
+          "method": "POST",
+          "url": "http://localhost:8122/api/auth/passkey/authentication/begin",
+          "headers": [
+            {
+              "name": "Origin",
+              "value": "http://localhost:8122"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-request-id",
+              "value": "RUN-267-223d9cd788929d49"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"email\":\"pzs005-run-267-mtcbjnrg@example.test\",\"pinVerified\":true}"
+          }
+        },
+        "response": {
+          "status": 404,
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "content": {
+            "mimeType": "application/json",
+            "text": "{\"code\":\"credential_not_found\",\"message\":\"The passkey ceremony could not be completed.\"}"
+          }
+        },
+        "_case": "account-enumeration-existing-account-no-credentials"
+      }
+    ]
+  }
+}

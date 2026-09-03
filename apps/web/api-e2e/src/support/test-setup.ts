@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 module.exports = async function () {
-  const host = process.env.HOST ?? '127.0.0.1';
+  const host = process.env.HOST ?? 'localhost';
 
-  const port = process.env.PORT ?? '8083';
+  const port = process.env.GATEWAY_PORT ?? '8080';
 
   axios.defaults.baseURL = `http://${host}:${port}/api`;
 };

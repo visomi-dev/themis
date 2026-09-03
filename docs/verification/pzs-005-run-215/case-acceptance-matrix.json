@@ -1,0 +1,33 @@
+{
+  "records": "http-case-records.ndjson",
+  "mapping": [
+    { "case": "append-201", "acceptance": ["AC1", "AC3", "AC4"], "artifact": "http-case-records.ndjson:1" },
+    { "case": "duplicate-200", "acceptance": ["AC1", "AC3", "AC4"], "artifact": "http-case-records.ndjson:2" },
+    { "case": "duplicate-conflict", "acceptance": ["AC3", "AC4"], "artifact": "http-case-records.ndjson:3" },
+    { "case": "cross-project", "acceptance": ["AC1", "AC3", "AC7"], "artifact": "http-case-records.ndjson:4" },
+    { "case": "cross-tenant", "acceptance": ["AC1", "AC3", "AC7"], "artifact": "http-case-records.ndjson:5" },
+    { "case": "revoked-device", "acceptance": ["AC1", "AC3", "AC7"], "artifact": "http-case-records.ndjson:6" },
+    { "case": "malformed", "acceptance": ["AC3", "AC8"], "artifact": "http-case-records.ndjson:7" },
+    { "case": "oversized", "acceptance": ["AC3", "AC7", "AC8"], "artifact": "http-case-records.ndjson:8" },
+    { "case": "unsupported-version", "acceptance": ["AC3", "AC8"], "artifact": "http-case-records.ndjson:9" },
+    { "case": "stale-base", "acceptance": ["AC3", "AC4"], "artifact": "http-case-records.ndjson:10" },
+    { "case": "replay-rollback", "acceptance": ["AC3", "AC4", "AC6"], "artifact": "http-case-records.ndjson:11" },
+    { "case": "checkpoint-success", "acceptance": ["AC5", "AC6", "AC8"], "artifact": "http-case-records.ndjson:12" },
+    { "case": "checkpoint-mismatch", "acceptance": ["AC3", "AC5"], "artifact": "http-case-records.ndjson:13" },
+    { "case": "recovery-success", "acceptance": ["AC5", "AC6"], "artifact": "http-case-records.ndjson:14" },
+    {
+      "case": "recovery-missing-checkpoint",
+      "acceptance": ["AC3", "AC5", "AC8"],
+      "artifact": "http-case-records.ndjson:15"
+    },
+    { "case": "recovery-malformed-query", "acceptance": ["AC3", "AC8"], "artifact": "http-case-records.ndjson:16" },
+    {
+      "case": "cursor-recovery-required",
+      "acceptance": ["AC3", "AC5", "AC6"],
+      "artifact": "http-case-records.ndjson:17"
+    },
+    { "case": "tombstone-append", "acceptance": ["AC1", "AC6"], "artifact": "http-case-records.ndjson:18" },
+    { "case": "tombstone-non-resurrection", "acceptance": ["AC3", "AC6"], "artifact": "http-case-records.ndjson:19" },
+    { "case": "retention-recovery", "acceptance": ["AC5", "AC6"], "artifact": "http-case-records.ndjson:20" }
+  ]
+}

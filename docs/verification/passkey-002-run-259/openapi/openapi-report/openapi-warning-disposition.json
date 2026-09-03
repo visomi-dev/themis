@@ -1,0 +1,21 @@
+{
+  "runId": "RUN-259",
+  "scope": "^/auth/passkey/(registration|authentication)/",
+  "warnings": [
+    {
+      "observed": "Authentication failed: 4 operations returned authentication errors",
+      "disposition": "blocked-authentication-warning",
+      "reason": "The warning is current-run OpenAPI output for this run and scope; the warning is not converted into a pass. Authenticated transport evidence is retained only in this run's artifacts."
+    },
+    {
+      "observed": "Schema validation mismatch: 4 operations mostly rejected generated data due to validation errors, indicating schema constraints don't match API validation",
+      "disposition": "blocked-schema-warning",
+      "reason": "The warning is current-run OpenAPI output for this run and scope; the warning is not converted into a pass. Authenticated transport evidence is retained only in this run's artifacts."
+    },
+    {
+      "observed": "  ⚠️ Schema validation mismatch: 4 operations mostly rejected generated data",
+      "disposition": "blocked-schema-warning",
+      "reason": "The warning is current-run OpenAPI output for this run and scope; the warning is not converted into a pass. Authenticated transport evidence is retained only in this run's artifacts."
+    }
+  ]
+}

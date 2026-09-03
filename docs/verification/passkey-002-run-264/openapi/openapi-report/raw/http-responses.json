@@ -1,0 +1,65 @@
+[
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI pending enrollment\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED-ID]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"none\",\"excludeCredentials\":[],\"authenticatorSelection\":{\"residentKey\":\"preferred\",\"userVerification\":\"required\",\"requireResidentKey\":false},\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/complete",
+    "status": 201,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"response\":{\"id\":\"pKb3CVZQnicCI0E4VwbxLQ\",\"rawId\": \"[REDACTED]\",\"response\":{\"clientDataJSON\": \"[REDACTED]\",\"attestationObject\": \"[REDACTED]\",\"transports\":[\"internal\"]},\"type\":\"public-key\",\"clientExtensionResults\":{},\"authenticatorAttachment\":\"platform\"}}",
+    "body": "{\"data\":{\"id\":\"pKb3CVZQnicCI0E4VwbxLQ\",\"label\":\"OpenAPI pending enrollment\",\"createdAt\":\"2026-08-27T23:16:11.132Z\",\"lastUsedAt\":null,\"revokedAt\":null,\"transports\":[\"internal\"],\"backupEligible\":false,\"backupState\":false},\"message\":\"Passkey registered.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/sign-up/verify",
+    "status": 200,
+    "requestBody": "{\"challengeId\": \"[REDACTED]\",\"pin\": \"[REDACTED]\"}",
+    "body": "{\"message\":\"Sign-up complete.\",\"data\":{\"authenticated\":true,\"user\":{\"accountId\":\"[REDACTED-ID]\",\"email\":\"[REDACTED]\",\"emailVerifiedAt\":\"2026-08-27T23:16:11.132Z\",\"id\":\"[REDACTED-ID]\",\"role\":\"owner\"}}}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 401,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI smoke mismatch\",\"pinVerified\":true}",
+    "body": "{\"code\":\"[REDACTED-MATERIAL]\",\"message\":\"Confirm an existing passkey before changing security settings.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 200,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"label\":\"OpenAPI unverified email\",\"pinVerified\":true}",
+    "body": "{\"data\":{\"challengeId\": \"[REDACTED]\",\"verificationChallengeId\":\"[REDACTED-ID]\",\"enrollmentId\":\"[REDACTED-ID]\",\"options\":{\"challenge\": \"[REDACTED]\",\"rp\":{\"name\":\"Themis\",\"id\":\"localhost\"},\"user\":{\"id\":\"[REDACTED-MATERIAL]\",\"name\":\"[REDACTED]\",\"displayName\":\"\"},\"pubKeyCredParams\":[{\"alg\":-8,\"type\":\"public-key\"},{\"alg\":-7,\"type\":\"public-key\"},{\"alg\":-257,\"type\":\"public-key\"}],\"timeout\":60000,\"attestation\":\"none\",\"excludeCredentials\":[],\"authenticatorSelection\":{\"residentKey\":\"preferred\",\"userVerification\":\"required\",\"requireResidentKey\":false},\"extensions\":{\"credProps\":true},\"hints\":[]}},\"message\":\"Passkey registration options created.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/registration/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"pzs005-run-264-mtc562gp@example.test\",\"label\":\"OpenAPI unverified PIN\",\"pinVerified\":false}",
+    "body": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"[REDACTED]\",\"pinVerified\":true}",
+    "body": "{\"code\":\"email_unverified\",\"message\":\"Verify the email address before using a passkey.\"}"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/passkey/authentication/begin",
+    "status": 403,
+    "requestBody": "{\"email\":\"pzs005-run-264-mtc562gp@example.test\",\"pinVerified\":false}",
+    "body": "{\"code\":\"pin_required\",\"message\":\"Complete email PIN verification before using a passkey.\"}"
+  }
+]

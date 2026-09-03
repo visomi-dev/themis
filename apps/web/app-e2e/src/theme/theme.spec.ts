@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-import { appRoute, signInRoute, signInUrlPattern } from '../support/routes';
+import { appRoute, identityRoute, identityUrlPattern } from '../support/routes';
 
 test.describe('theme', () => {
   test('toggles theme on auth routes and preserves it into the app', async ({ page }) => {
-    await page.goto(signInRoute);
+    await page.goto(identityRoute);
 
     await expect(page.locator('html')).not.toHaveClass(/dark/);
 
@@ -14,7 +14,7 @@ test.describe('theme', () => {
 
     await page.goto(appRoute);
 
-    await expect(page).toHaveURL(signInUrlPattern);
+    await expect(page).toHaveURL(identityUrlPattern);
     await expect(page.locator('html')).toHaveClass(/dark/);
   });
 });

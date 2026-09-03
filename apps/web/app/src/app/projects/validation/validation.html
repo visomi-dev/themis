@@ -1,0 +1,52 @@
+<main class="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 md:px-12" aria-labelledby="validation-title">
+  <a class="text-sm text-blue-600 underline dark:text-blue-400" [routerLink]="['/projects', projectId, 'workspace']"
+    >← Back to project workspace</a
+  >
+  <header>
+    <p class="font-mono text-xs tracking-widest text-blue-600 uppercase dark:text-blue-400">Traceable proof</p>
+    <h1 id="validation-title" class="font-heading mt-2 text-4xl font-semibold">Validation and evidence</h1>
+    <p class="mt-3 text-zinc-500">
+      Recorded checks, outcomes, and independent review context. This surface is read-only.
+    </p>
+  </header>
+  @if (loading()) {
+    <p aria-live="polite">Loading validation records…</p>
+  } @else if (model(); as readModel) {
+    <p class="rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900" role="status">
+      Projection state: <strong>{{ readModel.evidence.state }}</strong> · Evidence and review records are mediated,
+      read-only observations.
+    </p>
+    <section class="grid gap-4 md:grid-cols-2" aria-label="Validation records">
+      @for (entry of evidence(); track entry.id) {
+        <article class="rounded-lg bg-zinc-50 p-5 dark:bg-zinc-900">
+          <h2 class="font-medium">{{ entry.kind }} · {{ entry.result ?? 'recorded' }}</h2>
+          <p class="mt-2 text-sm">{{ entry.summary ?? 'Evidence metadata is recorded.' }}</p>
+          <p class="mt-2 text-xs text-zinc-500">{{ entry.createdAt | date: 'medium' }}</p>
+        </article>
+      } @empty {
+        <p class="rounded-lg bg-zinc-50 p-5 text-sm dark:bg-zinc-900">No validation evidence is recorded.</p>
+      }
+    </section>
+    <section class="rounded-lg bg-zinc-50 p-5 dark:bg-zinc-900" aria-labelledby="review-title">
+      <h2 id="review-title" class="font-medium">Independent review decision</h2>
+      @for (review of reviews(); track review.id) {
+        <p class="mt-3 text-sm">
+          {{ review.verdict }} · {{ review.reviewer ?? 'Independent reviewer' }} —
+          {{ review.feedback ?? 'No feedback recorded.' }}
+        </p>
+      } @empty {
+        <p class="mt-3 text-sm">Review decision is pending.</p>
+      }
+    </section>
+    @if (readModel.evidence.state !== 'visible') {
+      <p role="status" class="text-sm text-amber-700">
+        {{ readModel.evidence.reason ?? 'Evidence is not currently available.' }}
+      </p>
+    }
+  } @else {
+    <section class="rounded-lg border border-amber-500/30 bg-amber-50 p-6 dark:bg-amber-950/20" role="alert">
+      <h2>Validation records unavailable</h2>
+      <p class="mt-2 text-sm">The protected read model could not be safely disclosed.</p>
+    </section>
+  }
+</main>

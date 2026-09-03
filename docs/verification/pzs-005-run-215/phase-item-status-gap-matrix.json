@@ -1,0 +1,21 @@
+{
+  "mapping": [
+    { "phase": "P0", "itemIds": ["ZK-001", "ZK-002"], "status": "done", "gap": "none" },
+    { "phase": "P1", "itemIds": ["ZK-003", "ZK-004", "ZK-005"], "status": "done", "gap": "none" },
+    { "phase": "P2", "itemIds": ["ZK-006", "ZK-007"], "status": "done", "gap": "none" },
+    { "phase": "P3", "itemIds": ["ZK-008", "ZK-009"], "status": "done", "gap": "none" },
+    {
+      "phase": "P4",
+      "itemIds": ["PZS-005"],
+      "status": "in_progress",
+      "gap": "RUN-215 audit evidence; independent verification pending"
+    },
+    { "phase": "P5", "itemIds": ["PZS-004"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P6", "itemIds": ["PZS-006"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P7", "itemIds": ["PZS-007"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P8", "itemIds": ["PZS-008"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P9", "itemIds": ["PZS-009"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P10", "itemIds": ["PZS-010"], "status": "ready", "gap": "not started; blocked by PZS-005" },
+    { "phase": "P11", "itemIds": [], "status": "not_started", "gap": "no approved item" }
+  ]
+}

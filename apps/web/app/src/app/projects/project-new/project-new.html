@@ -10,10 +10,6 @@
       <app-heading class="mt-6" i18n="@@projectNewTitle" level="1" [text]="'New project'" />
     </header>
 
-    @if (errorMessage()) {
-      <app-alert tone="danger">{{ errorMessage() }}</app-alert>
-    }
-
     <app-card padding="md" tone="raised">
       <app-form class="grid gap-6" [form]="newProjectForm">
         <app-field>
@@ -56,6 +52,10 @@
             Create project
           </app-button>
         </div>
+
+        @if (errorMessage()) {
+          <app-alert tone="danger">{{ errorMessage() }}</app-alert>
+        }
       </app-form>
     </app-card>
   </div>

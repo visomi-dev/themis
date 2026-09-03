@@ -1,0 +1,33 @@
+PZS005_RUN_ID=RUN-1788224750798-1231775
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[19:06:07.644] [31mERROR[39m (1233814): [36mFailed to bootstrap gateway server[39m
+    err: {
+      "type": "DrizzleQueryError",
+      "message": "Failed query: CREATE SCHEMA IF NOT EXISTS \"drizzle\"\nparams: : password authentication failed for user \"themis\"",
+      "stack":
+          Error: Failed query: CREATE SCHEMA IF NOT EXISTS "drizzle"
+          params: 
+              at file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/pg-core/async/session.js:37:10
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async migrate (file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/pg-core/async/session.js:101:2)
+              at async migrate (file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/node-postgres/migrator.js:6:9)
+              at async runMigrationsIfEnabled (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/api/main.js:571:3)
+              at async buildApp (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/api/main.js:5757:3)
+              at async Promise.all (index 0)
+              at async bootstrap (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/server/main.js:1462:83)
+          caused by: error: password authentication failed for user "themis"
+              at /home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/pg-pool@3.14.0_pg@8.22.0/node_modules/pg-pool/index.js:45:11
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/node-postgres/session.js:49:13
+              at async migrate (file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/pg-core/async/session.js:101:2)
+              at async migrate (file:///home/visomi/Projects/GitHub/visomi-dev/themis/node_modules/.pnpm/drizzle-orm@1.0.0-beta.21_@electric-sql+pglite@0.5.3_@sinclair+typebox@0.34.49_@types+m_1a5eb98bad163e013af1f3e77386c70b/node_modules/drizzle-orm/node-postgres/migrator.js:6:9)
+              at async runMigrationsIfEnabled (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/api/main.js:571:3)
+              at async buildApp (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/api/main.js:5757:3)
+              at async Promise.all (index 0)
+              at async bootstrap (file:///home/visomi/Projects/GitHub/visomi-dev/themis/dist/apps/web/server/main.js:1462:83)
+      "query": "CREATE SCHEMA IF NOT EXISTS \"drizzle\"",
+      "params": []
+    }

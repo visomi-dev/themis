@@ -1,0 +1,7 @@
+{
+  "runId": "RUN-242",
+  "test": "isolated-passkey-signup-session",
+  "screenshots": ["authenticated-session-light.png", "authenticated-session-dark.png"],
+  "cliStatus": "passed",
+  "redactions": ["cookie", "authorization", "password", "pin", "token", "secret", "challenge", "credentialId"]
+}

@@ -41,6 +41,7 @@ describe('PasswordStrength', () => {
 
     expect(meter.getAttribute('data-level')).toBe('0');
     expect(label.textContent?.trim()).toBe('—');
+    expect(label.classList.contains('opacity-0')).toBe(true);
 
     fixture.componentInstance.password.set('Strong-Pass-12!');
     fixture.detectChanges();

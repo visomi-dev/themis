@@ -1,0 +1,42 @@
+{
+  "runId": "RUN-239",
+  "phases": [
+    { "phase": "P0", "itemIds": ["PZS-001"], "status": "in_progress", "gap": "Foundation remains in progress." },
+    { "phase": "P1", "itemIds": ["PZS-002"], "status": "ready", "gap": "Implementation deferred." },
+    { "phase": "P2", "itemIds": ["PZS-003"], "status": "ready", "gap": "Implementation deferred." },
+    { "phase": "P3", "itemIds": ["PZS-004"], "status": "ready", "gap": "Implementation deferred." },
+    { "phase": "P4", "itemIds": ["PZS-005"], "status": "in_progress", "gap": "RUN-239 verification is in progress." },
+    { "phase": "P5", "itemIds": ["PZS-006"], "status": "ready", "gap": "Implementation deferred." },
+    { "phase": "P6", "itemIds": ["PZS-007"], "status": "ready", "gap": "Implementation deferred." },
+    {
+      "phase": "P7",
+      "itemIds": ["PZS-007", "THM-OWV-005"],
+      "status": "ready/rework",
+      "gap": "Read-model work remains deferred."
+    },
+    {
+      "phase": "P8",
+      "itemIds": ["THM-OWV-006"],
+      "status": "rework",
+      "gap": "Angular workspace work remains deferred."
+    },
+    {
+      "phase": "P9",
+      "itemIds": ["PZS-008", "PZS-009"],
+      "status": "ready",
+      "gap": "Lifecycle and scale work remain deferred."
+    },
+    {
+      "phase": "P10",
+      "itemIds": ["PZS-010"],
+      "status": "ready",
+      "gap": "Independent journey validation remains deferred."
+    },
+    {
+      "phase": "P11",
+      "itemIds": ["PZS-001", "PZS-007"],
+      "status": "in_progress/ready",
+      "gap": "Native UI, runtime, and native key storage remain deferred."
+    }
+  ]
+}

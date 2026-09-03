@@ -1,0 +1,10 @@
+RUN-239 command log (all commands use the repository root):
+
+- `pnpm exec nx run shared:test --skip-nx-cache` — PASS, 22 suites/135 tests.
+- `pnpm exec nx run api:test --skip-nx-cache` — PASS, 5 suites/37 tests.
+- `PZS005_RUN_ID=RUN-239 PZS005_ARTIFACT_DIR=docs/verification/pzs-005-run-239 POSTGRES_PORT=25432 MINIO_PORT=29000 pnpm e2e:local` — PASS; durable PostgreSQL/Redis/MinIO lifecycle and 23-case PZS-005 test passed. Full stdout/stderr: `lifecycle-transcript.txt`.
+- `PZS005_RUN_ID=RUN-239 PZS005_SYNC_ONLY=true PZS005_ARTIFACT_DIR=docs/verification/pzs-005-run-239 pnpm exec nx run api-e2e:openapi --skip-nx-cache` — PASS; 12/12 operations and 1065/1065 generated cases. Reports: `openapi-report/`.
+- `pnpm exec nx run api-e2e:lint --skip-nx-cache` — PASS.
+- `pnpm exec nx run api:build --skip-nx-cache` — PASS.
+- `node --experimental-strip-types --test scripts/plan-fidelity.test.ts` — PASS, 6/6.
+- `git diff --check` — PASS.

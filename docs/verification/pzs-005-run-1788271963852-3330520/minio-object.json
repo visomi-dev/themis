@@ -1,0 +1,37 @@
+{
+  "runId": "RUN-1788271963852-3330520",
+  "streamId": "stream-f0bffb58-0683-4048-987c-ee661b30b520",
+  "objects": [
+    {
+      "objectKey": "62623062-5384-410f-b497-e0903703098a/e08f243c-a970-4939-bcb0-cd4801a3d726/replay-target/5-3f01f264-7892-4c5f-85fa-7fc0c9145090.json",
+      "bytes": 448,
+      "sha256": "860a5ce21caaed07f0a667e94b8f9ac0f6b2225b905bb44544a8eb39cf67ed54",
+      "postgresHash": "860a5ce21caaed07f0a667e94b8f9ac0f6b2225b905bb44544a8eb39cf67ed54",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "62623062-5384-410f-b497-e0903703098a/e08f243c-a970-4939-bcb0-cd4801a3d726/tombstone-record/6-819d2d70-5b33-4529-92d2-1bf4660221c2.json",
+      "bytes": 454,
+      "sha256": "f6f57f4d3ee97790820b8878bff3112a28e3c133e8bea0f5347716b50bc66c2b",
+      "postgresHash": "f6f57f4d3ee97790820b8878bff3112a28e3c133e8bea0f5347716b50bc66c2b",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "62623062-5384-410f-b497-e0903703098a/e08f243c-a970-4939-bcb0-cd4801a3d726/checkpoint/checkpoint-1.json",
+      "bytes": 464,
+      "sha256": "d4a5dee96c87995fde811e91d29e1391320ce090e336f500bdd814ed74d4846f",
+      "postgresHash": "d4a5dee96c87995fde811e91d29e1391320ce090e336f500bdd814ed74d4846f",
+      "hashMatches": true
+    }
+  ],
+  "checkpointReferences": [
+    {
+      "checkpointId": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "objectKey": "62623062-5384-410f-b497-e0903703098a/e08f243c-a970-4939-bcb0-cd4801a3d726/checkpoint/checkpoint-1.json",
+      "ciphertextSha256": "d4a5dee96c87995fde811e91d29e1391320ce090e336f500bdd814ed74d4846f"
+    }
+  ],
+  "hashMatches": true
+}

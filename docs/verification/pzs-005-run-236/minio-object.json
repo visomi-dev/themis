@@ -1,0 +1,44 @@
+{
+  "runId": "RUN-236-20260826T0445Z",
+  "streamId": "stream-800d4b15-40b2-410a-8d5a-6725ee2a3f32",
+  "objects": [
+    {
+      "objectKey": "39498ec4-3f49-4ab7-94dd-5d33f8ab7092/84e72ee6-ca36-47fe-a503-a7280adfbeb1/authorized-append/1-85444adb-95d5-4842-93d0-11879f5c08b8.json",
+      "bytes": 464,
+      "sha256": "4ef1a84c3bd9ae1ef5917e41b1c8e9540d91050108b497301aa613a1e1ea5bf0",
+      "postgresHash": "4ef1a84c3bd9ae1ef5917e41b1c8e9540d91050108b497301aa613a1e1ea5bf0",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "39498ec4-3f49-4ab7-94dd-5d33f8ab7092/84e72ee6-ca36-47fe-a503-a7280adfbeb1/replay-target/5-27b8afd1-e3d4-4133-b52d-f4aeea6fbaea.json",
+      "bytes": 448,
+      "sha256": "55333bcb5544cd2af586435204f78f9d8e2bad7b947570ef3e9ecc49fe6de5ee",
+      "postgresHash": "55333bcb5544cd2af586435204f78f9d8e2bad7b947570ef3e9ecc49fe6de5ee",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "39498ec4-3f49-4ab7-94dd-5d33f8ab7092/84e72ee6-ca36-47fe-a503-a7280adfbeb1/tombstone-record/6-f8dab458-cc20-4105-86e6-08cfa52610bf.json",
+      "bytes": 454,
+      "sha256": "ca1628fc961fa02a8f515edffd6241a261f023cc38cdd17f3fa5f16c350d1382",
+      "postgresHash": "ca1628fc961fa02a8f515edffd6241a261f023cc38cdd17f3fa5f16c350d1382",
+      "hashMatches": true
+    },
+    {
+      "objectKey": "39498ec4-3f49-4ab7-94dd-5d33f8ab7092/84e72ee6-ca36-47fe-a503-a7280adfbeb1/checkpoint/checkpoint-1.json",
+      "bytes": 464,
+      "sha256": "4ef1a84c3bd9ae1ef5917e41b1c8e9540d91050108b497301aa613a1e1ea5bf0",
+      "postgresHash": "4ef1a84c3bd9ae1ef5917e41b1c8e9540d91050108b497301aa613a1e1ea5bf0",
+      "hashMatches": true
+    }
+  ],
+  "checkpointReferences": [
+    {
+      "checkpointId": "checkpoint-1",
+      "cursor": 1,
+      "revision": 1,
+      "objectKey": "39498ec4-3f49-4ab7-94dd-5d33f8ab7092/84e72ee6-ca36-47fe-a503-a7280adfbeb1/checkpoint/checkpoint-1.json",
+      "ciphertextSha256": "4ef1a84c3bd9ae1ef5917e41b1c8e9540d91050108b497301aa613a1e1ea5bf0"
+    }
+  ],
+  "hashMatches": true
+}

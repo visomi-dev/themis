@@ -24,7 +24,6 @@ async function queueProjectSeed(context: ProjectSeedContext, projectId: string) 
   }
 
   const job = await createAsyncJob(context, {
-    inputJson: JSON.stringify({ projectId }),
     projectId,
     type: 'project_seed',
   });

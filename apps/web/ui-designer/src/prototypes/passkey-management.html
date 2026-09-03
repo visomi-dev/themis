@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Themis passkey management states</title>
+    <link rel="stylesheet" href="/public/tailwind.css" />
+  </head>
+  <body class="min-h-screen bg-white font-sans text-zinc-950 antialiased dark:bg-zinc-950 dark:text-zinc-50">
+    <header class="border-b border-zinc-950/10 dark:border-white/10">
+      <div class="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 md:px-8">
+        <a class="ui-focus-ring inline-flex min-h-11 min-w-11 items-center rounded-md" href="/" aria-label="Themis home"
+          ><span class="flex h-9 w-9 items-center justify-center rounded-md bg-blue-600 dark:bg-blue-700"
+            ><img class="h-6 w-5 brightness-0 invert" src="/public/assets/themis-isotype.svg" alt="" /></span
+          ><span class="font-heading ml-2.5 text-lg font-bold tracking-tight">Themis</span></a
+        >
+        <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Maya Chen</span>
+      </div>
+    </header>
+    <main class="mx-auto flex w-full max-w-3xl justify-center px-4 py-8 md:px-8 md:py-14">
+      <article class="w-full">
+        <header class="mx-auto max-w-xl text-center">
+          <p class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
+            Account security
+          </p>
+          <h1 class="font-heading mt-3 text-3xl font-bold tracking-[-0.03em] md:text-4xl">Your passkeys</h1>
+          <p class="mt-3 leading-7 text-zinc-500 dark:text-zinc-400">
+            Manage the devices and security keys that can sign in to your Themis account.
+          </p>
+        </header>
+        <div class="mt-8">
+          <section data-state="list" class="grid gap-4">
+            <div class="flex justify-center">
+              <button
+                class="ui-focus-ring min-h-11 w-full rounded-md bg-blue-600 px-4 text-sm font-semibold text-white sm:w-auto dark:bg-blue-700"
+                type="button"
+                data-show-state="add"
+              >
+                Add a passkey
+              </button>
+            </div>
+            <article class="ui-panel-raised rounded-lg p-5 md:p-6">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="font-heading text-lg font-bold">Work laptop</h2>
+                    <span
+                      class="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-500/20 dark:text-green-300"
+                      >Current · active</span
+                    >
+                  </div>
+                  <dl class="mt-3 grid gap-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    <div>
+                      <dt class="inline font-medium text-zinc-700 dark:text-zinc-200">Created:</dt>
+                      <dd class="inline">18 August 2026</dd>
+                    </div>
+                    <div>
+                      <dt class="inline font-medium text-zinc-700 dark:text-zinc-200">Last used:</dt>
+                      <dd class="inline">Today at 09:42</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div class="flex gap-1">
+                  <button
+                    class="ui-focus-ring min-h-11 min-w-11 rounded-md px-3 text-sm font-semibold text-blue-600 dark:text-blue-400"
+                    type="button"
+                    data-show-state="rename"
+                  >
+                    Rename</button
+                  ><button
+                    class="ui-focus-ring min-h-11 min-w-11 rounded-md px-3 text-sm font-semibold text-red-600 dark:text-red-400"
+                    type="button"
+                    data-show-state="last-passkey"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="ui-panel rounded-lg p-5 md:p-6">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="font-heading text-lg font-bold">Travel security key</h2>
+                    <span
+                      class="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-500/20 dark:text-green-300"
+                      >Active</span
+                    >
+                  </div>
+                  <dl class="mt-3 grid gap-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    <div>
+                      <dt class="inline font-medium text-zinc-700 dark:text-zinc-200">Created:</dt>
+                      <dd class="inline">21 August 2026</dd>
+                    </div>
+                    <div>
+                      <dt class="inline font-medium text-zinc-700 dark:text-zinc-200">Last used:</dt>
+                      <dd class="inline">24 August 2026</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div class="flex gap-1">
+                  <button
+                    class="ui-focus-ring min-h-11 min-w-11 rounded-md px-3 text-sm font-semibold text-blue-600 dark:text-blue-400"
+                    type="button"
+                    data-show-state="rename"
+                  >
+                    Rename</button
+                  ><button
+                    class="ui-focus-ring min-h-11 min-w-11 rounded-md px-3 text-sm font-semibold text-red-600 dark:text-red-400"
+                    type="button"
+                    data-show-state="remove"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section data-state="add" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
+                New access method
+              </p>
+              <h2 class="font-heading mt-3 text-2xl font-bold tracking-tight">Add a passkey</h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                Verify an existing passkey, then save a new one on this device or a security key.
+              </p>
+            </header>
+            <form class="mt-6 grid gap-5" data-submit-state="add-loading">
+              <div class="grid gap-1.5">
+                <label class="text-sm font-semibold" for="new-passkey-name">Passkey name</label
+                ><input
+                  class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 bg-white px-3 text-base dark:border-white/10 dark:bg-zinc-950"
+                  id="new-passkey-name"
+                  type="text"
+                  placeholder="For example, Home laptop"
+                  autocomplete="off"
+                  required
+                />
+                <p class="text-xs leading-5 text-zinc-500 dark:text-zinc-400">
+                  Use a recognizable device name. Never enter a PIN or recovery code.
+                </p>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <button
+                  class="ui-focus-ring min-h-11 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+                  type="submit"
+                >
+                  Verify and add</button
+                ><button
+                  class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+                  type="button"
+                  data-show-state="list"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section
+            data-state="add-loading"
+            hidden
+            class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 text-center md:p-8"
+            aria-live="polite"
+          >
+            <span
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-600/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400"
+              ><svg class="h-7 w-7 motion-safe:animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3a9 9 0 1 1-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg
+            ></span>
+            <h2 class="font-heading mt-5 text-2xl font-bold tracking-tight">Confirm this security change</h2>
+            <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+              Follow your device's prompt. The new passkey is added only after verification succeeds.
+            </p>
+            <button
+              class="ui-focus-ring mt-7 min-h-11 w-full rounded-md px-4 text-sm font-semibold text-zinc-600 underline underline-offset-4 dark:text-zinc-300"
+              type="button"
+              data-show-state="add-cancelled"
+            >
+              Cancel
+            </button>
+          </section>
+
+          <section data-state="add-cancelled" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                No changes made
+              </p>
+              <h2 class="font-heading mt-3 text-2xl font-bold tracking-tight">Passkey setup was cancelled.</h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                Your existing passkeys still work. You can restart when you are ready.
+              </p>
+            </header>
+            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                class="ui-focus-ring min-h-11 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+                type="button"
+                data-show-state="add"
+              >
+                Try again</button
+              ><button
+                class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+                type="button"
+                data-show-state="list"
+              >
+                Back to passkeys
+              </button>
+            </div>
+          </section>
+
+          <section data-state="rename" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+                Work laptop
+              </p>
+              <h2 class="font-heading mt-3 text-2xl font-bold tracking-tight">Rename passkey</h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                Only the account-local label changes. The passkey stays on the same device.
+              </p>
+            </header>
+            <form class="mt-6 grid gap-5" data-submit-state="updated">
+              <div class="grid gap-1.5">
+                <label class="text-sm font-semibold" for="rename-passkey">Passkey name</label
+                ><input
+                  class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 bg-white px-3 text-base dark:border-white/10 dark:bg-zinc-950"
+                  id="rename-passkey"
+                  type="text"
+                  value="Work laptop"
+                  required
+                />
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <button
+                  class="ui-focus-ring min-h-11 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+                  type="submit"
+                >
+                  Save name</button
+                ><button
+                  class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+                  type="button"
+                  data-show-state="list"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section
+            data-state="updated"
+            hidden
+            class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 text-center md:p-8"
+          >
+            <span
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300"
+              ><svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m7 12 3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg
+            ></span>
+            <h2 class="font-heading mt-5 text-2xl font-bold tracking-tight">Passkey name updated.</h2>
+            <button
+              class="ui-focus-ring mt-7 min-h-11 w-full rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+              type="button"
+              data-show-state="list"
+            >
+              Return to passkeys
+            </button>
+          </section>
+
+          <section
+            data-state="remove"
+            hidden
+            class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="remove-passkey-title"
+          >
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-red-600 uppercase dark:text-red-400">
+                Permanent security change
+              </p>
+              <h2 id="remove-passkey-title" class="font-heading mt-3 text-2xl font-bold tracking-tight">
+                Remove “Travel security key”?
+              </h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                This passkey will stop signing in immediately. Sessions using it will be signed out.
+              </p>
+            </header>
+            <div class="mt-5 rounded-lg bg-zinc-100 p-4 text-sm leading-6 dark:bg-zinc-800">
+              <strong class="block">Access that remains</strong>Work laptop · active passkey
+            </div>
+            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                class="ui-focus-ring min-h-11 rounded-md bg-red-600 px-4 text-sm font-semibold text-white dark:bg-red-700"
+                type="button"
+                data-show-state="removed"
+              >
+                Verify and remove</button
+              ><button
+                class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+                type="button"
+                data-show-state="list"
+              >
+                Keep passkey
+              </button>
+            </div>
+          </section>
+
+          <section
+            data-state="removed"
+            hidden
+            class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 text-center md:p-8"
+          >
+            <span
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300"
+              ><svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m7 12 3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg
+            ></span>
+            <h2 class="font-heading mt-5 text-2xl font-bold tracking-tight">Passkey removed.</h2>
+            <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">Sessions using it were signed out.</p>
+            <button
+              class="ui-focus-ring mt-7 min-h-11 w-full rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+              type="button"
+              data-show-state="list"
+            >
+              Return to passkeys
+            </button>
+          </section>
+
+          <section data-state="last-passkey" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <span
+                class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-500/20 dark:text-red-300"
+                >Removal blocked</span
+              >
+              <h2 class="font-heading mt-4 text-2xl font-bold tracking-tight">
+                Keep at least one passkey on your account.
+              </h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                “Work laptop” is your final active passkey. It was not removed.
+              </p>
+            </header>
+            <div
+              class="mt-5 rounded-lg border-l-4 border-red-600 bg-red-50 p-4 text-sm leading-6 text-red-800 dark:border-red-400 dark:bg-red-500/10 dark:text-red-200"
+              role="alert"
+            >
+              <strong class="block">Add another passkey first</strong>Pending or removed passkeys do not count as active
+              access.
+            </div>
+            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+              <button
+                class="ui-focus-ring min-h-11 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+                type="button"
+                data-show-state="add"
+              >
+                Add another passkey</button
+              ><button
+                class="ui-focus-ring min-h-11 rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+                type="button"
+                data-show-state="list"
+              >
+                Return to passkeys
+              </button>
+            </div>
+          </section>
+
+          <section data-state="error" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-red-600 uppercase dark:text-red-400">
+                Unable to update
+              </p>
+              <h2 class="font-heading mt-3 text-2xl font-bold tracking-tight">That passkey is not available.</h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                Refresh the list before making another security change. No credential details are shown.
+              </p>
+            </header>
+            <button
+              class="ui-focus-ring mt-7 min-h-11 w-full rounded-md bg-blue-600 px-4 text-sm font-semibold text-white dark:bg-blue-700"
+              type="button"
+              data-show-state="list"
+            >
+              Refresh passkeys
+            </button>
+          </section>
+
+          <section data-state="brand-evaluation" hidden class="ui-panel-raised mx-auto max-w-xl rounded-lg p-5 md:p-8">
+            <header>
+              <p class="font-mono text-xs font-semibold tracking-widest text-blue-600 uppercase dark:text-blue-400">
+                Local brand asset review
+              </p>
+              <h2 class="font-heading mt-3 text-2xl font-bold tracking-tight">Filled and stroke variants</h2>
+              <p class="mt-3 leading-6 text-zinc-500 dark:text-zinc-400">
+                Compare the isolated filled asset with a trusted inline stroke evaluation.
+              </p>
+            </header>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+              <figure class="rounded-lg bg-white p-5 text-zinc-950 ring-1 ring-zinc-950/10">
+                <img
+                  class="h-14 w-full object-contain brightness-0"
+                  src="/public/assets/themis-logotype.svg"
+                  alt="Themis filled logotype"
+                />
+                <figcaption class="mt-3 text-center text-xs text-zinc-500">Filled · external image</figcaption>
+              </figure>
+              <figure class="rounded-lg bg-white p-5 text-zinc-950 ring-1 ring-zinc-950/10">
+                <svg class="mx-auto h-14 w-11" viewBox="0 0 280 373" role="img" aria-labelledby="stroke-preview-title">
+                  <title id="stroke-preview-title">Themis stroke isotype with blue accents</title>
+                  <g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 64h276v22H150v224h-20V86H2V64Z" />
+                    <path d="M2 110h106v201H87V132H2v-22Z" />
+                    <path d="M172 110h106v22h-85v179h-21V110Z" />
+                  </g>
+                  <g
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-blue-600"
+                  >
+                    <path d="m140 2 20 20-20 20-20-20 20-20Z" />
+                    <path d="M133 333h14v38h-14z" />
+                  </g>
+                </svg>
+                <figcaption class="mt-3 text-center text-xs text-zinc-500">Stroke · inline evaluation</figcaption>
+              </figure>
+            </div>
+            <p class="mt-5 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+              An external <code class="font-mono text-xs">img</code> does not inherit the page's
+              <code class="font-mono text-xs">currentColor</code>. The inline stroke comparison demonstrates the
+              independently themed accent that an external image cannot provide.
+            </p>
+            <button
+              class="ui-focus-ring mt-6 min-h-11 w-full rounded-md border border-zinc-950/10 px-4 text-sm font-semibold dark:border-white/10"
+              type="button"
+              data-show-state="list"
+            >
+              Return to passkeys
+            </button>
+          </section>
+        </div>
+        <div class="mt-6 flex justify-center">
+          <button
+            class="ui-focus-ring min-h-11 rounded-md px-3 text-xs font-semibold text-zinc-500 underline underline-offset-4 dark:text-zinc-400"
+            type="button"
+            data-show-state="brand-evaluation"
+          >
+            Review local logo variants
+          </button>
+        </div>
+      </article>
+    </main>
+    <script>
+      const showState = (state) => {
+        document.querySelectorAll('[data-state]').forEach((section) => {
+          section.hidden = section.dataset.state !== state;
+        });
+        document.body.dataset.previewState = state;
+      };
+      showState(document.body.dataset.previewState || 'list');
+      document
+        .querySelectorAll('[data-show-state]')
+        .forEach((control) => control.addEventListener('click', () => showState(control.dataset.showState)));
+      document.querySelectorAll('form[data-submit-state]').forEach((form) =>
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          showState(form.dataset.submitState);
+        }),
+      );
+    </script>
+  </body>
+</html>

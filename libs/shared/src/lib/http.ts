@@ -62,7 +62,7 @@ class HttpError extends Error {
 }
 
 export function errorHandler(error: unknown, _req: Request, res: Response, _next: NextFunction) {
-  console.error('[ error ] API request failed', error);
+  console.error('[ error ] API request failed', redactedErrorDetails(error));
 
   if (error instanceof HttpError) {
     res.status(error.statusCode).send({
@@ -74,10 +74,34 @@ export function errorHandler(error: unknown, _req: Request, res: Response, _next
     return;
   }
 
+  if (isRequestError(error)) {
+    res.status(error.status).send({
+      code: 'invalid_request',
+      message: 'The request payload is invalid.',
+    });
+
+    return;
+  }
+
   res.status(500).send({
     code: 'internal_server_error',
     message: 'The request could not be completed.',
   });
 }
 
-export { HttpError, createEnvelope, httpResponse };
+function redactedErrorDetails(error: unknown): { code: string; statusCode?: number } {
+  if (error instanceof HttpError) return { code: error.code, statusCode: error.statusCode };
+  if (isRequestError(error)) return { code: 'invalid_request', statusCode: error.status };
+
+  return { code: 'internal_server_error', statusCode: 500 };
+}
+
+function isRequestError(error: unknown): error is { status: number } {
+  if (typeof error !== 'object' || error === null || !('status' in error)) return false;
+
+  const status = (error as { status?: unknown }).status;
+
+  return typeof status === 'number' && status >= 400 && status < 500;
+}
+
+export { HttpError, createEnvelope, httpResponse, redactedErrorDetails };

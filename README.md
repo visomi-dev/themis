@@ -60,6 +60,38 @@ pnpm install
 
 ## Local Development
 
+The local runtime uses Podman for PostgreSQL and Redis. The root `.env` file
+contains development-only credentials and is ignored by git.
+
+### Start local dependencies
+
+Install a Podman Compose provider, then start the dependencies with Podman:
+
+```bash
+podman compose up -d
+podman compose ps
+```
+
+The services listen on `localhost:5432` (PostgreSQL) and `localhost:6379`
+(Redis), use persistent named volumes, and expose health checks. The gateway
+loads `.env`, automatically applies database migrations, and starts with:
+
+```bash
+pnpm nx run server:serve
+```
+
+Verify the gateway with:
+
+```bash
+curl http://localhost:8080/healthz
+```
+
+Stop the dependencies when finished:
+
+```bash
+podman compose down
+```
+
 ### Astro site only
 
 ```bash
@@ -163,6 +195,27 @@ pnpm nx run-many -t build
 pnpm nx run site:typecheck
 pnpm nx run api-e2e:e2e
 pnpm nx run server-e2e:e2e
+```
+
+## Agent Distribution
+
+The canonical Themis agent resources live in `.opencode`. The `.agents`
+directory is a symlink-based distribution facade and does not duplicate those
+resources.
+
+Build and validate the publishable installer with:
+
+```bash
+pnpm nx build themis-agent-cli
+pnpm nx test themis-agent-cli
+pnpm nx run themis-agent-cli:verify
+pnpm nx run themis-agent-cli:publish:dry-run
+```
+
+The resulting npm package is `@visomi/themis`. Its first public alias is:
+
+```bash
+npx @visomi/themis add core
 ```
 
 ## Documentation

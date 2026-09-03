@@ -2,7 +2,7 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Auth } from '../../auth/auth';
-import { DASHBOARD_URL, PROJECTS_URL, PROJECT_NEW_URL, SIGN_IN_URL } from '../../constants/routes';
+import { APP_URL, IDENTITY_URL, SECURITY_URL } from '../../constants/routes';
 import { Settings } from '../../settings';
 import { Avatar } from '../../ui/data/avatar/avatar';
 import { Icon } from '../../ui/media/icon/icon';
@@ -32,8 +32,8 @@ export class SidebarMenu {
   private readonly router = inject(Router);
   private readonly settings = inject(Settings);
 
-  readonly DASHBOARD_URL = DASHBOARD_URL;
   readonly collapsed = input(false);
+  readonly APP_URL = APP_URL;
   readonly mobileMenuOpen = input(false);
   readonly closed = output<void>();
   readonly toggleCollapsed = output<void>();
@@ -56,23 +56,10 @@ export class SidebarMenu {
         {
           exact: true,
           icon: 'grid',
-          label: $localize`:@@layoutMenuDashboard:Overview`,
-          url: DASHBOARD_URL,
+          label: $localize`:@@layoutMenuWorkspace:Workspace`,
+          url: APP_URL,
         },
-        {
-          children: [
-            {
-              exact: true,
-              icon: 'plus',
-              label: $localize`:@@layoutMenuNewProject:New project`,
-              url: PROJECT_NEW_URL,
-            },
-          ],
-          exact: false,
-          icon: 'folder',
-          label: $localize`:@@layoutMenuProjects:Projects`,
-          url: PROJECTS_URL,
-        },
+        { exact: true, icon: 'circle-info', label: $localize`:@@layoutMenuSecurity:Security`, url: SECURITY_URL },
       ],
     },
   ];
@@ -90,7 +77,7 @@ export class SidebarMenu {
 
     try {
       await this.auth.signOut();
-      await this.router.navigateByUrl(SIGN_IN_URL);
+      await this.router.navigateByUrl(IDENTITY_URL);
     } finally {
       this.signingOut.set(false);
       this.closeMenu();

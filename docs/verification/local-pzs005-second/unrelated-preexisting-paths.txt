@@ -1,0 +1,133 @@
+ D .opencode/tools/themis-core.ts
+ M .opencode/tools/themis.ts
+ M apps/web/api-e2e/project.json
+ M apps/web/api-e2e/src/api/sync.spec.ts
+ M apps/web/api-e2e/src/durable/zk006-durable.integration.spec.ts
+ M apps/web/api-e2e/src/support/global-setup.ts
+ M apps/web/api-e2e/src/support/run-openapi-contract.ts
+ M apps/web/api/src/sync/opaque-sync-router.spec.ts
+ M apps/web/api/src/sync/opaque-sync-router.ts
+ M apps/web/api/src/sync/opaque-sync-schemas.ts
+ M apps/web/app/src/app/shared/realtime/browser-realtime.ts
+ M apps/web/app/src/app/shared/realtime/server-realtime.ts
+ M libs/shared/src/index.ts
+ M libs/shared/src/lib/crypto/encrypted-envelope.ts
+ M libs/shared/src/lib/crypto/opaque-sync-postgres.ts
+ M libs/shared/src/lib/crypto/opaque-sync.spec.ts
+ M libs/shared/src/lib/crypto/opaque-sync.ts
+ M libs/shared/src/lib/db/schema.ts
+ M pnpm-lock.yaml
+ M scripts/plan-fidelity.test.ts
+ M scripts/themis-cli.test.ts
+ M scripts/themis-cli.ts
+ M scripts/themis-core.test.ts
+ M scripts/themis-tools.e2e.test.ts
+ M scripts/themis-tui.test.ts
+ M scripts/themis-tui.ts
+ M scripts/themis-view.ts
+ M tsconfig.base.json
+?? apps/web/app-e2e/playwright-report/agent-bridge/process.stderr.log
+?? apps/web/app-e2e/playwright-report/agent-bridge/process.stdout.log
+?? apps/web/app-e2e/playwright-report/agent-bridge/two-context-flow.json
+?? docs/architecture/contracts/project-scoped-sync-v1.md
+?? docs/architecture/diagrams/project-scoped-sync-trust-boundary.md
+?? docs/architecture/project-scoped-sync-assurance.md
+?? docs/architecture/system/project-scoped-sync-plan-fidelity.json
+?? docs/security/project-scoped-sync-threat-model.md
+?? docs/verification/artifacts/run-224/build.txt
+?? docs/verification/artifacts/run-224/compatibility-scan.txt
+?? docs/verification/artifacts/run-224/plan-fidelity.txt
+?? docs/verification/artifacts/run-224/repository.txt
+?? docs/verification/artifacts/run-224/security.txt
+?? docs/verification/artifacts/run-224/unit.txt
+?? docs/verification/artifacts/run-226/build.txt
+?? docs/verification/artifacts/run-226/diff-check.txt
+?? docs/verification/artifacts/run-226/plan-fidelity.txt
+?? docs/verification/artifacts/run-226/scoped-cli.txt
+?? docs/verification/artifacts/run-226/security.txt
+?? docs/verification/artifacts/run-226/unit.txt
+?? docs/verification/local-1787697358054/server.log
+?? docs/verification/local-pzs005-failure/lifecycle-transcript.txt
+?? docs/verification/local-pzs005-failure/scope-inventory.json
+?? docs/verification/local-pzs005-fourth/artifact-hashes.txt
+?? docs/verification/local-pzs005-fourth/generated-openapi.json
+?? docs/verification/local-pzs005-fourth/metrics.json
+?? docs/verification/local-pzs005-fourth/minio-object.json
+?? docs/verification/local-pzs005-fourth/postgres-rows.json
+?? docs/verification/local-pzs005-fourth/pzs-005-sync.har.json
+?? docs/verification/local-pzs005-fourth/pzs-005-sync.junit.xml
+?? docs/verification/local-pzs005-fourth/raw-sync-http.ndjson
+?? docs/verification/local-pzs005-fourth/server.log
+?? docs/verification/local-pzs005-fourth/sync-case-matrix.json
+?? docs/verification/local-pzs005-fourth/traces.json
+?? docs/verification/local-pzs005-second/artifact-hashes.txt
+?? docs/verification/local-pzs005-second/generated-openapi.json
+?? docs/verification/local-pzs005-second/lifecycle-transcript.txt
+?? docs/verification/local-pzs005-second/metrics.json
+?? docs/verification/local-pzs005-second/minio-object.json
+?? docs/verification/local-pzs005-second/postgres-rows.json
+?? docs/verification/local-pzs005-second/pzs-005-sync.har.json
+?? docs/verification/local-pzs005-second/pzs-005-sync.junit.xml
+?? docs/verification/local-pzs005-second/raw-sync-http.ndjson
+?? docs/verification/local-pzs005-second/scope-baseline.diff
+?? docs/verification/local-pzs005-second/scope-inventory.json
+?? docs/verification/local-pzs005-second/server.log
+?? docs/verification/local-pzs005-second/sync-case-matrix.json
+?? docs/verification/local-pzs005-second/traces.json
+?? docs/verification/local-pzs005-second/unrelated-preexisting-paths.txt
+?? docs/verification/pzs-003-run-222.md
+?? docs/verification/pzs-003-run-224.md
+?? docs/verification/pzs-003-run-226.md
+?? docs/verification/pzs-005-run-209.md
+?? docs/verification/pzs-005-run-211.md
+?? docs/verification/pzs-005-run-212-http-matrix.json
+?? docs/verification/pzs-005-run-212-security-observations.json
+?? docs/verification/pzs-005-run-212.md
+?? docs/verification/pzs-005-run-213.md
+?? docs/verification/pzs-005-run-214.md
+?? docs/verification/pzs-005-run-215/README.md
+?? docs/verification/pzs-005-run-215/case-acceptance-matrix.json
+?? docs/verification/pzs-005-run-215/command-results.json
+?? docs/verification/pzs-005-run-215/disclosure-scan.json
+?? docs/verification/pzs-005-run-215/har.json
+?? docs/verification/pzs-005-run-215/http-case-records.ndjson
+?? docs/verification/pzs-005-run-215/junit.xml
+?? docs/verification/pzs-005-run-215/logs.ndjson
+?? docs/verification/pzs-005-run-215/metrics.json
+?? docs/verification/pzs-005-run-215/object-storage-metadata-hashes.json
+?? docs/verification/pzs-005-run-215/openapi-response-excerpt.json
+?? docs/verification/pzs-005-run-215/phase-item-status-gap-matrix.json
+?? docs/verification/pzs-005-run-215/postgres-row-dump.json
+?? docs/verification/pzs-005-run-215/raw-sync-http.ndjson
+?? docs/verification/pzs-005-run-215/sync-request-response-fixtures.json
+?? docs/verification/pzs-005-run-215/traces.json
+?? docs/verification/pzs-005-run-215/validation-matrix.json
+?? docs/verification/pzs-005-run-215/verification.md
+?? docs/verification/pzs-005-run-221.md
+?? docs/verification/pzs-005-run-223/phase-item-status-gap-matrix.json
+?? docs/verification/pzs-005-run-223/server.log
+?? docs/verification/pzs-005-run-223/validation-matrix.json
+?? docs/verification/pzs-005-run-225/README.md
+?? docs/verification/pzs-005-run-225/server.log
+?? drizzle/20260825000000_opaque_sync_checkpoints/migration.sql
+?? libs/shared/src/lib/crypto/project-sync-contract.spec.ts
+?? libs/shared/src/lib/crypto/project-sync-contract.ts
+?? libs/themis-workflow/package.json
+?? libs/themis-workflow/project.json
+?? libs/themis-workflow/src/index.build.ts
+?? libs/themis-workflow/src/index.ts
+?? libs/themis-workflow/src/lib/project-workflow.spec.ts
+?? libs/themis-workflow/src/lib/project-workflow.ts
+?? libs/themis-workflow/src/lib/workflow-core.ts
+?? libs/themis-workflow/tsconfig.json
+?? libs/themis-workflow/tsconfig.lib.json
+?? playwright-report/agent-bridge-rerun/app-e2e.log
+?? playwright-report/agent-bridge/bridge.ndjson
+?? playwright-report/agent-bridge/process.stderr.log
+?? playwright-report/agent-bridge/process.stdout.log
+?? playwright-report/agent-bridge/two-context-flow.json
+?? playwright-report/index.html
+?? scripts/pzs-005-run-215-evidence.test.ts
+?? scripts/pzs-005-run-217-evidence.test.ts
+?? scripts/themis-project-migration.test.ts
+?? scripts/themis-project-migration.ts

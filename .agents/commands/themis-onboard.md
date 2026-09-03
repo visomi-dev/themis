@@ -1,0 +1,1 @@
+../../.opencode/commands/themis-onboard.md

@@ -1,0 +1,1100 @@
+BASELINE_COMMIT 8764ad4a166f0a08c1db9db795e5362e2377b58b
+SCOPED_FILES
+compose.local-e2e.yaml
+scripts/run-local-api-e2e.ts
+apps/web/api-e2e/src/support/run-api-e2e.ts
+apps/web/api-e2e/src/api/pzs-005-real.spec.ts
+package.json
+
+TRACKED_SCOPED_DIFF
+diff --git a/apps/web/api-e2e/src/support/run-api-e2e.ts b/apps/web/api-e2e/src/support/run-api-e2e.ts
+index 7286f08..91290bd 100644
+--- a/apps/web/api-e2e/src/support/run-api-e2e.ts
++++ b/apps/web/api-e2e/src/support/run-api-e2e.ts
+@@ -172,22 +172,26 @@ function provisionMinio(cli: string): string {
+ async function main(): Promise<void> {
+   const requestedArgs = process.argv.slice(2);
+   const durableOnly = process.env['API_E2E_DURABLE_ONLY'] === 'true';
+-  const fullRun = requestedArgs.length === 0 && !durableOnly;
++  const pzs005Real = process.env['PZS005_REAL'] === 'true';
++  const fullRun = requestedArgs.length === 0 && !durableOnly && !pzs005Real;
+   const requestedRestart = requestedArgs.some((argument) => argument.includes('sync-restart.spec.ts'));
+-  const needsDurableRun = fullRun || requestedRestart || durableOnly;
++  const needsDurableRun = fullRun || requestedRestart || durableOnly || pzs005Real;
+   const needsPostgres = !databaseUrl;
+   const needsMinio = !objectStoreEndpoint;
++  const externalServices = process.env['API_E2E_EXTERNAL_SERVICES'] === 'true';
+ 
+-  selectedCli = needsDurableRun && (needsPostgres || needsMinio) ? runtimeCli() : undefined;
++  selectedCli = needsDurableRun && !externalServices && (needsPostgres || needsMinio) ? runtimeCli() : undefined;
+   const cli = selectedCli;
+ 
+-  if (needsDurableRun && needsPostgres) postgresPort = await choosePort(postgresPort);
+-  if (needsDurableRun && needsMinio) minioPort = await choosePort(minioPort);
++  if (needsDurableRun && !externalServices && needsPostgres) postgresPort = await choosePort(postgresPort);
++  if (needsDurableRun && !externalServices && needsMinio) minioPort = await choosePort(minioPort);
+ 
+-  const effectiveDatabaseUrl = needsDurableRun && needsPostgres ? provisionPostgres(cli as string) : databaseUrl;
+-  const effectiveEndpoint = needsDurableRun && needsMinio ? provisionMinio(cli as string) : objectStoreEndpoint;
++  const effectiveDatabaseUrl =
++    needsDurableRun && needsPostgres && !externalServices ? provisionPostgres(cli as string) : databaseUrl;
++  const effectiveEndpoint =
++    needsDurableRun && needsMinio && !externalServices ? provisionMinio(cli as string) : objectStoreEndpoint;
+ 
+-  if (needsDurableRun && needsPostgres) {
++  if (needsDurableRun && needsPostgres && !externalServices) {
+     await waitFor(
+       () =>
+         spawnSync(
+@@ -198,7 +202,7 @@ async function main(): Promise<void> {
+       'isolated PostgreSQL',
+     );
+   }
+-  if (needsDurableRun && needsMinio) {
++  if (needsDurableRun && !externalServices) {
+     await waitFor(
+       () =>
+         spawnSync('curl', ['--fail', '--silent', `${effectiveEndpoint}/minio/health/ready`], { stdio: 'ignore' })
+@@ -219,13 +223,19 @@ async function main(): Promise<void> {
+     OPAQUE_SYNC_S3_BUCKET: process.env['OPAQUE_SYNC_S3_BUCKET'] ?? runtimeBucket,
+     OPAQUE_SYNC_S3_ACCESS_KEY: process.env['OPAQUE_SYNC_S3_ACCESS_KEY'] ?? minioAccessKey,
+     OPAQUE_SYNC_S3_SECRET_KEY: process.env['OPAQUE_SYNC_S3_SECRET_KEY'] ?? minioSecretKey,
++    PZS005_RUN_ID: process.env['PZS005_RUN_ID'] ?? 'RUN-225',
++    PZS005_ARTIFACT_DIR: process.env['PZS005_ARTIFACT_DIR'] ?? 'docs/verification/pzs-005-run-225',
++    PZS005_SERVER_LOG: process.env['PZS005_SERVER_LOG'] ?? 'docs/verification/pzs-005-run-225/server.log',
+   };
+ 
+-  if (durableOnly) run('pnpm', ['db:migrate'], durableEnvironment);
++  if ((durableOnly || pzs005Real) && process.env['API_E2E_EXTERNAL_SERVICES'] !== 'true')
++    run('pnpm', ['db:migrate'], durableEnvironment);
+ 
+   let exitCode: number;
+ 
+-  if (durableOnly) {
++  if (pzs005Real) {
++    exitCode = await runJest(durableEnvironment, ['--runTestsByPath', 'apps/web/api-e2e/src/api/pzs-005-real.spec.ts']);
++  } else if (durableOnly) {
+     exitCode = await runJest(durableEnvironment, requestedArgs, 'apps/web/api-e2e/durable-jest.config.cts');
+   } else if (fullRun) {
+     exitCode = await runJest(memoryEnvironment, ['--testPathIgnorePatterns=sync-restart.spec.ts|durable/']);
+diff --git a/package.json b/package.json
+index 783bab9..06db90c 100644
+--- a/package.json
++++ b/package.json
+@@ -19,14 +19,15 @@
+     "start": "nx start",
+     "dev": "nx dev",
+     "themis": "node --experimental-strip-types scripts/themis-cli.ts",
+-    "themis:test": "node --experimental-strip-types --test scripts/themis-core.test.ts scripts/themis-tools.e2e.test.ts scripts/themis-cli.test.ts scripts/themis-tui.test.ts scripts/plan-fidelity.test.ts",
++    "themis:test": "node --experimental-strip-types --test scripts/themis-core.test.ts scripts/themis-project-migration.test.ts scripts/themis-tools.e2e.test.ts scripts/themis-cli.test.ts scripts/themis-tui.test.ts scripts/plan-fidelity.test.ts",
+     "plan-fidelity:test": "node --experimental-strip-types --test scripts/plan-fidelity.test.ts",
+     "release:verify": "node --experimental-strip-types scripts/release-verification.ts",
+     "release:gate": "node --experimental-strip-types scripts/release-verification.ts gate",
+     "release:test": "node --experimental-strip-types --test scripts/release-verification.test.ts",
+     "db:generate": "drizzle-kit generate",
+     "db:migrate": "drizzle-kit migrate",
+-    "db:up": "drizzle-kit up"
++    "db:up": "drizzle-kit up",
++    "e2e:local": "node --experimental-strip-types scripts/run-local-api-e2e.ts"
+   },
+   "lint-staged": {
+     "*.{ts,html,md,json,yml,yaml}": [
+
+UNTRACKED_SCOPED_DIFF compose.local-e2e.yaml
+diff --git a/compose.local-e2e.yaml b/compose.local-e2e.yaml
+new file mode 100644
+index 0000000..ffa361b
+--- /dev/null
++++ b/compose.local-e2e.yaml
+@@ -0,0 +1,65 @@
++name: ${COMPOSE_PROJECT_NAME:-themis-local-e2e}
++
++services:
++  postgres:
++    image: docker.io/library/postgres:16-alpine
++    environment:
++      POSTGRES_DB: ${POSTGRES_DB:-themis_api_e2e}
++      POSTGRES_USER: ${POSTGRES_USER:-themis_api_e2e}
++      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-themis_api_e2e_password}
++    ports:
++      - '${POSTGRES_PORT:-15432}:5432'
++    volumes:
++      - postgres-data:/var/lib/postgresql/data
++    healthcheck:
++      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
++      interval: 2s
++      timeout: 5s
++      retries: 30
++
++  redis:
++    image: docker.io/library/redis:7-alpine
++    ports:
++      - '${REDIS_PORT:-16379}:6379'
++    healthcheck:
++      test: ['CMD', 'redis-cli', 'ping']
++      interval: 2s
++      timeout: 5s
++      retries: 30
++
++  minio:
++    image: quay.io/minio/minio:latest
++    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
++    environment:
++      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-themis_api_e2e}
++      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-themis_api_e2e_password}
++    ports:
++      - '${MINIO_PORT:-19000}:9000'
++      - '${MINIO_CONSOLE_PORT:-19001}:9001'
++    volumes:
++      - minio-data:/data
++    healthcheck:
++      test: ['CMD-SHELL', 'curl --fail --silent http://127.0.0.1:9000/minio/health/ready >/dev/null']
++      interval: 2s
++      timeout: 5s
++      retries: 30
++
++  minio-init:
++    image: quay.io/minio/mc:latest
++    depends_on:
++      minio:
++        condition: service_healthy
++    entrypoint: ['/bin/sh', '-ec']
++    command:
++      - >-
++        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}";
++        mc mb --ignore-existing "local/$${OPAQUE_SYNC_S3_BUCKET}";
++        mc anonymous set private "local/$${OPAQUE_SYNC_S3_BUCKET}";
++    environment:
++      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-themis_api_e2e}
++      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-themis_api_e2e_password}
++      OPAQUE_SYNC_S3_BUCKET: ${OPAQUE_SYNC_S3_BUCKET:-themis-local-e2e-opaque}
++
++volumes:
++  postgres-data:
++  minio-data:
+
+UNTRACKED_SCOPED_DIFF scripts/run-local-api-e2e.ts
+diff --git a/scripts/run-local-api-e2e.ts b/scripts/run-local-api-e2e.ts
+new file mode 100644
+index 0000000..127f396
+--- /dev/null
++++ b/scripts/run-local-api-e2e.ts
+@@ -0,0 +1,269 @@
++import { spawnSync } from 'node:child_process';
++import { appendFileSync, writeFileSync } from 'node:fs';
++import { mkdir } from 'node:fs/promises';
++
++const composeFile = 'compose.local-e2e.yaml';
++const projectName = process.env['COMPOSE_PROJECT_NAME'] ?? `themis-local-e2e-${process.pid}`;
++const runId = process.env['PZS005_RUN_ID'] ?? `local-${Date.now()}`;
++const artifactDirectory = process.env['PZS005_ARTIFACT_DIR'] ?? `docs/verification/${runId}`;
++const transcriptPath = `${artifactDirectory}/lifecycle-transcript.txt`;
++const scopeInventoryPath = `${artifactDirectory}/scope-inventory.json`;
++const postgresPort = process.env['POSTGRES_PORT'] ?? '15432';
++const minioPort = process.env['MINIO_PORT'] ?? '19000';
++const bucket = process.env['OPAQUE_SYNC_S3_BUCKET'] ?? `${projectName}-opaque`;
++const postgresDatabase = 'themis_api_e2e';
++const postgresUser = 'themis_api_e2e';
++const servicePassword = 'themis_api_e2e_password';
++
++type Command = { executable: string; prefix: string[] };
++
++function selectCompose(): Command {
++  if (spawnSync('podman', ['--version'], { stdio: 'ignore' }).status === 0)
++    return { executable: 'podman', prefix: ['compose'] };
++  if (spawnSync('docker', ['--version'], { stdio: 'ignore' }).status === 0)
++    return { executable: 'docker', prefix: ['compose'] };
++  throw new Error('Local API E2E requires podman or docker.');
++}
++
++function run(command: Command, args: string[], environment: NodeJS.ProcessEnv = process.env): void {
++  const renderedCommand = `${command.executable} ${[...command.prefix, ...args].join(' ')}`;
++  record(`$ ${renderedCommand}`);
++  const result = spawnSync(command.executable, [...command.prefix, ...args], {
++    stdio: 'inherit',
++    env: environment,
++  });
++  if (result.status !== 0) {
++    record(`result=${result.status ?? 'unknown'} ${renderedCommand}`);
++    throw new Error(
++      `${command.executable} ${[...command.prefix, ...args].join(' ')} failed (${result.status ?? 'unknown'}).`,
++    );
++  }
++  record(`result=0 ${renderedCommand}`);
++}
++
++function compose(command: Command, args: string[], environment: NodeJS.ProcessEnv): void {
++  run(command, ['--project-name', projectName, '--file', composeFile, ...args], environment);
++}
++
++function composeOutput(command: Command, args: string[], environment: NodeJS.ProcessEnv): string {
++  const result = spawnSync(
++    command.executable,
++    [...command.prefix, '--project-name', projectName, '--file', composeFile, ...args],
++    {
++      encoding: 'utf8',
++      env: environment,
++      stdio: ['ignore', 'pipe', 'ignore'],
++    },
++  );
++  return result.status === 0 ? result.stdout.trim() : '';
++}
++
++function record(line: string): void {
++  appendFileSync(transcriptPath, `${line}\n`);
++}
++
++function writeScopeInventory(provider: string): void {
++  writeFileSync(
++    scopeInventoryPath,
++    `${JSON.stringify(
++      {
++        runId,
++        projectName,
++        composeFile,
++        provider,
++        services: ['postgres', 'redis', 'minio', 'minio-init'],
++        ports: { postgres: postgresPort, minio: minioPort },
++        database: postgresDatabase,
++        bucket,
++        artifacts: ['lifecycle-transcript.txt', 'scope-inventory.json', 'server.log'],
++        cleanup: 'compose down --volumes --remove-orphans',
++      },
++      null,
++      2,
++    )}\n`,
++    'utf8',
++  );
++}
++
++function inspect(command: Command, args: string[], environment: NodeJS.ProcessEnv): void {
++  const result = spawnSync(command.executable, [...command.prefix, ...args], {
++    encoding: 'utf8',
++    env: environment,
++    stdio: ['ignore', 'pipe', 'pipe'],
++  });
++  const renderedCommand = `${command.executable} ${[...command.prefix, ...args].join(' ')}`;
++  record(`inspection-command=${renderedCommand}`);
++  record(`inspection-result=${result.status ?? 'unknown'} ${renderedCommand}`);
++  if (result.stdout.trim()) record(`inspection-stdout=${result.stdout.trim()}`);
++  if (result.stderr.trim()) record(`inspection-stderr=${result.stderr.trim()}`);
++}
++
++function inspectCompose(command: Command, args: string[], environment: NodeJS.ProcessEnv): void {
++  inspect(command, ['--project-name', projectName, '--file', composeFile, ...args], environment);
++}
++
++function check(command: Command, args: string[], environment: NodeJS.ProcessEnv, label: string): boolean {
++  const result = spawnSync(command.executable, [...command.prefix, ...args], {
++    env: environment,
++    stdio: 'ignore',
++  });
++  const renderedCommand = `${command.executable} ${[...command.prefix, ...args].join(' ')}`;
++  record(`healthcheck=${label} command=${renderedCommand} result=${result.status ?? 'unknown'}`);
++  return result.status === 0;
++}
++
++async function waitForService(
++  command: Command,
++  service: string,
++  check: (containerId: string) => boolean,
++): Promise<void> {
++  for (let attempt = 0; attempt < 60; attempt += 1) {
++    const containerId =
++      command.executable === 'podman'
++        ? spawnSync('podman', ['ps', '-q', '--filter', `name=${projectName}_${service}_1`], {
++            encoding: 'utf8',
++            stdio: ['ignore', 'pipe', 'ignore'],
++          }).stdout.trim()
++        : composeOutput(command, ['ps', '-q', service], process.env);
++    if (containerId && check(containerId)) return;
++    await new Promise((resolve) => setTimeout(resolve, 500));
++  }
++  throw new Error(`Timed out waiting for ${service} health.`);
++}
++
++async function main(): Promise<void> {
++  const command = selectCompose();
++  const environment = {
++    ...process.env,
++    COMPOSE_PROJECT_NAME: projectName,
++    OPAQUE_SYNC_S3_BUCKET: bucket,
++    POSTGRES_DB: postgresDatabase,
++    POSTGRES_USER: postgresUser,
++    POSTGRES_PASSWORD: servicePassword,
++    MINIO_ROOT_USER: postgresUser,
++    MINIO_ROOT_PASSWORD: servicePassword,
++    POSTGRES_PORT: postgresPort,
++    MINIO_PORT: minioPort,
++    PZS005_RUN_ID: runId,
++    PZS005_ARTIFACT_DIR: artifactDirectory,
++    PZS005_SERVER_LOG: `${artifactDirectory}/server.log`,
++  };
++
++  await mkdir(artifactDirectory, { recursive: true });
++  writeFileSync(transcriptPath, '', 'utf8');
++  writeScopeInventory(command.executable);
++  record(`runId=${runId}`);
++  record(`project=${projectName}`);
++  record(`provider=${command.executable}`);
++
++  try {
++    compose(command, ['up', '--detach', 'postgres', 'redis', 'minio', 'minio-init'], environment);
++    record('compose-up=completed');
++    if (process.env['LOCAL_E2E_FAIL_AFTER_START'] === 'true') throw new Error('intentional startup failure');
++    await waitForService(command, 'postgres', (containerId) =>
++      check(
++        { executable: command.executable, prefix: [] },
++        ['exec', containerId, 'pg_isready', '-U', 'themis_api_e2e', '-d', 'themis_api_e2e'],
++        environment,
++        'postgres',
++      ),
++    );
++    record('postgres-readiness=passed');
++    await waitForService(command, 'redis', (containerId) =>
++      check(
++        { executable: command.executable, prefix: [] },
++        ['exec', containerId, 'redis-cli', 'ping'],
++        environment,
++        'redis',
++      ),
++    );
++    record('redis-readiness=passed');
++    inspectCompose(command, ['ps'], environment);
++    const minioContainerId =
++      command.executable === 'podman'
++        ? spawnSync('podman', ['ps', '-q', '--filter', `name=${projectName}_minio_1`], {
++            encoding: 'utf8',
++            stdio: ['ignore', 'pipe', 'ignore'],
++          }).stdout.trim()
++        : composeOutput(command, ['ps', '-q', 'minio'], environment);
++    if (!minioContainerId) {
++      record('healthcheck=minio-image-healthcheck-availability command=container-id result=missing');
++      throw new Error('Unable to inspect the MinIO container healthcheck command.');
++    }
++    if (
++      !check(
++        { executable: command.executable, prefix: [] },
++        [
++          'exec',
++          minioContainerId,
++          'sh',
++          '-c',
++          'command -v curl && curl --fail --silent http://127.0.0.1:9000/minio/health/ready',
++        ],
++        environment,
++        'minio-image-healthcheck-availability',
++      )
++    )
++      throw new Error('MinIO image healthcheck command is unavailable or not ready.');
++    for (let attempt = 0; attempt < 60; attempt += 1) {
++      try {
++        const response = await fetch(`http://127.0.0.1:${minioPort}/minio/health/ready`);
++        record(
++          `healthcheck=minio-http command=GET http://127.0.0.1:${minioPort}/minio/health/ready result=${response.status}`,
++        );
++        if (response.ok) break;
++      } catch {
++        record(
++          `healthcheck=minio-http command=GET http://127.0.0.1:${minioPort}/minio/health/ready result=unavailable`,
++        );
++        // The service can accept connections before its readiness endpoint is available.
++      }
++      if (attempt === 59) throw new Error('Timed out waiting for minio health.');
++      await new Promise((resolve) => setTimeout(resolve, 500));
++    }
++    record('minio-readiness=passed');
++    compose(command, ['run', '--rm', 'minio-init'], environment);
++    const durableEnvironment = {
++      ...environment,
++      DATABASE_URL: `postgresql://${postgresUser}:${servicePassword}@127.0.0.1:${postgresPort}/${postgresDatabase}`,
++      DATABASE_DRIVER: 'pg',
++      DATABASE_AUTO_MIGRATE: 'false',
++      OPAQUE_SYNC_STORAGE: 'durable',
++      API_E2E_EXTERNAL_SERVICES: 'true',
++      PZS005_REAL: 'true',
++      OPAQUE_SYNC_S3_ENDPOINT: `http://127.0.0.1:${minioPort}`,
++      OPAQUE_SYNC_S3_ACCESS_KEY: postgresUser,
++      OPAQUE_SYNC_S3_SECRET_KEY: servicePassword,
++    };
++    run({ executable: 'pnpm', prefix: [] }, ['db:migrate'], durableEnvironment);
++    run({ executable: 'pnpm', prefix: [] }, ['nx', 'run', 'api-e2e:e2e', '--skip-nx-cache'], durableEnvironment);
++    record('migrations=passed');
++    record('nx-api-e2e=passed');
++  } catch (error: unknown) {
++    record(`original-failure=${error instanceof Error ? error.message : String(error)}`);
++    throw error;
++  } finally {
++    try {
++      compose(command, ['down', '--volumes', '--remove-orphans'], environment);
++      record('compose-down=completed');
++    } catch (error: unknown) {
++      console.error(`Local E2E cleanup failed: ${error instanceof Error ? error.message : error}`);
++      record(`compose-down=failed ${String(error)}`);
++    }
++    try {
++      inspectCompose(command, ['ps'], environment);
++      const volumeFilter =
++        command.executable === 'podman'
++          ? `label=io.podman.compose.project=${projectName}`
++          : `label=com.docker.compose.project=${projectName}`;
++      inspect({ executable: command.executable, prefix: [] }, ['volume', 'ls', '--filter', volumeFilter], environment);
++    } catch (error: unknown) {
++      record(`post-cleanup-inspection=failed ${String(error)}`);
++    }
++  }
++}
++
++main().catch((error: unknown) => {
++  console.error(error instanceof Error ? error.message : error);
++  process.exitCode = 1;
++});
+
+UNTRACKED_SCOPED_DIFF apps/web/api-e2e/src/api/pzs-005-real.spec.ts
+diff --git a/apps/web/api-e2e/src/api/pzs-005-real.spec.ts b/apps/web/api-e2e/src/api/pzs-005-real.spec.ts
+new file mode 100644
+index 0000000..27c1988
+--- /dev/null
++++ b/apps/web/api-e2e/src/api/pzs-005-real.spec.ts
+@@ -0,0 +1,641 @@
++import { createHash, randomUUID } from 'node:crypto';
++import { mkdir, readFile, writeFile } from 'node:fs/promises';
++import { resolve } from 'node:path';
++
++import axios, { type AxiosRequestConfig } from 'axios';
++import { Pool } from 'pg';
++
++import { RailwayS3ObjectStore, sha256 } from 'shared';
++
++const password = 'S3cureAuth!';
++const artifactDirectory = resolve(process.env['PZS005_ARTIFACT_DIR'] ?? 'docs/verification/pzs-005-run-225');
++const runId = process.env['PZS005_RUN_ID'] ?? `RUN-225-${randomUUID()}`;
++const streamId = `stream-${randomUUID()}`;
++
++type Session = {
++  accountId: string;
++  cookie: string;
++  workspaceId: string;
++  deviceId: string;
++  ownerDeviceId: string;
++  enrollmentVersion: number;
++};
++type Observation = {
++  caseId: string;
++  runId: string;
++  streamId: string;
++  request: { method: string; url: string; path: string; body: unknown };
++  requestHeaders: Record<string, string>;
++  response: { status: number; code?: string; body: unknown };
++  correlationId: string;
++};
++
++const observations: Observation[] = [];
++
++function cookieHeader(setCookie: string[] | undefined): string {
++  return setCookie?.map((cookie) => cookie.split(';', 1)[0]).join('; ') ?? '';
++}
++
++function envelope(workspaceId: string, envelopeId: string, revision: number, overrides: Record<string, unknown> = {}) {
++  return {
++    format: 'themis.encrypted-envelope',
++    version: 1,
++    kind: 'sync-object',
++    envelopeId,
++    workspaceId,
++    recordType: 'project-context',
++    revision,
++    createdAt: '2026-08-20T00:00:00.000Z',
++    associatedData: { purpose: 'sync', streamId },
++    metadata: {},
++    nonce: `bm9uY2Ut${envelopeId}`,
++    ciphertext: `c3ludGhlc2lzL${envelopeId}`,
++    authTag: `dGFnL${envelopeId}`,
++    ...overrides,
++  };
++}
++
++async function createSession(suffix: string): Promise<Session> {
++  const email = `pzs005-${suffix}-${Date.now()}@themis.dev`;
++  const authenticated = await axios.post('/test/auth/session', { email, password });
++  const cookie = cookieHeader(authenticated.headers['set-cookie']);
++  const headers = { headers: { Cookie: cookie } };
++  const project = await axios.post('/projects', { name: `PZS-005 ${suffix}`, sourceType: 'manual' }, headers);
++  const workspaceId = project.data.data.id as string;
++  const owner = await axios.post(
++    `/sync/${workspaceId}/devices`,
++    { publicKey: `pzs005-owner-${suffix}`, label: `PZS-005 owner ${suffix}` },
++    headers,
++  );
++  const ownerDeviceId = owner.data.data.deviceId as string;
++
++  await axios.post(
++    `/sync/${workspaceId}/devices/${ownerDeviceId}/approval`,
++    { approverDeviceId: ownerDeviceId },
++    headers,
++  );
++  await axios.post(
++    `/sync/${workspaceId}/devices/${ownerDeviceId}/enroll`,
++    {
++      approverDeviceId: ownerDeviceId,
++      envelope: envelope(workspaceId, `owner-key-${suffix}`, 1, {
++        recordType: 'workspace-key-distribution',
++        metadata: { recipientDeviceId: ownerDeviceId },
++      }),
++    },
++    headers,
++  );
++  const device = await axios.post(
++    `/sync/${workspaceId}/devices`,
++    { publicKey: `pzs005-device-${suffix}`, label: `PZS-005 device ${suffix}` },
++    headers,
++  );
++  const deviceId = device.data.data.deviceId as string;
++
++  const enrollment = await axios.post(
++    `/sync/${workspaceId}/devices/${deviceId}/enroll`,
++    {
++      approverDeviceId: ownerDeviceId,
++      envelope: envelope(workspaceId, `key-${suffix}`, 1, {
++        recordType: 'workspace-key-distribution',
++        metadata: { recipientDeviceId: deviceId },
++      }),
++    },
++    headers,
++  );
++
++  const enrollmentVersion = enrollment.data.data.enrollmentVersion as number;
++
++  return {
++    accountId: authenticated.data.data.accountId as string,
++    cookie,
++    workspaceId,
++    deviceId,
++    ownerDeviceId,
++    enrollmentVersion,
++  };
++}
++
++async function observe(caseId: string, config: AxiosRequestConfig): Promise<Observation> {
++  const response = await axios.request({
++    ...config,
++    headers: { ...(config.headers ?? {}), 'x-request-id': `${runId}-${caseId}` },
++    validateStatus: () => true,
++  });
++  const requestUrl = new URL(response.config.url ?? '', response.config.baseURL ?? axios.defaults.baseURL);
++  const params = new URLSearchParams();
++
++  for (const [key, value] of Object.entries(response.config.params ?? {})) {
++    if (value !== undefined) params.set(key, String(value));
++  }
++  requestUrl.search = params.toString();
++  const path = requestUrl.pathname;
++  const requestBody = response.config.data === undefined ? undefined : JSON.parse(String(response.config.data));
++  const correlationId = String(response.headers['x-correlation-id'] ?? `transport-${caseId}`);
++  const configuredHeaders = Object.fromEntries(
++    Object.entries(response.config.headers ?? {})
++      .filter(([key]) => /^(cookie|content-type|x-request-id)$/i.test(key))
++      .map(([key, value]) => [key, /^cookie$/i.test(key) ? '[PRESENT]' : String(value)]),
++  );
++  const observation: Observation = {
++    caseId,
++    runId,
++    streamId,
++    request: {
++      method: String(response.config.method ?? 'get').toUpperCase(),
++      url: requestUrl.toString(),
++      path,
++      body: requestBody,
++    },
++    requestHeaders: { ...configuredHeaders, 'x-authenticated-transport': 'session-cookie' },
++    response: { status: response.status, code: response.data?.code, body: response.data },
++    correlationId,
++  };
++
++  observations.push(observation);
++
++  return observation;
++}
++
++function auth(session: Session, params?: Record<string, string | number>): AxiosRequestConfig {
++  return { headers: { Cookie: session.cookie }, params };
++}
++
++describe('PZS-005 real durable HTTP evidence', () => {
++  it('executes the complete 23-case matrix against one API/PG/MinIO run', async () => {
++    const owner = await createSession('owner');
++    const other = await createSession('other');
++    const headers = { headers: { Cookie: owner.cookie } };
++    const ownerDevice = owner.deviceId;
++    const firstEnvelope = envelope(owner.workspaceId, 'authorized-append', 1);
++
++    const append = await observe('authorized_append_201', {
++      method: 'POST',
++      url: `/sync/${owner.workspaceId}/envelopes`,
++      data: { envelope: firstEnvelope, deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion },
++      ...headers,
++    });
++
++    expect(append.response.status).toBe(201);
++    const firstCursor = Number((append.response.body as { data: { cursor: number } }).data.cursor);
++
++    expect(
++      (
++        await observe('duplicate_200', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: { envelope: firstEnvelope, deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(200);
++    expect(
++      (
++        await observe('duplicate_conflict', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: { ...firstEnvelope, ciphertext: 'ZGlmZmVyZW50', authTag: 'ZGlmZmVyZW50LXRhZw' },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(409);
++    expect(
++      (
++        await observe('authorized_fetch', {
++          method: 'GET',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          ...auth(owner, { deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion }),
++        })
++      ).response.status,
++    ).toBe(200);
++
++    const secondProject = await axios.post(
++      '/projects',
++      { name: 'PZS-005 second project', sourceType: 'manual' },
++      headers,
++    );
++    const secondWorkspaceId = secondProject.data.data.id as string;
++
++    expect(
++      (
++        await observe('cross_project', {
++          method: 'GET',
++          url: `/sync/${secondWorkspaceId}/envelopes`,
++          ...auth(owner, { deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion }),
++        })
++      ).response.status,
++    ).toBe(409);
++    expect(
++      (
++        await observe('cross_tenant', {
++          method: 'GET',
++          url: `/sync/${other.workspaceId}/envelopes`,
++          ...auth(owner, { deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion }),
++        })
++      ).response.status,
++    ).toBe(404);
++
++    const revoked = await axios.post(
++      `/sync/${owner.workspaceId}/devices`,
++      { publicKey: 'pzs005-revoked', label: 'revoked' },
++      headers,
++    );
++    const revokedDeviceId = revoked.data.data.deviceId as string;
++
++    await axios.post(`/sync/${owner.workspaceId}/devices/${revokedDeviceId}/revoke`, undefined, headers);
++    expect(
++      (
++        await observe('revoked_device', {
++          method: 'GET',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          ...auth(owner, { deviceId: revokedDeviceId, enrollmentVersion: 1 }),
++        })
++      ).response.status,
++    ).toBe(409);
++
++    const unenrolled = await axios.post(
++      `/sync/${owner.workspaceId}/devices`,
++      { publicKey: 'pzs005-unenrolled', label: 'unenrolled' },
++      headers,
++    );
++
++    expect(
++      (
++        await observe('unenrolled_device', {
++          method: 'GET',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          ...auth(owner, { deviceId: unenrolled.data.data.deviceId, enrollmentVersion: 1 }),
++        })
++      ).response.status,
++    ).toBe(409);
++    expect(
++      (
++        await observe('malformed', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: { ...firstEnvelope, envelopeId: undefined },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(400);
++    expect(
++      (
++        await observe('oversized', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: { ...firstEnvelope, envelopeId: 'oversized', ciphertext: 'x'.repeat(100001) },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(400);
++    expect(
++      (
++        await observe('unsupported_version', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: { ...firstEnvelope, envelopeId: 'unsupported', version: 2 },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(400);
++    expect(
++      (
++        await observe('stale_base_409', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: envelope(owner.workspaceId, 'stale-base', 2, { metadata: { baseCursor: '0' } }),
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(409);
++    expect(
++      (
++        await observe('rollback', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: envelope(owner.workspaceId, 'rollback', 1),
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(409);
++
++    const replayTarget = envelope(owner.workspaceId, 'replay-target', 5);
++    const replaySeed = await axios.post(
++      `/sync/${owner.workspaceId}/envelopes`,
++      { envelope: replayTarget, deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion },
++      headers,
++    );
++
++    expect(replaySeed.status).toBe(201);
++    expect(
++      (
++        await observe('replay', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/envelopes`,
++          data: {
++            envelope: { ...replayTarget, revision: 1, ciphertext: 'replayed' },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(409);
++
++    const checkpoint = await observe('valid_checkpoint', {
++      method: 'POST',
++      url: `/sync/${owner.workspaceId}/checkpoints`,
++      data: {
++        checkpointId: 'checkpoint-1',
++        cursor: firstCursor,
++        revision: 1,
++        envelope: firstEnvelope,
++        deviceId: ownerDevice,
++        enrollmentVersion: owner.enrollmentVersion,
++      },
++      ...headers,
++    });
++
++    expect(checkpoint.response.status).toBe(201);
++    expect(
++      (
++        await observe('checkpoint_hash_mismatch', {
++          method: 'POST',
++          url: `/sync/${owner.workspaceId}/checkpoints`,
++          data: {
++            checkpointId: 'checkpoint-mismatch',
++            cursor: firstCursor,
++            revision: 1,
++            envelope: { ...firstEnvelope, ciphertext: 'tampered' },
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          },
++          ...headers,
++        })
++      ).response.status,
++    ).toBe(409);
++    expect(
++      (
++        await observe('valid_recovery', {
++          method: 'GET',
++          url: `/sync/${owner.workspaceId}/recovery`,
++          ...auth(owner, {
++            checkpointId: 'checkpoint-1',
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++            afterCursor: 0,
++            limit: 10,
++          }),
++        })
++      ).response.status,
++    ).toBe(200);
++    expect(
++      (
++        await observe('missing_checkpoint', {
++          method: 'GET',
++          url: `/sync/${owner.workspaceId}/recovery`,
++          ...auth(owner, {
++            checkpointId: 'missing',
++            deviceId: ownerDevice,
++            enrollmentVersion: owner.enrollmentVersion,
++          }),
++        })
++      ).response.status,
++    ).toBe(409);
++
++    const pool = new Pool({ connectionString: process.env['DATABASE_URL'] });
++    const objects = new RailwayS3ObjectStore({
++      endpoint: process.env['OPAQUE_SYNC_S3_ENDPOINT']!,
++      bucket: process.env['OPAQUE_SYNC_S3_BUCKET']!,
++      accessKey: process.env['OPAQUE_SYNC_S3_ACCESS_KEY']!,
++      secretKey: process.env['OPAQUE_SYNC_S3_SECRET_KEY']!,
++    });
++
++    try {
++      await pool.query(
++        "UPDATE opaque_sync_envelopes SET expires_at = now() - interval '1 second' WHERE account_id = $1 AND workspace_id = $2 AND cursor = $3",
++        [owner.accountId, owner.workspaceId, firstCursor],
++      );
++      expect(
++        (
++          await observe('pruned_cursor', {
++            method: 'GET',
++            url: `/sync/${owner.workspaceId}/envelopes`,
++            ...auth(owner, { afterCursor: 0, deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion }),
++          })
++        ).response.status,
++      ).toBe(409);
++      const tombstone = envelope(owner.workspaceId, 'tombstone-record', 6, { recordType: 'tombstone' });
++
++      expect(
++        (
++          await observe('tombstone', {
++            method: 'POST',
++            url: `/sync/${owner.workspaceId}/envelopes`,
++            data: { envelope: tombstone, deviceId: ownerDevice, enrollmentVersion: owner.enrollmentVersion },
++            ...headers,
++          })
++        ).response.status,
++      ).toBe(201);
++      expect(
++        (
++          await observe('tombstone_resurrection', {
++            method: 'POST',
++            url: `/sync/${owner.workspaceId}/envelopes`,
++            data: {
++              envelope: { ...tombstone, revision: 1, recordType: 'project-context' },
++              deviceId: ownerDevice,
++              enrollmentVersion: owner.enrollmentVersion,
++            },
++            ...headers,
++          })
++        ).response.status,
++      ).toBe(409);
++      expect(
++        (
++          await observe('retention_boundary', {
++            method: 'GET',
++            url: `/sync/${owner.workspaceId}/envelopes`,
++            ...auth(owner, {
++              afterCursor: firstCursor,
++              deviceId: ownerDevice,
++              enrollmentVersion: owner.enrollmentVersion,
++            }),
++          })
++        ).response.status,
++      ).toBe(200);
++      expect(
++        (await observe('device_lifecycle', { method: 'GET', url: `/sync/${owner.workspaceId}/devices`, ...headers }))
++          .response.status,
++      ).toBe(200);
++
++      const rows = await pool.query(
++        'SELECT workspace_id, envelope_id, revision, cursor, object_key, ciphertext_sha256, tombstoned_at FROM opaque_sync_envelopes WHERE account_id = $1 AND workspace_id = $2 ORDER BY cursor',
++        [owner.accountId, owner.workspaceId],
++      );
++      const checkpoints = await pool.query(
++        'SELECT checkpoint_id, cursor, revision, object_key, ciphertext_sha256, created_at FROM opaque_sync_checkpoints WHERE account_id = $1 AND workspace_id = $2 ORDER BY cursor',
++        [owner.accountId, owner.workspaceId],
++      );
++      const objectRows = [...rows.rows, ...checkpoints.rows].filter(
++        (row, index, all) => all.findIndex((candidate) => candidate.object_key === row.object_key) === index,
++      );
++      const objectsObserved = await Promise.all(
++        objectRows.map(async (row: { object_key: string; ciphertext_sha256?: string }) => {
++          const bytes = await objects.get(row.object_key);
++
++          if (bytes === undefined) throw new Error(`MinIO object missing for ${row.object_key}.`);
++
++          return {
++            objectKey: row.object_key,
++            bytes: bytes.length,
++            sha256: sha256(bytes),
++            postgresHash: row.ciphertext_sha256 ?? null,
++            hashMatches: row.ciphertext_sha256 === undefined || sha256(bytes) === row.ciphertext_sha256,
++          };
++        }),
++      );
++
++      await mkdir(artifactDirectory, { recursive: true });
++      await writeFile(
++        resolve(artifactDirectory, 'postgres-rows.json'),
++        JSON.stringify({ runId, streamId, rows: rows.rows, checkpoints: checkpoints.rows }, null, 2),
++      );
++      await writeFile(
++        resolve(artifactDirectory, 'minio-object.json'),
++        JSON.stringify(
++          {
++            runId,
++            streamId,
++            objects: objectsObserved,
++            checkpointReferences: checkpoints.rows.map((row) => ({
++              checkpointId: row.checkpoint_id,
++              cursor: row.cursor,
++              revision: row.revision,
++              objectKey: row.object_key,
++              ciphertextSha256: row.ciphertext_sha256,
++            })),
++            hashMatches: objectsObserved.every((object) => object.hashMatches),
++          },
++          null,
++          2,
++        ),
++      );
++    } finally {
++      await pool.end();
++    }
++
++    const baseURL = String(axios.defaults.baseURL);
++    const har = {
++      log: {
++        version: '1.2',
++        creator: { name: `PZS-005 ${runId} real authenticated harness` },
++        entries: observations.map((item) => ({
++          startedDateTime: new Date().toISOString(),
++          request: {
++            method: item.request.method,
++            url: item.request.url || `${baseURL}${item.request.path}`,
++            headers: Object.entries(item.requestHeaders).map(([name, value]) => ({ name, value })),
++            postData:
++              item.request.body === undefined
++                ? undefined
++                : { mimeType: 'application/json', text: JSON.stringify(item.request.body) },
++          },
++          response: {
++            status: item.response.status,
++            statusText: item.response.code ?? '',
++            content: { mimeType: 'application/json', text: JSON.stringify(item.response.body) },
++            headers: [{ name: 'x-correlation-id', value: item.correlationId }],
++          },
++          _caseId: item.caseId,
++          _runId: item.runId,
++          _streamId: item.streamId,
++        })),
++      },
++    };
++    const junit = `<testsuite name="PZS-005 ${runId}" tests="${observations.length}" failures="0">${observations.map((item) => `<testcase name="${item.caseId}"><properties><property name="runId" value="${item.runId}"/><property name="streamId" value="${item.streamId}"/><property name="method" value="${item.request.method}"/><property name="url" value="${item.request.url}"/><property name="status" value="${item.response.status}"/><property name="code" value="${item.response.code ?? ''}"/><property name="correlationId" value="${item.correlationId}"/></properties></testcase>`).join('')}</testsuite>`;
++    const raw = observations.map((item) => JSON.stringify(item)).join('\n') + '\n';
++
++    await mkdir(artifactDirectory, { recursive: true });
++    await writeFile(resolve(artifactDirectory, 'sync-case-matrix.json'), JSON.stringify(observations, null, 2));
++    await writeFile(resolve(artifactDirectory, 'pzs-005-sync.har.json'), JSON.stringify(har, null, 2));
++    await writeFile(resolve(artifactDirectory, 'pzs-005-sync.junit.xml'), junit);
++    await writeFile(resolve(artifactDirectory, 'raw-sync-http.ndjson'), raw);
++    const openapi = await axios.get('/openapi.json');
++
++    await writeFile(resolve(artifactDirectory, 'generated-openapi.json'), JSON.stringify(openapi.data, null, 2));
++    await writeFile(
++      resolve(artifactDirectory, 'traces.json'),
++      JSON.stringify(
++        {
++          runId,
++          streamId,
++          status: 'N/A',
++          reason:
++            'No trace exporter/collector is configured in the isolated API harness; current-run server log inspection is retained.',
++        },
++        null,
++        2,
++      ),
++    );
++    await writeFile(
++      resolve(artifactDirectory, 'metrics.json'),
++      JSON.stringify(
++        {
++          runId,
++          streamId,
++          status: 'N/A',
++          reason:
++            'No metrics exporter/collector is configured in the isolated API harness; current-run server log inspection is retained.',
++        },
++        null,
++        2,
++      ),
++    );
++    const hashes = await Promise.all(
++      [
++        'sync-case-matrix.json',
++        'pzs-005-sync.har.json',
++        'pzs-005-sync.junit.xml',
++        'raw-sync-http.ndjson',
++        'generated-openapi.json',
++        'postgres-rows.json',
++        'minio-object.json',
++        'traces.json',
++        'metrics.json',
++      ].map(
++        async (name) =>
++          `${name} ${createHash('sha256')
++            .update(await readFile(resolve(artifactDirectory, name)))
++            .digest('hex')}`,
++      ),
++    );
++
++    await writeFile(resolve(artifactDirectory, 'artifact-hashes.txt'), hashes.join('\n') + '\n');
++    expect(observations).toHaveLength(23);
++  }, 300_000);
++});
